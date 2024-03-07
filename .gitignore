@@ -1,4 +1,4 @@
-./DjangoTest/bin/*
-./DjangoTest/include/*
-./DjangoTest/lib/*
-./DjangoTest/pyven.cfg
+*/bin/
+*/include/
+*/lib/
+*/pyvenv.cfg
