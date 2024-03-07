@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+	</head>
+	<body>
+		<title>File management</title>
+		<style>
+			button {
+			  color: rgb(22, 24, 22);
+			  padding: 4px 2px;
+			  text-align: center;
+			  margin: auto;
+			  font-size: 16px;
+			  border-radius: 9px;
+			  background-color: rgb(152, 152, 158);
+			  box-shadow: none;
+			}
+			button:hover {
+				background-color: #d0d0d0
+			}
+
+			input::file-selector-button{
+			  padding: 4px 2px;
+			  text-align: center;
+			  margin: auto;
+			  font-size: 16px;
+			  cursor: grab;
+			  border-radius: 9px;
+			  background-color: rgb(152, 152, 158);
+			  box-shadow: none;
+			}
+			input::file-selector-button:hover{
+				background-color:rgb(152, 152, 158);
+			}
+			body{
+				background-color: #252525;
+				color: rgb(148, 145, 145);
+				font-size: 15px;
+				text-align: center;
+			}
+			.Button1{
+				cursor: s-resize;
+			}
+			.Button2{
+				cursor: no-drop;
+			}
+			.Button3{
+				cursor: n-resize;
+			}
+
+			.div_file{
+				padding: 100;
+			}
+
+
+		</style>
+		<h1>File transfert</h1>
+		<p></p>
+		<div class="div_file">
+			<form action="file.html" method="post" enctype="multipart/form-data">
+				<label for="fileUpload">Choose a file to upload:</label>
+				<input type="file" id="fileUpload" name="fileUpload"><br><br>
+				<input type="submit" value="Upload">
+			</form>
+			<p></p>
+			{Delete_list}
+			<script>
+				function deleteFile() {
+					const fileName = document.getElementById("DeleteFile").value;
+					const form = document.getElementById("deleteForm");
+					fetch('', {
+						method: 'DELETE',
+						headers: {'Content-Type': 'application/json'},
+						body: "delete_file:" + fileName
+					}).then(response => {
+        if (response.ok) {
+			window.location.href = window.location.href;
+        } else {
+            console.error('Failed to delete file:', response.statusText);
+        }
+    }).catch(error => {
+        console.error('Error deleting file:', error);
+    });
+				}
+			</script>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,17 @@
+Cree un environnement virtuel :
+	python3 -m venv Env_Name
+
+Activer l'environnement virtuel
+	source /Env_folder/bin/activate
+
+Installer Django
+	pip3 install Django
+
+Dans le dossier de l'environnement:
+	django-admin startproject project_name
+
+Lancer le server:
+	python3 manage.py runserver
+
+Quitter  l'environnement virtuel:
+	deactivate
