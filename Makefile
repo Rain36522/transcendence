@@ -6,7 +6,7 @@
 #    By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/08 12:20:28 by pudry             #+#    #+#              #
-#    Updated: 2024/03/08 14:56:05 by dvandenb         ###   ########.fr        #
+#    Updated: 2024/03/08 16:08:29 by dvandenb         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,11 @@ build_docker:
 	docker pull postgres
 
 build_server:
+	$$(sleep 2)
 	./init_server.zsh
+
+install:
+	./install_dep.zsh
 
 run:
 	docker compose -f  ${DOCKER_COMPOSE} -p ${NAME} up --detach
