@@ -1,0 +1,20 @@
+# Utilisez une image Python comme base
+FROM python:3.9
+
+# Configuration des variables d'environnement
+ENV PYTHONUNBUFFERED 1
+
+# Créez le répertoire de travail et copiez les fichiers de dépendances
+RUN mkdir /app
+WORKDIR /app
+
+# Installez les dépendances Python
+RUN pip3 install django
+RUN pip3 install psycopg2-binary
+
+COPY Django/tool/init_serv.sh /usr/local/init_serv.sh
+RUN chmod +x /usr/local/init_serv.sh
+
+# Copiez le reste de l'application
+COPY test /app/
+ENTRYPOINT ["sh", "/usr/local/init_serv.sh"]

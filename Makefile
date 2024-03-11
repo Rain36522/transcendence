@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+         #
+#    By: pudry <pudry@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/08 12:20:28 by pudry             #+#    #+#              #
-#    Updated: 2024/03/08 16:08:29 by dvandenb         ###   ########.fr        #
+#    Updated: 2024/03/11 16:41:45 by pudry            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ DOCKER_COMPOSE = docker-compose.yml
 NAME = transcendence
 PROJECT = test
 
-all: build_docker stop run build_server 
+all: build_docker stop run
 
 NewMember:
 	python3 ./$(PROJECT)/manage.py startapp $(name)

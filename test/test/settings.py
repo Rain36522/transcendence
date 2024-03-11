@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-)sm7qcm975p-1s2_0x%9a7+l%d1mm)zspa78%rx)(gc+a79ga2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -81,8 +81,8 @@ DATABASES = {
         "NAME": "postgres",
         "USER": "postgres",
         "PASSWORD": "example",
-        "HOST": "localhost",
-        "PORT": "5432", 
+        "HOST": "postgresql",
+        "PORT": "5432",
     }
 }
 
@@ -127,3 +127,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+# SECURE_SSL_REDIRECT = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
