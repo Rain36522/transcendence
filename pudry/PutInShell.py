@@ -71,7 +71,7 @@ def	BallPose(ballx, bally, mapx, mapy):
 	bally = (bally * mapy) // 50
 	if ballx <= 0:
 		ballx = 1
-	return ballx + 1, bally
+	return ballx + 2, bally + 1
 
 def RaquetPos(posy, size, mapy):
 	mapy -= 2
@@ -88,11 +88,13 @@ def RaquetPos(posy, size, mapy):
 #the ball place is 
 def PutInShell(ballx, bally, raqA, raqB, raqSize):
 	x, y, start, = DefineMapSize()
+	sleep(0.02)
+	os.system("clear")
 	# print("Map size : ", x, y, start)
 	ballx, bally = BallPose(ballx, bally, x, y)
 	raqAUp, raqADwn = RaquetPos(raqA, raqSize, y)
 	raqBUp, raqBDwn = RaquetPos(raqB, raqSize, y)	
-	PutBegin(start)
+	#PutBegin(start)
 	PutLineExtern(x)
 	for i in range(y - 2):
 		if i >= raqAUp and i <= raqADwn:
@@ -103,12 +105,12 @@ def PutInShell(ballx, bally, raqA, raqB, raqSize):
 			raqB = True
 		else:
 			raqB = False
-		PutBegin(start)
+		#PutBegin(start)
 		if i == bally - 1:
 			PutMiddelLine(x, ballx, raqA, raqB)
 		else:
 			PutMiddelLine(x, 0, raqA, raqB)
-	PutBegin(start)
+	#PutBegin(start)
 	PutLineExtern(x)
 		
 
