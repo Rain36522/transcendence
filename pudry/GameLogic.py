@@ -1,32 +1,24 @@
 from PutInShell import PutInShell
-import curses
+import readchar
 from time import sleep
+import select
+import sys
 
-# Initialisation de curses
-stdscr = curses.initscr()
-curses.curs_set(0)  # Masquer le curseur
-stdscr.nodelay(1)   # Mode non-bloquant pour la saisie
+def is_data_available():
+    return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
 
 raqA = 25
 raqB = 25
 raqSize = 10
 
-try:
-	while True:
-		key = stdscr.getch()
-		if key != -1:
-			if key == curses.KEY_UP and raqA - raqSize / 2 > 0:
-				raqA -= 1
-			elif key == curses.KEY_DOWN and raqA + raqSize / 2 < 50:
-				raqA += 1
-			elif key == ord('q'):
-				break  # Quitter si la touche 'q' est pressée
-		sleep(0.1)
-		PutInShell(10, 10, raqA, raqB, raqSize, stdscr)
-
-finally:
-	curses.echo()
-	curses.nocbreak()
-	stdscr.keypad(False)
-	curses.endwin()
-
+while True:
+	if is_data_available():
+		key = readchar.readkey()
+		if key == '\x1b[A' and raqA - raqSize / 2 > 0: # up
+			raqA -= 1
+		elif key == '\x1b[B' and raqA + raqSize / 2 < 50: # down
+			raqA += 1
+	PutInShell(10, 10, raqA, raqB, raqSize)
+	sleep(0.1)
+    #elif key == '\x1b[C': # right
+    #elif key == '\x1b[D': # left

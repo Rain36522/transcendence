@@ -31,38 +31,38 @@ def DefineMapSize():
 
 
 
-def PutLineExtern(x):
+def PutLineExtern(x, stdscr):
 	for i in range(x - 1):
-		print("#", end="")
-	print("#")
+		stdscr.addstr("1")
+	stdscr.addstr("1\n")
 
-def PutMiddelLine(x, ball, raquetA, raquetB):
-	print("#", end="")
+def PutMiddelLine(x, ball, raquetA, raquetB, stdscr):
+	stdscr.addstr("1")
 	i = 1
 	if raquetA:
-		print("█", end="")
+		stdscr.addstr("A")
 		i += 1
 	if raquetB:
 		i += 1
 	while i < x - 1:
 		if (ball and i + 1 == ball):
-			print("0", end="")
+			stdscr.addstr("O")
 		elif (i + 1) * 2 == x + 1 or (i + 1) * 2 == x:
 			if raquetB:
-				print(" ", end="")
+				stdscr.addstr(" ")
 				i += 1
-			print("#", end="")
+			stdscr.addstr("1")
 		else:
-			print(" ", end="")
+			stdscr.addstr(" ")
 		i += 1
 	if raquetB:
-		print("█", end="")
-	print("#")
+		stdscr.addstr("A")
+	stdscr.addstr("1\n")
 		
-def	PutBegin(start):
+def	PutBegin(start, stdscr):
 	if start:
 		for i in range(start):
-			print(" ", end="")
+			stdscr.addstr(" ")
 
 def	BallPose(ballx, bally, mapx, mapy):
 	mapx -= 1
@@ -86,14 +86,14 @@ def RaquetPos(posy, size, mapy):
 
 #this function put the map with the ball on the terminal
 #the ball place is 
-def PutInShell(ballx, bally, raqA, raqB, raqSize):
+def PutInShell(ballx, bally, raqA, raqB, raqSize, stdscr):
 	x, y, start, = DefineMapSize()
-	# print("Map size : ", x, y, start)
+	# stdscr.addstr("Map size : ", x, y, start)
 	ballx, bally = BallPose(ballx, bally, x, y)
 	raqAUp, raqADwn = RaquetPos(raqA, raqSize, y)
 	raqBUp, raqBDwn = RaquetPos(raqB, raqSize, y)	
-	PutBegin(start)
-	PutLineExtern(x)
+	PutBegin(start, stdscr)
+	PutLineExtern(x, stdscr)
 	for i in range(y - 2):
 		if i >= raqAUp and i <= raqADwn:
 			raqA = True
@@ -103,13 +103,13 @@ def PutInShell(ballx, bally, raqA, raqB, raqSize):
 			raqB = True
 		else:
 			raqB = False
-		PutBegin(start)
+		PutBegin(start, stdscr)
 		if i == bally - 1:
-			PutMiddelLine(x, ballx, raqA, raqB)
+			PutMiddelLine(x, ballx, raqA, raqB, stdscr)
 		else:
-			PutMiddelLine(x, 0, raqA, raqB)
-	PutBegin(start)
-	PutLineExtern(x)
+			PutMiddelLine(x, 0, raqA, raqB, stdscr)
+	PutBegin(start, stdscr)
+	PutLineExtern(x, stdscr)
 		
 
 
