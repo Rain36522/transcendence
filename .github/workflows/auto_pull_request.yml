@@ -3,7 +3,7 @@ name: Auto Pull Request
 on:
   push:
     branches:
-      - master  # Remplace 'main' par le nom de ta branche principale si nécessaire
+      - main  # Remplace 'main' par le nom de ta branche principale si nécessaire
 
 jobs:
   auto_pull_request:
