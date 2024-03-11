@@ -1,0 +1,23 @@
+<!-- my_template.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Example</title>
+</head>
+<body>
+
+<h1>Welcome to My Django App!</h1>
+
+<!-- Form to submit question -->
+<form method="post" action="">
+    {% csrf_token %}
+    <label for="question_text">Question:</label><br>
+    <input type="text" id="question_text" name="question_text"><br><br>
+    <button type="submit">Add Question</button>
+</form>
+
+</body>
+</html>
