@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+         #
+#    By: pudry <pudry@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/08 12:20:28 by pudry             #+#    #+#              #
-#    Updated: 2024/03/12 10:14:53 by dvandenb         ###   ########.fr        #
+#    Updated: 2024/03/12 10:39:05 by pudry            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,7 +31,7 @@ install:
 	./install_dep.zsh
 
 run:
-	docker compose -f  ${DOCKER_COMPOSE} -p ${NAME} up --detach
+	docker compose -f  ${DOCKER_COMPOSE} -p ${NAME} up
 
 stop:
 	docker compose -f ${DOCKER_COMPOSE} -p ${NAME} down
