@@ -3,17 +3,17 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+         #
+#    By: pudry <pudry@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/08 12:20:28 by pudry             #+#    #+#              #
-#    Updated: 2024/03/12 10:14:53 by dvandenb         ###   ########.fr        #
+#    Updated: 2024/03/11 17:15:05 by pudry            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
 DOCKER_COMPOSE = docker-compose.yml
 NAME = transcendence
-PROJECT = TranServer
+PROJECT = test
 
 all: build_docker stop run
 

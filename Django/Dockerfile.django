@@ -16,5 +16,5 @@ COPY Django/tool/init_serv.sh /usr/local/init_serv.sh
 RUN chmod +x /usr/local/init_serv.sh
 
 # Copiez le reste de l'application
-COPY test /app/
+COPY TranServer /app/
 ENTRYPOINT ["sh", "/usr/local/init_serv.sh"]
