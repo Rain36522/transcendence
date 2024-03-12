@@ -5,6 +5,7 @@ echo "Preparing django server"
 #         sleep 1
 #         echo "Wait for postgresql..."
 # done
+python3 manage.py makemigrations
 python3 manage.py migrate
 python3 manage.py runserver
 echo "Start django server"
