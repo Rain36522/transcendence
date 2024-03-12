@@ -1,41 +1,41 @@
 {% load static %}
+{% load i18n %}
 
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Application Django</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <!-- Tu peux ajouter ici d'autres fichiers CSS ou des balises <link> -->
+    <title>{% block title %}Pouet Pouet{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </head>
 <body>
     <header>
-        <h1>Bienvenue sur Mon Application Django</h1>
-        <nav>
-            <ul>
-                <li><a href="{% url 'home' %}">Accueil</a></li>
-                {% if user.is_authenticated %}
-                    <li><a href="{% url 'logout' %}">Déconnexion</a></li>
-                {% else %}
-                    <li><a href="{% url 'login' %}">Connexion</a></li>
-                    <li><a href="{% url 'signup' %}">Inscription</a></li>
-                {% endif %}
-                <!-- Ajoute ici d'autres liens si nécessaire -->
-            </ul>
-        </nav>
+        <!-- Votre navbar ici -->
     </header>
 
-    <main>
+    <main class="container mt-4">
+        <!-- Ajout de l'affichage des messages ici -->
+        {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}" role="alert">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
         {% block content %}
         {% endblock %}
     </main>
 
-    <footer>
-        <p>&copy; 2024 Mon Application Django. Tous droits réservés.</p>
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container">
+            <span class="text-muted">&copy; 2024 Mon Application Django. Tous droits réservés.</span>
+        </div>
     </footer>
-
-    <script src="{% static 'js/script.js' %}"></script>
-    <!-- Tu peux ajouter ici d'autres fichiers JavaScript ou des balises <script> -->
 </body>
 </html>

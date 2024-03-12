@@ -1,18 +1,47 @@
 {% extends 'monapp/base.html' %}
 
 {% block content %}
-<h2>Dashboard</h2>
-<p>Nombre de victoires : {{ user.nombre_victoires }}</p>
-<p>Nombre de défaites : {{ user.nombre_defaites }}</p>
+<div class="container mt-5">
+    <h2>Tableau de bord</h2>
+    <p>Bienvenue sur votre tableau de bord, <strong>{{ user.username }}</strong>!</p>
+    <div class="my-3">
+        <p>Nombre de victoires : {{ user.nombre_victoires }}</p>
+        <p>Nombre de défaites : {{ user.nombre_defaites }}</p>
+    </div>
 
-<h3>Historique des résultats :</h3>
-<ul>
-    {% for match in user.historique_resultats %}
-        <li>
-            Victoire {{ match.0 }} à {{ match.1 }} contre
-            <a href="{% url 'profile' username=match.2 %}">{{ match.2 }}</a>
-        </li>
-    {% endfor %}
-</ul>
+    <h3>Historique des résultats</h3>
+    <button id="toggleHistory" class="btn btn-info">Réduire l'historique</button>
+    <table class="table" id="historiqueResultats">
+        <thead>
+            <tr>
+                <th>Points</th>
+                <th>Points Adverse</th>
+                <th>Adversaire</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for match in user.historique_resultats %}
+            <tr>
+                <td>{{ match.0 }}</td>
+                <td>{{ match.1 }}</td>
+                <td><a href="{% url 'profile' username=match.2 %}">{{ match.2 }}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
+<script>
+document.getElementById("toggleHistory").addEventListener("click", function() {
+    var table = document.getElementById("historiqueResultats");
+    var button = document.getElementById("toggleHistory");
+    if (table.style.display === "none") {
+        table.style.display = "";
+        button.textContent = "Réduire l'historique";
+    } else {
+        table.style.display = "none";
+        button.textContent = "Étendre l'historique";
+    }
+});
+</script>
 {% endblock %}

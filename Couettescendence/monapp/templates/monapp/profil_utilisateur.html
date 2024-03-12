@@ -1,9 +1,13 @@
 {% extends 'monapp/base.html' %}
 
 {% block content %}
-<h1>Profil de {{ user_profil.username }}</h1>
-
-<!-- Ajoute ici d'autres informations que tu souhaites afficher sur l'utilisateur -->
-<p>Email: {{ user_profil.email }}</p>
-
+<div class="container mt-5">
+    <h2>Profil de l'utilisateur</h2>
+    <p>Bienvenue, <strong>{{ user_profil.username }}</strong>!</p>
+    <div>
+        <p>Email : {{ user_profil.email }}</p>
+        <p>Nom : {{ user_profil.first_name }} {{ user_profil.last_name }}</p>
+        <p>Date d'inscription : {{ user_profil.date_joined }}</p>
+    </div>
+</div>
 {% endblock %}

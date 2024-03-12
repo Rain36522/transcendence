@@ -2,6 +2,14 @@
 {% extends 'monapp/base.html' %}
 
 {% block content %}
-<h2>Profil de l'Utilisateur</h2>
-<p>Bonjour, {{ user.username }} !</p>
+<div class="container mt-5">
+    <h2>Profil de l'utilisateur</h2>
+    <p>Bienvenue, <strong>{{ user.username }}</strong>!</p>
+    <div>
+        <p>Email : {{ user.email }}</p>
+        <p>Nom : {{ user.first_name }} {{ user.last_name }}</p>
+        <p>Date d'inscription : {{ user.date_joined }}</p>
+        <a href="{% url 'dashboard' %}" class="btn btn-primary">Voir le tableau de bord</a>
+    </div>
+</div>
 {% endblock %}

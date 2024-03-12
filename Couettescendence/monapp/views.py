@@ -6,6 +6,7 @@ from .forms import CustomUserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import get_user_model
+from django.contrib import messages
 
 def user_login(request):
     if request.method == "POST":
@@ -14,10 +15,11 @@ def user_login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('home')  # Redirige vers la page d'accueil après connexion
+            return redirect('home')
         else:
-            return HttpResponse("Échec de la connexion. Essayez à nouveau.")
-    return render(request, 'monapp/login.html')  # Affiche le formulaire de connexion pour une requête GET
+            messages.error(request, "Échec de la connexion. Essayez à nouveau.")
+    return render(request, 'monapp/login.html')
+
 
 
 class SignUpView(generic.CreateView):
