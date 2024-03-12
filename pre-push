@@ -8,7 +8,7 @@ make -C "$REPO_DIR"
 
 # Vérifie le code de retour de make
 if [ $? -ne 0 ]; then
-    echo "Erreur lors de la tentative de push. Veuillez la corriger."
+    echo "Erreur lors de la tentative de push. Veuillez la corriger. As tu demarrer docker avant de push?"
     exit 1
 fi
 
