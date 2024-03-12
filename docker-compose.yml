@@ -37,7 +37,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./test:/app  # Montage du répertoire du projet Django dans le conteneur
+      - ./TranServer:/app  # Montage du répertoire du projet Django dans le conteneur
     depends_on:
       postgresql:
         condition: service_healthy
