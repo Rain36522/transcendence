@@ -3,7 +3,7 @@ import ssl
 import websockets
 
 async def hello():
-    uri = "wss://127.0.0.1:443/ws"
+    uri = "wss://127.0.0.1:443/wsGame"
     ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
     async with websockets.connect(uri, ssl=ssl_context) as websocket:
         i = 0
