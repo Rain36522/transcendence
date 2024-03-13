@@ -14,9 +14,7 @@ RUN openssl genpkey -algorithm RSA -out /etc/nginx/ssl/nginx.key && openssl req 
 
 
 # Exposez les ports 80 et 443
-EXPOSE 80
 EXPOSE 443
-EXPOSE 8265
 
 # Commande par défaut pour démarrer Nginx
 CMD ["nginx", "-g", "daemon off;"]
