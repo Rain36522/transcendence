@@ -11,6 +11,7 @@ WORKDIR /app
 # Installez les dépendances Python
 RUN pip3 install django
 RUN pip3 install psycopg2-binary
+RUN pip3 install websockets
 
 COPY Django/tool/init_serv.sh /usr/local/init_serv.sh
 RUN chmod +x /usr/local/init_serv.sh
