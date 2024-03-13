@@ -34,9 +34,9 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'user',
     'game',
     'chat',
-    'user',
     'tournament',
     'django.contrib.admin',
     'django.contrib.auth',
