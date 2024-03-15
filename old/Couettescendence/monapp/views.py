@@ -50,6 +50,21 @@ def ajouter_resultat(request, points_joueur, points_ennemi, username_ennemi):
     utilisateur.save()
 
 
+def pong_game(request):
+    players_amount = 2
+
+    # will be later sent as arguments
+    contexte = {
+        'ball_size': 8,
+        'paddle_size': 20,
+        'players_amount': 2,
+        'player_id': 'j2',
+    }
+    if (players_amount == 2):
+        return render(request, 'monapp/pong2.html', contexte)
+    else:
+        return render(request, 'monapp/pong4.html', contexte)
+
 
 def home(request):
     return HttpResponse('Bienvenue sur la page d\'accueil !')

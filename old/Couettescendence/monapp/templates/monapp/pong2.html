@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<title>Jeu de Pong</title>
+		<link rel="stylesheet" href="{% static 'css/pong.css' %}">
+	</head>
+
+	<body>
+		<div id="player" data-player="{{ player_id }}"></div>
+
+		<div id="scores">
+			<div id="score1" class="score">Score J1: 0</div>
+			<div id="score2" class="score">Score J2: 0</div>
+		</div>
+
+		<div id="pong-game">
+			<div id="ball" data-size="{{ ball_size }}"></div>
+			<div id="paddle1" class="paddle" data-size="{{ paddle_size }}"></div>
+			<div id="paddle2" class="paddle" data-size="{{ paddle_size }}"></div>
+		</div>
+
+		<script src="{% static 'js/pong.js' %}"></script>
+	</body>
+</html>
