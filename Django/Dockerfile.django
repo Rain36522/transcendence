@@ -12,6 +12,8 @@ WORKDIR /app
 RUN pip3 install django
 RUN pip3 install psycopg2-binary
 RUN pip3 install websockets
+RUN pip3 install djangorestframework
+
 
 COPY Django/tool/init_serv.sh /usr/local/init_serv.sh
 RUN chmod +x /usr/local/init_serv.sh
