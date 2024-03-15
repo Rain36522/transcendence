@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form method="post">
+	{% csrf_token %}
+	{{ invite_form.as_p }}
+	<input type="hidden" name="action" value="invite">
+	<button type="submit">Invite</button>
+  </form>
+  
+  <form method="post">
+	{% csrf_token %}
+	{{ accept_form.as_p }}
+	<input type="hidden" name="action" value="accept">
+	<button type="submit">Accept Invite</button>
+  </form>
+{% endblock %}
