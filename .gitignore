@@ -1,7 +1,5 @@
 .DS_Store
 .vscode/settings.json
 pyvenv
-pyvenv2
 .env
 __pycache__
-**/migrations/
