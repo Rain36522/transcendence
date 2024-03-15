@@ -5,6 +5,7 @@ from .views import SignUpView
 from .views import profile
 from .views import dashboard
 from .views import profil_utilisateur
+from .views import pong_game
 
 
 urlpatterns = [
@@ -15,4 +16,5 @@ urlpatterns = [
     path('profile/', profile, name='profile'),
     path('profile/dashboard/', dashboard, name='dashboard'),
     path('profile/<str:username>/', views.profil_utilisateur, name='profile'),
+    path('pong/', views.pong_game)
 ]

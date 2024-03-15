@@ -26,6 +26,8 @@ SECRET_KEY = 'django-insecure-g(o-r1cteuux+4y$-uqpznm$-0t7e_xv6-+289oae(w+de5&lj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+STATIC_URL = '/static/'
+
 ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'monapp.CustomUser'
