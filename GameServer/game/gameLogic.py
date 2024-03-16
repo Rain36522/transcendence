@@ -22,7 +22,7 @@ class gameLogic:
             user4 = str(self.gameSet.get("user4", ""))
             for message in messages:
                 if user1 and message.startswith(str(user1)):
-                    message = message[len((user1)):]
+                    message = message[len(user1):]
                     msg.append(message)
                 elif user2 and message.startswith(user2):
                     message = message[len(user2):]
