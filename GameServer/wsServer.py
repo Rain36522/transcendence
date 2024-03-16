@@ -82,12 +82,12 @@ class WebSocketServer:
         self.addUser(websocket, gameid, user)
         try:
             async for message in websocket:
-                await self.execUserMsg(message, gameid)
+                await self.execUserMsg(message, gameid, user)
         finally:
             #send to game instance user disconnected.
             print("user disconnect", file=sys.stderr)
             if gameid in self.clients[1]:
-                await self.clients[1][gameid].send("disconnected=" + user)
+                await self.clients[1][gameid].send((user + "disconnected"))
             self.rmUser(websocket, gameid)
 
     def addUser(self, websocket, gameid, user):
@@ -102,21 +102,20 @@ class WebSocketServer:
     
     def rmUser(self, websocket, gameid):
         if gameid in self.clients[2]:
-            for i in self.clients[2][gameid]:
-                if i[1] == websocket:
-                    self.clients[2][gameid].discard(i)
+            for user in self.clients[2][gameid]:
+                if user[1] == websocket:
+                    self.clients[2][gameid].discard(user)
                     break
             if not len(self.clients[2][gameid]):
                 del self.clients[2][gameid]
 
 
-    async def execUserMsg(self, message, gameid):
+    async def execUserMsg(self, message, gameid, user):
         if gameid in self.clients[1]:
-            await self.clients[1][gameid].send(message)
-
+            await self.clients[1][gameid].send((user + message))
 
 async def main():
-    os.system("python3 game/game.py &") # launch game instance. detached mode
+    # os.system("python3 game/game.py &") # launch game instance. detached mode
     ws = WebSocketServer("0.0.0.0", 8001)
     ws.run()
     while True:

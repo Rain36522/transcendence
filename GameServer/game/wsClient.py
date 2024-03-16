@@ -18,10 +18,9 @@ class WebSocketClient:
     char 1 : u = up, d = down
     """
     def getMsg(self):
-        import json
         msg = []
         for message in self.messages:
-            msg.append((message[0], message[1]))
+            msg.append(message)
         self.messages.clear()
         return msg
 
