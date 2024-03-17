@@ -31,8 +31,8 @@ class gameLogic:
                 elif msg[0] == "4":
                     self.game["p4"] = self.doCmd(self.game["p4"], msg[1])
             if i:
-                self.game["ballx"] = 10
-                self.game["bally"] = 10
+                self.game["ballx"] = 0.2
+                self.game["bally"] = 0.2
                 i = False
             else:
                 self.game["ballx"] = 0
@@ -45,7 +45,7 @@ class gameLogic:
     
     def doCmd(self, p, data):
         if data == "u":
-            p += 1
+            p += 0.01
         elif data == "d":
-            p -= 1
+            p -= 0.01
         return p
