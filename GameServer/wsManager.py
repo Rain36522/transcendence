@@ -4,12 +4,12 @@ import wsServer
 import asyncio
 
 
-if __name__ == "__main":
-    django = "ws://127.0.0.1:8000"
+if __name__ == "__main__":
+    django = "ws://daphne:8002"
     Serveur = WebSocketServer("0.0.0.0", 8001)
     djangoCli = DjangoCli(Serveur)
 
-    asyncio.get_event_loop().run_until_complete(djangoCli.connectDjango())
+    asyncio.get_event_loop().run_until_complete(djangoCli.connectDjango(django))
 
     asyncio.get_event_loop().create_task(Serveur.start_server())
     asyncio.get_event_loop().create_task(djangoCli.receive_messages())
@@ -32,8 +32,8 @@ if __name__ == "__main":
 
     # Lancement de la boucle d'événements asyncio pour attendre la connexion
     # Création d'une tâche pour exécuter une autre fonction en parallèle
-    gameLogicInstance = gameLogic(client, gameSettings, game)
-    asyncio.get_event_loop().create_task(gameLogicInstance.gameInput())
+    # gameLogicInstance = gameLogic(client, gameSettings, game)
+    # asyncio.get_event_loop().create_task(gameLogicInstance.gameInput())
 
     # Lancement de la boucle d'événements asyncio
-    asyncio.get_event_loop().run_forever()
+    # asyncio.get_event_loop().run_forever()

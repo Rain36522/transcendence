@@ -9,11 +9,11 @@ class DjangoCli:
         self.wsServer = wsServer
 
 
-    async def connectDjango(self):
+    async def connectDjango(self, url):
         self.websocket = await websockets.connect(url)
 
         # Coroutine asynchrone pour lire les messages de manière non bloquante
-    async def receive_messages():
+    async def receive_messages(self):
         i = 0
         while True:
             try:
