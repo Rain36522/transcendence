@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: pudry <pudry@student.42.fr>                +#+  +:+       +#+         #
+#    By: marvin <marvin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/08 12:20:28 by pudry             #+#    #+#              #
-#    Updated: 2024/03/13 14:56:50 by pudry            ###   ########.fr        #
+#    Updated: 2024/03/16 13:38:07 by marvin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,8 +34,6 @@ run:
 	docker compose -f  ${DOCKER_COMPOSE} -p ${NAME} up --build --detach
 
 stop:
-	-docker stop $$(docker ps -qa)
-	-docker rm $$(docker ps -qa)
 	docker compose -f ${DOCKER_COMPOSE} -p ${NAME} down
 
 delete:
