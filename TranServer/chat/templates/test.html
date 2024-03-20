@@ -13,11 +13,14 @@
 
         function connectWebSocket() {
             // Replace 'ws://localhost:8001/ws/your_url/' with the actual WebSocket endpoint URL
-            ws = new WebSocket('ws://localhost:8001/ws/your_url/');
+            ws = new WebSocket('wss://127.0.0.1/ws/your_url/');
 
             ws.onopen = function(event) {
                 console.log('WebSocket connected');
-                alert('WebSocket connected!');
+                var message = {
+                    "message": "hello there"
+                };
+                ws.send(JSON.stringify(message));
             };
 
             ws.onmessage = function(event) {
@@ -26,6 +29,11 @@
 
             ws.onclose = function(event) {
                 console.log('WebSocket disconnected');
+            };
+
+            ws.onerror = function(event) {
+                console.error('WebSocket error:', event);
+                // Handle the error as needed
             };
         }
     </script>

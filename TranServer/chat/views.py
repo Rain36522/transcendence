@@ -92,6 +92,9 @@ class ChatListView(APIView):
 def chat_view(request):
     return render(request, 'chat_page.html')
 
+def ws_view(request):
+    return render(request, 'test.html')
+
 class MessageListView(APIView):
     """API endpoint for messages
 
