@@ -6,7 +6,7 @@
 #    By: pudry <pudry@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/08 12:20:28 by pudry             #+#    #+#              #
-#    Updated: 2024/03/21 08:34:00 by pudry            ###   ########.fr        #
+#    Updated: 2024/03/21 08:56:03 by pudry            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,8 +31,7 @@ install:
 	./install_dep.zsh
 
 run:
-	docker compose -f  ${DOCKER_COMPOSE} -p ${NAME} up --build
-# docker compose -f  ${DOCKER_COMPOSE} -p ${NAME} up --build --detach
+	docker compose -f  ${DOCKER_COMPOSE} -p ${NAME} up --build --detach
 
 stop:
 	-docker stop $$(docker ps -qa)
