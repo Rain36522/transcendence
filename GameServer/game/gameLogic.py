@@ -17,11 +17,13 @@ class gameLogic:
         await self.client.sendMsg(self.game)
 
     async def gameInput(self):
+        print("client message")
         i = False
         while True:
             messages = self.getMsgs()
 
             for msg in messages:
+                print(msg)
                 if msg[0] == "1":
                     self.game["p1"] = self.doCmd(self.game["p1"], msg[1])
                 elif msg[0] == "2":

@@ -52,7 +52,7 @@ def ajouter_resultat(request, points_joueur, points_ennemi, username_ennemi):
 
 
 def pong_game(request):
-    players_amount = 2
+    players_amount = 4
 
     contexte = {
         'ball_size': 0.1,
