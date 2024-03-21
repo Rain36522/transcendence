@@ -6,16 +6,17 @@ from wsServer import WebSocketServer
 from time import sleep
 
 class DjangoCli:
-    def __init__(self, wsServer):
+    def __init__(self, wsServer, DjangoUrl):
         self.websocket = None
+        self.DjangoUrl = DjangoUrl
         self.wsServer = wsServer
 
 
-    async def connectDjango(self, url):
+    async def connectDjango(self):
         i = 0
         while i <= 10: 
             try:
-                self.websocket = await websockets.connect(url)
+                self.websocket = await websockets.connect(self.DjangoUrl)
                 print("GameServ, connected to Daphne.", file=sys.stderr)
                 break
             except:
@@ -23,7 +24,8 @@ class DjangoCli:
                 sleep(1)
                 i += 1
         if i > 10:
-            print("Client fail 10x the connection with daphne ws.", url , file=sys.stderr)
+            print("Client fail 10x the connection with daphne ws.", self.DjangoUrl , file=sys.stderr)
+            exit(1)
 
         # Coroutine asynchrone pour lire les messages de manière non bloquante
     async def receive_messages(self):
@@ -39,7 +41,7 @@ class DjangoCli:
                 if i == 5:
                     break
                 else:
-                    self.connectDjango()
+                    await self.connectDjango()
 
     async def sendDjangoMsg(self):
         while True:
@@ -47,7 +49,7 @@ class DjangoCli:
             if messages:
                 for msg in messages:
                     await self.websocket.send(msg)
-            asyncio.sleep(0.1)
+            await asyncio.sleep(0.1)
 
 
     async def close_connection(self):
