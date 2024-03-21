@@ -10,19 +10,19 @@ from time import sleep
 
 gameSettings = None
 #dictionary communication bitween serveur and client.
-game = {
-	"ballx" : 0,
-	"bally" : 0,
-	"p1" : 0,
-	"p2" : 0,
-	"p3" : 0,
-	"p4" : 0,
-	"state" : "pause",
-	"score1" : 0,
-	"score2" : 0,
-	"score3" : 0,
-	"score4" : 0
-}
+    game = {
+        "ballx" : 0,
+        "bally" : 0,
+        "p1" : 0,
+        "p2" : 0,
+        "p3" : 0,
+        "p4" : 0,
+        "state" : "pause",
+        "score1" : 0,
+        "score2" : 0,
+        "score3" : 0,
+        "score4" : 0
+    }
 
 # Exemple d'utilisation du client WebSocket avec asyncio
 if __name__ == "__main__":

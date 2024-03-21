@@ -18,10 +18,12 @@ class gameLogic:
 
     async def gameInput(self):
         print("client message")
-        i = False
+        self.game["ballx"] = 0
+        self.game["bally"] = 0
+        i = 0.013
+        j = 0.025
         while True:
             messages = self.getMsgs()
-
             for msg in messages:
                 print(msg)
                 if msg[0] == "1":
@@ -32,22 +34,30 @@ class gameLogic:
                     self.game["p3"] = self.doCmd(self.game["p3"], msg[1])
                 elif msg[0] == "4":
                     self.game["p4"] = self.doCmd(self.game["p4"], msg[1])
-            if i:
-                self.game["ballx"] = 0.2
-                self.game["bally"] = 0.2
-                i = False
-            else:
-                self.game["ballx"] = 0
-                self.game["bally"] = 0
-                i = True
+            
+            self.game["ballx"] += i
+            self.game["bally"] += j
+
+            if self.game["ballx"] >= 0.5:
+                i = -0.013
+                self.game["ballx"] = 0.5
+            elif self.game["ballx"] <= -0.5:
+                i = 0.013
+                self.game["ballx"] = -0.5
+            if self.game["bally"] >= 0.5:
+                j = -0.025
+                self.game["bally"] = 0.5
+            elif self.game["bally"] <= -0.5:
+                j = 0.025
+                self.game["bally"] = -0.5
             await self.sendMsg()
-            await asyncio.sleep(0.1)
+            await asyncio.sleep(0.05)
                     
             
     
     def doCmd(self, p, data):
         if data == "u":
-            p += 0.01
+            p += 0.025
         elif data == "d":
-            p -= 0.01
+            p -= 0.025
         return p

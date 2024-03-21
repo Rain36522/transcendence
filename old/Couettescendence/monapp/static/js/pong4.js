@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+
     /*‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾*\
     ||======================[first initialisation]======================||
     \*__________________________________________________________________*/
@@ -29,33 +30,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Set ball and paddles size
     let ballDiameter = gameHeight * 0.03;
-    let paddleWidth = gameHeight * 0.025;
+
+    let paddleWidth = gameHeight * 0.02;
     let paddleHeight = gameHeight * 0.2;
     let paddleOffset = gameWidth * 0.01;
+
+    //pictures for ball, background and field
+    let isImage = true; // This switch controls if images are used
+    const fieldImage = new Image();
+    const backgroundImage = new Image();
+    const ballImage = new Image();
+
+    fieldImage.src = 'https://i.ibb.co/2KnGYRK/4playerspong.png'; // Adjust path
+    backgroundImage.src = 'https://i1.sndcdn.com/avatars-000894638827-qr5jsd-t240x240.jpg'; // Adjust path
+    ballImage.src = 'https://i1.sndcdn.com/avatars-000894638827-qr5jsd-t240x240.jpg'; // Adjust path
 
     // Initialize start positions and score
     let scorePlayer1 = 0;
     let scorePlayer2 = 0;
+    let scorePlayer3 = 0;
+    let scorePlayer4 = 0;
     let paddlePositionPlayer1 = 0;
     let paddlePositionPlayer2 = 0;
-    let paddlePositionPlayer3 = 0.3;
-    let paddlePositionPlayer4 = -0.3;
+    let paddlePositionPlayer3 = 0;
+    let paddlePositionPlayer4 = 0;
     let ballPosition = { x: 0, y: 0 };
 
     // Player information
-    let playerID = '1'; // Can be '1', '2', '3' or '4'
-    let player1Name = 'Ping';
-    let player2Name = 'Pong';
-
-    // Set pictures for field and ball if needed
-    let isPicture = true;
-    let backgroundImage = new Image();
-    let ballImage = new Image();
-    if (isPicture) {
-        backgroundImage.src = 'https://cdn.discordapp.com/attachments/530838799626928139/1218504331242770472/JPEG_20180803_123030.jpg'; // Background image path
-        ballImage.src = 'path/to/your/ball.png'; // Ball image path
-    }
-
+    let playerID = '3'; // Can be 'j1', 'j2', 'j3' or 'j4'
+    let player1Name = 'Shrek 1';
+    let player2Name = 'Fionna 2';
+    let player3Name = 'Donkey 3';
+    let player4Name = 'Dragon 4';
 
     // WebSocket setup
     let ws;
@@ -71,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
             {console.log("WebSocket connection established.");};
         ws.onmessage = (event) => {
             // parsing
-            console.log("drawing game");
+            console.log(event.data);
             const data = JSON.parse(event.data);
         
             // ball update
@@ -80,9 +86,13 @@ document.addEventListener('DOMContentLoaded', () => {
             // update paddles
             paddlePositionPlayer1 = data.p1;
             paddlePositionPlayer2 = data.p2;
+            paddlePositionPlayer3 = data.p3;
+            paddlePositionPlayer4 = data.p4;
             // update score
             scorePlayer1 = data.score1;
             scorePlayer2 = data.score2;
+            scorePlayer3 = data.score3;
+            scorePlayer4 = data.score4;
             drawGame();
         };
         ws.onclose = () =>
@@ -99,17 +109,14 @@ document.addEventListener('DOMContentLoaded', () => {
     \*__________________________________________________________________*/
     // stores keys tatus (pressed/released)
     const keysPressed = {};
-
-    let lastSendTime = 0;
     //interval in ms
-    const sendInterval = 20;
+    const sendInterval = 2;
+    let lastSendTime = 0;
 
     function throttledSendKeyStatus() {
         const now = Date.now();
-        if (now - lastSendTime >= sendInterval) {
-            sendKeyStatus();
-            lastSendTime = now;
-        }
+        if (now - lastSendTime >= sendInterval)
+            {sendKeyStatus(); lastSendTime = now;}
     }
 
     document.addEventListener('keydown', (event) => {
@@ -123,15 +130,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function sendKeyStatus() {
-        if (!ws || ws.readyState !== WebSocket.OPEN) {
-            console.log("WebSocket is not connected.");
-            return;
-        }
+        if (!ws || ws.readyState !== WebSocket.OPEN)
+            {console.log("WebSocket is not connected."); return;}
         // check state
-        if (keysPressed["w"]) ws.send(playerID + "u");
-        if (keysPressed["s"]) ws.send(playerID + "d");
-        if (keysPressed["ArrowUp"]) ws.send(2 + "u");
-        if (keysPressed["ArrowDown"]) ws.send(2 + "d");
+        if (keysPressed["ArrowUp"]) ws.send(playerID + "u");
+        if (keysPressed["ArrowDown"]) ws.send(playerID + "d");
+        console.log("sending");
     }
 
 
@@ -150,21 +154,21 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.rotate(Math.PI); // Rotate 180 degrees
             ctx.translate(-gameWidth / 2, -gameHeight / 2); // Move back to the original position
         } else if (playerID === '3') {
-            ctx.save(); // Save the current state
-            ctx.translate(gameWidth / 2, gameHeight / 2); // Move to the center of the canvas
-            ctx.rotate(Math.PI / 2); // Rotate 90 degrees
-            ctx.translate(-gameHeight / 2, -gameWidth / 2); // Move back to the original position
+            ctx.save();
+            ctx.translate(gameWidth / 2, gameHeight / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.translate(-gameHeight / 2, -gameWidth / 2);
         } else if (playerID === '4') {
-            ctx.save(); // Save the current state
-            ctx.translate(gameWidth / 2, gameHeight / 2); // Move to the center of the canvas
-            ctx.rotate(-Math.PI / 2); // Rotate -90 degrees
-            ctx.translate(-gameHeight / 2, -gameWidth / 2); // Move back to the original position
+            ctx.save();
+            ctx.translate(gameWidth / 2, gameHeight / 2);
+            ctx.rotate(Math.PI / 2);
+            ctx.translate(-gameHeight / 2, -gameWidth / 2);
         }
 
-        // Draw field either with color or image
-        if (isPicture && backgroundImage.complete)
-            ctx.drawImage(backgroundImage, 0, 0, gameWidth, gameHeight);
-        else {
+        // Draw field
+        if (isImage) {
+            ctx.drawImage(fieldImage, 0, 0, gameWidth, gameHeight);
+        } else {
             ctx.fillStyle = '#000';
             ctx.fillRect(0, 0, gameWidth, gameHeight);
         }
@@ -178,42 +182,51 @@ document.addEventListener('DOMContentLoaded', () => {
         const paddleYPlayer2 = (gameHeight * (paddlePositionPlayer2 * -1 + 0.5)) - (paddleHeight / 2);
         const paddleXPlayer3 = (gameWidth * (paddlePositionPlayer3 * -1 + 0.5)) - (paddleHeight / 2);
         const paddleXPlayer4 = (gameWidth * (paddlePositionPlayer4 * -1 + 0.5)) - (paddleHeight / 2);
-
         ctx.fillStyle = '#FFF';
         ctx.fillRect(paddleOffset, paddleYPlayer1, paddleWidth, paddleHeight); // Player1
         ctx.fillRect(gameWidth - paddleWidth - paddleOffset, paddleYPlayer2, paddleWidth, paddleHeight); // Player2
         ctx.fillRect(paddleXPlayer3, paddleOffset, paddleHeight, paddleWidth); // Player3
         ctx.fillRect(paddleXPlayer4, gameHeight - paddleWidth - paddleOffset, paddleHeight, paddleWidth); // Player4
 
-        // Draw ball either with color or image
-        if (isPicture && ballImage.complete)
+        // Draw ball
+        if (isImage) {
+            ctx.beginPath();
+            ctx.arc(gameWidth * (ballPosition.x + 0.5), gameHeight * (ballPosition.y + 0.5), ballDiameter / 2, 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.clip(); // Clips a circular area to draw the ball image in
             ctx.drawImage(ballImage, gameWidth * (ballPosition.x + 0.5) - ballDiameter / 2, gameHeight * (ballPosition.y + 0.5) - ballDiameter / 2, ballDiameter, ballDiameter);
-        else {
+            ctx.restore(); // Restores the context to draw the next frame cleanly
+        } else {
             ctx.beginPath();
             ctx.arc(gameWidth * (ballPosition.x + 0.5), gameHeight * (ballPosition.y + 0.5), ballDiameter / 2, 0, Math.PI * 2);
             ctx.fill();
         }
 
         // Restore the original state if the canvas was rotated for player 2
-        if (playerID === '2')
+        if (playerID === '2' || playerID === '3' || playerID === '4')
             ctx.restore();
 
         // Update and display the scoreboard based on playerID
-        scoreBoard.innerHTML = `${player1Name}: ${scorePlayer1} - ${player2Name}: ${scorePlayer2}`;
-        if (playerID === '2') {
-            // Swap the score display for player 2 to maintain left-right orientation
-            scoreBoard.innerHTML = `${player2Name}: ${scorePlayer2} - ${player1Name}: ${scorePlayer1}`;
+        if (playerID === '1') {
+            scoreBoard.innerHTML = `${player3Name}: ${scorePlayer3}<br>${player1Name}: ${scorePlayer1} - ${player2Name}: ${scorePlayer2}<br>${player4Name}: ${scorePlayer4}`;
+        } else if (playerID === '2') {
+            scoreBoard.innerHTML = `${player4Name}: ${scorePlayer4}<br>${player2Name}: ${scorePlayer2} - ${player1Name}: ${scorePlayer1}<br>${player3Name}: ${scorePlayer3}`;
+        } else if (playerID === '3') {
+            scoreBoard.innerHTML = `${player1Name}: ${scorePlayer1}<br>${player3Name}: ${scorePlayer3} - ${player4Name}: ${scorePlayer4}<br>${player2Name}: ${scorePlayer2}`;
+        } else if (playerID === '4') {
+            scoreBoard.innerHTML = `${player2Name}: ${scorePlayer2}<br>${player4Name}: ${scorePlayer4} - ${player3Name}: ${scorePlayer3}<br>${player1Name}: ${scorePlayer1}`;
         }
     }
 
     drawGame();
 
-    //resize handling
-    window.addEventListener('resize', () => {
-        gameWidth = window.innerWidth * 0.8; // Adjust size for chat or other UI elements
-        gameHeight = gameWidth / 2;
-        ballDiameter = gameHeight * 0.03; // Update sizes based on new dimensions
-        paddleOffset = gameWidth * 0.02;
-        drawGame(); // Redraw game with new dimensions
-    });
+    //resize handl
+});
+
+window.addEventListener('resize', () => {
+    gameWidth = window.innerWidth * 0.8; // Adjust size for chat or other UI elements
+    gameHeight = gameWidth / 2;
+    ballDiameter = gameHeight * 0.03; // Update sizes based on new dimensions
+    paddleOffset = gameWidth * 0.02;
+    drawGame(); // Redraw game with new dimensions
 });
