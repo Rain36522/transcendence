@@ -7,13 +7,15 @@ import asyncio
 if __name__ == "__main__":
     django = "ws://daphne:8002"
     Serveur = WebSocketServer("0.0.0.0", 8001)
-    djangoCli = DjangoCli(Serveur)
+    djangoCli = DjangoCli(Serveur, django)
 
-    asyncio.get_event_loop().run_until_complete(djangoCli.connectDjango(django))
 
     asyncio.get_event_loop().create_task(Serveur.start_server())
+    asyncio.get_event_loop().run_until_complete(djangoCli.connectDjango())
+    print("Django connection completed")
     asyncio.get_event_loop().create_task(djangoCli.receive_messages())
     asyncio.get_event_loop().create_task(djangoCli.sendDjangoMsg())
+    asyncio.get_event_loop().run_forever()
 
 
 
