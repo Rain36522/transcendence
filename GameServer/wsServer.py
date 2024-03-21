@@ -18,8 +18,8 @@ class WebSocketServer:
             await self.UserMsg(websocket, path)
 
     async def start_server(self):
-        print("Server is runing in : " + self.host + ":" + str(self.port), file=sys.stderr)
         async with websockets.serve(self.handle_client, self.host, self.port):
+            print("Server is runing in : " + self.host + ":" + str(self.port), file=sys.stderr)
             await asyncio.Future()
 
     def run(self):
@@ -102,12 +102,12 @@ class WebSocketServer:
         if gameid in self.clients[1]:
             await self.clients[1][gameid].send((user + message))
 
-async def main():
-    # os.system("python3 game/game.py &") # launch game instance. detached mode
-    ws = WebSocketServer("0.0.0.0", 8001)
-    ws.run()
-    while True:
-        await asyncio.sleep(0.1)
+# async def main():
+#     # os.system("python3 game/game.py &") # launch game instance. detached mode
+#     ws = WebSocketServer("0.0.0.0", 8001)
+#     ws.run()
+#     while True:
+#         await asyncio.sleep(0.1)
 
-if __name__ == "__main__":
-    asyncio.run(main())
+# if __name__ == "__main__":
+#     asyncio.run(main())

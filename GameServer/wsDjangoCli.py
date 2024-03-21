@@ -1,7 +1,9 @@
 import asyncio
 import websockets
 import os
+import sys
 from wsServer import WebSocketServer
+from time import sleep
 
 class DjangoCli:
     def __init__(self, wsServer):
@@ -10,7 +12,18 @@ class DjangoCli:
 
 
     async def connectDjango(self, url):
-        self.websocket = await websockets.connect(url)
+        i = 0
+        while i <= 10: 
+            try:
+                self.websocket = await websockets.connect(url)
+                print("GameServ, connected to Daphne.", file=sys.stderr)
+                break
+            except:
+                print("Server daphne not available.", file=sys.stderr)
+                sleep(1)
+                i += 1
+        if i > 10:
+            print("Client fail 10x the connection with daphne ws.", url , file=sys.stderr)
 
         # Coroutine asynchrone pour lire les messages de manière non bloquante
     async def receive_messages(self):

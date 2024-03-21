@@ -10,7 +10,7 @@ if __name__ == "__main__":
     djangoCli = DjangoCli(Serveur)
 
     asyncio.get_event_loop().run_until_complete(djangoCli.connectDjango(django))
-
+    
     asyncio.get_event_loop().create_task(Serveur.start_server())
     asyncio.get_event_loop().create_task(djangoCli.receive_messages())
     asyncio.get_event_loop().create_task(djangoCli.sendDjangoMsg())
