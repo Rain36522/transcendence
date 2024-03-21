@@ -15,4 +15,4 @@ RUN pip3 install websockets
 
 
 # Commande par défaut à exécuter lorsque le conteneur démarre
-CMD ["python", "wsServer.py"]
+CMD ["python", "wsManager.py"]

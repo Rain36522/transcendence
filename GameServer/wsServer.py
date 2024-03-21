@@ -18,8 +18,8 @@ class WebSocketServer:
             await self.UserMsg(websocket, path)
 
     async def start_server(self):
-        print("Server is runing in : " + self.host + ":" + str(self.port), file=sys.stderr)
         async with websockets.serve(self.handle_client, self.host, self.port):
+            print("Server is runing in : " + self.host + ":" + str(self.port), file=sys.stderr)
             await asyncio.Future()
 
     def run(self):
