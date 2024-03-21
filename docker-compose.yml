@@ -45,6 +45,24 @@ services:
      - .env
     stop_grace_period: 2s
 
+  daphne:
+    container_name: daphne
+    networks:
+        - Transcendence
+    build: 
+      context: .
+      dockerfile: ./Daphne/Dockerfile.daphne  # Assure-toi d'avoir un Dockerfile pour Django
+    ports:
+      - 8002:8002
+    volumes:
+      - ./TranServer:/app  # Montage du répertoire du projet Django dans le conteneur
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    env_file:
+     - .env
+    stop_grace_period: 2s
+
   nginx:
     container_name: nginx
     networks:
