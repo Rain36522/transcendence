@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     canvasContainer.style.alignItems = 'center';
     const canvas = document.getElementById('pongCanvas');
     canvasContainer.appendChild(canvas); // Add the canvas to the container
-    const ctx = canvas.getContext('2d');
+    const CanvasContext = canvas.getContext('2d');
     const scoreBoard = document.createElement('div'); // Creating a separate scoreboard
     canvasContainer.insertBefore(scoreBoard, canvas); // Insert scoreboard above canvas in the container
 
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let paddleOffset = gameWidth * 0.01;
 
     //pictures for ball, background and field
-    let isImage = true; // This switch controls if images are used
+    let isImage = false; // This switch controls if images are used
     const fieldImage = new Image();
     const backgroundImage = new Image();
     const ballImage = new Image();
@@ -50,14 +50,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let scorePlayer2 = 0;
     let scorePlayer3 = 0;
     let scorePlayer4 = 0;
-    let paddlePositionPlayer1 = 0;
-    let paddlePositionPlayer2 = 0;
+    let paddlePositionPlayer1 = 0.5;
+    let paddlePositionPlayer2 = -0.5;
     let paddlePositionPlayer3 = 0;
-    let paddlePositionPlayer4 = 0;
+    let paddlePositionPlayer4 = -0.3;
     let ballPosition = { x: 0, y: 0 };
 
     // Player information
-    let playerID = '3'; // Can be 'j1', 'j2', 'j3' or 'j4'
+    let playerID = '4'; // Can be 'j1', 'j2', 'j3' or 'j4'
     let player1Name = 'Shrek 1';
     let player2Name = 'Fionna 2';
     let player3Name = 'Donkey 3';
@@ -149,62 +149,62 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // If playerID is 'j2', rotate the canvas for the player's perspective
         if (playerID === '2') {
-            ctx.save(); // Save the current state
-            ctx.translate(gameWidth / 2, gameHeight / 2); // Move to the center of the canvas
-            ctx.rotate(Math.PI); // Rotate 180 degrees
-            ctx.translate(-gameWidth / 2, -gameHeight / 2); // Move back to the original position
+            CanvasContext.save(); // Save the current state
+            CanvasContext.translate(gameWidth / 2, gameHeight / 2); // Move to the center of the canvas
+            CanvasContext.rotate(Math.PI); // Rotate 180 degrees
+            CanvasContext.translate(-gameWidth / 2, -gameHeight / 2); // Move back to the original position
         } else if (playerID === '3') {
-            ctx.save();
-            ctx.translate(gameWidth / 2, gameHeight / 2);
-            ctx.rotate(-Math.PI / 2);
-            ctx.translate(-gameHeight / 2, -gameWidth / 2);
+            CanvasContext.save();
+            CanvasContext.translate(gameWidth / 2, gameHeight / 2);
+            CanvasContext.rotate(-Math.PI / 2);
+            CanvasContext.translate(-gameHeight / 2, -gameWidth / 2);
         } else if (playerID === '4') {
-            ctx.save();
-            ctx.translate(gameWidth / 2, gameHeight / 2);
-            ctx.rotate(Math.PI / 2);
-            ctx.translate(-gameHeight / 2, -gameWidth / 2);
+            CanvasContext.save();
+            CanvasContext.translate(gameWidth / 2, gameHeight / 2);
+            CanvasContext.rotate(Math.PI / 2);
+            CanvasContext.translate(-gameHeight / 2, -gameWidth / 2);
         }
 
         // Draw field
         if (isImage) {
-            ctx.drawImage(fieldImage, 0, 0, gameWidth, gameHeight);
+            CanvasContext.drawImage(fieldImage, 0, 0, gameWidth, gameHeight);
         } else {
-            ctx.fillStyle = '#000';
-            ctx.fillRect(0, 0, gameWidth, gameHeight);
+            CanvasContext.fillStyle = '#000';
+            CanvasContext.fillRect(0, 0, gameWidth, gameHeight);
         }
         // Add field border
-        ctx.strokeStyle = '#FFF';
-        ctx.lineWidth = 5;
-        ctx.strokeRect(0, 0, gameWidth, gameHeight);
+        CanvasContext.strokeStyle = '#FFF';
+        CanvasContext.lineWidth = 5;
+        CanvasContext.strokeRect(0, 0, gameWidth, gameHeight);
 
         // Convert paddles position and draw paddles
         const paddleYPlayer1 = (gameHeight * (paddlePositionPlayer1 * -1 + 0.5)) - (paddleHeight / 2);
         const paddleYPlayer2 = (gameHeight * (paddlePositionPlayer2 * -1 + 0.5)) - (paddleHeight / 2);
         const paddleXPlayer3 = (gameWidth * (paddlePositionPlayer3 * -1 + 0.5)) - (paddleHeight / 2);
         const paddleXPlayer4 = (gameWidth * (paddlePositionPlayer4 * -1 + 0.5)) - (paddleHeight / 2);
-        ctx.fillStyle = '#FFF';
-        ctx.fillRect(paddleOffset, paddleYPlayer1, paddleWidth, paddleHeight); // Player1
-        ctx.fillRect(gameWidth - paddleWidth - paddleOffset, paddleYPlayer2, paddleWidth, paddleHeight); // Player2
-        ctx.fillRect(paddleXPlayer3, paddleOffset, paddleHeight, paddleWidth); // Player3
-        ctx.fillRect(paddleXPlayer4, gameHeight - paddleWidth - paddleOffset, paddleHeight, paddleWidth); // Player4
+        CanvasContext.fillStyle = '#FFF';
+        CanvasContext.fillRect(paddleOffset, paddleYPlayer1, paddleWidth, paddleHeight); // Player1
+        CanvasContext.fillRect(gameWidth - paddleWidth - paddleOffset, paddleYPlayer2, paddleWidth, paddleHeight); // Player2
+        CanvasContext.fillRect(paddleXPlayer3, paddleOffset, paddleHeight, paddleWidth); // Player3
+        CanvasContext.fillRect(paddleXPlayer4, gameHeight - paddleWidth - paddleOffset, paddleHeight, paddleWidth); // Player4
 
         // Draw ball
         if (isImage) {
-            ctx.beginPath();
-            ctx.arc(gameWidth * (ballPosition.x + 0.5), gameHeight * (ballPosition.y + 0.5), ballDiameter / 2, 0, Math.PI * 2);
-            ctx.closePath();
-            ctx.clip(); // Clips a circular area to draw the ball image in
-            ctx.drawImage(ballImage, gameWidth * (ballPosition.x + 0.5) - ballDiameter / 2, gameHeight * (ballPosition.y + 0.5) - ballDiameter / 2, ballDiameter, ballDiameter);
-            ctx.restore(); // Restores the context to draw the next frame cleanly
+            CanvasContext.beginPath();
+            CanvasContext.arc(gameWidth * (ballPosition.x + 0.5), gameHeight * (ballPosition.y + 0.5), ballDiameter / 2, 0, Math.PI * 2);
+            CanvasContext.closePath();
+            CanvasContext.clip(); // Clips a circular area to draw the ball image in
+            CanvasContext.drawImage(ballImage, gameWidth * (ballPosition.x + 0.5) - ballDiameter / 2, gameHeight * (ballPosition.y + 0.5) - ballDiameter / 2, ballDiameter, ballDiameter);
+            CanvasContext.restore(); // Restores the context to draw the next frame cleanly
         } else {
-            ctx.beginPath();
-            ctx.arc(gameWidth * (ballPosition.x + 0.5), gameHeight * (ballPosition.y + 0.5), ballDiameter / 2, 0, Math.PI * 2);
-            ctx.fill();
+            CanvasContext.beginPath();
+            CanvasContext.arc(gameWidth * (ballPosition.x + 0.5), gameHeight * (ballPosition.y + 0.5), ballDiameter / 2, 0, Math.PI * 2);
+            CanvasContext.fill();
         }
 
         // Restore the original state if the canvas was rotated for player 2
         if (playerID === '2' || playerID === '3' || playerID === '4')
-            ctx.restore();
+            CanvasContext.restore();
 
         // Update and display the scoreboard based on playerID
         if (playerID === '1') {

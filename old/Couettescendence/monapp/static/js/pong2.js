@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     canvasContainer.style.alignItems = 'center';
     const canvas = document.getElementById('pongCanvas');
     canvasContainer.appendChild(canvas); // Add the canvas to the container
-    const ctx = canvas.getContext('2d');
+    const CanvasContext = canvas.getContext('2d');
     const scoreBoard = document.createElement('div'); // Creating a separate scoreboard
     canvasContainer.insertBefore(scoreBoard, canvas); // Insert scoreboard above canvas in the container
 
@@ -141,48 +141,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // If playerID is 'j2', rotate the canvas for the player's perspective
         if (playerID === '2') {
-            ctx.save(); // Save the current state
-            ctx.translate(gameWidth / 2, gameHeight / 2); // Move to the center of the canvas
-            ctx.rotate(Math.PI); // Rotate 180 degrees
-            ctx.translate(-gameWidth / 2, -gameHeight / 2); // Move back to the original position
+            CanvasContext.save(); // Save the current state
+            CanvasContext.translate(gameWidth / 2, gameHeight / 2); // Move to the center of the canvas
+            CanvasContext.rotate(Math.PI); // Rotate 180 degrees
+            CanvasContext.translate(-gameWidth / 2, -gameHeight / 2); // Move back to the original position
         }
 
         // Draw field
         if (isImage) {
-            ctx.drawImage(fieldImage, 0, 0, gameWidth, gameHeight);
+            CanvasContext.drawImage(fieldImage, 0, 0, gameWidth, gameHeight);
         } else {
-            ctx.fillStyle = '#000';
-            ctx.fillRect(0, 0, gameWidth, gameHeight);
+            CanvasContext.fillStyle = '#000';
+            CanvasContext.fillRect(0, 0, gameWidth, gameHeight);
         }
         // Add field border
-        ctx.strokeStyle = '#FFF';
-        ctx.lineWidth = 5;
-        ctx.strokeRect(0, 0, gameWidth, gameHeight);
+        CanvasContext.strokeStyle = '#FFF';
+        CanvasContext.lineWidth = 5;
+        CanvasContext.strokeRect(0, 0, gameWidth, gameHeight);
 
         // Convert paddles position and draw paddles
         const paddleYPlayer1 = (gameHeight * (paddlePositionPlayer1 * -1 + 0.5)) - (paddleHeight / 2);
         const paddleYPlayer2 = (gameHeight * (paddlePositionPlayer2 * -1 + 0.5)) - (paddleHeight / 2);
-        ctx.fillStyle = '#FFF';
-        ctx.fillRect(paddleOffset, paddleYPlayer1, paddleWidth, paddleHeight); // Player1
-        ctx.fillRect(gameWidth - paddleWidth - paddleOffset, paddleYPlayer2, paddleWidth, paddleHeight); // Player2
+        CanvasContext.fillStyle = '#FFF';
+        CanvasContext.fillRect(paddleOffset, paddleYPlayer1, paddleWidth, paddleHeight); // Player1
+        CanvasContext.fillRect(gameWidth - paddleWidth - paddleOffset, paddleYPlayer2, paddleWidth, paddleHeight); // Player2
 
         // Draw ball
         if (isImage) {
-            ctx.beginPath();
-            ctx.arc(gameWidth * (ballPosition.x + 0.5), gameHeight * (ballPosition.y + 0.5), ballDiameter / 2, 0, Math.PI * 2);
-            ctx.closePath();
-            ctx.clip(); // Clips a circular area to draw the ball image in
-            ctx.drawImage(ballImage, gameWidth * (ballPosition.x + 0.5) - ballDiameter / 2, gameHeight * (ballPosition.y + 0.5) - ballDiameter / 2, ballDiameter, ballDiameter);
-            ctx.restore(); // Restores the context to draw the next frame cleanly
+            CanvasContext.beginPath();
+            CanvasContext.arc(gameWidth * (ballPosition.x + 0.5), gameHeight * (ballPosition.y + 0.5), ballDiameter / 2, 0, Math.PI * 2);
+            CanvasContext.closePath();
+            CanvasContext.clip(); // Clips a circular area to draw the ball image in
+            CanvasContext.drawImage(ballImage, gameWidth * (ballPosition.x + 0.5) - ballDiameter / 2, gameHeight * (ballPosition.y + 0.5) - ballDiameter / 2, ballDiameter, ballDiameter);
+            CanvasContext.restore(); // Restores the context to draw the next frame cleanly
         } else {
-            ctx.beginPath();
-            ctx.arc(gameWidth * (ballPosition.x + 0.5), gameHeight * (ballPosition.y + 0.5), ballDiameter / 2, 0, Math.PI * 2);
-            ctx.fill();
+            CanvasContext.beginPath();
+            CanvasContext.arc(gameWidth * (ballPosition.x + 0.5), gameHeight * (ballPosition.y + 0.5), ballDiameter / 2, 0, Math.PI * 2);
+            CanvasContext.fill();
         }
 
         // Restore the original state if the canvas was rotated for player 2
         if (playerID === '2')
-            ctx.restore();
+            CanvasContext.restore();
 
         // Update and display the scoreboard based on playerID
         scoreBoard.innerHTML = `${player1Name}: ${scorePlayer1} - ${player2Name}: ${scorePlayer2}`;
