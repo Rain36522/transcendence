@@ -18,13 +18,17 @@ class newGame(APIView):
     
     def post(self, request):
         print("POST", file=sys.stderr)
-
-        serializer = GameSettingsSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer["date"] = time()
-            instance = serializer.save()  # Enregistre les données et récupère l'objet sauvegardé
-            chat_id = instance.id  # Obtient l'ID de l'objet sauvegardé
-            
+        data = self.changeData(request.data)
+        if data:
+            serializer = GameSettingsSerializer(data=request.data)
+            if serializer.is_valid():
+                instance = serializer.save()  # Enregistre les données et récupère l'objet sauvegardé
+                game_id = instance.id  # Obtient l'ID de l'objet sauvegardé
+                return HttpResponse("Success")
         return HttpResponse("Failure")
+    
+    def changeData(self, data):
+        if data.get("ballSize") and data.get("raquetSize") and data.get("gameSpeed") and data.get("gameAcceleration"):
+            
 
 
