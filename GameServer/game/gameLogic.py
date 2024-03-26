@@ -5,13 +5,35 @@ class gameLogic:
     def __init__(self, client, gameSet, game):
         self.client = client
         self.game = game
+        self.gameSet = gameSet
+        print("data :", gameSet["user1"])
 
     """Client to game serv
     char 0 = player number
     char 1 : u = up, d = down
     """
     def getMsgs(self):
-        return self.client.getMsg()
+        messages = self.client.getMsg()
+        msg = []
+        if messages:
+            user1 = str(self.gameSet.get("user1", ""))
+            user2 = str(self.gameSet.get("user2", ""))
+            user3 = str(self.gameSet.get("user3", ""))
+            user4 = str(self.gameSet.get("user4", ""))
+            for message in messages:
+                if user1 and message.startswith(str(user1)):
+                    message = message[len(user1):]
+                    msg.append(message)
+                elif user2 and message.startswith(user2):
+                    message = message[len(user2):]
+                    msg.append(message)
+                elif user3 and message.startswith(user3):
+                    message = message[len(user3):]
+                    msg.append(message)
+                elif user4 and message.startswith(user4):
+                    message = message[len(user4):]
+                    msg.append(message)
+        return msg
 
     async def sendMsg(self):
         await self.client.sendMsg(self.game)
