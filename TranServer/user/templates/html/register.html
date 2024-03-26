@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="../css/register.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <h1><a href="{% url 'home_page' %}" class="logo">TRANSCENDANCE</a></h1> <!-- Transcendance en jaune pale fluo -->
+        <nav class="additional-links">
+            <ul>
+                <li><a href="{% url 'user_login' %}" class="logout">LOGOUT</a></li> <!-- Mots du header en majuscule -->
+                <li><a href="{% url 'general_chat' %}" class="chat">CHAT</a></li>
+                <li><a href="{% url 'user_dashboard' %}" class="profile">PROFILE</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div id="login-container">
+        <div class="split-text">
+            <span class="welcome-text">Welcome!</span>
+            <span>Please register</span>
+        </div>
+        <form>
+            <input type="text" placeholder="Username" name="username">
+            <input type="text" placeholder="Mail" name="mail">
+            <input type="password" placeholder="Password" name="password">
+            <input type="password" placeholder="Confirm Password" name="confirm-password">
+            <button type="submit">Register</button>
+        </form>
+        <a href="{% url 'user_login' %}" id="register-link">Already have an account? Login here</a>
+    </div>
+</body>
+
+</html>
