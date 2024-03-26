@@ -13,7 +13,7 @@
 
         function connectWebSocket() {
             // Replace 'ws://localhost:8001/ws/your_url/' with the actual WebSocket endpoint URL
-            ws = new WebSocket('wss://127.0.0.1/ws/your_url/1/');
+            ws = new WebSocket('wss://' + location.hostname + '/ws/your_url/1/');
 
             ws.onopen = function(event) {
                 console.log('WebSocket connected');
