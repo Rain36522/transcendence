@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transcendance - home</title>
+<link rel="stylesheet" href="home.css">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #b3ecff; /* Ajoute le fond bleu à l'ensemble de la page */
+  }
+
+  header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.596);
+    color: #FFFFE0;
+    z-index: 10;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .header-btn {
+    background: none;
+    border: none;
+    color: #FFFFE0;
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 12px 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-decoration: none;
+  }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    margin-right: 20px; /* Ajoute un espace à droite de la liste */
+  }
+
+  nav ul li:first-child {
+    margin-right: auto; /* Déplace le premier élément vers la gauche */
+  }
+
+  nav ul li {
+    width: auto; /* Réinitialise la largeur pour s'adapter au contenu */
+  }
+
+  nav ul li:not(:first-child) {
+    margin-left: 10px; /* Ajoute une marge de 10px à gauche pour espacer les éléments */
+  }
+
+  nav ul li:last-child {
+    width: 120px; /* Limite la largeur du dernier élément */
+    overflow: hidden; /* Cache le texte dépassant la largeur de l'élément */
+    white-space: nowrap; /* Empêche le texte de se mettre à la ligne */
+    text-overflow: ellipsis; /* Ajoute des points de suspension pour indiquer que du texte est masqué */
+  }
+
+  nav ul li a {
+    display: block;
+    text-decoration: none;
+    font-size: 20px;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    text-transform: uppercase;
+    overflow: hidden; /* Cache le texte dépassant la largeur de l'élément */
+    white-space: nowrap; /* Empêche le texte de se mettre à la ligne */
+    text-overflow: ellipsis; /* Ajoute des points de suspension pour indiquer que du texte est masqué */
+    font-family: 'Roboto', sans-serif; /* Changer la police */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Ajoute une ombre */
+  }
+
+  #container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100% - 60px);
+    position: relative; /* Ajoutez cette ligne pour que la vidéo soit positionnée relativement */
+  }
+
+  .menu {
+  display: flex;
+  flex-direction: column;
+  z-index: 2; /* Assurez-vous que le contenu est au-dessus de la vidéo */
+  margin-top: 70px; /* Augmente la marge supérieure pour baisser les boutons */
+}
+
+
+  .menu button {
+    font-size: 50px;
+    padding: 20px 40px;
+    background-color: #FFFF99;
+    border: none;
+    margin-top: 10px; /* Augmenter l'espace entre les boutons et le haut */
+    margin-bottom: 20px; /* Augmenter l'espace entre les boutons et le bas */
+    border-radius: 10px;
+    text-transform: uppercase;
+    width: 110%;
+    font-weight: bold;
+    font-family: 'Poppins', sans-serif;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Correction : Combinez les transitions ici */
+  }
+
+  .menu button:hover {
+    background-color: #cccc00; /* Couleur de fond au survol */
+    transform: scale(1.1); /* Grossissement correct du bouton de 10% */
+  }
+
+  .menu button.large {
+    font-size: 60px; /* Augmente la taille de la police */
+    padding: 30px 60px; /* Augmente le rembourrage */
+    border-radius: 20px; /* Augmente le rayon des coins */
+    width: 120%; /* Augmente la largeur */
+  }
+
+  .menu button.small {
+    font-size: 40px; /* Réduit la taille de la police */
+    padding: 15px 30px; /* Réduit le rembourrage */
+    border-radius: 5px; /* Réduit le rayon des coins */
+    width: 90%; /* Réduit la largeur */
+  }
+
+  .menu button a {
+  color: black; /* Change la couleur du texte en noir */
+  text-decoration: none; /* Enlève le soulignement */
+}
+
+  .vignette {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 0 200px rgba(0,0,0,0.9) inset;
+  }
+  
+  /* Style pour la vidéo */
+  #background-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: 0; /* Assurez-vous que la vidéo est en arrière-plan */
+    opacity: 0.9; /* Réduit l'opacité pour assombrir la vidéo */
+  }
+
+  #background-video::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at top left, rgba(0, 0, 0, 0.8), transparent), 
+                radial-gradient(circle at top right, rgba(0, 0, 0, 0.8), transparent),
+                radial-gradient(circle at bottom left, rgba(0, 0, 0, 0.8), transparent),
+                radial-gradient(circle at bottom right, rgba(0, 0, 0, 0.8), transparent);
+    z-index: 1; /* Place le dégradé au-dessus de la vidéo */
+  }
+</style>
+</head>
+<body>
+  <div class="vignette"></div> <!-- Ajout de la vignette -->
+  <header>
+    <h1><a href="home.html" class="logo">Transcendance</a></h1>
+    <div>
+        <a href="generalchat.html" class="header-btn">Chat</a>
+        <a href="login.html" class="header-btn">Logout</a>
+        <a href="dashboard.html" class="header-btn profile-btn">Profile</a>
+    </div>
+  </header>
+<video autoplay muted loop id="background-video">
+  <source src="video.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+<div id="container">
+    <div class="menu">
+      <button type="button"><a href="onlineGame.html">Online Game</a></button>
+      <button type="button"><a href="local_game.html">Local Game</a></button>
+      <button type="button"><a href="tournament.html">Tournament</a></button>
+      <button type="button"><a href="robot_1vs1.html">Robot 1vs1</a></button>
+    </div>
+</div>
+</body>
+</html>

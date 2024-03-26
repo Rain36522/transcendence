@@ -1,0 +1,178 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #b3ecff; /* Ajoute le fond bleu à l'ensemble de la page */
+}
+
+header {
+    width: 100%;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px; /* Ajoute une marge intérieure de 20px aux côtés gauche et droit */
+    position: relative; /* Ajout pour empêcher le recouvrement du contenu par la vidéo */
+    z-index: 1; /* Ajout pour empêcher le recouvrement du contenu par la vidéo */
+}
+
+header h1 {
+    margin: 0;
+    text-transform: uppercase;
+    font-size: 60px; /* Taille de police deux fois plus grande */
+}
+
+header h1 a {
+    text-decoration: none;
+	text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Ajoute une ombre */
+    color: #FFFF99; /* Couleur jaune clair pastel fluo */
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    margin-right: 20px; /* Ajoute un espace à droite de la liste */
+}
+
+nav ul li:first-child {
+    margin-right: auto; /* Déplace le premier élément vers la gauche */
+}
+
+nav ul li {
+    width: auto; /* Réinitialise la largeur pour s'adapter au contenu */
+}
+
+nav ul li:not(:first-child) {
+    margin-left: 10px; /* Ajoute une marge de 10px à gauche pour espacer les éléments */
+}
+
+nav ul li:last-child {
+    width: 120px; /* Limite la largeur du dernier élément */
+    overflow: hidden; /* Cache le texte dépassant la largeur de l'élément */
+    white-space: nowrap; /* Empêche le texte de se mettre à la ligne */
+    text-overflow: ellipsis; /* Ajoute des points de suspension pour indiquer que du texte est masqué */
+}
+
+nav ul li a {
+    display: block;
+    text-decoration: none;
+    font-size: 20px;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    text-transform: uppercase;
+    overflow: hidden; /* Cache le texte dépassant la largeur de l'élément */
+    white-space: nowrap; /* Empêche le texte de se mettre à la ligne */
+    text-overflow: ellipsis; /* Ajoute des points de suspension pour indiquer que du texte est masqué */
+    font-family: 'Roboto', sans-serif; /* Changer la police */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Ajoute une ombre */
+}
+
+
+#container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100% - 60px);
+    position: relative; /* Ajoutez cette ligne pour que la vidéo soit positionnée relativement */
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    /*align-items: center;*/
+    z-index: 2; /* Assurez-vous que le contenu est au-dessus de la vidéo */
+}
+
+.menu button {
+    /* Autres propriétés CSS */
+    font-size: 50px;
+    padding: 20px 40px;
+    background-color: #FFFF99;
+    border: none;
+    margin-top: 10px; /* Augmenter l'espace entre les boutons et le haut */
+    margin-bottom: 20px; /* Augmenter l'espace entre les boutons et le bas */
+    border-radius: 10px;
+    text-transform: uppercase;
+    width: 110%;
+    font-weight: bold;
+    font-family: 'Poppins', sans-serif;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Correction : Combinez les transitions ici */
+}
+
+.menu button:hover {
+    background-color: #cccc00; /* Couleur de fond au survol */
+    transform: scale(1.1); /* Grossissement correct du bouton de 10% */
+}
+
+.menu button.large {
+    font-size: 60px; /* Augmente la taille de la police */
+    padding: 30px 60px; /* Augmente le rembourrage */
+    border-radius: 20px; /* Augmente le rayon des coins */
+    width: 120%; /* Augmente la largeur */
+}
+
+.menu button.small {
+    font-size: 40px; /* Réduit la taille de la police */
+    padding: 15px 30px; /* Réduit le rembourrage */
+    border-radius: 5px; /* Réduit le rayon des coins */
+    width: 90%; /* Réduit la largeur */
+}
+
+.additional-links ul {
+    display: flex;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    margin-left: auto; /* Ajoute une marge à gauche pour aligner les liens avec Transcendence */
+}
+
+.vignette {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	box-shadow: 0 0 200px rgba(0,0,0,0.2) inset;
+  }
+  
+/* Style pour la vidéo */
+#background-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: 0; /* Assurez-vous que la vidéo est en arrière-plan */
+	opacity: 0.9; /* Réduit l'opacité pour assombrir la vidéo */
+}
+
+#background-video::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at top left, rgba(0, 0, 0, 0.8), transparent), 
+                radial-gradient(circle at top right, rgba(0, 0, 0, 0.8), transparent),
+                radial-gradient(circle at bottom left, rgba(0, 0, 0, 0.8), transparent),
+                radial-gradient(circle at bottom right, rgba(0, 0, 0, 0.8), transparent);
+    z-index: 1; /* Place le dégradé au-dessus de la vidéo */
+}
+
+.vignette {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-shadow: 0 0 200px rgba(0,0,0,0.9) inset;
+}
