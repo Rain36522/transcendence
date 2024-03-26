@@ -9,5 +9,5 @@ urlpatterns = [
     path('', home_page, name='home_page'),
     path('onlineGame/', online_game, name='online_game'),
 	#    
-    path('newGame/', newGame, name='newGame')
+    path('newGame/', newGame.as_view(), name='newGame')
 ]
