@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    {% block content %}
+    {% endblock %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="home.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@300;400;600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-shadow: 0 0 200px rgba(0,0,0,0.9) inset;
+        }
+        .image-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%);
+        }
+        header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.596);
+            color: #FFFFE0;
+            z-index: 10;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header a {
+            color: #FFFFE0; /* Maintient la couleur des liens */
+            text-decoration: none; /* Enlève le soulignement */
+            font-size: 30px; /* Taille des liens */
+            margin: 0 10px; /* Ajoute de l'espacement autour des liens */
+        }
+        h1.logo a {
+            text-transform: uppercase; /* Met le texte en majuscules */
+            color: #FFFF99; /* Jaune pâle fluo */
+            font-size: 48px; /* Augmente la taille pour "Transcendance" */
+            text-decoration: none; /* Enlève le soulignement */
+        }
+    </style>
+</head>
+<body>
+    <div class="vignette"></div>
+    <header>
+        <h1 class="logo"><a href="{% url 'home_page' %}">Transcendance</a></h1>
+        <nav>
+            <a href="{% url 'general_chat' %}">Chat</a>
+            <a href="{% url 'user_login' %}">Logout</a>
+            <a href="{% url 'user_dashboard' %}">Profile</a>
+        </nav>
+    </header>
+    <div class="image-container">
+        <img src="https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg" alt="Votre image" style="width:100%; height:100%; object-fit: cover;">
+    </div>    
+</body>
+</html>

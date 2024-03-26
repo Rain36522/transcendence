@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Social Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+<style>
+  /* Styles communs */
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  /* Image de fond avec effet noir et blanc */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: grayscale(100%);
+    z-index: -1;
+  }
+
+  /* Header */
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    z-index: 1;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    text-decoration: none;
+    color: #FFFF99; /* Changement de couleur */
+    font-size: 47px; /* Taille de police agrandie */
+  }
+
+  .additional-links ul {
+    list-style: none;
+    display: flex;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    margin-left: auto;
+  }
+
+  .additional-links ul li a {
+    text-decoration: none;
+    color: white;
+    font-size: 24px; /* Taille de police agrandie */
+    font-weight: bold; /* Optionnel : rendre le texte en gras */
+  }
+
+  .additional-links ul li a.profile {
+    color: #FFFF99; /* Changement de couleur pour PROFILE */
+  }
+
+  /* Contenu */
+  .content {
+    position: relative;
+    padding: 50px;
+    box-sizing: border-box;
+    color: white;
+    text-align: center;
+  }
+
+  .title-container {
+    margin-bottom: 40px;
+  }
+
+  .title-container h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 60px;
+    margin: 0;
+  }
+
+  .separator-line {
+    width: 100%;
+    height: 2px;
+    background-color: white;
+    margin: 20px 0;
+  }
+
+  .select-text {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    font-size: 24px;
+  }
+
+  .select-text select, .select-text .slider {
+    margin: 0 10px;
+    font-size: 18px;
+    background-color: #FFFF99;
+    padding: 8px 12px;
+    border-radius: 10px;
+    color: black;
+  }
+
+  .slider {
+    width: 50%;
+  }
+
+  .create-button {
+    padding: 20px 25px;
+    background-color: #FFFF99;
+    color: #333;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 24px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .create-button:hover, .create-button:focus {
+    background-color: #cccc00;
+    color: white;
+    transform: translateY(-2px);
+  }
+
+  .exit-link {
+    color: white;
+    text-decoration: none;
+    font-size: 20px;
+  }
+
+  /* Styles de la vignette */
+  .vignette {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 0 200px rgba(0,0,0,0.9) inset;
+  }
+
+  /* Styles de la vidéo */
+  .video-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .video-container iframe {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Styles du cadre */
+  .frame {
+    position: fixed;
+    top: 25%;
+    left: 15%;
+    width: 70%;
+    height: 60%;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    display: flex;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    z-index: 2;
+    overflow: hidden;
+  }
+
+  .tab-container {
+    width: 25%;
+    background-color: #EEE;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    padding: 20px;
+    gap: 10px;
+    border-right: 2px solid #CCC;
+  }
+
+  .tab {
+    width: 100%;
+    text-align: center;
+    padding: 15px 0;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    border-radius: 5px;
+    color: #FFFF99;
+    background-color: #DDD;
+    font-weight: 700;
+    border-bottom: 1px solid #CCC;
+  }
+
+  .tab.active {
+    background-color: #000000;
+    color: #FFF;
+  }
+
+  .tab:hover {
+    background-color: #F0F0F0;
+    transform: translateY(-2px);
+  }
+
+  .tab:last-of-type {
+    border-bottom: none;
+  }
+  
+  .tab a {
+  text-decoration: none;
+}
+
+
+  .content-area {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+  .search-area {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 20px;
+  }
+
+  .search-box {
+    flex-grow: 1;
+    margin-right: 10px;
+    padding: 8px;
+    border: 1px solid #CCC;
+    border-radius: 5px;
+  }
+
+  .user-list {
+    list-style: none;
+    width: 100%;
+    padding: 0;
+    justify-content: flex-start; /* Modifier cette ligne */
+    margin-top: 10px;
+  }
+
+  .user-list li {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Modifier de space-between à flex-start */
+    padding: 10px 0;
+  }
+
+  .user-photo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #DDD;
+    margin-right: 5px;
+    background-size: cover;
+    background-size: cover;
+    background-position: center;
+    position: relative; /* Ajouté pour le positionnement de l'indicateur */
+  }
+
+  .user-photo::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* background-color: rgba(255, 255, 255, 0.5); */ /* Commentez ou supprimez cette ligne pour supprimer le filtre blanc */
+    z-index: 1; /* Au-dessus de l'image, mais en-dessous du contenu texte */
+}
+
+  .user-info {
+    display: flex;
+    align-items: center;
+  }
+
+  .username {
+    margin-left: 10px; /* Ajustez cette valeur selon vos préférences */
+  }
+
+  .status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    position: absolute; /* Position absolue par rapport à .user-photo */
+    right: 5px; /* Déplace l'indicateur vers la droite de la photo */
+    bottom: 0; /* Alignement au bas de la photo */
+    background-color: red; /* Rouge pour hors ligne, changez à vert pour en ligne */
+    z-index: 2; /* Au-dessus du filtre blanc */
+  }
+
+  .search-area button,
+  .block-button {
+    padding: 8px 15px;
+    border: none;
+    background-color: #333;
+    color: #FFFFE0;
+    margin-left: 40px; /* Ajoutez un espace à gauche des boutons */
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .edit-link {
+    padding: 8px 24px;
+    background-color: #333;
+    color: #FFFFE0;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+    align-self: flex-end;
+    margin-top: auto;
+  }
+
+  .edit-link:hover {
+    background-color: #444;
+    color: #FFF;
+  }
+
+  body {
+    background-image: url('https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg');
+    background-size: cover;
+    background-position: center;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+    z-index: -1; /* Placer en-dessous de tout le reste */
+  }
+
+  body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: grayscale(100%); /* Convertir en noir et blanc */
+    z-index: -1; /* Placer en-dessous de tout le reste */
+  }
+</style>
+</head>
+<body>
+  <div class="vignette"></div>
+
+  <header>
+    <h1><a href="{% url 'home_page' %}" class="logo">TRANSCENDANCE</a></h1> <!-- Changement en majuscules -->
+    <nav class="additional-links">
+        <ul>
+            <li><a href="{% url 'user_login' %}" class="logout">LOGOUT</a></li> <!-- Changement en majuscules -->
+            <li><a href="{% url 'general_chat' %}" class="chat">CHAT</a></li> <!-- Changement en majuscules -->
+            <li><a href="{% url 'user_dashboard' %}" class="profile">PROFILE</a></li> <!-- Changement en majuscules -->
+        </ul>
+    </nav>
+  </header>
+
+  <div class="frame">
+    <div class="tab-container">
+      <div class="tab"><a href="{% url 'account_information' %}" style="color: #000000;">Account Information</a></div>
+      <div class="tab"><a href="{% url 'user_dashboard' %}" style="color: #000000;">Dashboard</a></div>
+      <div class="tab active"><a href="{% url 'social_management' %}" style="color: #ffffff;">Social Management</a></div>      
+    </div>
+    <div class="content-area">
+      <div class="search-area">
+        <input type="text" placeholder="Search a user..." class="search-box">
+        <button type="button">Go!</button>
+      </div>
+      <ul class="user-list">
+        <!-- Les éléments de la liste seront générés par JavaScript -->
+      </ul>
+      <a href="#" class="edit-link">Edit</a>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var users = [            {username: "Lolita564", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzO65Lpx5OR_-M92O1otaGdIt6nsTKfii_Bg&usqp=CAU", online: true},            {username: "Famacito", imageUrl: "https://risibank.fr/cache/medias/0/13/1326/132676/full.png", online: false},            {username: "Mania_xLeaderz", imageUrl: "https://cdn.gonzague.me/wp-content/uploads/2012/06/146646811-1200x900.gif", online: true}        ];
+
+        var userList = document.querySelector('.user-list');
+        userList.innerHTML = ''; // Clear existing list items
+
+        users.forEach(function(user) {
+          var li = document.createElement('li');
+          li.innerHTML = `
+              <div class="user-info">
+                  <div class="user-photo" style="background-image: url('${user.imageUrl}');">
+                      <span class="status-indicator" style="background-color: ${user.online ? 'green' : 'red'};"></span>
+                  </div>
+                  <span class="username">${user.username}</span>
+              </div>
+              <button class="block-button">${user.online ? 'Block' : 'Unblock'}</button>`;
+          userList.appendChild(li);
+        });
+    });
+  </script>
+</body>
+</html>
