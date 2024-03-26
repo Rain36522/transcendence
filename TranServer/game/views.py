@@ -29,6 +29,4 @@ class newGame(APIView):
     
     def changeData(self, data):
         if data.get("ballSize") and data.get("raquetSize") and data.get("gameSpeed") and data.get("gameAcceleration"):
-            
-
-
+            pass
