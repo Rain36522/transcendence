@@ -41,17 +41,17 @@ def invite_user(request):
 
     return render(request, 'invite_user.html', {'invite_form': invite_form, 'accept_form': accept_form})
 
-def user_login(request):
-    if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('home')  # Redirige vers la page d'accueil après connexion
-        else:
-            return HttpResponse("Échec de la connexion. Essayez à nouveau.")
-    return render(request, 'login.html')  # Affiche le formulaire de connexion pour une requête GET
+# def user_login(request):
+#     if request.method == "POST":
+#         username = request.POST['username']
+#         password = request.POST['password']
+#         user = authenticate(request, username=username, password=password)
+#         if user is not None:
+#             login(request, user)
+#             return redirect('home')  # Redirige vers la page d'accueil après connexion
+#         else:
+#             return HttpResponse("Échec de la connexion. Essayez à nouveau.")
+#     return render(request, 'login.html')  # Affiche le formulaire de connexion pour une requête GET
 
 
 class SignUpView(generic.CreateView):
@@ -59,7 +59,6 @@ class SignUpView(generic.CreateView):
     success_url = reverse_lazy('login')
     template_name = 'signup.html'
 
-# debut definitions cecile
 def account_information(request):
     return render(request, 'accountInformation.html')
 
@@ -75,8 +74,6 @@ def user_register(request):
 def social_management(request):
     return render(request, 'socialManagement.html')
 
-# fin definitions cecile
-
 @login_required
 def profile(request):
     return render(request, 'profile.html')
@@ -90,16 +87,12 @@ def dashboard(request):
     return render(request, 'dashboard.html', {'user': request.user})
 
 def ajouter_resultat(request, points_joueur, points_ennemi, username_ennemi):
-    # Trouver l'utilisateur et l'ennemi (assure-toi que 'ennemi' existe aussi dans ta base de données)
     utilisateur = request.user
-    # Exemple d'ajout d'un résultat dans l'historique
     nouveau_resultat = [points_joueur, points_ennemi, username_ennemi]
     historique_actuel = utilisateur.historique_resultats
     historique_actuel.append(nouveau_resultat)
     utilisateur.historique_resultats = historique_actuel
     utilisateur.save()
-
-
 
 def home(request):
     return HttpResponse('Bienvenue sur la page d\'accueil !')
