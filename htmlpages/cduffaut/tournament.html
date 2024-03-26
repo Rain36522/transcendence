@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tournament - settings</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    position: relative;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: grayscale(100%);
+    z-index: -1;
+  }
+
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    z-index: 1;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px; /* Réduire la hauteur de la barre header */
+  }
+
+  .logo {
+    text-decoration: none;
+    color: #FFFF99;
+    font-size: 47px;
+  }
+
+  .additional-links ul {
+    list-style: none;
+    display: flex;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    margin-left: auto;
+  }
+
+  .additional-links ul li a {
+    text-decoration: none;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  .content {
+    position: fixed;
+    top: 57%; /* Déplacer le cadre plus bas */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    color: white;
+    border-radius: 10px;
+    width: 45%; /* Réduire la largeur du cadre */
+    height: 75%; /* Réduire la hauteur du cadre à 70% de la hauteur de la fenêtre */
+    background-color: rgba(74, 74, 74, 0.714); /* Blanc semi-transparent, ajustez les valeurs RGB et l'opacité selon vos préférences */
+    color: #ffffff; /* Noir */
+  }
+
+  .title-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .title-container h2 {
+    font-size: 40px; /* Réduire la taille de police */
+    margin: 0;
+  }
+
+  .separator-line {
+    width: 100%;
+    height: 2px;
+    background-color: white;
+    margin: 10px 0;
+  }
+
+  .select-text {
+    width: 100%;
+    margin-bottom: 20px;
+    font-size: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  select, .slider {
+    font-size: 15px;
+    padding: 5px 8px;
+    border-radius: 10px;
+    color: black;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Exemple d'ombre */
+  }
+
+  .slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 50%;
+    height: 8px;
+    background: #FFFF99;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+
+  .slider:hover {
+    opacity: 1;
+  }
+
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background: #333;
+    cursor: pointer;
+    border-radius: 50%;
+  }
+
+  .slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    background: #333;
+    cursor: pointer;
+    border-radius: 50%;
+  }
+
+  .create-button {
+    padding: 20px 25px;
+    border: 2px solid transparent;
+    border-radius: 25px;
+    cursor: pointer;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    background-color: #fcfc8d;
+    margin-left: auto; /* Mettre à droite */
+    margin-right: auto; /* Centrer le bouton */
+    font-family: 'Poppins', sans-serif; /* Utiliser la police Poppins */
+    font-size: 20px;
+    font-weight: bold; /* Mettre en gras */
+    color: #000000; 
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Ombre plus prononcée */
+  }
+
+  .create-button:hover, .create-button:focus {
+    background-color: #ebf13e;
+    color: rgb(0, 0, 0);
+    border-color: #dde23a;
+    transform: translateY(-2px);
+  }
+
+  .exit-link {
+    color: #eeecec; /* Gris */
+    text-decoration: none;
+    font-size: 20px;
+    font-family: Arial, sans-serif; /* Utiliser la police Arial */
+    margin-top: 10px; /* Ajouter une marge supérieure */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Ajout d'une ombre */
+  }
+
+  .vignette {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 0 200px rgba(0,0,0,0.9) inset;
+  }
+</style>
+</head>
+<body>
+  <div class="vignette"></div>
+
+  <header>
+    <h1><a href="home.html" class="logo">TRANSCENDANCE</a></h1>
+    <nav class="additional-links">
+        <ul>
+            <li><a href="login.html" class="logout">LOGOUT</a></li>
+            <li><a href="generalchat.html" class="chat">CHAT</a></li>
+            <li><a href="dashboard.html" class="profile">PROFILE</a></li>
+        </ul>
+    </nav>
+  </header>
+
+  <div class="content">
+    <div class="title-container">
+      <h2>Tournament</h2>
+      <h2>Settings</h2>
+    </div>
+    <div class="separator-line"></div>
+    <div class="select-text">
+      <strong>Ball Width:</strong>
+      <input type="range" id="ball-width" name="ball-width" min="0" max="100" step="10">
+    </div>
+    <div class="select-text">
+      <strong>Plank Size:</strong>
+      <input type="range" id="plank-size" name="plank-size" min="0" max="100" step="10">
+    </div>
+    <div class="select-text">
+      <strong>Speed:</strong>
+      <input type="range" id="speed" name="speed" min="0" max="100" step="10">
+    </div>
+    <div class="select-text">
+      <strong>Acceleration:</strong>
+      <input type="range" id="acceleration" name="acceleration" min="0" max="100" step="10">
+    </div>
+    <div class="select-text">
+      <strong style="margin-right: 20px;">Player Amount:</strong>
+      <div class="styled-select">
+        <select id="player-amount">
+          <option value="2">2</option>
+          <option value="4">4</option>
+          <option value="6">6</option>
+          <option value="8">8</option>
+          <option value="10">10</option>
+          <option value="12">12</option>
+        </select>
+      </div>
+    </div>
+    <div class="select-text">
+      <strong style="margin-right: 20px;">Win Point:</strong>
+      <div class="styled-select">
+        <select id="win-point">
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="15">15</option>
+          <option value="20">20</option>
+        </select>
+      </div>
+    </div>
+    <div class="select-text">
+      <strong style="margin-right: 20px;">Game Mode:</strong>
+      <div class="styled-select">
+        <select id="game-mode">
+          <option value="0">AI</option>
+          <option value="1">Player</option>
+          <option value="2">Two Player</option>
+          <option value="4">Four Player</option>
+        </select>
+      </div>
+    </div>
+    <button class="create-button"><strong>CREATE</strong></button>
+    <a href="home.html" class="exit-link">Exit</a>
+  </div>
+</body>
+</html>
+    

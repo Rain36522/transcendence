@@ -1,3 +1,6 @@
 from django.shortcuts import render
 
-# Create your views here.
+# debut definitions cecile
+def tournament_settings(request):
+    return render(request, 'tournament.html')
+#
