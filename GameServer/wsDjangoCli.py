@@ -18,6 +18,7 @@ class DjangoCli:
             try:
                 self.websocket = await websockets.connect(self.DjangoUrl)
                 print("GameServ, connected to Daphne.", file=sys.stderr)
+                await self.websocket.send("connected")
                 break
             except:
                 print("Server daphne not available.", file=sys.stderr)
@@ -33,8 +34,9 @@ class DjangoCli:
         while True:
             try:
                 message = await self.websocket.recv()
-                os.environ['newGame'] = message
-                os.system("python3 game/game.py &")
+                print(message, file=sys.stderr)
+                # os.environ['newGame'] = message
+                # os.system("python3 game/game.py &")
             except websockets.exceptions.ConnectionClosed:
                 i += 1
                 print("Connection to server django closed")
