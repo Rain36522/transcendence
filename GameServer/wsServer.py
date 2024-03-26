@@ -68,6 +68,7 @@ class WebSocketServer:
         gameid = path[1]
         user = path[2]
         self.addUser(websocket, gameid, user)
+        await self.clients[1][gameid].send((user + "connected"))
         try:
             async for message in websocket:
                 await self.execUserMsg(message, gameid, user)
