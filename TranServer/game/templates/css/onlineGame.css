@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Online Game - launching</title>
-<link rel="stylesheet" href="home.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
-<style>
-  .vignette {
+.vignette {
     position: fixed;
     top: 0;
     left: 0;
@@ -19,7 +9,7 @@
 
   .content {
     position: fixed;
-    top: 50%; /* Baisse du cadre vers le bas */
+    top: 55%; /* Abaisse le cadre vers le bas */
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 2;
@@ -30,10 +20,10 @@
     padding: 15px; /* Réduction du padding */
     box-sizing: border-box;
     color: white;
-    background-color: rgba(25, 25, 25, 0.697);
+    background-color: rgba(34, 34, 34, 0.793);
     border-radius: 10px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    width: 80%; /* Réduction de la largeur */
+    width: 50%; /* Réduction de la largeur */
     max-height: 75vh; /* Réduction de la hauteur */
     overflow: hidden; /* Supprime la barre de défilement */
 }
@@ -67,7 +57,7 @@
   select, .slider {
     font-weight: bold;
     font-size: 20px;
-    background-color: #FFFF99;
+    background-color: #ffff80;
     padding: 8px 12px;
     border-radius: 10px;
     margin-bottom: 15px;
@@ -160,59 +150,24 @@
   }
 
   .exit-link:hover {
-    color: #cccc00;
+    color: rgb(255, 255, 255);
   }
-</style>
-</head>
-<body>
-  <div class="vignette"></div>
 
-  <header>
-    <h1><a href="{% url 'home_page' %}" class="logo">Transcendance</a></h1>
-    <nav class="additional-links">
-        <ul>
-            <li><a href="{% url 'user_login' %}" class="logout">Logout</a></li>
-            <li><a href="{% url 'general_chat' %}" class="chat">Chat</a></li>
-            <li><a href="{% url 'user_dashboard' %}" class="profile">Profile</a></li>
-        </ul>
-    </nav>
-  </header>
+  .create-link {
+    background-color: #FFFF84; /* Couleur de fond du bouton */
+    color: black; /* Couleur du texte */
+    padding: 15px 30px; /* Remplissage intérieur */
+    text-align: center; /* Alignement du texte */
+    text-decoration: none; /* Suppression du soulignement */
+    display: inline-block; /* Affichage en ligne */
+    font-size: 20px; /* Taille de la police */
+    border-radius: 5px; /* Bord arrondi */
+    margin-bottom: 20px; /* Marge en bas pour l'espacement */
+    transition: background-color 0.3s; /* Transition de couleur de fond */
+    font-weight: bold; /* Texte en gras */
+    text-transform: uppercase; /* Texte en majuscules */
+}
 
-  <div class="content">
-    <div class="title-container">
-      <h2>Online Game</h2>
-      <h2>Settings</h2>
-    </div>
-    <div class="separator-line"></div>
-    <div class="select-text">
-      <strong>Ball Size:</strong>
-      <input type="range" id="ball-size" name="ball-size" min="5" max="30" step="1">
-    </div>
-    <div class="select-text">
-      <strong>Raquet Size:</strong>
-      <input type="range" id="raquet-size" name="raquet-size" min="10" max="40" step="1">
-    </div>
-    <div class="select-text">
-      <strong>Game Speed:</strong>
-      <input type="range" id="game-speed" name="game-speed" min="0.5" max="3" step="0.1">
-    </div>
-    <div class="select-text">
-      <strong>Game Acceleration:</strong>
-      <input type="range" id="game-acceleration" name="game-acceleration" min="0" max="10" step="0.1">
-    </div>
-    <div class="select-text">
-      <strong>Win Point:</strong>
-      <input type="range" id="win-point" name="win-point" min="3" max="15" step="1">
-    </div>
-    <div class="select-text">
-      <strong>Game Mode:</strong>
-      <select id="game-mode">
-        <option value="0">Offline</option>
-        <option value="1">2 Players</option>
-        <option value="2">4 Players</option>
-      </select>
-    </div>
-    <a href="{% url 'home_page' %}" class="exit-link">Exit</a>
-  </div>
-</body>
-</html>
+.create-link:hover {
+    background-color: #F9F949; /* Changement de couleur de fond au survol */
+}
