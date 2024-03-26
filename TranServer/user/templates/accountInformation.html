@@ -106,12 +106,21 @@
             text-decoration: none;
         }
         .tab.active {
-            background-color: #000000;
-            color: #FFF;
+            background-color: #DDD; /* bouton dashboard */
+            color: #333;
         }
         .tab:hover {
             background-color: #F0F0F0;
             transform: translateY(-2px);
+        }
+        /* Ajout de styles pour le bouton "Account Informations" */
+        #account-info-tab {
+            background-color: #000000; /* Couleur de fond */
+            color: #FFF; /* Couleur du texte */
+        }
+
+        #account-info-tab:hover {
+            background-color: #30302f; /* Couleur de fond au survol */
         }
         .content-area {
             flex-grow: 1;
@@ -184,7 +193,7 @@
     </div>
     <div class="frame">
         <div class="tab-container">
-            <a href="{% url 'account_information' %}" class="tab">Account Informations</a>
+            <a href="{% url 'account_information' %}" class="tab" id="account-info-tab">Account Informations</a>
             <a href="{% url 'user_dashboard' %}" class="tab active">Dashboard</a>
             <a href="{% url 'social_management' %}" class="tab">Social Management</a>
         </div>    
