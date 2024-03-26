@@ -6,7 +6,7 @@
 #    By: pudry <pudry@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/08 12:20:28 by pudry             #+#    #+#              #
-#    Updated: 2024/03/21 16:19:13 by pudry            ###   ########.fr        #
+#    Updated: 2024/03/26 10:59:03 by pudry            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,8 +35,6 @@ run:
 # --detach
 
 stop:
-	-docker stop $$(docker ps -qa)
-	-docker rm $$(docker ps -qa)
 	docker compose -f ${DOCKER_COMPOSE} -p ${NAME} down
 
 delete:

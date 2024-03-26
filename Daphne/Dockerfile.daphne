@@ -16,7 +16,7 @@ RUN pip3 install channels
 RUN pip3 install djangorestframework
 RUN pip3 install daphne
 
-COPY Django/tool/init_serv.sh /usr/local/init_serv.sh
+COPY Daphne/tool/init_serv.sh /usr/local/init_serv.sh
 RUN chmod +x /usr/local/init_serv.sh
 
 # Copiez le reste de l'application
