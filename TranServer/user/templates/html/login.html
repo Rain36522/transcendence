@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+<link rel="stylesheet" href="../css/home.css">
+<link rel="stylesheet" href="../css/login.css">
+<style>
+</style>
+</head>
+<body>
+<div id="title">TRANSCENDANCE</div>
+<div id="login-container">
+    <div class="split-text">
+        <span class="welcome-text">Welcome!</span>
+        <span>Please login</span>
+    </div>
+    <form>
+        <input type="text" placeholder="Username" name="username">
+        <input type="password" placeholder="Password" name="password">
+        <button type="submit">Login</button>
+    </form>
+    <a href="{% url 'user_register' %}" id="register-link">Register</a>
+</div>
+</body>
+</html>
