@@ -41,12 +41,12 @@ class newGame(APIView):
             return data
         return None
 
-# def cecile
 def home_page(request):
     return render(request, 'home.html')
+
 def online_game(request):
     return render(request, 'onlineGame.html')
-#
+
 def sendNewGame(self, data):
     print("sending new msg")
     data = json.dumps(data)
@@ -54,8 +54,8 @@ def sendNewGame(self, data):
     async_to_sync(channel_layer.group_send)(
     "gameServer",
     {
-        "type": "send_data",  # Type du message à envoyer
-        "data": data,         # Données à envoyer
+        "type": "send_data",
+        "data": data,
     }
     )
     print("message send")

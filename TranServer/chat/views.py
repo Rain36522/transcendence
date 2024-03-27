@@ -88,10 +88,8 @@ class ChatListView(APIView):
             return JsonResponse({'error': str(e)}, status=500)
 
 
-# def cecile
 def general_chat(request):
     return render(request, 'generalchat.html')       
-#
 
 @login_required
 def chat_view(request):
