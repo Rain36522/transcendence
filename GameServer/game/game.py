@@ -34,7 +34,8 @@ gameSettings = {
     "user1" : "",
     "user2" : "",
     "user3" : "",
-    "user4" : ""
+    "user4" : "",
+    "gameid" : 0,
 }
 
 def putDatagameSettings(data, settings):

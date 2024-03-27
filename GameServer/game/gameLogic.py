@@ -1,6 +1,7 @@
 from wsClient import WebSocketClient
 import asyncio
 from sys import stderr
+from typing import Type, List
 
 RESET = "\033[0m"
 RED = "\033[31m"
@@ -21,82 +22,122 @@ class gameLogic:
         self.client = client
         self.game = game
         self.gameSet = gameSet
-        self.user = []
+        self.players = []
         self.initUser()
-    
+        self.plankdist = 0.45 # distance from middle to plank
+
+
     def print(self, msg):
         print(YELLOW,"Game logic :", msg, RESET, file=stderr)
 
 
     def initUser(self):
-        if self.gameSet["user1"]:
-            self.user.append(self.gameSet["user1"])
-        if self.gameSet["user2"]:
-            self.user.append(self.gameSet["user2"])
-        if self.gameSet["user3"]:
-            self.user.append(self.gameSet["user3"])
-        if self.gameSet["user4"]:
-            self.user.append(self.gameSet["user4"])
+        i = 1
+        # while i <= 4:
+        #     if self.gameSet[("user" + str(i))]:
+        #         self.users.append(self.gameSet[("user" + str(i))])
+        #     i += 1
 
-    """Client to game serv
-    char 0 = player number
-    char 1 : u = up, d = down
-    """
+
     def getMsgs(self):
         messages = self.client.getMsg()
-        if messages:
-            msg = []
-            for message in messages:
-                if message.endswith("login") and len(self.user) < self.gameSet["playeramount"] and message[:-5] not in self.user:
-                    self.print("New user " + message[:-5])
-                    self.user.append(message[:-5])
-                else:
-                    for user in self.user:
-                        if message.startswith(user):
-                            msg.append(message[len(user):])
-                            break
-            return msg
-        return None
+        if not messages:
+            return []
+        commands = []
+        for message in messages:
+            if message.endswith("login") and len(self.players) < self.gameSet["playeramount"]:
+                player = self.getPlayer(message[:-5])
+                if not player:
+                    continue
+                player.connected = True
+            else:
+                commands.append({
+                    "token": message[:-1],
+                    "move":message[len(message) - 1:]})
+        return commands
 
-
-
-    async def sendMsg(self):
-        await self.client.sendMsg(self.game)
 
     async def gameInput(self):
         try:
-            i = False
             while True:
-                messages = self.getMsgs()
-                if messages:
-                    for msg in messages:
-                        self.print(messages)
-                        if msg[0] == "1":
-                            self.game["p1"] = self.doCmd(self.game["p1"], msg[1])
-                        elif msg[0] == "2":
-                            self.game["p2"] = self.doCmd(self.game["p2"], msg[1])
-                        elif msg[0] == "3":
-                            self.game["p3"] = self.doCmd(self.game["p3"], msg[1])
-                        elif msg[0] == "4":
-                            self.game["p4"] = self.doCmd(self.game["p4"], msg[1])
-                if i:
-                    self.game["ballx"] = 10
-                    self.game["bally"] = 10
-                    i = False
-                else:
-                    self.game["ballx"] = 0
-                    self.game["bally"] = 0
-                    i = True
-                await self.sendMsg()
+                commands = self.getMsgs()
+                for command in commands:
+                    player = self.getPlayer(command.token)
+                    if not player:
+                        continue
+                    player.move(command.move)
+                await self.client.sendMsg(self.game)
                 await asyncio.sleep(0.1)
         finally:
-            print("GAME INPUT EXCITED", file=stderr)
-                    
-            
+            print("GAME INPUT EXITED", file=stderr)
+
+
+    def getPlayer(self, token):
+        for player in self.players:
+            if player.token == token:
+                return player
+        return 0
+
+class Player:
+    def __init__(self, username: str, token: str, plankLength: float, num:int, num_players:int):
+        self.username = username
+        self.plankPos = 0
+        self.plankLength = plankLength
+        self.token = token
+        self.offset = 1
+        self.connected = False
+        self.upperBound = 100
+        self.lowerBound = -100
+        self.num = num
+        self.num_players = num_players
+
+    def move(self, command):
+        if command == 'u':
+            self.plankPos += self.offset
+        elif command == 'd':
+            self.plankPos -= self.offset
+        self.plankPos = min(self.plankPos, self.upperBound)
+        self.plankPos = max(self.plankPos, self.lowerBound)
     
-    def doCmd(self, p, data):
-        if data == "u":
-            p += 1
-        elif data == "d":
-            p -= 1
-        return p
+    def getPos(self):
+        if self.num == 1:
+            return {"x": -0.5, "y": self.plankPos}
+        if self.num == 2 and self.num_players == 4:
+            return {"x": self.plankPos, "y": -0.5}
+        if self.num == 2 or self.num == 3:
+            return {"x": 0.5, "y": self.plankPos}
+        return {"x": self.plankPos, "y": 0.5}
+
+class Ball:
+    def __init(self, size: float, speed: float):
+        self.size = size
+        self.speed = speed
+        self.pos = {"x": 0.0, "y": 0.0}
+        self.dir = {"x": 1.0, "y": 0.0}
+
+    def update(self, players: List[Player], plankdist: float):
+        pass
+
+    def get_update(self):
+        return {"x": self.pos["x"] + (self.dir["x"] * self.speed),
+     "y": self.pos["y"] + self.dir["y"] * self.speed}
+    
+    def collide(self, players: List[Player], plankdist: float):
+        x_offset = plankdist
+        y_offset = 0.5
+        n_pos = self.get_update()
+        if (len(players) == 4):
+            y_offset = plankdist
+        if (n_pos["x"] > x_offset):
+            pass # check player 2 (2 player) or player 3 (4 player)
+        if (n_pos["x"] < -x_offset):
+            pass # check player 1
+        if (n_pos["y"] < -y_offset):
+            pass # hit wall (2 player) or player 2 (4 player)
+        if (n_pos["y"] > y_offset):
+            pass # hit wall (2 player) or player 4 (4 player)
+        
+
+
+
+# specify side or specify position?

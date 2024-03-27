@@ -88,7 +88,7 @@ class WebSocketServer:
         await self.clients[1][gameid].send((user + "login"))
         try:
             async for message in websocket:
-                await self.execUserMsg(message, gameid, user)
+                await self.execUserMsg(message, gameid)
         finally:
             #send to game instance user disconnected.
             self.print("user disconnected")
@@ -116,10 +116,9 @@ class WebSocketServer:
                 del self.clients[2][gameid]
 
 
-    async def execUserMsg(self, message, gameid, user):
-        self.print(YELLOW + user + message)
+    async def execUserMsg(self, message, gameid):
         if gameid in self.clients[1]:
-            await self.clients[1][gameid].send((user + message))
+            await self.clients[1][gameid].send((message))
 
 async def main():
     # os.system("python3 game/game.py &") # launch game instance. detached mode
