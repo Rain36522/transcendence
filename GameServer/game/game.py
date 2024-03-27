@@ -3,7 +3,7 @@ from wsClient import WebSocketClient
 from gameLogic import gameLogic
 import json
 import asyncio
-import sys
+from sys import stderr
 from time import sleep
 
 # Convertir JSON en dictionnaire
@@ -38,40 +38,22 @@ gameSettings = {
 }
 
 def putDatagameSettings(data, settings):
-    if data.get("ballwidth"):
-        settings["ballwidth"] = data["ballwidth"]
-    if data.get("planksize"):
-        settings["planksize"] = data["planksize"]
-    if data.get("Speed"):
-        settings["Speed"] = data["Speed"]
-    if data.get("acceleration"):
-        settings["acceleration"] = data["acceleration"]
-    if data.get("playeramount"):
-        settings["playeramount"] = data["playeramount"]
-    if data.get("winpoint"):
-        settings["winpoint"] = data["winpoint"]
-    if data.get("user1"):
-        settings["user1"] = data["user1"]
-    if data.get("user2"):
-        settings["user2"] = data["user2"]
-    if data.get("user3"):
-        settings["user3"] = data["user3"]
-    if data.get("user4"):
-        settings["user4"] = data["user4"]
+    elem = ["ballwidth", "planksize", "Speed", "acceleration", "playeramount", "winpoint", "user1", "user2", "user3", "user4", "gameid"]
+    if not data.get("gameid"):
+        print("\033[31mGameid not available.\033[0m", file=stderr)
+        exit(1)
+    for i in elem:
+        if data.get(i):
+            settings[i] = data[i]
     return settings
-
 
 # Exemple d'utilisation du client WebSocket avec asyncio
 if __name__ == "__main__":
-    print("\033[31m", file=sys.stderr)
-    #waiting wsServeur start for auto start test
-    sleep(3)
-    wsServ = "ws://localhost:8001/game/1"
-    # Création d'un client WebSocket
-    #client = WebSocketClient("ws://localhost:8001/game/" + gameSettings["gameid"])
-    client = WebSocketClient(wsServ)
     DjangoData = json.loads(json.loads(os.environ.get("newGame")))
     gameSettings = putDatagameSettings(DjangoData, gameSettings)
+    #connection with websocket server
+    wsServ = "ws://localhost:8001/game/" + str(gameSettings["gameid"])
+    client = WebSocketClient(wsServ)
     # Lancement du client WebSocket en parallèle
     asyncio.get_event_loop().run_until_complete(client.connect())
     asyncio.get_event_loop().create_task(client.receive_messages())

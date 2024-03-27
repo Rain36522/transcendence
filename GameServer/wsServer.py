@@ -57,7 +57,7 @@ class WebSocketServer:
             async for message in websocket:
                 await self.execGameMsg(message, gameid)
         finally:
-            self.print("game client is disconnected")
+            self.print("Game client is disconnected " + str(gameid))
             del self.clients[1][gameid]
 
     async def execGameMsg(self, message, gameid):
@@ -82,18 +82,18 @@ class WebSocketServer:
         user = path[2]
         if gameid not in self.clients[1]:
             self.print(ORANGE + "Wrong game id")
-            websocket.send(404)
+            await websocket.send("404")
             return
         self.addUser(websocket, gameid, user)
-        await self.clients[1][gameid].send((user + "connected"))
+        await self.clients[1][gameid].send((user + "login"))
         try:
             async for message in websocket:
                 await self.execUserMsg(message, gameid, user)
         finally:
             #send to game instance user disconnected.
-            self.print("user disconnected", file=stderr)
+            self.print("user disconnected")
             if gameid in self.clients[1]:
-                await self.clients[1][gameid].send((user + "disconnected"))
+                await self.clients[1][gameid].send((user + "logout"))
             self.rmUser(websocket, gameid)
 
     def addUser(self, websocket, gameid, user):
@@ -117,6 +117,7 @@ class WebSocketServer:
 
 
     async def execUserMsg(self, message, gameid, user):
+        self.print(YELLOW + user + message)
         if gameid in self.clients[1]:
             await self.clients[1][gameid].send((user + message))
 
