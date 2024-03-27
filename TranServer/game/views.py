@@ -33,29 +33,21 @@ class newGame(APIView):
         return HttpResponse("Failure")
     
     def changeData(self, data):
-        if data.get("ballSize") and data.get("raquetSize") and data.get("gameSpeed") and data.get("gameAcceleration"):
-            data["ballSize"] = int(data["ballSize"]) / 100
-            data["raquetSize"] = int(data["raquetSize"]) / 100
-            if int(data["gameAcceleration"]):
-                data["gameAcceleration"] = int(data["gameAcceleration"]) / 100
+        if data.get("ballwidth") and data.get("planksize") and data.get("Speed") and data.get("acceleration"):
+            data["ballwidth"] = int(data["ballwidth"]) / 100
+            data["planksize"] = int(data["planksize"]) / 100
+            if int(data["acceleration"]):
+                data["acceleration"] = int(data["acceleration"]) / 100
             return data
         return None
 
-def home_page(request):
-    return render(request, 'home.html')
-
-def online_game(request):
-    return render(request, 'onlineGame.html')
-
-def sendNewGame(self, data):
-    print("sending new msg")
-    data = json.dumps(data)
-    channel_layer = get_channel_layer()
-    async_to_sync(channel_layer.group_send)(
-    "gameServer",
-    {
-        "type": "send_data",
-        "data": data,
-    }
-    )
-    print("message send")
+    def sendNewGame(self, data):
+        data = json.dumps(data)
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+        "gameServer",
+        {
+            "type": "send_data",  # Type du message à envoyer
+            "data": data,         # Données à envoyer
+        }
+        )

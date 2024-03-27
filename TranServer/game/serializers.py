@@ -4,4 +4,4 @@ from .models import Game
 class GameSettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Game
-        fields = ["ballSize", "raquetSize", "gameSpeed", "gameAcceleration", "winPoint", "gameMode"]
+        fields = ["ballwidth", "planksize", "Speed", "acceleration", "winpoint", "gamemode"]

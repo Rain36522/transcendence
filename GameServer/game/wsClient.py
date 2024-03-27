@@ -1,5 +1,7 @@
 import asyncio
 import websockets
+from sys import stderr
+
 
 class WebSocketClient:
     def __init__(self, url):
@@ -8,10 +10,14 @@ class WebSocketClient:
 
     async def connect(self):
         self.websocket = await websockets.connect(self.url)
+        print("Game instance connected to", self.url, file=stderr)
 
     async def receive_messages(self):
-        async for message in self.websocket:
-            self.messages.append(message)
+        try:
+            async for message in self.websocket:
+                self.messages.append(message)
+        finally:
+            print("Game instance disconnected to", self.url, file=stderr)
 
     """Client to game serv
     char 0 = player number
