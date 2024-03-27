@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: pudry <pudry@student.42.fr>                +#+  +:+       +#+         #
+#    By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/08 12:20:28 by pudry             #+#    #+#              #
-#    Updated: 2024/03/26 10:59:03 by pudry            ###   ########.fr        #
+#    Updated: 2024/03/27 09:36:41 by dvandenb         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,6 +21,7 @@ NewMember:
 	python3 ./$(PROJECT)/manage.py startapp $(name)
 
 build_docker:
+	open -a Docker
 	docker pull postgres
 
 build_server:
