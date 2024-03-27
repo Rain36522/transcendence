@@ -1,7 +1,17 @@
 import websockets
 import asyncio
 import os
-import sys
+from sys import stderr
+
+RESET = "\033[0m"
+RED = "\033[31m"
+GREEN = "\033[32m"
+YELLOW = "\033[33m"
+BLUE = "\033[34m"
+MAGENTA = "\033[35m"
+CYAN = "\033[36m"
+WHITE = "\033[37m"
+ORANGE = "\033[38;2;255;165;0m"
 
 class WebSocketServer:
     def __init__(self, host, port):
@@ -9,6 +19,9 @@ class WebSocketServer:
         self.port = port
         self.clients = [set(), {}, {}] # self.clients contain the differents connexion (django, game instance, user)
         self.finishGames = []
+
+    def print(self, msg):
+        print(BLUE,"Game Server :", msg, RESET, file=stderr)
     
     async def handle_client(self, websocket, path):
         msg = []
@@ -19,7 +32,7 @@ class WebSocketServer:
 
     async def start_server(self):
         async with websockets.serve(self.handle_client, self.host, self.port):
-            print("Server is runing in : " + self.host + ":" + str(self.port), file=sys.stderr)
+            self.print(GREEN + "Server is runing in : " + self.host + ":" + str(self.port))
             await asyncio.Future()
 
     def run(self):
@@ -37,14 +50,14 @@ class WebSocketServer:
     Save as map (gameid, client)
     """
     async def GameMsg(self, websocket, path):
-        print("New game connection", file=sys.stderr)
+        self.print("New game connection")
         gameid = path[6:]
         self.clients[1][gameid] = websocket
         try:
             async for message in websocket:
                 await self.execGameMsg(message, gameid)
         finally:
-            print("game client is disconnected", file=sys.stderr)
+            self.print("game client is disconnected")
             del self.clients[1][gameid]
 
     async def execGameMsg(self, message, gameid):
@@ -59,7 +72,7 @@ class WebSocketServer:
         Saved as map (gameid, vector of client.)
         """
     async def UserMsg(self, websocket, path):
-        print("New User connection", file=sys.stderr)
+        self.print("New User connection")
         path = path.split("/")
         while "" in path:
             path.remove("")
@@ -67,6 +80,10 @@ class WebSocketServer:
             return
         gameid = path[1]
         user = path[2]
+        if gameid not in self.clients[1]:
+            self.print(ORANGE + "Wrong game id")
+            websocket.send(404)
+            return
         self.addUser(websocket, gameid, user)
         await self.clients[1][gameid].send((user + "connected"))
         try:
@@ -74,7 +91,7 @@ class WebSocketServer:
                 await self.execUserMsg(message, gameid, user)
         finally:
             #send to game instance user disconnected.
-            print("user disconnect", file=sys.stderr)
+            self.print("user disconnected", file=stderr)
             if gameid in self.clients[1]:
                 await self.clients[1][gameid].send((user + "disconnected"))
             self.rmUser(websocket, gameid)

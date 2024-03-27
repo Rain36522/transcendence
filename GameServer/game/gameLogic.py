@@ -30,7 +30,7 @@ class gameLogic:
         if messages:
             msg = []
             for message in messages:
-                if message.endwith("connected") and len(self.user) < self.gameSet["playeramount"] and message[:-9] not in self.user:
+                if message.endswith("connected") and len(self.user) < self.gameSet["playeramount"] and message[:-9] not in self.user:
                     print("New user", message[:-9], file=stderr)
                     self.user.append(message[:-9])
                 else:
