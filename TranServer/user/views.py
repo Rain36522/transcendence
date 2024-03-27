@@ -2,12 +2,15 @@ from django.contrib.auth import authenticate, login, get_user_model
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.urls import reverse_lazy
+from rest_framework.views import APIView
+
 from django.views import generic
 from .forms import CustomUserCreationForm, InvitationForm, AcceptInviteForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import User
 from django.contrib import messages
+from django.http import JsonResponse
 
 @login_required
 def invite_user(request):
@@ -41,18 +44,16 @@ def invite_user(request):
 
     return render(request, 'invite_user.html', {'invite_form': invite_form, 'accept_form': accept_form})
 
-# def user_login(request):
-#     if request.method == "POST":
-#         username = request.POST['username']
-#         password = request.POST['password']
-#         user = authenticate(request, username=username, password=password)
-#         if user is not None:
-#             login(request, user)
-#             return redirect('home')  # Redirige vers la page d'accueil après connexion
-#         else:
-#             return HttpResponse("Échec de la connexion. Essayez à nouveau.")
-#     return render(request, 'login.html')  # Affiche le formulaire de connexion pour une requête GET
-
+class user_login_api(APIView):
+    def post(self, request):
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')  # Redirige vers la page d'accueil après connexion
+        else:
+            return JsonResponse({'error': 'Invalid username or password'}, status=400)
 
 class SignUpView(generic.CreateView):
     form_class = CustomUserCreationForm
