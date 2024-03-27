@@ -1,3 +1,6 @@
+import { Settings } from './Settings.js';
+import { Player } from './Player.js';
+
 document.addEventListener('DOMContentLoaded', () => {
 
     /*‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾*\
@@ -24,16 +27,25 @@ document.addEventListener('DOMContentLoaded', () => {
     scoreBoard.style.color = 'white';
     scoreBoard.style.marginBottom = '10px';
 
-    // Set field size
-    let gameWidth = 1200;
-    let gameHeight = gameWidth;
+    // Player information
+    let playerID = 4; // Can be 1, 2, 3 or 4
 
-    // Set ball and paddles size
-    let ballDiameter = gameHeight * 0.03;
+    const settingsJson = JSON.stringify({
+        nbPlayers: 4,
+        player1Name: 'Shrek 1',
+        player2Name: 'Fionna 2',
+        player3Name: 'Donkey 3',
+        player4Name: 'Dragon 4',
+        gameWidth: 1200,
+        paddleColor: "white",
+        paddleWidth: 0.02,
+        paddleLength: 0.2,
+        paddleOffset: 0.02,
+        ballSize: 0.03,
+        isSolo: false
+        });
 
-    let paddleWidth = gameHeight * 0.02;
-    let paddleHeight = gameHeight * 0.2;
-    let paddleOffset = gameWidth * 0.01;
+    let gameSettings = new Settings(settingsJson);
 
     //pictures for ball, background and field
     let isImage = false; // This switch controls if images are used
@@ -46,22 +58,12 @@ document.addEventListener('DOMContentLoaded', () => {
     ballImage.src = 'https://i1.sndcdn.com/avatars-000894638827-qr5jsd-t240x240.jpg'; // Adjust path
 
     // Initialize start positions and score
-    let scorePlayer1 = 0;
-    let scorePlayer2 = 0;
-    let scorePlayer3 = 0;
-    let scorePlayer4 = 0;
-    let paddlePositionPlayer1 = 0.5;
-    let paddlePositionPlayer2 = -0.5;
-    let paddlePositionPlayer3 = 0;
-    let paddlePositionPlayer4 = -0.3;
     let ballPosition = { x: 0, y: 0 };
 
-    // Player information
-    let playerID = '4'; // Can be 'j1', 'j2', 'j3' or 'j4'
-    let player1Name = 'Shrek 1';
-    let player2Name = 'Fionna 2';
-    let player3Name = 'Donkey 3';
-    let player4Name = 'Dragon 4';
+    let players = [gameSettings.nbPlayers];
+    for (let i = 0; i < gameSettings.nbPlayers; i++)
+        players[i] = new Player(i + 1, gameSettings.playersNames[i], gameSettings);
+
 
     // WebSocket setup
     let ws;
@@ -83,16 +85,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // ball update
             ballPosition.x = data.ballx;
             ballPosition.y = data.bally;
-            // update paddles
-            paddlePositionPlayer1 = data.p1;
-            paddlePositionPlayer2 = data.p2;
-            paddlePositionPlayer3 = data.p3;
-            paddlePositionPlayer4 = data.p4;
-            // update score
-            scorePlayer1 = data.score1;
-            scorePlayer2 = data.score2;
-            scorePlayer3 = data.score3;
-            scorePlayer4 = data.score4;
+
+            for (let i = 0; i < gameSettings.nbPlayers; i++)
+                players[i].updateStatus(data[`p${i + 1}`], data[`score${i + 1}`]);
             drawGame();
         };
         ws.onclose = () =>
@@ -148,22 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
         canvas.height = gameHeight;
 
         // If playerID is 'j2', rotate the canvas for the player's perspective
-        if (playerID === '2') {
-            CanvasContext.save(); // Save the current state
-            CanvasContext.translate(gameWidth / 2, gameHeight / 2); // Move to the center of the canvas
-            CanvasContext.rotate(Math.PI); // Rotate 180 degrees
-            CanvasContext.translate(-gameWidth / 2, -gameHeight / 2); // Move back to the original position
-        } else if (playerID === '3') {
-            CanvasContext.save();
-            CanvasContext.translate(gameWidth / 2, gameHeight / 2);
-            CanvasContext.rotate(-Math.PI / 2);
-            CanvasContext.translate(-gameHeight / 2, -gameWidth / 2);
-        } else if (playerID === '4') {
-            CanvasContext.save();
-            CanvasContext.translate(gameWidth / 2, gameHeight / 2);
-            CanvasContext.rotate(Math.PI / 2);
-            CanvasContext.translate(-gameHeight / 2, -gameWidth / 2);
-        }
+        players[playerID - 1].applyRotation(CanvasContext);
 
         // Draw field
         if (isImage) {
@@ -177,16 +157,11 @@ document.addEventListener('DOMContentLoaded', () => {
         CanvasContext.lineWidth = 5;
         CanvasContext.strokeRect(0, 0, gameWidth, gameHeight);
 
-        // Convert paddles position and draw paddles
-        const paddleYPlayer1 = (gameHeight * (paddlePositionPlayer1 * -1 + 0.5)) - (paddleHeight / 2);
-        const paddleYPlayer2 = (gameHeight * (paddlePositionPlayer2 * -1 + 0.5)) - (paddleHeight / 2);
-        const paddleXPlayer3 = (gameWidth * (paddlePositionPlayer3 * -1 + 0.5)) - (paddleHeight / 2);
-        const paddleXPlayer4 = (gameWidth * (paddlePositionPlayer4 * -1 + 0.5)) - (paddleHeight / 2);
-        CanvasContext.fillStyle = '#FFF';
-        CanvasContext.fillRect(paddleOffset, paddleYPlayer1, paddleWidth, paddleHeight); // Player1
-        CanvasContext.fillRect(gameWidth - paddleWidth - paddleOffset, paddleYPlayer2, paddleWidth, paddleHeight); // Player2
-        CanvasContext.fillRect(paddleXPlayer3, paddleOffset, paddleHeight, paddleWidth); // Player3
-        CanvasContext.fillRect(paddleXPlayer4, gameHeight - paddleWidth - paddleOffset, paddleHeight, paddleWidth); // Player4
+
+        //draw paddles
+        for (let i = 0; i < gameSettings.nbPlayers; i++)
+            players[i].draw(CanvasContext);
+
 
         // Draw ball
         if (isImage) {
@@ -207,15 +182,15 @@ document.addEventListener('DOMContentLoaded', () => {
             CanvasContext.restore();
 
         // Update and display the scoreboard based on playerID
-        if (playerID === '1') {
-            scoreBoard.innerHTML = `${player3Name}: ${scorePlayer3}<br>${player1Name}: ${scorePlayer1} - ${player2Name}: ${scorePlayer2}<br>${player4Name}: ${scorePlayer4}`;
-        } else if (playerID === '2') {
-            scoreBoard.innerHTML = `${player4Name}: ${scorePlayer4}<br>${player2Name}: ${scorePlayer2} - ${player1Name}: ${scorePlayer1}<br>${player3Name}: ${scorePlayer3}`;
-        } else if (playerID === '3') {
-            scoreBoard.innerHTML = `${player1Name}: ${scorePlayer1}<br>${player3Name}: ${scorePlayer3} - ${player4Name}: ${scorePlayer4}<br>${player2Name}: ${scorePlayer2}`;
-        } else if (playerID === '4') {
-            scoreBoard.innerHTML = `${player2Name}: ${scorePlayer2}<br>${player4Name}: ${scorePlayer4} - ${player3Name}: ${scorePlayer3}<br>${player1Name}: ${scorePlayer1}`;
-        }
+
+        if (playerID === 1)
+            scoreBoard.innerHTML = `${gameSettings.playersNames[2]}: ${players[2].Points}<br>${gameSettings.playersNames[0]}: ${players[0].Points} - ${gameSettings.playersNames[1]}: ${players[1].Points}<br>${gameSettings.playersNames[3]}: ${players[3].Points}`;
+        else if (playerID === 2)
+            scoreBoard.innerHTML = `${gameSettings.playersNames[3]}: ${players[3].Points}<br>${gameSettings.playersNames[1]}: ${players[1].Points} - ${gameSettings.playersNames[0]}: ${players[0].Points}<br>${gameSettings.playersNames[2]}: ${players[2].Points}`;
+        else if (playerID === 3)
+            scoreBoard.innerHTML = `${gameSettings.playersNames[0]}: ${players[0].Points}<br>${gameSettings.playersNames[2]}: ${players[2].Points} - ${gameSettings.playersNames[3]}: ${players[3].Points}<br>${gameSettings.playersNames[1]}: ${players[1].Points}`;
+        else if (playerID === 4)
+            scoreBoard.innerHTML = `${gameSettings.playersNames[1]}: ${players[1].Points}<br>${gameSettings.playersNames[3]}: ${players[3].Points} - ${gameSettings.playersNames[2]}: ${players[2].Points}<br>${gameSettings.playersNames[0]}: ${players[0].Points}`;
     }
 
     drawGame();
