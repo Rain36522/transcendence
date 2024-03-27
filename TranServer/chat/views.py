@@ -87,9 +87,9 @@ class ChatListView(APIView):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
 
-
+@login_required
 def general_chat(request):
-    return render(request, 'generalchat.html')       
+    return render(request, 'html/generalchat.html')       
 
 @login_required
 def chat_view(request):
