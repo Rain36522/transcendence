@@ -48,8 +48,9 @@ class DjangoCli:
         while True:
             try:
                 message = await self.websocket.recv()
-                os.environ['newGame'] = message
-                os.system("python3 game/game.py &")
+                print(message, file=sys.stderr)
+                # os.environ['newGame'] = message
+                # os.system("python3 game/game.py &")
             except websockets.exceptions.ConnectionClosed:
                 i += 1
                 self.print(ORANGE + "Connection to server django closed")

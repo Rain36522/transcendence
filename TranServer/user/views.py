@@ -2,12 +2,15 @@ from django.contrib.auth import authenticate, login, get_user_model
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.urls import reverse_lazy
+from rest_framework.views import APIView
+
 from django.views import generic
 from .forms import CustomUserCreationForm, InvitationForm, AcceptInviteForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import User
 from django.contrib import messages
+from django.http import JsonResponse
 
 @login_required
 def invite_user(request):
@@ -41,8 +44,8 @@ def invite_user(request):
 
     return render(request, 'invite_user.html', {'invite_form': invite_form, 'accept_form': accept_form})
 
-def user_login(request):
-    if request.method == "POST":
+class user_login_api(APIView):
+    def post(self, request):
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
@@ -50,20 +53,31 @@ def user_login(request):
             login(request, user)
             return redirect('home')  # Redirige vers la page d'accueil après connexion
         else:
-            return HttpResponse("Échec de la connexion. Essayez à nouveau.")
-    return render(request, 'login.html')  # Affiche le formulaire de connexion pour une requête GET
-
+            return JsonResponse({'error': 'Invalid username or password'}, status=400)
 
 class SignUpView(generic.CreateView):
     form_class = CustomUserCreationForm
     success_url = reverse_lazy('login')
     template_name = 'signup.html'
 
+def account_information(request):
+    return render(request, 'accountInformation.html')
+
+def user_dashboard(request):
+    return render(request, 'dashboard.html')
+
+def user_login(request):
+    return render(request, 'login.html')
+
+def user_register(request):
+    return render(request, 'register.html')
+
+def social_management(request):
+    return render(request, 'socialManagement.html')
 
 @login_required
 def profile(request):
     return render(request, 'profile.html')
-
 
 def profil_utilisateur(request, username):
     user = get_object_or_404(get_user_model(), username=username)
@@ -74,16 +88,12 @@ def dashboard(request):
     return render(request, 'dashboard.html', {'user': request.user})
 
 def ajouter_resultat(request, points_joueur, points_ennemi, username_ennemi):
-    # Trouver l'utilisateur et l'ennemi (assure-toi que 'ennemi' existe aussi dans ta base de données)
     utilisateur = request.user
-    # Exemple d'ajout d'un résultat dans l'historique
     nouveau_resultat = [points_joueur, points_ennemi, username_ennemi]
     historique_actuel = utilisateur.historique_resultats
     historique_actuel.append(nouveau_resultat)
     utilisateur.historique_resultats = historique_actuel
     utilisateur.save()
-
-
 
 def home(request):
     return HttpResponse('Bienvenue sur la page d\'accueil !')

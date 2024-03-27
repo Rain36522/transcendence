@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <style>
+        /* Styles communs */
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Image de fond avec effet noir et blanc */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg');
+            background-size: cover;
+            background-position: center;
+            filter: grayscale(100%);
+            z-index: -1;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            z-index: 1;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-transform: uppercase; /* Met tous les mots du header en majuscule */
+            padding: 5px; /* Réduire la hauteur totale du header */
+        }
+
+        .logo {
+            text-decoration: none;
+            color: #FFFF99; /* Couleur jaune pale fluo */
+            font-size: 50px;
+        }
+
+        .additional-links ul {
+            list-style: none;
+            display: flex;
+            gap: 10px;
+            margin: 0;
+            padding: 0;
+            margin-left: auto;
+        }
+
+        /* Styles pour les éléments de texte du header */
+        header a,
+        header li {
+            font-size: 25px; /* Taille de police souhaitée */
+        }
+
+        .additional-links ul li a {
+            text-decoration: none;
+            color: white;
+        }
+
+        /* Contenu */
+        .content {
+            position: relative;
+            padding: 50px;
+            box-sizing: border-box;
+            color: white;
+            text-align: center;
+        }
+
+        .title-container {
+            margin-bottom: 40px;
+        }
+
+        .title-container h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 60px;
+            margin: 0;
+        }
+
+        .separator-line {
+            width: 100%;
+            height: 2px;
+            background-color: white;
+            margin: 20px 0;
+        }
+
+        .select-text {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .select-text select,
+        .select-text .slider {
+            margin: 0 10px;
+            font-size: 18px;
+            background-color: #FFFF99;
+            padding: 8px 12px;
+            border-radius: 10px;
+            color: black;
+        }
+
+        .slider {
+            width: 50%;
+        }
+
+        .create-button {
+            padding: 20px 25px;
+            background-color: #FFFF99;
+            color: #333;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 24px;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .create-button:hover,
+        .create-button:focus {
+            background-color: #cccc00;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .exit-link {
+            color: white;
+            text-decoration: none;
+            font-size: 20px;
+        }
+
+        /* Cadre de formulaire d'inscription */
+        #login-container {
+            max-width: 500px; /* Agrandissement de la largeur du conteneur */
+            padding: 20px; /* Réduction du padding */
+            border: 2px solid #000;
+            border-radius: 15px; /* Réduction du rayon de la bordure */
+            background-color: #3030309a;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.8); /* Réduction de l'ombre */
+            margin: 0 auto; /* Centrage horizontal */
+            margin-top: 145px; /* Réduction de la marge supérieure */
+            margin-bottom: 50px; /* Ajustement de la marge inférieure */
+            height: 70vh; /* Réduction de la hauteur */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: rgb(234, 230, 230);
+            font-weight: bold;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .split-text {
+            margin-bottom: 15px; /* Réduction de l'espace entre les éléments */
+        }
+
+        .split-text span {
+            display: block;
+            text-align: center;
+        }
+
+        .welcome-text {
+            font-size: 40px; /* Réduction de la taille du texte de bienvenue */
+        }
+
+        .split-text span:not(.welcome-text) {
+            font-size: 50px; /* Réduction de la taille des autres textes */
+        }
+
+        #login-container form {
+            width: 100%;
+            max-width: 400px; /* Largeur maximale du formulaire */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        button {
+            width: calc(100% - 40px);
+            padding: 12px; /* Réduction du padding */
+            margin: 8px 0; /* Réduction de la marge */
+            box-sizing: border-box;
+            font-size: 16px; /* Réduction de la taille de la police */
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #FFFF99;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.5s ease, transform 0.5s ease;
+            margin-top: 20px; /* Réduction de la marge supérieure */
+        }
+
+        button:hover,
+        button:focus {
+            background-color: #e7e735;
+            transform: scale(1.1);
+        }
+
+/* Pour le lien "Already have an account? Login here" */
+#register-link {
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+    margin-top: 10px;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+    font-weight: normal;
+    font-family: 'Arial', sans-serif; /* Changer la police d'écriture */
+}
+
+/* Pour les éléments "TRANSCENDANCE" et "PROFILE" */
+.logo, .profile {
+    margin-left: 10px; /* Décaler TRANSCENDANCE du bord gauche */
+    margin-right: 10px; /* Décaler PROFILE du bord droit */
+}
+
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1><a href="home.html" class="logo">TRANSCENDANCE</a></h1> <!-- Transcendance en jaune pale fluo -->
+        <nav class="additional-links">
+            <ul>
+                <li><a href="login.html" class="logout">LOGOUT</a></li> <!-- Mots du header en majuscule -->
+                <li><a href="generalchat.html" class="chat">CHAT</a></li>
+                <li><a href="dashboard.html" class="profile">PROFILE</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div id="login-container">
+        <div class="split-text">
+            <span class="welcome-text">Welcome!</span>
+            <span>Please register</span>
+        </div>
+        <form>
+            <input type="text" placeholder="Username" name="username">
+            <input type="text" placeholder="Mail" name="mail">
+            <input type="password" placeholder="Password" name="password">
+            <input type="password" placeholder="Confirm Password" name="confirm-password">
+            <button type="submit">Register</button>
+        </form>
+        <a href="login.html" id="register-link">Already have an account? Login here</a>
+    </div>
+</body>
+
+</html>

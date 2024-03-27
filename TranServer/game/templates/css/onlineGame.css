@@ -1,0 +1,173 @@
+.vignette {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 0 200px rgba(0,0,0,0.9) inset;
+  }
+
+  .content {
+    position: fixed;
+    top: 55%; /* Abaisse le cadre vers le bas */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 15px; /* Réduction du padding */
+    box-sizing: border-box;
+    color: white;
+    background-color: rgba(34, 34, 34, 0.793);
+    border-radius: 10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    width: 50%; /* Réduction de la largeur */
+    max-height: 75vh; /* Réduction de la hauteur */
+    overflow: hidden; /* Supprime la barre de défilement */
+}
+
+  header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    z-index: 1;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .additional-links ul {
+    list-style: none;
+    display: flex;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    margin-left: auto;
+  }
+
+  .additional-links ul li a {
+    text-decoration: none;
+    color: white;
+  }
+
+  select, .slider {
+    font-weight: bold;
+    font-size: 20px;
+    background-color: #ffff80;
+    padding: 8px 12px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    color: black;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    width: 10%; /* Ajustement de la largeur */
+}
+
+  .create-button, .exit-link {
+    padding: 0; /* Réduction du padding */
+    border: none; /* Suppression de la bordure */
+    cursor: pointer;
+    text-transform: none; /* Annulation de la transformation du texte */
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: none; /* Suppression de l'ombre */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+    background-color: transparent; /* Fond transparent */
+    margin-bottom: 10px;
+    font-weight: 400;
+    font-size: 18px; /* Taille de police */
+    width: auto; /* Ajustement de la largeur */
+  }
+
+  .exit-link:hover {
+    color: #cccc00;
+  }
+
+  .title-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px; /* Réduction de la marge */
+  }
+
+  .title-container h2 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 30px; /* Réduction de la taille de la police */
+    margin: 0;
+  }
+
+  .separator-line {
+    width: 100%;
+    height: 2px;
+    background-color: white;
+    margin: 15px 0; /* Réduction de la marge */
+  }
+
+  .select-text {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 20px; /* Réduction de la marge */
+    font-weight: bold;
+    font-size: 20px; /* Réduction de la taille de la police */
+  }
+
+  body {
+    background-image: url('https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg');
+    background-size: cover;
+    background-position: center;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+    z-index: -1; /* Placer en-dessous de tout le reste */
+  }
+
+  body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: grayscale(100%); /* Convertir en noir et blanc */
+    z-index: 0; /* Placer en-dessous de tout le reste */
+  }
+
+  .exit-link {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 400;
+  }
+
+  .exit-link:hover {
+    color: rgb(255, 255, 255);
+  }
+
+  .create-link {
+    background-color: #FFFF84; /* Couleur de fond du bouton */
+    color: black; /* Couleur du texte */
+    padding: 15px 30px; /* Remplissage intérieur */
+    text-align: center; /* Alignement du texte */
+    text-decoration: none; /* Suppression du soulignement */
+    display: inline-block; /* Affichage en ligne */
+    font-size: 20px; /* Taille de la police */
+    border-radius: 5px; /* Bord arrondi */
+    margin-bottom: 20px; /* Marge en bas pour l'espacement */
+    transition: background-color 0.3s; /* Transition de couleur de fond */
+    font-weight: bold; /* Texte en gras */
+    text-transform: uppercase; /* Texte en majuscules */
+}
+
+.create-link:hover {
+    background-color: #F9F949; /* Changement de couleur de fond au survol */
+}

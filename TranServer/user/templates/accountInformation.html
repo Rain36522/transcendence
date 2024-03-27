@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Information</title>
+    <link rel="stylesheet" href="home.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@300;400;600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-shadow: 0 0 200px rgba(0,0,0,0.9) inset;
+        }
+        .image-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%);
+        }
+
+        header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.596);
+            color: #FFFFE0;
+            z-index: 10;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px; /* Ajustez cette valeur selon vos préférences */
+        }
+        .header-btn {
+            background: none;
+            border: none;
+            color: #FFFFE0;
+            font-family: 'Poppins', sans-serif;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 12px 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+        }
+        .profile-btn {
+            background-color: #FFFF99;
+            border-radius: 5px;
+            color: #000;
+        }
+        .frame {
+            position: fixed;
+            top: 25%;
+            left: 15%;
+            width: 70%;
+            height: 60%;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            display: flex;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            z-index: 11; /* Assurez-vous que le z-index soit supérieur à celui de tout autre élément */
+            overflow: hidden;
+        }
+        .tab-container {
+            width: 25%;
+            background-color: #EEE;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: start;
+            padding: 20px;
+            gap: 10px;
+            border-right: 2px solid #CCC;
+        }
+        .tab {
+            width: 100%;
+            text-align: center;
+            padding: 15px 0;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            border-radius: 5px;
+            color: #333;
+            background-color: #DDD;
+            font-weight: 700;
+            border-bottom: 1px solid #CCC;
+            text-decoration: none;
+        }
+        .tab.active {
+            background-color: #DDD; /* bouton dashboard */
+            color: #333;
+        }
+        .tab:hover {
+            background-color: #F0F0F0;
+            transform: translateY(-2px);
+        }
+        /* Ajout de styles pour le bouton "Account Informations" */
+        #account-info-tab {
+            background-color: #000000; /* Couleur de fond */
+            color: #FFF; /* Couleur du texte */
+        }
+
+        #account-info-tab:hover {
+            background-color: #30302f; /* Couleur de fond au survol */
+        }
+        .content-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            padding: 20px;
+            gap: 20px;
+        }
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            background-color: #ccc;
+            border-radius: 50%;
+            border: 3px solid #FFFFE0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        .logo {
+            text-transform: uppercase;
+            text-decoration: none; /* Supprime le soulignement */
+            color: #ffff99; /* Jaune pâle */
+            font-size: 40px;
+        }
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            width: 60%;
+        }
+        .user-info div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .user-info div input {
+            border: 1px solid #CCC;
+            border-radius: 5px;
+            padding: 5px;
+            font-size: 14px;
+            width: 60%;
+        }
+        .edit-link {
+            align-self: center;
+            margin-top: auto;
+            padding: 8px 24px;
+            background-color: #333;
+            color: #FFFFE0;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .edit-link:hover {
+            background-color: #444;
+            color: #FFF;
+        }
+    </style>
+</head>
+<body>
+    <div class="vignette"></div>
+    <header>
+        <h1><a href="{% url 'home_page' %}" class="logo">Transcendance</a></h1>
+        <div>
+            <a href="{% url 'general_chat' %}" class="header-btn">Chat</a>
+            <a href="{% url 'user_login' %}" class="header-btn">Logout</a>
+            <a href="{% url 'user_dashboard' %}" class="header-btn profile-btn">Profile</a>
+        </div>
+    </header>
+    <div class="image-container">
+        <img src="https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg" alt="Votre image" style="width:100%; height:100%; object-fit: cover;">
+    </div>
+    <div class="frame">
+        <div class="tab-container">
+            <a href="{% url 'account_information' %}" class="tab" id="account-info-tab">Account Informations</a>
+            <a href="{% url 'user_dashboard' %}" class="tab active">Dashboard</a>
+            <a href="{% url 'social_management' %}" class="tab">Social Management</a>
+        </div>    
+        <div class="content-area">
+            <img src="shrek.jpg" alt="Photo de profil" class="profile-pic">
+            <div class="user-info">
+                <div><label>Username:</label><input type="text" value="Shrekito"></div>
+                <div><label>Mail:</label><input type="email" value="shrek@swamp.far"></div>
+                <div><label>Pronouns:</label><input type="text" value="They, them, it, whom"></div>
+                <div><label>Password:</label><input type="password" value="password"></div>
+            </div>
+            <a href="#" class="edit-link">Edit</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -6,7 +6,6 @@ import asyncio
 
 
 if __name__ == "__main__":
-    print("\033[38;5;208m", file=sys.stderr)
     django = "ws://daphne:8002/wsgameserver/"
     Serveur = WebSocketServer("0.0.0.0", 8001)
     djangoCli = DjangoCli(Serveur, django)
