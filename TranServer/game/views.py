@@ -42,10 +42,10 @@ class newGame(APIView):
         return None
 
 def home_page(request):
-    return render(request, 'home.html')
+    return render(request, 'html/home.html')
 
 def online_game(request):
-    return render(request, 'onlineGame.html')
+    return render(request, 'html/onlineGame.html')
 
 def sendNewGame(self, data):
     print("sending new msg")

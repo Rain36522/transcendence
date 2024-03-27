@@ -1,13 +1,14 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account Information</title>
-    <link rel="stylesheet" href="../css/home.css">
-    <link rel="stylesheet" href="../css/accountInformation.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@300;400;600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/accountInformation.css">
+    <link rel="stylesheet" href="{% static 'home.css' %}">
+    <link rel="stylesheet" href="{% static 'accountInformation.css' %}">
 </head>
 <body>
     <div class="vignette"></div>
@@ -29,7 +30,7 @@
             <a href="{% url 'social_management' %}" class="tab">Social Management</a>
         </div>    
         <div class="content-area">
-            <img src="shrek.jpg" alt="Photo de profil" class="profile-pic">
+            <img src="" alt="Photo de profil" class="profile-pic">
             <div class="user-info">
                 <div><label>Username:</label><input type="text" value="Shrekito"></div>
                 <div><label>Mail:</label><input type="email" value="shrek@swamp.far"></div>

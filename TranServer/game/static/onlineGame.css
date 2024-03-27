@@ -66,6 +66,14 @@
     width: 10%; /* Ajustement de la largeur */
 }
 
+  .slider {
+    width: 200%;
+  }
+
+  select {
+    width: 17%;
+  }
+
   .create-button, .exit-link {
     padding: 0; /* Réduction du padding */
     border: none; /* Suppression de la bordure */

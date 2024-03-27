@@ -59,20 +59,23 @@ class SignUpView(generic.CreateView):
     success_url = reverse_lazy('login')
     template_name = 'signup.html'
 
+@login_required
 def account_information(request):
-    return render(request, 'accountInformation.html')
+    return render(request, 'html/accountInformation.html')
 
+@login_required
 def user_dashboard(request):
-    return render(request, 'dashboard.html')
+    return render(request, 'html/dashboard.html')
 
 def user_login(request):
-    return render(request, 'login.html')
+    return render(request, 'html/login.html')
 
 def user_register(request):
-    return render(request, 'register.html')
+    return render(request, 'html/register.html')
 
+@login_required
 def social_management(request):
-    return render(request, 'socialManagement.html')
+    return render(request, 'html/socialManagement.html')
 
 @login_required
 def profile(request):

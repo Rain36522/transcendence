@@ -9,5 +9,5 @@ urlpatterns = [
      path('api/chat/<str:chat_id>/', ChatListView.as_view(), name='chat_api'),
      path('api/messages/<str:chat_id>/', MessageListView.as_view(), name='chat_message_view'),
      path('test/', ws_view, name='ws_view'),
-	 path('generalchat/', general_chat, name='general_chat')
+	path('generalchat/', general_chat, name='general_chat')
 ]
