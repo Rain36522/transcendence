@@ -81,14 +81,91 @@
 #     style=example_style).run()
 
 
-from prompt_toolkit.shortcuts import radiolist_dialog
+# from prompt_toolkit.shortcuts import radiolist_dialog
 
-result = radiolist_dialog(
-    title="RadioList dialog",
-    text="Which breakfast would you like ?",
-    values=[
-        ("breakfast1", "Eggs and beacon"),
-        ("breakfast2", "French breakfast"),
-        ("breakfast3", "Equestrian breakfast")
-    ]
-).run()
+# result = radiolist_dialog(
+#     title="RadioList dialog",
+#     text="Which breakfast would you like ?",
+#     values=[
+#         ("breakfast1", "Eggs and beacon"),
+#         ("breakfast2", "French breakfast"),
+#         ("breakfast3", "Equestrian breakfast")
+#     ]
+# ).run()
+
+# import requests
+# from bs4 import BeautifulSoup
+
+# # URL de la page de connexion
+# url = 'https://127.0.0.1/register/'
+
+# # Envoi d'une requête GET pour récupérer la page de connexion et le token CSRF
+# response = requests.get(url, verify=False)
+
+# # Données du formulaire de connexion, incluant le token CSRF
+# myobj = {'username': 'test', 'email': 'pudry@42.student.ch', 'password1': '3azah9avuw#9TM!chHu#^$vXppPps', 'password2': '3azah9avuw#9TM!chHu#^$vXppPps'}
+# response = requests.get(url, verify=False)
+
+
+# csrf_token = response.cookies.get('csrftoken')
+# print("Token", csrf_token)
+
+# headers = {'Referer': url, 'X-CSRFToken': csrf_token}  # Ajout de l'en-tête Referer
+# cookies = {'csrftoken': csrf_token}  # Ajout du cookie CSRF
+# # Envoi de la requête POST avec le  dtoken CSRF inclus dans les données du formulaire
+# response = requests.post(url, data=myobj, headers=response.headers, cookies=response.cookies, verify=False)
+
+
+# # Affichage de la réponse
+# print(response.text)
+
+# # # Affichage des cookies de la réponse
+# print("Cookies : ", response.cookies)
+
+
+import requests
+from color import *
+from time import sleep
+
+# URL de la page de connexion
+url = 'https://127.0.0.1/register/'
+url2 = 'https://127.0.0.1/api/signup/'
+
+# Envoi d'une requête GET pour récupérer la page de connexion et le token CSRF
+response = requests.get(url, verify=False)
+
+# Récupération du token CSRF depuis les cookies de la réponse
+csrf_token = response.cookies.get('csrftoken')
+print(YELLOW, response.text, RESET)
+
+
+# print(GREEN, response.text)
+tokenStart = response.text.find("<input type=\"hidden\" name=\"csrfmiddlewaretoken\" value=\"") + 55
+tokenStop = response.text.find("\">", tokenStart)
+csrfmiddlewaretoken = response.text[tokenStart:tokenStop]
+print(ORANGE, csrfmiddlewaretoken, RESET)
+
+# En-têtes et cookies nécessaires pour la requête POST
+headers = {'Referer': url, 'X-CSRFToken': csrf_token}
+cookies = {'csrftoken': csrf_token}
+
+myobj = {
+    'username': 'test',
+    'email': 'pudry@42.student.ch',
+    'password': '3azah9avuw#9TM!chHu#^$vXppPps',
+    'csrfmiddlewaretoken': csrfmiddlewaretoken
+}
+
+# Envoi de la requête POST avec le token CSRF inclus dans les données du formulaire
+
+response = requests.post(url2, data=myobj, headers=headers, cookies=cookies, verify=False)
+
+# Affichage de la réponse
+print(MAGENTA, response.text, RESET)
+
+# Affichage des cookies de la réponse
+print("Cookies:", response.cookies)
+
+
+# name="csrfmiddlewaretoken"
+# value="zGn8Jg4zlk9jw9uwxGPq0DgTkfT2IMZSzEDBZNggyIXUqtcqkvOKfNKmYgQzWFDz"
