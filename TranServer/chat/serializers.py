@@ -1,9 +1,9 @@
 from rest_framework import serializers
 from .models import Chat, Message
-from user.serializers import UserSerializer
+from user.serializers import UserSerializer_Username
 
 class ChatSerializer(serializers.ModelSerializer):
-    participants = UserSerializer(many=True)
+    participants = UserSerializer_Username(many=True)
 
     class Meta:
         model = Chat
