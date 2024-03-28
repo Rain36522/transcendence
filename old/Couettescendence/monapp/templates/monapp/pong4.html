@@ -1,25 +1,25 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="fr">
-	<head>
-		<title>Pong Game Display</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		<style>
-			body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #000;}
-			canvas { background: #000; }
-			#gameContainer {
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				justify-content: center;
-			}
-		</style>
-	</head>
-	<body>
-		<div id="gameContainer">
-			<!-- Le scoreboard sera ajouté dynamiquement ici -->
-			<canvas id="pongCanvas"></canvas>
-		</div>
-		<script src="{% static 'js/pong4.js' %}"></script>
-	</body>
+    <head>
+        <title>Pong Game Display</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <style>
+            body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #000;}
+            canvas { background: #000; }
+            #gameContainer {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="gameContainer">
+            <!-- Le scoreboard sera ajouté dynamiquement ici -->
+            <canvas id="pongCanvas"></canvas>
+        </div>
+        <script type="module" src="{% static 'js/pong4.js' %}"></script>
+    </body>
 </html>

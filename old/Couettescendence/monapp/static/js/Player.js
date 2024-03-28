@@ -9,48 +9,48 @@ export class Player
 		this.gameParams = gameParams; // game settings	
 	}
 
-
-	// stores keys status (pressed/released)
+	// store current keys status (pressed/released)
 	updateKeysPressed(event, value){
-		if (this.gameParams.isSolo && this.PlayerID == 1){ //if solo, player 1 uses "w" and "s" keys and player 2 uses arrow keys
+		if (this.gameParams.isSolo && this.gameParams.nbPlayers == 1){ //if 1v1 singlescreen, player 1 uses "w" and "s" keys and player 2 uses arrow keys
 			if (event.key == "w")
 				this.keysPressed["up"] = value;
 			else if (event.key == "s")
 				this.keysPressed["down"] = value;
-		}
-		else{
+		}else{
 			if (event.key == "ArrowUp")
 				this.keysPressed["up"] = value;
 			else if (event.key == "ArrowDown")
 				this.keysPressed["down"] = value;
-		}
-	}
-
+	}}
 
 	// send key status to server
 	sendKeyStatus(ws){
+		console.log("sending key status (player.js)");
+		if (!ws || ws.readyState !== WebSocket.OPEN)
+			return;
 		if (this.keysPressed["up"])
+		{
+			console.log("sending {this.PlayerID}u");
 			ws.send(this.PlayerID + "u");
+		}
 		else if (this.keysPressed["down"])
 			ws.send(this.PlayerID + "d");
 	}
-
 
 	// rotate if needed to put player on the left side of the screen
 	applyRotation(canvasContext){
 		if (this.PlayerID == 1)
 			return;
 		canvasContext.save(); // Save the current state
-        canvasContext.translate(this.gameParams.gameWidth / 2, this.gameParams.gameHeight / 2); // Move to the center of the canvas
+		canvasContext.translate(this.gameParams.gameWidth / 2, this.gameParams.gameHeight / 2); // Move to the center of the canvas
 		if (this.PlayerID == 2)
-            canvasContext.rotate(Math.PI); // Rotate 180 degrees
-        else if (this.PlayerID == 3)
-            canvasContext.rotate(-Math.PI / 2); // Rotate 90 degrees
-        else if (this.PlayerID == 4)
-            canvasContext.rotate(Math.PI / 2); // Rotate -90 degrees
+			canvasContext.rotate(Math.PI); // Rotate 180 degrees
+		else if (this.PlayerID == 3)
+			canvasContext.rotate(-Math.PI / 2); // Rotate 90 degrees
+		else if (this.PlayerID == 4)
+			canvasContext.rotate(Math.PI / 2); // Rotate -90 degrees
 		canvasContext.translate(-this.gameParams.gameWidth / 2, -this.gameParams.gameHeight / 2); // Move back to the original position
 	}
-
 
 	// draw the player's paddle with updated data
 	updateStatus(newPosition, newPoints){
@@ -58,20 +58,19 @@ export class Player
 		this.Points = newPoints;
 	}
 
-
 	// draw the player's paddle
 	draw(canvasContext){
 		const realPaddlePos = (this.gameParams.gameHeight * (this.Position * -1 + 0.5)) - (this.gameParams.paddleLength / 2); // real position of the paddle
 		canvasContext.fillStyle = this.gameParams.paddleColor; // paddle color
 
 		if (this.PlayerID == 1)
-			canvasContext.fillRect(this.gameParams.paddleOffset, realPaddlePos, this.gameParams.paddleWidth, this.gameParams.paddleLength);
+			canvasContext.fillRect(this.gameParams.paddleOffset * this.gameParams.gameHeight, realPaddlePos - this.gameParams.paddleLength * this.gameParams.gameHeight / 2, this.gameParams.paddleWidth * this.gameParams.gameHeight, this.gameParams.paddleLength * this.gameParams.gameHeight);
 		else if (this.PlayerID == 2)
-			canvasContext.fillRect(this.gameParams.gameWidth - this.gameParams.paddleWidth - this.gameParams.paddleOffset, realPaddlePos, this.gameParams.paddleWidth, this.gameParams.paddleLength);
+			canvasContext.fillRect(this.gameParams.gameWidth - this.gameParams.paddleWidth * this.gameParams.gameHeight - this.gameParams.paddleOffset * this.gameParams.gameHeight, realPaddlePos  - this.gameParams.paddleLength * this.gameParams.gameHeight / 2, this.gameParams.paddleWidth * this.gameParams.gameHeight, this.gameParams.paddleLength * this.gameParams.gameHeight);
 		else if (this.PlayerID == 3)
-			canvasContext.fillRect(realPaddlePos, this.gameParams.paddleOffset, this.gameParams.paddleLength, this.gameParams.paddleWidth);
+			canvasContext.fillRect(realPaddlePos - this.gameParams.paddleLength * this.gameParams.gameHeight / 2, this.gameParams.paddleOffset * this.gameParams.gameHeight, this.gameParams.paddleLength * this.gameParams.gameHeight, this.gameParams.paddleWidth * this.gameParams.gameHeight);
 		else if (this.PlayerID == 4)
-			canvasContext.fillRect(realPaddlePos, this.gameParams.gameHeight - this.gameParams.paddleWidth - this.gameParams.paddleOffset, this.gameParams.paddleLength, this.gameParams.paddleWidth);
+			canvasContext.fillRect(realPaddlePos - this.gameParams.paddleLength * this.gameParams.gameHeight / 2, this.gameParams.gameHeight - this.gameParams.paddleWidth * this.gameParams.gameHeight - this.gameParams.paddleOffset * this.gameParams.gameHeight, this.gameParams.paddleLength * this.gameParams.gameHeight, this.gameParams.paddleWidth * this.gameParams.gameHeight);
 	}
 
 }
