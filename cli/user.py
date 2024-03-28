@@ -7,7 +7,7 @@ def separator(begin, middle, end):
     print(begin, end="")
     while y > len(begin) + len(end):
         print("=", end="")
-        y -= 2
+        y -= 1
     print(end)
 
 class userCli:
@@ -22,11 +22,11 @@ class userCli:
     def chooseMethode(self):
         system("clear")
         choice = ""
-        while choice != "1" or choice != "2":
+        while choice != "1" and choice != "2":
             print(BWHITE, "1 :", WHITE, "Would you like to login?", RESET)
             print(BWHITE, "2 :", WHITE, "Would you like to create a account?", RESET)
             choice = input("1 - 2 : ")
-            if choice != "1" or choice != "2":
+            if choice != "1" and choice != "2":
                 print(ORANGE, "Wrong input!", RESET)
         system("clear")
         if choice == "1":
@@ -69,8 +69,8 @@ class userCli:
         print("mail : ", mail)
         value = input("Did you put the right information? [yes/no/exit]")
         if value == "y" or value == "yes":
-            self.createNewUser()        
-        elif value == "e" or value == "no":
+            self.createNewUser(username, mail, pwd1)        
+        elif value == "e" or value == "exit":
             return False
         else:
             self.chooseMethode()
