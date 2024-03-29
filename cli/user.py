@@ -25,8 +25,9 @@ class User:
                 self.doRegistration()
                 return
             else:
-                doexit(1)
+                doexit(1, "User exit.")
         if value == 500:
+                print("HERE")
                 doexit(1, "Error: Serveur not accessible.")
         Information("LOGIN", "User connection succes.", style=STYLSUCCESS)
         
@@ -57,7 +58,10 @@ class User:
         Information("SIGNUP", "User creation succes.", style=STYLSUCCESS)
 
     def registration(self):
+
         user = inputText("REGISTRATION", "Username :")
+        while not user:
+            user = inputText("REGISTRATION", "Username :", style=STYLERROR)
         mail = self.getMail()
         pwd = self.getPwd()
         return user, mail, pwd

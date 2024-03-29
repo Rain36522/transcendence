@@ -29,12 +29,12 @@ class NewGameSettings:
 
 
     def getIntSettingRange(self, title, text, min, max, default):
-        value = inputText(title, text, False, STYLE, default)
+        value = inputText(title, text, False, STYLE, str(default))
         while value and (not value.isdigit() or float(value) < min or float(value) > max):
             if not value.isdigit():
-                value = inputText(title, "Not a number :", False, STYLERROR, default)
+                value = inputText(title, "Not a number :", False, STYLERROR, str(default))
             else:
-                value = inputText(title, ("Input must be between", min, "and", max, ":"), False, STYLERROR, default)
+                value = inputText(title, ("Input must be between", min, "and", max, ":"), False, STYLERROR, str(default))
         return int(value)
 
     def getSetting(self, title, text, values):
@@ -51,11 +51,11 @@ class NewGameSettings:
 
     def getFloatSettingRange(self, title, text, min, max, default):
         floatPattern = r'^\d+(\.\d+)?$'
-        value = inputText(title, text, False, STYLE, default)
+        value = inputText(title, text, False, STYLE, str(default))
         while value and (not match(floatPattern, value) or float(value) < min or float(value) > max):
             if not match(floatPattern, value):
-                value = inputText(title, "Not a real number :", False, STYLERROR, default)
+                value = inputText(title, "Not a real number :", False, STYLERROR, str(default))
             else:
-                value = inputText(title, ("Input must be between", min, "and", max, ":"), False, STYLERROR, default)
+                value = inputText(title, ("Input must be between", min, "and", max, ":"), False, STYLERROR, str(default))
         return float(value)
 

@@ -5,11 +5,10 @@ from DjangoHttpsCommunication import DjangoCommunication
 from tools import *
 
 def getUrl(Django):
-    url = inputText("TRANSCENDANCE", "Write the server url.")
-    while url and not checkUrlInput(url, Django):
+    url = inputText("TRANSCENDANCE", "Write the server url.", defaultValue="https://127.0.0.1")
+    while not checkUrlInput(url, Django):
         url = inputText("TRANSCENDANCE", "Invalide url. Try again!", style=STYLERROR)
-    if not url:
-        doexit(0)
+    
 
 def checkUrlInput(url, Django):
     if not url.startswith("https://"):
@@ -24,6 +23,7 @@ def checkUrlInput(url, Django):
 
 def InitCli():
     Django = DjangoCommunication()
+
     Information("TRANSCENDANCE", "Welcome to the transcendance CLI")
     getUrl(Django)
     User(Django)
