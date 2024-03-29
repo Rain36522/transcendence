@@ -50,20 +50,36 @@ def ajouter_resultat(request, points_joueur, points_ennemi, username_ennemi):
     utilisateur.save()
 
 
-def pong_game(request):
-    players_amount = 2
 
-    # will be later sent as arguments
+import json  # Importez le module json
+
+def pong_game(request):
+    # Définition du contexte avec des clés en tant que chaînes de caractères
     contexte = {
-        'ball_size': 8,
-        'paddle_size': 20,
-        'players_amount': 2,
-        'player_id': 'j2',
+        "nbPlayers": 2,
+        "player1Name": "Shrek 1",
+        "player2Name": "Fionna 2",
+        "player3Name": "Donkey 3",
+        "player4Name": "Dragon 4",
+        "paddleColor": "white",
+        "paddleWidth": 0.02,
+        "paddleLength": 0.2,
+        "paddleOffset": 0.02,
+        "ballSize": 0.05,
+        "isSolo": False,
+        "isImage": False
     }
-    if (players_amount == 2):
-        return render(request, 'monapp/pong2.html', contexte)
-    else:
-        return render(request, 'monapp/pong4.html', contexte)
+
+    # Conversion du dictionnaire en une chaîne JSON
+    contexte_json = json.dumps(contexte)
+
+    # Placez la chaîne JSON dans un dictionnaire sous une clé spécifique, par exemple 'contexte_json'
+    return render(request, 'monapp/pong.html', {'contexte_json': contexte_json})
+
+
+
+def wsstest(request):
+    return render(request, 'monapp/wsstest.html')
 
 
 def home(request):

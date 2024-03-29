@@ -124,8 +124,8 @@ class MessageListView(APIView):
     def get(self, request, chat_id):
         try:
             chat = Chat.objects.get(pk=chat_id)
-            if not chat.participants.contains(request.user):
-                return JsonResponse({'error': 'Insufficient permissions: Access Denied'}, status=401)
+            # if not chat.participants.contains(request.user):
+            #     return JsonResponse({'error': 'Insufficient permissions: Access Denied'}, status=401)
             serializer = MessageSerializer(Message.objects.filter(chat=chat), many=True)
             return Response(serializer.data)
         except Chat.DoesNotExist:
