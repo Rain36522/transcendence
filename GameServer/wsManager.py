@@ -1,14 +1,14 @@
 from wsServer import WebSocketServer
 from wsDjangoCli import DjangoCli
 import wsServer
+import sys
 import asyncio
 
 
 if __name__ == "__main__":
-    django = "ws://daphne:8002"
+    django = "ws://daphne:8002/wsgameserver/"
     Serveur = WebSocketServer("0.0.0.0", 8001)
     djangoCli = DjangoCli(Serveur, django)
-
 
     asyncio.get_event_loop().create_task(Serveur.start_server())
     asyncio.get_event_loop().run_until_complete(djangoCli.connectDjango())

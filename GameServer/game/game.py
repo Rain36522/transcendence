@@ -1,8 +1,9 @@
 import os
 from wsClient import WebSocketClient
 from gameLogic import gameLogic
-from json import loads
+import json
 import asyncio
+from sys import stderr
 from time import sleep
 
 # Convertir JSON en dictionnaire
@@ -30,21 +31,29 @@ gameSettings = {
     "acceleration" : 0.01, #increase speed each bounce
     "playeramount" : 2,
     "winpoint" : 10,
-    "user1" : "username",
+    "user1" : "",
     "user2" : "",
     "user3" : "",
     "user4" : ""
 }
 
+def putDatagameSettings(data, settings):
+    elem = ["ballwidth", "planksize", "Speed", "acceleration", "playeramount", "winpoint", "user1", "user2", "user3", "user4", "gameid"]
+    if not data.get("gameid"):
+        print("\033[31mGameid not available.\033[0m", file=stderr)
+        exit(1)
+    for i in elem:
+        if data.get(i):
+            settings[i] = data[i]
+    return settings
+
 # Exemple d'utilisation du client WebSocket avec asyncio
 if __name__ == "__main__":
-    #waiting wsServeur start for auto start test
-    sleep(3)
-    wsServ = "ws://localhost:8001/game/1"
-    # Création d'un client WebSocket
-    #client = WebSocketClient("ws://localhost:8001/game/" + gameSettings["gameid"])
+    DjangoData = json.loads(json.loads(os.environ.get("newGame")))
+    gameSettings = putDatagameSettings(DjangoData, gameSettings)
+    #connection with websocket server
+    wsServ = "ws://localhost:8001/game/" + str(gameSettings["gameid"])
     client = WebSocketClient(wsServ)
-
     # Lancement du client WebSocket en parallèle
     asyncio.get_event_loop().run_until_complete(client.connect())
     asyncio.get_event_loop().create_task(client.receive_messages())

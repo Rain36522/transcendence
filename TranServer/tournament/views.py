@@ -1,3 +1,4 @@
 from django.shortcuts import render
 
-# Create your views here.
+def tournament_settings(request):
+    return render(request, 'html/tournament.html')

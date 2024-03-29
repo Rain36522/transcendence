@@ -1,9 +1,19 @@
 import asyncio
 import websockets
 import os
-import sys
+from sys import stderr
 from wsServer import WebSocketServer
 from time import sleep
+
+RESET = "\033[0m"
+RED = "\033[31m"
+GREEN = "\033[32m"
+YELLOW = "\033[33m"
+BLUE = "\033[34m"
+MAGENTA = "\033[35m"
+CYAN = "\033[36m"
+WHITE = "\033[37m"
+ORANGE = "\033[38;2;255;165;0m"
 
 class DjangoCli:
     def __init__(self, wsServer, DjangoUrl):
@@ -11,20 +21,25 @@ class DjangoCli:
         self.DjangoUrl = DjangoUrl
         self.wsServer = wsServer
 
+    def print(self, msg):
+        print(MAGENTA, "Django client game :", msg, RESET, file=stderr)
 
     async def connectDjango(self):
         i = 0
+        sleep(4)
         while i <= 10: 
             try:
                 self.websocket = await websockets.connect(self.DjangoUrl)
-                print("GameServ, connected to Daphne.", file=sys.stderr)
+                self.print(GREEN + "GameServ, connected to Daphne.")
+                await self.websocket.send("connected")
                 break
             except:
-                print("Server daphne not available.", file=sys.stderr)
+                self.print(ORANGE + "Server daphne not available.")
                 sleep(1)
                 i += 1
         if i > 10:
-            print("Client fail 10x the connection with daphne ws.", self.DjangoUrl , file=sys.stderr)
+            self.print(RED + "Client fail 10x the connection with daphne ws.", self.DjangoUrl)
+            self.print(RED + "Closing Django game server client")
             exit(1)
 
         # Coroutine asynchrone pour lire les messages de manière non bloquante
@@ -37,7 +52,7 @@ class DjangoCli:
                 os.system("python3 game/game.py &")
             except websockets.exceptions.ConnectionClosed:
                 i += 1
-                print("Connection to server django closed")
+                self.print(ORANGE + "Connection to server django closed")
                 if i == 5:
                     break
                 else:

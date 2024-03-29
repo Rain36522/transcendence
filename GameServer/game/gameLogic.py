@@ -1,12 +1,42 @@
 from wsClient import WebSocketClient
 import asyncio
+from sys import stderr
+
+RESET = "\033[0m"
+RED = "\033[31m"
+GREEN = "\033[32m"
+YELLOW = "\033[33m"
+BLUE = "\033[34m"
+MAGENTA = "\033[35m"
+CYAN = "\033[36m"
+WHITE = "\033[37m"
+ORANGE = "\033[38;2;255;165;0m"
+
+"""
+login / logout
+"""
 
 class gameLogic:
     def __init__(self, client, gameSet, game):
         self.client = client
         self.game = game
         self.gameSet = gameSet
-        print("data :", gameSet["user1"])
+        self.user = []
+        self.initUser()
+    
+    def print(self, msg):
+        print(YELLOW,"Game logic :", msg, RESET, file=stderr)
+
+
+    def initUser(self):
+        if self.gameSet["user1"]:
+            self.user.append(self.gameSet["user1"])
+        if self.gameSet["user2"]:
+            self.user.append(self.gameSet["user2"])
+        if self.gameSet["user3"]:
+            self.user.append(self.gameSet["user3"])
+        if self.gameSet["user4"]:
+            self.user.append(self.gameSet["user4"])
 
     """Client to game serv
     char 0 = player number
@@ -14,26 +44,21 @@ class gameLogic:
     """
     def getMsgs(self):
         messages = self.client.getMsg()
-        msg = []
         if messages:
-            user1 = str(self.gameSet.get("user1", ""))
-            user2 = str(self.gameSet.get("user2", ""))
-            user3 = str(self.gameSet.get("user3", ""))
-            user4 = str(self.gameSet.get("user4", ""))
+            msg = []
             for message in messages:
-                if user1 and message.startswith(str(user1)):
-                    message = message[len(user1):]
-                    msg.append(message)
-                elif user2 and message.startswith(user2):
-                    message = message[len(user2):]
-                    msg.append(message)
-                elif user3 and message.startswith(user3):
-                    message = message[len(user3):]
-                    msg.append(message)
-                elif user4 and message.startswith(user4):
-                    message = message[len(user4):]
-                    msg.append(message)
-        return msg
+                if message.endswith("login") and len(self.user) < self.gameSet["playeramount"] and message[:-5] not in self.user:
+                    self.print("New user " + message[:-5])
+                    self.user.append(message[:-5])
+                else:
+                    for user in self.user:
+                        if message.startswith(user):
+                            msg.append(message[len(user):])
+                            break
+            return msg
+        return None
+
+
 
     async def sendMsg(self):
         await self.client.sendMsg(self.game)

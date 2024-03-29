@@ -1,0 +1,36 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'home.css' %}">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transcendance - home</title>
+</head>
+<body>
+  <div class="vignette"></div> <!-- Ajout de la vignette -->
+  <header>
+    <h1><a href="{% url 'home_page' %}" class="logo">Transcendance</a></h1>
+    <div>
+        <a href="{% url 'general_chat' %}" class="header-btn">Chat</a>
+        <a href="{% url 'user_login' %}" class="header-btn">Logout</a>
+        <a href="{% url 'user_dashboard' %}" class="header-btn profile-btn">Profile</a>
+    </div>
+  </header>
+<video autoplay muted loop id="background-video">
+  <source src="{% static 'video.mp4' %}" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+<div id="container">
+    <div class="menu">
+      <button type="button"><a href="{% url 'online_game' %}">Online Game</a></button>
+      <button type="button"><a href="local_game.html">Local Game</a></button> <!-- RESTE A FAIRE ? -->
+      <button type="button"><a href="{% url 'tournament_settings' %}">Tournament</a></button>
+      <button type="button"><a href="robot_1vs1.html">Robot 1vs1</a></button> <!-- RESTE A FAIRE ? -->
+    </div>
+</div>
+</body>
+</html>
