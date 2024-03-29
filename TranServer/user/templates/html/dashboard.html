@@ -1,53 +1,37 @@
+{% extends "html/header.html" %}
+
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@300;400;600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'home.css' %}">
-    <link rel="stylesheet" href="{% static 'dashboard.css' %}">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-    <div class="vignette"></div>
-    <header>
-        <h1><a href="{% url 'home_page' %}" class="logo">Transcendance</a></h1>
-        <div>
-            <a href="{% url 'general_chat' %}" class="header-btn">Chat</a>
-            <a href="{% url 'user_logout' %}" class="header-btn">Logout</a>
-            <a href="{% url 'user_dashboard' %}" class="header-btn profile-btn">Profile</a>
-        </div>
-    </header>
-    <div class="image-container">
-        <img src="https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg" alt="Votre image" style="width:100%; height:100%; object-fit: cover;">
+{% block content %}
+<link rel="stylesheet" href="{% static 'dashboard.css' %}">
+
+<div class="image-container">
+    <img src="https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg" alt="Votre image" style="width:100%; height:100%; object-fit: cover;">
+</div>    
+<div class="frame">
+    <div class="tab-container">
+        <a href="{% url 'account_information' %}" class="tab">Account Informations</a>
+        <a href="{% url 'user_dashboard' %}" class="tab active">Dashboard</a>
+        <a href="{% url 'social_management' %}" class="tab">Social Management</a>
     </div>    
-    <div class="frame">
-        <div class="tab-container">
-          <a href="{% url 'account_information' %}" class="tab">Account Informations</a>
-          <a href="{% url 'user_dashboard' %}" class="tab active">Dashboard</a>
-          <a href="{% url 'social_management' %}" class="tab">Social Management</a>
-        </div>    
-        <div class="profile-section">
-            <div class="profile-pic" id="profile-pic"></div> <!-- S'assurez que cet élément a un background-image par défaut ou via JS -->
-            <div class="profile-name">{{ user.username }}</div>
-            <div class="statistic">Win rate : <span>70%</span><span class="progress-bar" style="width: 70%;">70%</span></div>
-            <div class="statistic">Games won : <span>70</span><span class="progress-bar" style="width: 70%;">70%</span></div>
-            <div class="statistic">Games lost : <span>30</span><span class="progress-bar" style="width: 30%; background-color: #f44336;">30</span></div>
-        </div>
+    <div class="profile-section">
+        <div class="profile-pic" id="profile-pic"></div> <!-- S'assurez que cet élément a un background-image par défaut ou via JS -->
+        <div class="profile-name">{{ user.username }}</div>
+        <div class="statistic">Win rate : <span>70%</span><span class="progress-bar" style="width: 70%;">70%</span></div>
+        <div class="statistic">Games won : <span>70</span><span class="progress-bar" style="width: 70%;">70%</span></div>
+        <div class="statistic">Games lost : <span>30</span><span class="progress-bar" style="width: 30%; background-color: #f44336;">30</span></div>
     </div>
-    <script>
-        document.getElementById('profile-pic-input').addEventListener('change', function(e) {
-            if (e.target.files && e.target.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('profile-pic').style.backgroundImage = 'url(' + e.target.result + ')';
-                };
-                reader.readAsDataURL(e.target.files[0]);
-            }
-        });
-    </script>
-</body>
-</html>
+</div>
+<script>
+    document.getElementById('profile-pic-input').addEventListener('change', function(e) {
+        if (e.target.files && e.target.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('profile-pic').style.backgroundImage = 'url(' + e.target.result + ')';
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        }
+    });
+</script>
+
+{% endblock %}

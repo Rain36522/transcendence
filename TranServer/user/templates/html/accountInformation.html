@@ -1,44 +1,31 @@
+{% extends "html/header.html" %}
+
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account Information</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@300;400;600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'home.css' %}">
-    <link rel="stylesheet" href="{% static 'accountInformation.css' %}">
-</head>
-<body>
-    <div class="vignette"></div>
-    <header>
-        <h1><a href="{% url 'home_page' %}" class="logo">Transcendance</a></h1>
-        <div>
-            <a href="{% url 'general_chat' %}" class="header-btn">Chat</a>
-            <a href="{% url 'user_login' %}" class="header-btn">Logout</a>
-            <a href="{% url 'user_dashboard' %}" class="header-btn profile-btn">Profile</a>
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@300;400;600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'home.css' %}">
+<link rel="stylesheet" href="{% static 'accountInformation.css' %}">
+
+<div class="image-container">
+    <img src="https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg" alt="Votre image" style="width:100%; height:100%; object-fit: cover;">
+</div>
+<div class="frame">
+    <div class="tab-container">
+        <a href="{% url 'account_information' %}" class="tab">Account Informations</a>
+        <a href="{% url 'user_dashboard' %}" class="tab active">Dashboard</a>
+        <a href="{% url 'social_management' %}" class="tab">Social Management</a>
+    </div>    
+    <div class="content-area">
+        <img src="" alt="Photo de profil" class="profile-pic">
+        <div class="user-info">
+            <div><label>Username:</label><input type="text" value="Shrekito"></div>
+            <div><label>Mail:</label><input type="email" value="shrek@swamp.far"></div>
+            <div><label>Pronouns:</label><input type="text" value="They, them, it, whom"></div>
+            <div><label>Password:</label><input type="password" value="password"></div>
         </div>
-    </header>
-    <div class="image-container">
-        <img src="https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg" alt="Votre image" style="width:100%; height:100%; object-fit: cover;">
+        <a href="#" class="edit-link">Edit</a>
     </div>
-    <div class="frame">
-        <div class="tab-container">
-            <a href="{% url 'account_information' %}" class="tab">Account Informations</a>
-            <a href="{% url 'user_dashboard' %}" class="tab active">Dashboard</a>
-            <a href="{% url 'social_management' %}" class="tab">Social Management</a>
-        </div>    
-        <div class="content-area">
-            <img src="" alt="Photo de profil" class="profile-pic">
-            <div class="user-info">
-                <div><label>Username:</label><input type="text" value="Shrekito"></div>
-                <div><label>Mail:</label><input type="email" value="shrek@swamp.far"></div>
-                <div><label>Pronouns:</label><input type="text" value="They, them, it, whom"></div>
-                <div><label>Password:</label><input type="password" value="password"></div>
-            </div>
-            <a href="#" class="edit-link">Edit</a>
-        </div>
-    </div>
-</body>
-</html>
+</div>
+{% endblock%}
