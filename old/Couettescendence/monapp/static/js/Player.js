@@ -11,6 +11,7 @@ export class Player
 
 	// store current keys status (pressed/released)
 	updateKeysPressed(event, value){
+		;
 		if (this.gameParams.isSolo && this.gameParams.nbPlayers == 1){ //if 1v1 singlescreen, player 1 uses "w" and "s" keys and player 2 uses arrow keys
 			if (event.key == "w")
 				this.keysPressed["up"] = value;
@@ -25,16 +26,12 @@ export class Player
 
 	// send key status to server
 	sendKeyStatus(ws){
-		console.log("sending key status (player.js)");
 		if (!ws || ws.readyState !== WebSocket.OPEN)
 			return;
-		if (this.keysPressed["up"])
-		{
-			console.log("sending {this.PlayerID}u");
+		if (this.keysPressed["up"] && !this.keysPressed["down"])
 			ws.send(this.PlayerID + "u");
-		}
-		else if (this.keysPressed["down"])
-			ws.send(this.PlayerID + "d");
+		else if (this.keysPressed["down"] && !this.keysPressed["up"])
+			console.log(`sending ${this.PlayerID}d`);
 	}
 
 	// rotate if needed to put player on the left side of the screen

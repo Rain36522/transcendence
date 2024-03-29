@@ -85,31 +85,10 @@ document.addEventListener('DOMContentLoaded', () => {
 	/*‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾*\
 	||====================[variables initialisation]====================||
 	\*__________________________________________________________________*/
-	const settingsJson = JSON.stringify({
-		nbPlayers: 4,
-		player1Name: 'Shrek 1',
-		player2Name: 'Fionna 2',
-		player3Name: 'Donkey 3',
-		player4Name: 'Dragon 4',
-		paddleColor: "white",
-		paddleWidth: 0.02,
-		paddleLength: 0.2,
-		paddleOffset: 0.02,
-		ballSize: 0.05,
-		isSolo: false,
-		isImage: false
-	});
-
-	// pictures for ball and field
-	if (isImage){
-		fieldImage = new Image();
-		ballImage = new Image();
-		fieldImage.src = 'https://i.ibb.co/2KnGYRK/4playerspong.png'; // Adjust path
-		ballImage.src = 'https://i1.sndcdn.com/avatars-000894638827-qr5jsd-t240x240.jpg'; // Adjust path
-	}
 
 	// Initialize game settings and players
-	gameSettings = new Settings(settingsJson);
+	if (window.contexteJson)
+		gameSettings = new Settings(window.contexteJson);
 	players = [gameSettings.nbPlayers];
 	for (let i = 0; i < gameSettings.nbPlayers; i++)
 		players[i] = new Player(i + 1, gameSettings.playersNames[i], gameSettings);
@@ -121,6 +100,15 @@ document.addEventListener('DOMContentLoaded', () => {
 	gameSettings.gameWidth = gameSettings.gameHeight;
 	if (gameSettings.nbPlayers !== 4)
 		gameSettings.gameWidth *= 2;
+
+	// pictures for ball and field
+	isImage = false;
+	if (isImage){
+		fieldImage = new Image();
+		ballImage = new Image();
+		fieldImage.src = 'https://i.ibb.co/2KnGYRK/4playerspong.png'; // Adjust path
+		ballImage.src = 'https://i1.sndcdn.com/avatars-000894638827-qr5jsd-t240x240.jpg'; // Adjust path
+	}
 
 	// WebSocket setup
 	let ws;
@@ -156,15 +144,17 @@ document.addEventListener('DOMContentLoaded', () => {
 	/*‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾*\
 	||=========================[input managment]========================||
 	\*__________________________________________________________________*/
-	// interval in ms
+	// Input send to server interval in ms
 	const sendInterval = 2;
 	let lastSendTime = 0;
+
 	// function to limit the number of messages sent to the server
 	function throttledSendKeyStatus() {
 		const now = Date.now();
 		if (now - lastSendTime >= sendInterval)
 			{sendKeyStatus(); lastSendTime = now;}
 	}
+
 	// Event listeners for key presses
 	document.addEventListener('keydown', (event) => {
 		players[playerID - 1].updateKeysPressed(event, true);
@@ -179,6 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			players[1].updateKeysPressed(event, false); // Update keysPressed for the other player if in 1v1 singlescreen
 		throttledSendKeyStatus();
 	});
+
 	// Send input from played players to the server
 	function sendKeyStatus() {
 		

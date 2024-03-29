@@ -20,6 +20,7 @@
             <!-- Le scoreboard sera ajouté dynamiquement ici -->
             <canvas id="pongCanvas"></canvas>
         </div>
-        <script type="module" src="{% static 'js/pong4.js' %}"></script>
+        <script>window.contexteJson = '{{ contexte_json|safe }}';</script>
+        <script type="module" src="{% static 'js/pong.js' %}"></script>
     </body>
 </html>
