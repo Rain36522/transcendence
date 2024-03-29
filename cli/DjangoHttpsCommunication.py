@@ -53,6 +53,7 @@ class DjangoCommunication:
         try:
             response = requests.post(self.url + "/api/signup/", data=data, verify=False)
             system("clear")
+            self.cookies = response.cookies
             return response.status_code
         except:
             return 500
@@ -72,3 +73,4 @@ class DjangoCommunication:
         except:
             return 500
 
+    def createGame(self)

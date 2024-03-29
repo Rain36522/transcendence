@@ -21,11 +21,13 @@ class NewGameSettings:
 
 
     def createNewGame(self):
-        ballwidth = self.getIntSettingRange("NEW GAME", "Ball width (5 - 30) :", 5, 30, 10)
-        planksize = self.getIntSettingRange("NEW GAME", "Plank size (10 - 40) :", 10, 40, 20)
-        speed = self.getFloatSettingRange("NEW GAME", "Speed (0.5 - 3) :", 0.5, 3, 1)
-        acceleration = self.getIntSettingRange("NEW GAME", "Acceleration (0 - 10) :", 0, 10, 0)
-        winpoint = self.getIntSettingRange("NEW GAME", "Win point (3 - 15) :", 3, 15, 5)
+        dict = {}
+        dict["ballwidth"] = self.getIntSettingRange("NEW GAME", "Ball width (5 - 30) :", 5, 30, 10)
+        dict["planksize"] = self.getIntSettingRange("NEW GAME", "Plank size (10 - 40) :", 10, 40, 20)
+        dict["speed"] = self.getFloatSettingRange("NEW GAME", "Speed (0.5 - 3) :", 0.5, 3, 1)
+        dict["acceleration"] = self.getIntSettingRange("NEW GAME", "Acceleration (0 - 10) :", 0, 10, 0)
+        dict["winpoint"] = self.getIntSettingRange("NEW GAME", "Win point (3 - 15) :", 3, 15, 5)
+        dict["gamemode"] = self.getGameMode()
 
 
     def getIntSettingRange(self, title, text, min, max, default):
