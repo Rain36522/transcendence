@@ -16,7 +16,6 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .serializers import UserSerializer
 
-@csrf_exempt
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
 def api_signup(request):
