@@ -57,17 +57,37 @@ export class Player
 
 	// draw the player's paddle
 	draw(canvasContext){
-		const realPaddlePos = (this.gameParams.gameHeight * (this.Position * -1 + 0.5)) - (this.gameParams.paddleLength / 2); // real position of the paddle
-		canvasContext.fillStyle = this.gameParams.paddleColor; // paddle color
+		// Calculate the real position of the paddle
+		const realPaddlePos = (this.gameParams.gameHeight * (this.Position * -1 + 0.5)) - (this.gameParams.paddleLength / 2);
+		canvasContext.fillStyle = this.gameParams.paddleColor;
 
-		if (this.PlayerID == 1)
-			canvasContext.fillRect(this.gameParams.paddleOffset * this.gameParams.gameHeight, realPaddlePos - this.gameParams.paddleLength * this.gameParams.gameHeight / 2, this.gameParams.paddleWidth * this.gameParams.gameHeight, this.gameParams.paddleLength * this.gameParams.gameHeight);
-		else if (this.PlayerID == 2)
-			canvasContext.fillRect(this.gameParams.gameWidth - this.gameParams.paddleWidth * this.gameParams.gameHeight - this.gameParams.paddleOffset * this.gameParams.gameHeight, realPaddlePos  - this.gameParams.paddleLength * this.gameParams.gameHeight / 2, this.gameParams.paddleWidth * this.gameParams.gameHeight, this.gameParams.paddleLength * this.gameParams.gameHeight);
-		else if (this.PlayerID == 3)
-			canvasContext.fillRect(realPaddlePos - this.gameParams.paddleLength * this.gameParams.gameHeight / 2, this.gameParams.paddleOffset * this.gameParams.gameHeight, this.gameParams.paddleLength * this.gameParams.gameHeight, this.gameParams.paddleWidth * this.gameParams.gameHeight);
-		else if (this.PlayerID == 4)
-			canvasContext.fillRect(realPaddlePos - this.gameParams.paddleLength * this.gameParams.gameHeight / 2, this.gameParams.gameHeight - this.gameParams.paddleWidth * this.gameParams.gameHeight - this.gameParams.paddleOffset * this.gameParams.gameHeight, this.gameParams.paddleLength * this.gameParams.gameHeight, this.gameParams.paddleWidth * this.gameParams.gameHeight);
+		let x, y, width, height;
+
+		if (this.PlayerID < 3) {
+			width = this.gameParams.paddleWidth * this.gameParams.gameHeight;
+			height = this.gameParams.paddleLength * this.gameParams.gameHeight;
+		} else {
+			width = this.gameParams.paddleLength * this.gameParams.gameHeight;
+			height = this.gameParams.paddleWidth * this.gameParams.gameHeight;
+		}
+
+		// Calculate the position and size based on PlayerID
+		if (this.PlayerID === 1) {
+			x = this.gameParams.paddleOffset * this.gameParams.gameHeight;
+			y = realPaddlePos - this.gameParams.paddleLength * this.gameParams.gameHeight / 2;
+		} else if (this.PlayerID === 2) {
+			x = this.gameParams.gameWidth - this.gameParams.paddleWidth * this.gameParams.gameHeight - this.gameParams.paddleOffset * this.gameParams.gameHeight;
+			y = realPaddlePos - this.gameParams.paddleLength * this.gameParams.gameHeight / 2;
+		} else if (this.PlayerID === 3) {
+			x = realPaddlePos - this.gameParams.paddleLength * this.gameParams.gameHeight / 2;
+			y = this.gameParams.paddleOffset * this.gameParams.gameHeight;
+		} else if (this.PlayerID === 4) {
+			x = realPaddlePos - this.gameParams.paddleLength * this.gameParams.gameHeight / 2;
+			y = this.gameParams.gameHeight - this.gameParams.paddleWidth * this.gameParams.gameHeight - this.gameParams.paddleOffset * this.gameParams.gameHeight;
+		}
+	
+		// Draw the paddle with the calculated dimensions
+		canvasContext.fillRect(x, y, width, height);
 	}
 
 }
