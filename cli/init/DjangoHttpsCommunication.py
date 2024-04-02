@@ -1,3 +1,7 @@
+import sys
+import os
+chemin_parent = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(chemin_parent)
 import requests
 from color import *
 from time import sleep
@@ -73,4 +77,5 @@ class DjangoCommunication:
         except:
             return 500
 
-    def createGame(self)
+    def createGame(self):
+        pass

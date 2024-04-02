@@ -1,3 +1,7 @@
+import sys
+import os
+chemin_parent = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(chemin_parent)
 from prompt_toolkit.shortcuts import message_dialog
 from prompt_toolkit.shortcuts import button_dialog
 from prompt_toolkit.shortcuts import input_dialog
