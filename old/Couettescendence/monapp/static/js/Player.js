@@ -26,12 +26,12 @@ export class Player
 
 	// send key status to server
 	sendKeyStatus(ws){
-		if (!ws || ws.readyState !== WebSocket.OPEN)
-			return;
+		//if (!ws || ws.readyState !== WebSocket.OPEN)
+		//	return;
 		if (this.keysPressed["up"] && !this.keysPressed["down"])
-			ws.send(this.PlayerID + "u");
+			{console.log(`sending ${this.PlayerID}u`); ws.send(this.PlayerID + "u");}
 		else if (this.keysPressed["down"] && !this.keysPressed["up"])
-			console.log(`sending ${this.PlayerID}d`);
+			{console.log(`sending ${this.PlayerID}d`); ws.send(this.PlayerID + "d");}
 	}
 
 	// rotate if needed to put player on the left side of the screen
