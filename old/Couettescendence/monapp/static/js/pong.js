@@ -1,104 +1,189 @@
-//elements placements
-document.addEventListener('DOMContentLoaded', function()
-{
-	const ball = document.getElementById('ball');
-	const paddles = document.querySelectorAll('.paddle');
-	const playerID = document.getElementById('player');
-	//prepare ball
-	ball.style.width = ball.getAttribute('data-size') + 'vmin';
-	ball.style.height = ball.getAttribute('data-size') + 'vmin';
-	ball.style.transform = 'translate(-50%, -50%)';
-	//prepare paddles
-	paddles.forEach(paddle => {
-		paddle.style.height = paddle.getAttribute('data-size') + 'vmin';
-		paddle.style.transform = 'translate(-50%, -50%)';
+import { Settings } from './Settings.js';
+import { Player } from './Player.js';
+
+let gameSettings;
+let players;
+let playerID = 1;// Can be 1, 2, 3 or 4
+let canvas, CanvasContext, scoreBoard;
+let isImage, fieldImage, backgroundImage, ballImage;
+
+function setGameSize() {
+	if (window.innerHeight < window.innerWidth)
+		gameSettings.gameWidth = window.innerHeight * 0.8;
+	else
+		gameSettings.gameWidth = window.innerWidth * 0.8;
+	gameSettings.gameHeight = gameSettings.gameWidth;
+	if (gameSettings.nbPlayers !== 4)
+		gameSettings.gameHeight /= 2;
+}
+
+/*‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾*\
+||===========================[game drawing]=========================||
+\*__________________________________________________________________*/
+function drawGame() {
+	// Adjust canvas size
+	canvas.width = gameSettings.gameWidth;
+	canvas.height = gameSettings.gameHeight;
+
+	// If playerID is 'j2', rotate the canvas for the player's perspective
+	players[playerID - 1].applyRotation(CanvasContext);
+
+	// Draw field
+	if (isImage)
+		CanvasContext.drawImage(fieldImage, 0, 0, gameSettings.gameWidth, gameSettings.gameHeight);
+	else {
+		CanvasContext.fillStyle = gameSettings.fieldColor;
+		CanvasContext.fillRect(0, 0, gameSettings.gameWidth, gameSettings.gameHeight);
+	}
+	// Add field border
+	CanvasContext.strokeStyle = gameSettings.borderColor;
+	CanvasContext.lineWidth = gameSettings.gameWidth / 75;
+	CanvasContext.strokeRect(0, 0, gameSettings.gameWidth, gameSettings.gameHeight);
+
+	//draw paddles
+	for (let i = 0; i < gameSettings.nbPlayers; i++)
+		players[i].draw(CanvasContext);
+
+	// Draw ball
+	CanvasContext.fillStyle = gameSettings.ballColor;
+	CanvasContext.beginPath();
+	CanvasContext.arc(gameSettings.gameWidth * (gameSettings.ballPosition.x + 0.5),  gameSettings.gameHeight * (gameSettings.ballPosition.y + 0.5), gameSettings.ballSize * gameSettings.gameHeight / 2, 0, Math.PI * 2);
+	if (isImage) {
+		CanvasContext.closePath();
+		CanvasContext.clip(); // Clips a circular area to draw the ball image in
+		CanvasContext.drawImage(ballImage, gameSettings.gameWidth * (gameSettings.ballPosition.x + 0.5) - gameSettings.ballSize / 2,  gameSettings.gameHeight * (gameSettings.ballPosition.y + 0.5) - gameSettings.ballSize / 2, gameSettings.ballSize, gameSettings.ballSize);
+	} else
+		CanvasContext.fill();
+
+	// Restore the original state if the canvas was rotated for player 2
+	if (isImage || playerID === '2' || playerID === '3' || playerID === '4')
+		CanvasContext.restore();
+
+	// Calculs ajustés pour chaque position
+	const positions = [ [1, 2, 3], [0, 3, 2], [3, 1, 0], [2, 0, 1]];
+	// Sélectionner les positions relatives basées sur playerID
+	const [pRight, pTop, pBottom] = positions[playerID - 1];
+
+	// Affichage pour 2 joueurs : joueur actuel et à droite uniquement
+	if (gameSettings.nbPlayers === 2)
+		scoreBoard.innerHTML = `${gameSettings.playersNames[playerID - 1]}: ${players[playerID - 1].Points} - ${gameSettings.playersNames[pRight]}: ${players[pRight].Points}`;
+	else { // Affichage pour 4 joueurs avec toutes positions
+		scoreBoard.innerHTML = `${gameSettings.playersNames[pTop]}: ${players[pTop].Points}<br>`;
+		scoreBoard.innerHTML += `${gameSettings.playersNames[playerID - 1]}: ${players[playerID - 1].Points} - ${gameSettings.playersNames[pRight]}: ${players[pRight].Points}<br>`;
+		scoreBoard.innerHTML += `${gameSettings.playersNames[pBottom]}: ${players[pBottom].Points}`;
+	}
+}
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+	/*‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾*\
+	||=====================[Context initialisation]=====================||
+	\*__________________________________________________________________*/
+	const canvasContainer = document.createElement('div');
+	document.body.appendChild(canvasContainer); // Container for canvas and scoreboard
+	canvasContainer.style.display = 'flex'; canvasContainer.style.flexDirection = 'column'; canvasContainer.style.alignItems = 'center';
+	canvas = document.getElementById('pongCanvas');
+	canvasContainer.appendChild(canvas); // Add the canvas to the container
+	CanvasContext = canvas.getContext('2d');
+	scoreBoard = document.createElement('div'); // Creating a separate scoreboard
+	canvasContainer.insertBefore(scoreBoard, canvas); // Insert scoreboard above canvas in the container
+
+	// Styling the scoreboard
+	scoreBoard.style.textAlign = 'center'; scoreBoard.style.fontSize = '20px'; scoreBoard.style.color = 'white'; scoreBoard.style.marginBottom = '10px';
+
+	/*‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾*\
+	||====================[variables initialisation]====================||
+	\*__________________________________________________________________*/
+
+	// Initialize game settings and players
+	if (window.contexteJson)
+		gameSettings = new Settings(window.contexteJson);
+	players = [gameSettings.nbPlayers];
+	for (let i = 0; i < gameSettings.nbPlayers; i++)
+		players[i] = new Player(i + 1, gameSettings.playersNames[i], gameSettings);
+	setGameSize()
+
+	// pictures for ball and field
+	isImage = false;
+	if (isImage){
+		fieldImage = new Image();
+		ballImage = new Image();
+		fieldImage.src = 'https://i.ibb.co/2KnGYRK/4playerspong.png'; // Adjust path
+		ballImage.src = 'https://i1.sndcdn.com/avatars-000894638827-qr5jsd-t240x240.jpg'; // Adjust path
+	}
+
+	// WebSocket setup
+	let ws;
+
+	/*‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾*\
+	||====================[websocket communication]=====================||
+	\*__________________________________________________________________*/
+	function connectWebSocket() {
+		const url = `ws://127.0.0.1:8001/wsGame/1/username`; // Adjust URL as needed
+		ws = new WebSocket(url);
+
+		ws.onopen = () =>
+			{console.log("WebSocket connection established.");};
+		ws.onmessage = (event) => {
+			// parsing
+			console.log(event.data);
+			const data = JSON.parse(event.data);
+			// ball update
+			gameSettings.ballPosition = { x: data.ballx, y: -1 * data.bally };
+			// update players
+			for (let i = 0; i < gameSettings.nbPlayers; i++)
+				players[i].updateStatus(data[`p${i + 1}`], data[`score${i + 1}`]);
+			drawGame();
+		};
+		ws.onclose = () =>
+			{console.log("WebSocket connection closed.");};
+		ws.onerror = (error) =>
+			{console.log("WebSocket error: ", error);};
+	}
+	// Establish WebSocket connection
+	connectWebSocket();
+
+	/*‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾*\
+	||=========================[input managment]========================||
+	\*__________________________________________________________________*/
+	// Input send to server interval in ms
+	const sendInterval = 2;
+	let lastSendTime = 0;
+
+	// function to limit the number of messages sent to the server
+	function throttledSendKeyStatus() {
+		const now = Date.now();
+		if (now - lastSendTime >= sendInterval)
+			{sendKeyStatus(); lastSendTime = now;}
+	}
+
+	// Event listeners for key presses
+	document.addEventListener('keydown', (event) => {
+		players[playerID - 1].updateKeysPressed(event, true);
+		if (gameSettings.isSolo && gameSettings.nbPlayers == 2)
+			players[1].updateKeysPressed(event, true);
+		throttledSendKeyStatus();
+	});
+	// Event listeners for key releases
+	document.addEventListener('keyup', (event) => {
+		players[playerID - 1].updateKeysPressed(event, false); // Update keysPressed for the player
+		if (gameSettings.isSolo && gameSettings.nbPlayers == 2)
+			players[1].updateKeysPressed(event, false); // Update keysPressed for the other player if in 1v1 singlescreen
+		throttledSendKeyStatus();
 	});
 
-	placeElement(ball, 50, 50);
-	placeElement(document.getElementById('paddle1'), -48, 0);
-	placeElement(document.getElementById('paddle2'), 48, -50);
-	//place elements on the board and rotate it if needed
-	rotateGame(playerID.getAttribute('data-player'));
-});
-
-//places a single element on board
-function placeElement(element, posX, posY)
-{
-	const gameWidth = document.getElementById('pong-game').clientWidth;
-	const gameHeight = document.getElementById('pong-game').clientHeight;
-	const xPercent = (posX + 50) * (gameWidth / 100);
-	const yPercent = (-1 * posY + 50) * (gameHeight / 100);
-
-	element.style.left = `${xPercent}px`;
-	element.style.top = `${yPercent}px`;
-}
-
-//rotates the board with elems to place current player on the left
-function rotateGame(playerID)
-{
-	const game = document.getElementById('pong-game');
-	let toRotate = 0;
-
-	switch(playerID)
-	{
-		case 'j2':
-			toRotate = 180;
-			break;
-		case 'j3':
-			toRotate = 270;
-			break;
-		case 'j4':
-			toRotate = 90;
-			break;
+	// Send input from played players to the server
+	function sendKeyStatus() {
+		players[playerID - 1].sendKeyStatus(ws); // Send keysPressed for the player
+		if (gameSettings.isSolo && gameSettings.nbPlayers == 2)
+			players[1].sendKeyStatus(ws); // Send keysPressed for the other player if in 1v1 singlescreen
 	}
-	game.style.transform = `rotate(${toRotate}deg)`;
-}
 
-
-document.addEventListener('keydown', (event) => {
-    if (event.key === "ArrowUp")
-        sendMessage("u");
-    else if (event.key === "ArrowDown")
-        sendMessage("d");
+	drawGame();
 });
-
-function sendMessage(action) {
-    const gameID = document.getElementById('gameID').value;
-    const userID = document.getElementById('userID').value;
-    const playerID = document.getElementById('playerID').value;
-
-    if (gameID && userID) {
-        if (!ws || ws.readyState !== WebSocket.OPEN) {
-            connectWebSocket(gameID, userID, action, playerID);
-        } else {
-			console.log(`ws://192.168.2.216:8001/wsGame/1/username`)
-            console.log("sending message: \"" + playerID + action + "\" to " + `ws://192.168.2.216:8001/wsGame/1/username`);
-            ws.send(playerID + action);
-        }
-    } else {
-        console.log("infos vides");
-    }
-}
-
-function connectWebSocket(gameID, userID, action, playerID) {
-    const url = `ws://192.168.2.216:8001/wsGame/1/username`;
-    ws = new WebSocket(url);
-
-    ws.onopen = () => {
-        console.log("Connexion établie.");
-		console.log("sending message: \"" + playerID + action + "\" to " +url);
-        ws.send(playerID + action);
-    };
-
-    ws.onmessage = (event) => {
-        console.log("Message reçu : " + event.data);
-    };
-
-    ws.onclose = () => {
-        console.log("Connexion fermée.");
-    };
-
-    ws.onerror = (error) => {
-        console.log("Erreur: ", error);
-    };
-}
+// Adjust canvas size on window resize
+window.addEventListener('resize', () => {
+	setGameSize()
+	drawGame();
+});

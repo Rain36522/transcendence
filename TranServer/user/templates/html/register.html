@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -5,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
-    <link rel="stylesheet" href="../css/register.css">
+    <link rel="stylesheet" href="{% static 'register.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
 </head>
@@ -27,15 +29,70 @@
             <span class="welcome-text">Welcome!</span>
             <span>Please register</span>
         </div>
-        <form>
-            <input type="text" placeholder="Username" name="username">
-            <input type="text" placeholder="Mail" name="mail">
-            <input type="password" placeholder="Password" name="password">
-            <input type="password" placeholder="Confirm Password" name="confirm-password">
+        <form method="post" id="signupForm">
+            {% csrf_token %} 
+            <input type="text" placeholder="Username" name="username" required id="id_username">
+            <input type="email" placeholder="Mail" name="email" required id="id_email">
+            <input type="password" placeholder="Password" name="password1" required id="id_password1">
+            <input type="password" placeholder="Confirm Password" name="password2" required id="id_password2">
             <button type="submit">Register</button>
         </form>
         <a href="{% url 'user_login' %}" id="register-link">Already have an account? Login here</a>
     </div>
+    <script>
+        document.getElementById("signupForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var formData = {
+                username: document.getElementById("id_username").value,
+                email: document.getElementById("id_email").value,
+                password: document.getElementById("id_password1").value,
+                confirmPassword: document.getElementById("id_password2").value
+            };
+            if (formData.password !== formData.confirmPassword) {
+                alert("Passwords do not match");
+                return;
+            }
+            fetch('/api/signup/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Signup failed');
+                }
+            })
+            .then(data => {
+                console.log(data);
+                window.location.href = '/dashboard';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Signup failed. Please try again.');
+            });
+        });
+
+        // Function to get CSRF token from cookies
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
 </body>
 
 </html>

@@ -1,11 +1,14 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'home.css' %}">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Transcendance - home</title>
-<link rel="stylesheet" href="../css/home.css">
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="vignette"></div> <!-- Ajout de la vignette -->
@@ -18,7 +21,7 @@
     </div>
   </header>
 <video autoplay muted loop id="background-video">
-  <source src="../../video.mp4" type="video/mp4">
+  <source src="{% static 'video.mp4' %}" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 <div id="container">

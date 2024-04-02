@@ -1,26 +1,12 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Social Management</title>
-<link rel="stylesheet" href="../css/socialManagement.css">
+{% extends 'html/header.html' %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'socialManagement.css' %}">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
-</head>
-<body>
-  <div class="vignette"></div>
 
-  <header>
-    <h1><a href="{% url 'home_page' %}" class="logo">TRANSCENDANCE</a></h1> <!-- Changement en majuscules -->
-    <nav class="additional-links">
-        <ul>
-            <li><a href="{% url 'user_login' %}" class="logout">LOGOUT</a></li> <!-- Changement en majuscules -->
-            <li><a href="{% url 'general_chat' %}" class="chat">CHAT</a></li> <!-- Changement en majuscules -->
-            <li><a href="{% url 'user_dashboard' %}" class="profile">PROFILE</a></li> <!-- Changement en majuscules -->
-        </ul>
-    </nav>
-  </header>
 
   <div class="frame">
     <div class="tab-container">
@@ -61,5 +47,5 @@
         });
     });
   </script>
-</body>
-</html>
+
+  {% endblock %}
