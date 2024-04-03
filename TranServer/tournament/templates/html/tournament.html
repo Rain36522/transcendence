@@ -8,6 +8,8 @@
 <title>Tournament - settings</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{% static 'tournament.css' %}">
 </head>
 <body>
@@ -30,60 +32,96 @@
       <h2>Settings</h2>
     </div>
     <div class="separator-line"></div>
-    <div class="select-text">
-      <strong>Ball Width:</strong>
-      <input type="range" id="ball-width" name="ball-width" min="0" max="100" step="10">
-    </div>
-    <div class="select-text">
-      <strong>Plank Size:</strong>
-      <input type="range" id="plank-size" name="plank-size" min="0" max="100" step="10">
-    </div>
-    <div class="select-text">
-      <strong>Speed:</strong>
-      <input type="range" id="speed" name="speed" min="0" max="100" step="10">
-    </div>
-    <div class="select-text">
-      <strong>Acceleration:</strong>
-      <input type="range" id="acceleration" name="acceleration" min="0" max="100" step="10">
-    </div>
-    <div class="select-text">
-      <strong style="margin-right: 20px;">Player Amount:</strong>
-      <div class="styled-select">
-        <select id="player-amount">
-          <option value="2">2</option>
-          <option value="4">4</option>
-          <option value="6">6</option>
-          <option value="8">8</option>
-          <option value="10">10</option>
-          <option value="12">12</option>
-        </select>
+    <div class="row">
+      <div class="select-text">
+        <div class="parameter-name"><strong>Ball Width:</strong></div>
+        <div class="control">
+          <input type="range" id="ball-width" name="ball-width" min="0" max="100" step="10">
+          <span id="ball-width-value">50</span>
+        </div>
+      </div>
+      <div class="select-text">
+        <div class="parameter-name"><strong>Plank Size:</strong></div>
+        <div class="control">
+          <input type="range" id="plank-size" name="plank-size" min="0" max="100" step="10">
+          <span id="plank-size-value">50</span>
+        </div>
       </div>
     </div>
-    <div class="select-text">
-      <strong style="margin-right: 20px;">Win Point:</strong>
-      <div class="styled-select">
-        <select id="win-point">
-          <option value="5">5</option>
-          <option value="10">10</option>
-          <option value="15">15</option>
-          <option value="20">20</option>
-        </select>
+    <div class="row">
+      <div class="select-text">
+        <div class="parameter-name"><strong>Speed:</strong></div>
+        <div class="control">
+          <input type="range" id="speed" name="speed" min="0" max="100" step="10">
+          <span id="speed-value">50</span>
+        </div>
+      </div>
+      <div class="select-text">
+        <div class="parameter-name"><strong>Acceleration:</strong></div>
+        <div class="control">
+          <input type="range" id="acceleration" name="acceleration" min="0" max="100" step="10">
+          <span id="acceleration-value">50</span>
+        </div>
       </div>
     </div>
-    <div class="select-text">
-      <strong style="margin-right: 20px;">Game Mode:</strong>
-      <div class="styled-select">
-        <select id="game-mode">
-          <option value="0">AI</option>
-          <option value="1">Player</option>
-          <option value="2">Two Player</option>
-          <option value="4">Four Player</option>
-        </select>
+    <div class="row">
+      <div class="select-text">
+        <div class="parameter-name"><strong>Player Amount:</strong></div>
+        <div class="control">
+          <select id="player-amount">
+            <option value="2">2</option>
+            <option value="4">4</option>
+            <option value="6">6</option>
+            <option value="8">8</option>
+            <option value="10">10</option>
+            <option value="12">12</option>
+          </select>
+        </div>
+      </div>
+      <div class="select-text">
+        <div class="parameter-name"><strong>Win Point:</strong></div>
+        <div class="control">
+          <select id="win-point">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="select-text full-width">
+        <div class="parameter-name"><strong>Game Mode:</strong></div>
+        <div class="control">
+          <select id="game-mode">
+            <option value="0">AI</option>
+            <option value="1">Player</option>
+            <option value="2">Two Player</option>
+            <option value="4">Four Player</option>
+          </select>
+        </div>
       </div>
     </div>
     <button class="create-button"><strong>CREATE</strong></button>
     <a href="{% url 'home_page' %}" class="exit-link">Exit</a>
   </div>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  function updateSliderValue(sliderId, valueId) {
+    var slider = document.getElementById(sliderId);
+    var output = document.getElementById(valueId);
+    output.innerHTML = slider.value;
+    slider.oninput = function() {
+      output.innerHTML = this.value;
+    }
+  }
+
+  updateSliderValue('ball-width', 'ball-width-value');
+  updateSliderValue('plank-size', 'plank-size-value');
+  updateSliderValue('speed', 'speed-value');
+  updateSliderValue('acceleration', 'acceleration-value');
+});
+</script>
 </body>
 </html>
-    
