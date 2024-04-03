@@ -24,7 +24,6 @@ document.addEventListener("DOMContentLoaded", function() {
 			winPoint: document.getElementById('win-point').value,
 			gameMode: document.getElementById('game-mode').value,
 		};
-	
 		console.log(JSON.stringify(tournamentSettings));
 		
 		fetch('!!! ICI IL FAUT METTRE L`ENDROIT OU ENVOYER LE JSON !!!', {

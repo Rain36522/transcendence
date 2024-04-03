@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	// Create button
 	document.querySelector('.create-link').addEventListener('click', function(event) {
-	
 		var gameSettings = {
 			ballSize: document.getElementById('ball-size').value,
 			raquetSize: document.getElementById('raquet-size').value,
