@@ -57,18 +57,15 @@ def Question2Value(title, text, value1, value2):
     ).run()
 
 def inputText(title, text, password=False, style=STYLE, defaultValue=""):
-    value = input_dialog(
+    return input_dialog(
         title=title,
         text=text,
         password=password,
         default=defaultValue,
         style=style).run()
-    if value is None:
-        doexit(0, "User exit!")
-    return value
 
 def doexit(errorCode, errorMsg=""):
-    # system("clear")
+    system("clear")
     if errorMsg:
         print(RED, errorMsg, RESET)
     exit(errorCode)

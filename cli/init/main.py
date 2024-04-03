@@ -14,6 +14,8 @@ from time import sleep
 
 def getUrl(Django):
     url = inputText("TRANSCENDANCE", "Write the server url.", defaultValue="https://127.0.0.1")
+    if url == None:
+        doexit(0, "User exit")
     while not checkUrlInput(url, Django):
         url = inputText("TRANSCENDANCE", "Invalide url. Try again!", style=STYLERROR)
     
@@ -32,7 +34,7 @@ def checkUrlInput(url, Django):
 def InitCli():
     Django = DjangoCommunication()
 
-    Information("TRANSCENDANCE", "Welcome to the transcendance CLI")
+    # Information("TRANSCENDANCE", "Welcome to the transcendance CLI")
     getUrl(Django)
     User(Django)
     NewGameSettings()
@@ -42,6 +44,6 @@ def InitCli():
 if __name__ == '__main__':
     Ascii = Ascii()
     os.system("clear")
-    Ascii.putString("TRANSCENDENCE",GREEN, RESET)
-    sleep(4)
+    # Ascii.putString("TRANSCENDENCE",GREEN, RESET)
+    # sleep(4)
     InitCli()
