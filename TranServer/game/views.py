@@ -41,21 +41,22 @@ class newGame(APIView):
             return data
         return None
 
+    def sendNewGame(self, data):
+        print("sending new msg")
+        data = json.dumps(data)
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+        "gameServer",
+        {
+            "type": "send_data",
+            "data": data,
+        }
+        )
+        print("message send")
+
 def home_page(request):
     return render(request, 'html/home.html')
 
 def online_game(request):
     return render(request, 'html/onlineGame.html')
 
-def sendNewGame(self, data):
-    print("sending new msg")
-    data = json.dumps(data)
-    channel_layer = get_channel_layer()
-    async_to_sync(channel_layer.group_send)(
-    "gameServer",
-    {
-        "type": "send_data",
-        "data": data,
-    }
-    )
-    print("message send")
