@@ -8,6 +8,8 @@ export class Settings
 		for (let i = 1; i <= this.nbPlayers; i++)
 			this.playersNames.push(data[`player${i}Name`] || `Player${i}`);
 		this.isSolo = data.isSolo || true; // if no other players on other screens
+		this.status = data.status || "waiting"; // if the game is running
+		this.winPoints = data.winPoints || 10;
 
 		this.gameWidth = data.gameWidth || 1200; // width of the field
 		this.gameHeight = this.gameWidth; // height of the field

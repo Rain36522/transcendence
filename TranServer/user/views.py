@@ -21,8 +21,9 @@ from .serializers import UserSerializer
 def api_signup(request):
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save()
-        return Response({'message': 'User created successfully'})
+        user = serializer.save()
+        login(request, user)
+        return Response({'message': 'User created successfully'}, status=201)
     return Response(serializer.errors, status=400)
 
 @login_required
