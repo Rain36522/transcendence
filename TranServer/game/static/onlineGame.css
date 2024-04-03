@@ -86,21 +86,6 @@ header {
   background-repeat: no-repeat; /* Evite la répétition de l'indicateur */
 }
 
-/* Ajout d'une flèche personnalisée en dehors du sélecteur pour indiquer qu'il s'agit d'un menu déroulant */
-.select-text:after {
-  content: '';
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  border: solid white;
-  border-width: 0 2px 2px 0;
-  display: inline-block;
-  padding: 5px;
-  transform: rotate(45deg);
-}
-
 .select-text strong, .select-text span {
   min-width: 50px;
 }
