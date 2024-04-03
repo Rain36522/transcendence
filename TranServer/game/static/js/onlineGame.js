@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-	// Mise à jour de la valeur affichée pour chaque slider
+	// Update slider value
 	function updateSliderValue(sliderId, valueId) {
 		var slider = document.getElementById(sliderId);
 		var output = document.getElementById(valueId);
@@ -7,16 +7,14 @@ document.addEventListener("DOMContentLoaded", function() {
 		slider.oninput = function() {
 			output.innerHTML = this.value;
 	}}
-	// Initialisation des sliders
 	updateSliderValue('ball-size', 'ball-size-value');
 	updateSliderValue('raquet-size', 'raquet-size-value');
 	updateSliderValue('game-speed', 'game-speed-value');
 	updateSliderValue('game-acceleration', 'game-acceleration-value');
 	updateSliderValue('win-point', 'win-point-value');
 
-	// Ciblage du lien "Create" et envoi des données au serveur
+	// Create button
 	document.querySelector('.create-link').addEventListener('click', function(event) {
-		event.preventDefault(); // Prévention du comportement par défaut du lien
 	
 		var gameSettings = {
 			ballSize: document.getElementById('ball-size').value,
@@ -31,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		fetch('!!! ICI IL FAUT METTRE L`ENDROIT OU ENVOYER LE JSON !!!', {
 			method: 'POST',
 			headers: {
-			'Content-Type': 'application/json',
+				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify(gameSettings),
 		})
