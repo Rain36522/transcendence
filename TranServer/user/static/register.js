@@ -32,4 +32,3 @@ document.getElementById("signupForm").addEventListener("submit", function(event)
 		document.getElementById('error-message').style.display = 'block'; // Rend le message visible
 	});	
 });
-
