@@ -28,12 +28,8 @@ class MessageSerializer(serializers.ModelSerializer):
                 
                 image_data = f.read()
                 file_format = imghdr.what(None, h=image_data)
-                # Encode the image data as base64
                 encoded_image = base64.b64encode(image_data).decode('utf-8')
                 if file_format:
-                    # Encode the image data as base64
-                    encoded_image = base64.b64encode(image_data).decode('utf-8')
-                    # Construct the data string with image data and file format
                     image_data_string = f"data:image/{file_format};base64,{encoded_image}"
                     return image_data_string
                 else:
