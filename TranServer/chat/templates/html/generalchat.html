@@ -1,156 +1,216 @@
-{% extends "html/header.html" %}
 {% load static %}
 
-{% block content %}
-
-<link rel="stylesheet" href="{% static 'generalchat.css' %}">
-<div class="video-container">
-    <img src="https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg" alt="Background Image">
-</div>    
-<div class="chat-container">
-    <div class="user-list">
-        <div class="user" onclick="selectChat('User 1')">User 1</div>
-        <div class="user" onclick="selectChat('User 2')">User 2</div>
-        <div class="user" onclick="selectChat('User 3')">User 3</div>
-        <hr>
-        <div class="group" onclick="selectChat('Group 1')">Group 1</div>
-        <div class="group" onclick="selectChat('Group 2')">Group 2</div>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@300;400;600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'home.css' %}">
+    <link rel="stylesheet" href="{% static 'generalchat.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="vignette"></div>
+    <header>
+        <h1><a href="{% url 'home_page' %}" class="logo">Transcendance</a></h1>
+        <div>
+            <a href="{% url 'general_chat' %}" class="header-btn">Chat</a>
+            <a href="{% url 'user_logout' %}" class="header-btn">Logout</a>
+            <a href="{% url 'user_dashboard' %}" class="header-btn profile-btn">Profile</a>
+        </div>
+    </header>
+    <div class="video-container">
+        <img src="https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg" alt="Background Image">
     </div>
-    <div class="chat-window">
-        <div class="selected-user">Select a user or group to start chatting</div>
-        <div id="messages"></div>
-        <div class="message-input">
-            <textarea id="messageText" placeholder="Type your message here..."></textarea>
-            <input type="hidden" id="imageData" />
-            <div id="imagePreview"></div>
-            <button id="sendMessage">Send</button>
+    <div class="chat-container">
+        <div class="user-list">
+            <div class="user" onclick="selectChat('User 1')">User 1</div>
+            <div class="user" onclick="selectChat('User 2')">User 2</div>
+            <div class="user" onclick="selectChat('User 3')">User 3</div>
+            <hr>
+            <div class="group" onclick="selectChat('Group 1')">Group 1</div>
+            <div class="group" onclick="selectChat('Group 2')">Group 2</div>
+            <button id="newChatButton">New Chat</button>
+        </div>
+        <div class="chat-window">
+            <div class="selected-user">Select a user or group to start chatting</div>
+            <div class="message-input">
+                <textarea id="messageText" placeholder="Type your message here..."></textarea>
+                <input type="hidden" id="imageData" />
+                <div id="imagePreview"></div>
+                <button id="sendMessage">Send</button>
+            </div>
         </div>
     </div>
-</div>
+    <div id="overlay"></div>
+    <div class="modal" id="modal">
+        <div class="modal-header">
+            <div class="title">New Chat</div>
+            <button class="close-button">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="text" id="searchUser" placeholder="Search a user..." class="search-box"/>
+            <div id="userList" class="user-list-modal"><!-- Utilisateurs ajoutés dynamiquement ici --></div>
+            <button id="createGroupButton" class="modal-footer-btn">Create the chat</button>
+        </div>
+    </div>
+    <script>
+            const socket = new WebSocket('wss://' + window.location.host + '/ws/your_url/1/');
 
-<script>
-    const socket = new WebSocket('wss://' + window.location.host + '/ws/your_url/1/');
+socket.addEventListener('open', function(event) {
+    console.log('WebSocket connection established.');
+});
 
-    socket.addEventListener('open', function(event) {
-        console.log('WebSocket connection established.');
-    });
+socket.addEventListener('error', function(event) {
+    console.error('WebSocket error:', event);
+});
 
-    socket.addEventListener('error', function(event) {
-        console.error('WebSocket error:', event);
-    });
+socket.addEventListener('message', function (event) {
+    const message = JSON.parse(event.data);
+    renderMessage(message);
+});
 
-    socket.addEventListener('message', function (event) {
-        const message = JSON.parse(event.data);
-        renderMessage(message);
-    });
+function selectChat(chatName) {
+    document.querySelector('.selected-user').textContent = "Chatting with: " + chatName;
+    document.getElementById('messages').innerHTML = '';
+}
 
-    function selectChat(chatName) {
-        document.querySelector('.selected-user').textContent = "Chatting with: " + chatName;
-        document.getElementById('messages').innerHTML = '';
+function renderMessage(message) {
+    var messageBox = document.createElement('div');
+    messageBox.style.display = "flex";
+    messageBox.style.alignItems = "center";
+
+    var usernameElement = document.createElement('span');
+    usernameElement.textContent = message.username + ': ';
+    usernameElement.style.fontWeight = "bold";
+    usernameElement.style.marginRight = "5px";
+    messageBox.appendChild(usernameElement);
+    
+    if (message.message) {
+        const messageElement = document.createElement('div');
+        messageElement.textContent = message.message;
+        messageElement.classList.add('message-box');
+        messageBox.appendChild(messageElement);
     }
-
-    function renderMessage(message) {
-        var messageBox = document.createElement('div');
-        messageBox.style.display = "flex";
-        messageBox.style.alignItems = "center";
-
-        var usernameElement = document.createElement('span');
-        usernameElement.textContent = message.username + ': ';
-        usernameElement.style.fontWeight = "bold";
-        usernameElement.style.marginRight = "5px";
-        messageBox.appendChild(usernameElement);
-        
-        if (message.message) {
-            const messageElement = document.createElement('div');
-            messageElement.textContent = message.message;
-            messageElement.classList.add('message-box');
-            messageBox.appendChild(messageElement);
-        }
-        if (message.image) {
-            const img = document.createElement('img');
-            img.src = message.image;
-            img.classList.add('image');
-            img.classList.add('message-box')
-            messageBox.appendChild(img);
-        }
-        document.getElementById('messages').appendChild(messageBox);
-        scrollToBottom();
+    if (message.image) {
+        const img = document.createElement('img');
+        img.src = message.image;
+        img.classList.add('image');
+        img.classList.add('message-box')
+        messageBox.appendChild(img);
     }
+    document.getElementById('messages').appendChild(messageBox);
+    scrollToBottom();
+}
 
 
-    async function fetchMessages(chatId) {
-        try {
-            const response = await fetch(`/api/messages/${chatId}/`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch messages');
-            }
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            console.error('Error fetching messages:', error);
-            return [];
+async function fetchMessages(chatId) {
+    try {
+        const response = await fetch(`/api/messages/${chatId}/`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch messages');
         }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching messages:', error);
+        return [];
     }
+}
 
-    fetchMessages(1).then(messages => {
-        console.log(messages);
-        for (const mess of messages){
-            renderMessage({
-                "message": mess.content,
-                "username": mess.sender,
-                "image": mess.image
-            });
-        }
-    })
+fetchMessages(1).then(messages => {
+    console.log(messages);
+    for (const mess of messages){
+        renderMessage({
+            "message": mess.content,
+            "username": mess.sender,
+            "image": mess.image
+        });
+    }
+})
 
-    document.getElementById('sendMessage').addEventListener('click', function(event) {
+document.getElementById('sendMessage').addEventListener('click', function(event) {
+    event.preventDefault();
+    sendMessage();
+});
+
+document.getElementById('messageText').addEventListener('keypress', function(event) {
+    scrollToBottom();
+    if (event.key === 'Enter') {
         event.preventDefault();
         sendMessage();
-    });
-
-    document.getElementById('messageText').addEventListener('keypress', function(event) {
-        scrollToBottom();
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            sendMessage();
-        }
-    });
-
-    document.getElementById('messageText').addEventListener('paste', function(event) {
-        const clipboardData = event.clipboardData || window.clipboardData;
-
-        for (const item of clipboardData.items) {
-            if (item.type.indexOf('image') !== -1) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const imageData = event.target.result;
-                    const imagePreview = document.getElementById('imagePreview');
-                    const img = document.createElement('img');
-                    img.src = imageData;
-                    imagePreview.innerHTML = '';
-                    imagePreview.appendChild(img);
-                    document.getElementById('imageData').value = imageData;
-                };
-                reader.readAsDataURL(item.getAsFile());
-            }
-        }
-    });
-
-    function scrollToBottom() {
-        const messagesContainer = document.getElementById('messages');
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
+});
 
-    function sendMessage() {
-        const messageText = document.getElementById('messageText').value.trim();
-        const imageData = document.getElementById('imageData').value;
+document.getElementById('messageText').addEventListener('paste', function(event) {
+    const clipboardData = event.clipboardData || window.clipboardData;
 
-        if (messageText !== '') socket.send(JSON.stringify({message: messageText}));
-        if (imageData !== '') socket.send(JSON.stringify({image: imageData}));
-        document.getElementById('messageText').value = '';
-        document.getElementById('imageData').value = '';
-        document.getElementById('imagePreview').innerHTML = '';
+    for (const item of clipboardData.items) {
+        if (item.type.indexOf('image') !== -1) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const imageData = event.target.result;
+                const imagePreview = document.getElementById('imagePreview');
+                const img = document.createElement('img');
+                img.src = imageData;
+                imagePreview.innerHTML = '';
+                imagePreview.appendChild(img);
+                document.getElementById('imageData').value = imageData;
+            };
+            reader.readAsDataURL(item.getAsFile());
+        }
     }
-</script>
+});
 
-{% endblock %}
+function scrollToBottom() {
+    const messagesContainer = document.getElementById('messages');
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+function sendMessage() {
+    const messageText = document.getElementById('messageText').value.trim();
+    const imageData = document.getElementById('imageData').value;
+
+    if (messageText !== '') socket.send(JSON.stringify({message: messageText}));
+    if (imageData !== '') socket.send(JSON.stringify({image: imageData}));
+    document.getElementById('messageText').value = '';
+    document.getElementById('imageData').value = '';
+    document.getElementById('imagePreview').innerHTML = '';
+}
+        const newChatButton = document.getElementById('newChatButton');
+        const overlay = document.getElementById('overlay');
+        const modal = document.getElementById('modal');
+        const closeButton = document.querySelector('.close-button');
+
+        newChatButton.addEventListener('click', () => {
+            modal.classList.add('active');
+            overlay.classList.add('active');
+            document.body.classList.add('active-modal');
+        });
+
+        overlay.addEventListener('click', () => {
+            modal.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.classList.remove('active-modal');
+        });
+
+        closeButton.addEventListener('click', () => {
+            modal.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.classList.remove('active-modal');
+        });
+        // Gestion de la recherche d'utilisateurs
+        document.getElementById('searchUser').addEventListener('input', function(e) {
+            // Implémentez la logique de recherche d'utilisateurs ici
+        });
+
+        // Gestion de la création du groupe
+        document.getElementById('createGroupButton').addEventListener('click', function() {
+            // Implémentez la logique de création de groupe ici
+        });
+    </script>
+</body>
+</html>
