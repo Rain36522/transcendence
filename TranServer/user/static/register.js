@@ -23,12 +23,13 @@ document.getElementById("signupForm").addEventListener("submit", function(event)
 		if (response.ok) {
 			window.location.href = '/dashboard';
 		} else {
-			throw new Error('Signup failed');
+			throw new Error('Signup failed' + response.text);
 		}
 	})
 	.catch(error => {
 		console.error('Error:', error);
-		alert('Signup failed. Please try again.');
-	});
+		document.getElementById('error-message').textContent = 'Signup failed. Please try again.'; // Ici, mettez le message d'erreur souhaité
+		document.getElementById('error-message').style.display = 'block'; // Rend le message visible
+	});	
 });
 

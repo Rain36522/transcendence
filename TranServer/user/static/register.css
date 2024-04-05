@@ -187,6 +187,15 @@
             align-items: center;
         }
 
+        #login-container form input[type="email"] {
+            width: calc(100% - 40px);
+            padding: 12px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            font-size: 16px;
+            border-radius: 5px;
+        }        
+
         input[type="text"],
         input[type="password"],
         button {
@@ -230,4 +239,12 @@
 .logo, .profile {
     margin-left: 10px; /* Décaler TRANSCENDANCE du bord gauche */
     margin-right: 10px; /* Décaler PROFILE du bord droit */
+}
+
+#error-message {
+    color: #ffff65; /* Jaune pâle fluo */
+    font-style: italic; /* Italique */
+    margin-top: 20px; /* Espace au-dessus du message */
+    text-align: center; /* Centrage du texte */
+    font-family: 'Arial', sans-serif; /* Utiliser Arial */
 }

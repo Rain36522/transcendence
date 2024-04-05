@@ -38,6 +38,7 @@
             <button type="submit">Register</button>
         </form>
         <a href="{% url 'user_login' %}" id="register-link">Already have an account? Login here</a>
+        <div id="error-message" style="display: none;"></div>
     </div>
     <script src="{% static 'utils.js' %}"></script>
     <script src="{% static 'register.js' %}"></script>
