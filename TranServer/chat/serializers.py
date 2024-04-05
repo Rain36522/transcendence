@@ -24,8 +24,6 @@ class MessageSerializer(serializers.ModelSerializer):
 
     def get_image(self, obj):
         if obj.image:
-            print(obj.image)
-            print(obj.image.path)
             with open(obj.image.path, "rb") as f:
                 image_data = f.read()
                 file_format = imghdr.what(None, h=image_data)

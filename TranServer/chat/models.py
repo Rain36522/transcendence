@@ -11,4 +11,4 @@ class Message(models.Model):
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
     content = models.TextField()
     timestamp = models.DateTimeField()
-    image = models.ImageField(upload_to="images/", blank=True, null=True)
+    image = models.ImageField(upload_to="chat_images/", blank=True, null=True)
