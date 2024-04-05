@@ -76,6 +76,16 @@ body {
 	display: flex;
 	margin-top: auto;
 }
+.message-box {
+	padding: 10px;
+	margin: 5px 0;
+	background-color: #BDE0FE;
+	border-radius: 10px;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+	max-width: 80%;
+}
+
 .message-input input {
 	flex-grow: 1;
 	margin-right: 10px;
