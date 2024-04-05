@@ -1,7 +1,10 @@
 .theme {
-	height: 100%;
-	width: 100%;
+	min-height: 100%;
+	min-width: 100%;
 	position: absolute;
+  background-color: #121212;
+  color: #fff;
+  font-family: poppins;
   }
   .bracket {
 	padding: 40px;
@@ -13,11 +16,13 @@
 	position: relative;
   }
   .column {
+  margin-right: 0;
 	display: flex;
 	flex-direction: column;
 	min-height: 100%;
 	justify-content: space-around;
 	align-content: center;
+  margin-right: 4vw;
   }
   .match {
 	position: relative;
@@ -26,7 +31,7 @@
 	min-width: 240px;
 	max-width: 240px;
 	height: 62px;
-	margin: 12px 24px 12px 0;
+	margin: 1.5vw 32px 1.5vw 0;
   }
   .match .match-top {
 	border-radius: 2px 2px 0 0;
@@ -63,17 +68,17 @@
 	right: -1px;
   }
   .match-lines .line {
-	background: red;
+	background: rgb(255, 255, 255);
 	position: absolute;
   }
   .match-lines .line.one {
 	height: 1px;
-	width: 12px;
+	width: 135px;
   }
   .match-lines .line.two {
-	height: 44px;
+	height: 100px;
 	width: 1px;
-	left: 11px;
+	left: 135px;
   }
   .match-lines.alt {
 	left: -12px;
@@ -91,16 +96,16 @@
 	display: block;
   }
   .column:nth-child(2) .match-lines .line.two {
-	height: 88px;
+	height: 150px;
   }
   .column:nth-child(3) .match-lines .line.two {
-	height: 175px;
+	height: 300px;
   }
   .column:nth-child(4) .match-lines .line.two {
-	height: 262px;
+	height: 600px;
   }
   .column:nth-child(5) .match-lines .line.two {
-	height: 349px;
+	height: 1200px;
   }
   .disable-image .image,
   .disable-seed .seed,
@@ -123,3 +128,23 @@
   .disable-seperator .team:first-child {
 	margin-bottom: 0px;
   }
+
+  .match, .match-link {
+    background-color: #333;
+    border-color: #444;
+}
+
+.match .team {
+    border-color: #555;
+}
+
+.match .team.winner {
+  background-color: #ffff79;
+  color: rgb(29, 29, 67);
+}
+
+.match .team.loser {
+  background-color: rgb(29, 29, 67);
+  color: #ffff79;
+}
+
