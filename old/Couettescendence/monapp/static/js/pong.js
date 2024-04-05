@@ -72,6 +72,25 @@ function drawGame() {
 		scoreBoard.innerHTML += `${gameSettings.playersNames[playerID - 1]}: ${players[playerID - 1].Points} - ${gameSettings.playersNames[pRight]}: ${players[pRight].Points}<br>`;
 		scoreBoard.innerHTML += `${gameSettings.playersNames[pBottom]}: ${players[pBottom].Points}`;
 	}
+	// Make sure to hide waiting screen and end game screen
+	document.getElementById('waitingScreen').style.display = 'none';
+	document.getElementById('endGameScreen').style.display = 'none';
+
+	if (gameSettings.status == "waiting")
+		document.getElementById('waitingScreen').style.display = 'block';
+	if (gameSettings.status == "end")
+	{
+		var winner = 'Personne';
+		for (let i = 0; i < gameSettings.nbPlayers; i++)
+			if (players[i].Points == gameSettings.winPoints)
+				winner = gameSettings.playersNames[i];
+		document.getElementById('winnerText').textContent = 'Gagnant: ' + winner;
+		var score = '';
+		for (let i = 0; i < gameSettings.nbPlayers; i++)
+			score += gameSettings.playersNames[i] + ': ' + players[i].Points + " <br> ";
+  		document.getElementById('scoreText').innerHTML = score;
+		document.getElementById('endGameScreen').style.display = 'block';	
+	}
 }
 
 
@@ -160,6 +179,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// Event listeners for key presses
 	document.addEventListener('keydown', (event) => {
+		if (gameSettings.status !== "playing")
+			return;
 		players[playerID - 1].updateKeysPressed(event, true);
 		if (gameSettings.isSolo && gameSettings.nbPlayers == 2)
 			players[1].updateKeysPressed(event, true);
@@ -175,6 +196,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// Send input from played players to the server
 	function sendKeyStatus() {
+		if (gameSettings.status !== "playing")
+			return;
 		players[playerID - 1].sendKeyStatus(ws); // Send keysPressed for the player
 		if (gameSettings.isSolo && gameSettings.nbPlayers == 2)
 			players[1].sendKeyStatus(ws); // Send keysPressed for the other player if in 1v1 singlescreen
