@@ -83,8 +83,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     def save_message(self, message_content):
         chat = Chat.objects.get(id=self.chat_id)
     
-        # Create and save a new Message object
-        message = Message.objects.create(
+        Message.objects.create(
             sender=self.scope['user'],
             chat=chat,
             content=message_content,
@@ -98,9 +97,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         data = ContentFile(base64.b64decode(imgstr), name=f'image.{ext}')
         
         chat = Chat.objects.get(id=self.chat_id)
-        print("THIS RAN")
-        # Create and save a new Message object with the image
-        message = Message.objects.create(
+        Message.objects.create(
             sender=self.scope['user'],
             chat=chat,
             image=data,
