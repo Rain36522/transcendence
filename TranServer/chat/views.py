@@ -20,6 +20,7 @@ class ChatListView(APIView):
         POST (One)\n
         DELETE (One)
     """
+
     renderer_classes = [JSONRenderer]
 
     def get(self, request, chat_id=None):
@@ -39,17 +40,21 @@ class ChatListView(APIView):
             try:
                 chat = Chat.objects.get(pk=chat_id)
                 if not chat.participants.contains(request.user):
-                    return JsonResponse({'error': 'Insufficient permissions: Access Denied'}, status=401)
+                    return JsonResponse(
+                        {"error": "Insufficient permissions: Access Denied"}, status=401
+                    )
                 serializer = ChatSerializer(chat)
                 return Response(serializer.data)
             except Chat.DoesNotExist:
-                return JsonResponse({'error': 'Chat not found'}, status=404)
+                return JsonResponse({"error": "Chat not found"}, status=404)
             except Exception as e:
-                return JsonResponse({'error': str(e)}, status=500)
+                return JsonResponse({"error": str(e)}, status=500)
         try:
             serializer = ChatSerializer(request.user.chats.all(), many=True)
         except Exception as e:
-            return JsonResponse({'error': 'Insufficient permissions: Access Denied'}, status=401)
+            return JsonResponse(
+                {"error": "Insufficient permissions: Access Denied"}, status=401
+            )
         return Response(serializer.data)
 
     def post(self, request, chat_id=None):
@@ -72,7 +77,7 @@ class ChatListView(APIView):
             route: /api/chat/{chat_id}
         """
         if chat_id is None:
-            return JsonResponse({'error': 'Invalid chat ID'}, status=400)
+            return JsonResponse({"error": "Invalid chat ID"}, status=400)
         try:
             chat = Chat.objects.get(pk=chat_id)
             participant = get_object_or_404(chat.participants, id=request.user.id)
@@ -80,23 +85,31 @@ class ChatListView(APIView):
             chat.save()
             if chat.participants.count == 0:
                 chat.delete()
-                return JsonResponse({'message': 'Chat deleted successfully'}, status=200)
-            return JsonResponse({'message': 'Participant removed from chat'}, status=200)
+                return JsonResponse(
+                    {"message": "Chat deleted successfully"}, status=200
+                )
+            return JsonResponse(
+                {"message": "Participant removed from chat"}, status=200
+            )
         except Chat.DoesNotExist:
-            return JsonResponse({'error': 'Chat does not exist'}, status=401)
+            return JsonResponse({"error": "Chat does not exist"}, status=401)
         except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
+            return JsonResponse({"error": str(e)}, status=500)
+
 
 @login_required
 def general_chat(request):
-    return render(request, 'html/generalchat.html')       
+    return render(request, "html/generalchat.html")
+
 
 @login_required
 def chat_view(request):
-    return render(request, 'chat_page.html')
+    return render(request, "chat_page.html")
+
 
 def ws_view(request):
-    return render(request, 'test.html')
+    return render(request, "test.html")
+
 
 class MessageListView(APIView):
     """API endpoint for messages
@@ -106,7 +119,7 @@ class MessageListView(APIView):
 
     Methods:
         GET
-    
+
     Returns (example):
         [
             {
@@ -119,6 +132,7 @@ class MessageListView(APIView):
             ...
         ]
     """
+
     renderer_classes = [JSONRenderer]
 
     def get(self, request, chat_id):
@@ -129,6 +143,6 @@ class MessageListView(APIView):
             serializer = MessageSerializer(Message.objects.filter(chat=chat), many=True)
             return Response(serializer.data)
         except Chat.DoesNotExist:
-            return JsonResponse({'error': 'Chat not found'}, status=404)
+            return JsonResponse({"error": "Chat not found"}, status=404)
         except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
+            return JsonResponse({"error": str(e)}, status=500)
