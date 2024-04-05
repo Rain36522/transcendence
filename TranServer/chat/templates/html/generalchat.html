@@ -145,13 +145,11 @@
         const messageText = document.getElementById('messageText').value.trim();
         const imageData = document.getElementById('imageData').value;
 
-        if (messageText !== '' || imageData !== '') {
-            if (messageText !== '') socket.send(JSON.stringify({message: messageText}));
-            if (imageData !== '') socket.send(JSON.stringify({image: imageData}));
-            document.getElementById('messageText').value = '';
-            document.getElementById('imageData').value = '';
-            document.getElementById('imagePreview').innerHTML = '';
-        }
+        if (messageText !== '') socket.send(JSON.stringify({message: messageText}));
+        if (imageData !== '') socket.send(JSON.stringify({image: imageData}));
+        document.getElementById('messageText').value = '';
+        document.getElementById('imageData').value = '';
+        document.getElementById('imagePreview').innerHTML = '';
     }
 </script>
 
