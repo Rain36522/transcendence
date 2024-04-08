@@ -20,10 +20,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=150, blank=True)
     date_joined = models.DateTimeField(default=timezone.now)
     is_active = models.BooleanField(default=True)
-
     wins = models.PositiveIntegerField(default=0, verbose_name="Number of wins")
-    totalGames = models.PositiveIntegerField(default=0, verbose_name="Total number of games")
-    
+    total_games = models.PositiveIntegerField(default=0, verbose_name="Total number of games")
     friends = models.ManyToManyField('self', symmetrical=True)
     blocked = models.ManyToManyField('self', symmetrical=False, related_name='blocked_by')
     invites = models.ManyToManyField('self', symmetrical=False, related_name='invited_by') 

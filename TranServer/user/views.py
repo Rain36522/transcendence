@@ -103,21 +103,6 @@ def social_management(request):
 def profile(request):
     return render(request, 'profile.html')
 
-def profil_utilisateur(request, username):
-    user = get_object_or_404(get_user_model(), username=username)
-    return render(request, 'profil_utilisateur.html', {'user_profil': user})
-
 @login_required
 def dashboard(request):
     return render(request, 'dashboard.html', {'user': request.user})
-
-def ajouter_resultat(request, points_joueur, points_ennemi, username_ennemi):
-    utilisateur = request.user
-    nouveau_resultat = [points_joueur, points_ennemi, username_ennemi]
-    historique_actuel = utilisateur.historique_resultats
-    historique_actuel.append(nouveau_resultat)
-    utilisateur.historique_resultats = historique_actuel
-    utilisateur.save()
-
-def home(request):
-    return HttpResponse('Bienvenue sur la page d\'accueil !')

@@ -57,7 +57,7 @@ header {
 
 .content {
   position: fixed;
-  top: 55%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 2;
@@ -69,8 +69,8 @@ header {
   box-sizing: border-box;
   color: white;
   border-radius: 10px;
-  width: 45%;
-  height: 70%;
+  width: 35%;
+  height: 60%;
   background-color: rgba(44, 44, 44, 0.714);
 }
 
@@ -83,7 +83,7 @@ header {
 }
 
 .select-text strong {
-  font-size: 20px;
+  font-size: 30px;
 }
 
 .select-text input[type="range"] {
@@ -126,7 +126,7 @@ header {
 }
 
 .create-button:hover {
-  background-color: #45a049;
+  background-color: #fcf011;
 }
 
 .exit-link {
@@ -134,6 +134,7 @@ header {
   text-decoration: none;
   font-size: 22px;
   margin-top: 20px;
+  font-family: Arial, sans-serif; /* Ajout de Arial comme police de caractères */
 }
 
 .title-container {
@@ -146,6 +147,10 @@ header {
 .title-container h2 {
   font-size: 50px;
   margin: 0;
+}
+
+.first-below-line {
+  margin-top: 50px; /* Ajustez cette valeur selon l'espace désiré */
 }
 
 .separator-line {

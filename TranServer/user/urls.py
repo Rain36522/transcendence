@@ -1,9 +1,5 @@
 from django.urls import path
-from . import views
-from django.contrib.auth import views as auth_views
-from .views import SignUpView
-
-from .views import account_information, user_dashboard, user_login, user_register, social_management, user_login_api, api_signup, logout_view
+from .views import SignUpView, account_information, user_dashboard, user_login, user_register, social_management, user_login_api, api_signup, logout_view
 from django.views.generic.base import RedirectView
 
 
