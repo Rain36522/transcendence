@@ -226,13 +226,13 @@ button:focus {
 
 /* Pour le lien "Already have an account? Login here" */
 #register-link {
-text-decoration: none;
-color: white;
-font-size: 16px;
-margin-top: 10px;
-text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
-font-weight: normal;
-font-family: 'Arial', sans-serif; /* Changer la police d'écriture */
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+    margin-top: 10px;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+    font-weight: normal;
+    font-family: 'Arial', sans-serif; /* Changer la police d'écriture */
 }
 
 /* Pour les éléments "TRANSCENDANCE" et "PROFILE" */
