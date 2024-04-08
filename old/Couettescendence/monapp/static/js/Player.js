@@ -10,28 +10,34 @@ export class Player
 	}
 
 	// store current keys status (pressed/released)
-	updateKeysPressed(event, value){
+	updateKeysPressed(event, value, ws){
+		if (event.key != "w" && event.key != "s" && event.key != "ArrowUp" && event.key != "ArrowDown")
+			return;
+		let message = "";
 		if ((event.key == "ArrowUp" || event.key == "ArrowDown") && this.gameParams.isSolo && this.gameParams.nbPlayers == 2 && this.PlayerID == 2)
 		{
-			if (event.key == "ArrowUp")
+			if (event.key == "ArrowUp" && this.keysPressed["up"] != value) {
 				this.keysPressed["up"] = value;
-			else if (event.key == "ArrowDown")
+				message = this.PlayerID + "u-" + (value == true ? "on" : "off");
+			}
+			else if (event.key == "ArrowDown" && this.keysPressed["down"] != value) {
 				this.keysPressed["down"] = value;
+				message = this.PlayerID + "d-" + (value == true ? "on" : "off");
+			}
 		} else {
-			if (event.key == "w")
+			if (event.key == "w" && this.keysPressed["up"] != value) {
 				this.keysPressed["up"] = value;
-			else if (event.key == "s")
+				message = this.PlayerID + "u-" + (value == true ? "on" : "off");
+			}
+			else if (event.key == "s" && this.keysPressed["down"] != value) {
 				this.keysPressed["down"] = value;
-	}}
-
-	// send key status to server
-	sendKeyStatus(ws) {
-		// if (!ws || ws.readyState !== WebSocket.OPEN)
-		// 	return;
-		if (this.keysPressed["up"] && !this.keysPressed["down"])
-			{console.log(`sending ${this.PlayerID}u`); /*ws.send(this.PlayerID + "u");*/}
-		else if (this.keysPressed["down"] && !this.keysPressed["up"])
-			{console.log(`sending ${this.PlayerID}d`); /*ws.send(this.PlayerID + "d");*/}
+				message = this.PlayerID + "d-" + (value == true ? "on" : "off");
+			}
+		}
+		if (message != "")
+			console.log(`message: ${message}`);
+		if (ws && ws.readyState === WebSocket.OPEN && message != "")
+			ws.send(message);
 	}
 
 	// rotate if needed to put player on the left side of the screen

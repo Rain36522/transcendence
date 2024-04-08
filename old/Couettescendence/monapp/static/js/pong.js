@@ -170,43 +170,20 @@ document.addEventListener('DOMContentLoaded', () => {
 	/*‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾*\
 	||=========================[input managment]========================||
 	\*__________________________________________________________________*/
-	// Input send to server interval in ms
-	const sendInterval = 2;
-	let lastSendTime = 0;
-
-	// function to limit the number of messages sent to the server
-	function throttledSendKeyStatus() {
-		const now = Date.now();
-		if (now - lastSendTime >= sendInterval)
-			{sendKeyStatus(); lastSendTime = now;}
-	}
-
 	// Event listeners for key presses
 	document.addEventListener('keydown', (event) => {
 		if (gameSettings.status !== "playing")
 			return;
 		players[playerID - 1].updateKeysPressed(event, true);
-		console.log(`isSolo: ${gameSettings.isSolo}, nbPlayers: ${gameSettings.nbPlayers}`);
 		if (gameSettings.isSolo == true && gameSettings.nbPlayers == 2 && event.key == "ArrowUp" || event.key == "ArrowDown")
 			players[1].updateKeysPressed(event, true);
-		throttledSendKeyStatus();
 	});
 	// Event listeners for key releases
 	document.addEventListener('keyup', (event) => {
 		players[playerID - 1].updateKeysPressed(event, false); // Update keysPressed for the player
 		if (gameSettings.isSolo && gameSettings.nbPlayers == 2)
 			players[1].updateKeysPressed(event, false); // Update keysPressed for the other player if in 1v1 singlescreen
-		throttledSendKeyStatus();
 	});
-
-	// Send input from played players to the server
-	function sendKeyStatus() {
-		if (gameSettings.status !== "playing")
-			return;
-		players[playerID - 1].sendKeyStatus(ws); // Send keysPressed for the player
-		if (gameSettings.isSolo && gameSettings.nbPlayers == 2)
-			players[1].sendKeyStatus(ws); // Send keysPressed for the other player if in 1v1 singlescreen
-	}
 
 	drawGame();
 });
