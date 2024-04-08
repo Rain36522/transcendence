@@ -2,10 +2,10 @@ from channels.layers import get_channel_layer
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 
-channel_layer = get_channel_layer()
 
 class GameServerConsumer(AsyncWebsocketConsumer):
     async def connect(self):
+        self.path = self.scope['path']
         self.group_name = "gameServer"
         self.channel_layer = get_channel_layer()
 

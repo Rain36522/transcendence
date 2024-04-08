@@ -29,8 +29,8 @@ class newGame(APIView):
                 instance = serializer.save()  # Enregistre les données et récupère l'objet sauvegardé
                 data["gameid"] = instance.id  # Obtient l'ID de l'objet sauvegardé
                 self.sendNewGame(data)
-                return HttpResponse("Success")
-        return HttpResponse("Failure")
+                return redirect(f'/game/id/' + str(instance.id))
+        return HttpResponse("Error 400")
     
     def changeData(self, data):
         if data.get("ballwidth") and data.get("planksize") and data.get("Speed") and data.get("acceleration"):
@@ -46,13 +46,16 @@ class newGame(APIView):
         data = json.dumps(data)
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
-        "gameServer",
+        "",
         {
             "type": "send_data",
             "data": data,
         }
         )
         print("message send")
+
+def gamePage(request, id):
+    return HttpResponse("Success")
 
 def home_page(request):
     return render(request, 'html/home.html')

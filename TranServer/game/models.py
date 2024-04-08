@@ -3,10 +3,10 @@ from user.models import User
 from tournament.models import Tournament
 
 class Game(models.Model):
-    # players = models.ManyToManyField(User)
+    players = models.ManyToManyField(User)
     date = models.DateTimeField(auto_now_add=True)
     gameLevel = models.PositiveIntegerField(default=0)
-    # tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, null=True)
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, null=True)
     ballwidth = models.DecimalField(max_digits=5, decimal_places=2, default=10)
     planksize = models.DecimalField(max_digits=5, decimal_places=2, default=30)
     Speed = models.DecimalField(max_digits=5, decimal_places=2, default=1)
@@ -16,5 +16,5 @@ class Game(models.Model):
 
 class GameUser(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    # game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
     points = models.IntegerField(default=0)
