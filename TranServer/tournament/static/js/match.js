@@ -47,8 +47,8 @@ export class Match {
 		// Crée un élément <a> ou <div> comme conteneur principal selon le statut du match
 		if (this.status === "playing" && this.gameLink) {
 			matchElement = document.createElement('a');
-			matchElement.href = this.gameLink;
-			matchElement.classList.add('match-link');
+    		matchElement.href = `/game/${this.gameLink}/`;
+    		matchElement.classList.add('match-link');
 		} else {
 			matchElement = document.createElement('div');
 		}

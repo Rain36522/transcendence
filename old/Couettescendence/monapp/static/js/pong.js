@@ -6,6 +6,7 @@ let players;
 let playerID = 1;// Can be 1, 2, 3 or 4
 let canvas, CanvasContext, scoreBoard;
 let isImage, fieldImage, backgroundImage, ballImage;
+let nbPaddles = 2;
 
 function setGameSize() {
 	if (window.innerHeight < window.innerWidth)
@@ -41,7 +42,7 @@ function drawGame() {
 	CanvasContext.strokeRect(0, 0, gameSettings.gameWidth, gameSettings.gameHeight);
 
 	//draw paddles
-	for (let i = 0; i < gameSettings.nbPlayers; i++)
+	for (let i = 0; i < nbPaddles; i++)
 		players[i].draw(CanvasContext);
 
 	// Draw ball
@@ -65,7 +66,7 @@ function drawGame() {
 	const [pRight, pTop, pBottom] = positions[playerID - 1];
 
 	// Affichage pour 2 joueurs : joueur actuel et à droite uniquement
-	if (gameSettings.nbPlayers === 2)
+	if (nbPaddles === 2)
 		scoreBoard.innerHTML = `${gameSettings.playersNames[playerID - 1]}: ${players[playerID - 1].Points} - ${gameSettings.playersNames[pRight]}: ${players[pRight].Points}`;
 	else { // Affichage pour 4 joueurs avec toutes positions
 		scoreBoard.innerHTML = `${gameSettings.playersNames[pTop]}: ${players[pTop].Points}<br>`;
@@ -80,13 +81,13 @@ function drawGame() {
 		document.getElementById('waitingScreen').style.display = 'block';
 	if (gameSettings.status == "end")
 	{
-		var winner = 'Personne';
-		for (let i = 0; i < gameSettings.nbPlayers; i++)
+		var winner = 'le Prince de LU';
+		for (let i = 0; i < nbPaddles; i++)
 			if (players[i].Points == gameSettings.winPoints)
 				winner = gameSettings.playersNames[i];
-		document.getElementById('winnerText').textContent = 'Gagnant: ' + winner;
+		document.getElementById('winnerText').textContent = 'Winner: ' + winner;
 		var score = '';
-		for (let i = 0; i < gameSettings.nbPlayers; i++)
+		for (let i = 0; i < nbPaddles; i++)
 			score += gameSettings.playersNames[i] + ': ' + players[i].Points + " <br> ";
   		document.getElementById('scoreText').innerHTML = score;
 		document.getElementById('endGameScreen').style.display = 'block';	
@@ -115,11 +116,14 @@ document.addEventListener('DOMContentLoaded', () => {
 	||====================[variables initialisation]====================||
 	\*__________________________________________________________________*/
 
+	
 	// Initialize game settings and players
 	if (window.contexteJson)
 		gameSettings = new Settings(window.contexteJson);
-	players = [gameSettings.nbPlayers];
-	for (let i = 0; i < gameSettings.nbPlayers; i++)
+	if (gameSettings.nbPlayers > 2)
+		nbPaddles = 4;
+	players = [nbPaddles];
+	for (let i = 0; i < nbPaddles; i++)
 		players[i] = new Player(i + 1, gameSettings.playersNames[i], gameSettings);
 	setGameSize()
 
@@ -139,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	||====================[websocket communication]=====================||
 	\*__________________________________________________________________*/
 	function connectWebSocket() {
-		const url = `ws://127.0.0.1:8001/wsGame/1/username`; // Adjust URL as needed
+		const url = `ws://127.0.0.1:8001/wsGame/1/`; // Adjust URL as needed
 		ws = new WebSocket(url);
 
 		ws.onopen = () =>
@@ -151,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			// ball update
 			gameSettings.ballPosition = { x: data.ballx, y: -1 * data.bally };
 			// update players
-			for (let i = 0; i < gameSettings.nbPlayers; i++)
+			for (let i = 0; i < nbPaddles; i++)
 				players[i].updateStatus(data[`p${i + 1}`], data[`score${i + 1}`]);
 			drawGame();
 		};
@@ -166,42 +170,20 @@ document.addEventListener('DOMContentLoaded', () => {
 	/*‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾*\
 	||=========================[input managment]========================||
 	\*__________________________________________________________________*/
-	// Input send to server interval in ms
-	const sendInterval = 2;
-	let lastSendTime = 0;
-
-	// function to limit the number of messages sent to the server
-	function throttledSendKeyStatus() {
-		const now = Date.now();
-		if (now - lastSendTime >= sendInterval)
-			{sendKeyStatus(); lastSendTime = now;}
-	}
-
 	// Event listeners for key presses
 	document.addEventListener('keydown', (event) => {
 		if (gameSettings.status !== "playing")
 			return;
 		players[playerID - 1].updateKeysPressed(event, true);
-		if (gameSettings.isSolo && gameSettings.nbPlayers == 2)
+		if (gameSettings.isSolo == true && gameSettings.nbPlayers == 2 && event.key == "ArrowUp" || event.key == "ArrowDown")
 			players[1].updateKeysPressed(event, true);
-		throttledSendKeyStatus();
 	});
 	// Event listeners for key releases
 	document.addEventListener('keyup', (event) => {
 		players[playerID - 1].updateKeysPressed(event, false); // Update keysPressed for the player
 		if (gameSettings.isSolo && gameSettings.nbPlayers == 2)
 			players[1].updateKeysPressed(event, false); // Update keysPressed for the other player if in 1v1 singlescreen
-		throttledSendKeyStatus();
 	});
-
-	// Send input from played players to the server
-	function sendKeyStatus() {
-		if (gameSettings.status !== "playing")
-			return;
-		players[playerID - 1].sendKeyStatus(ws); // Send keysPressed for the player
-		if (gameSettings.isSolo && gameSettings.nbPlayers == 2)
-			players[1].sendKeyStatus(ws); // Send keysPressed for the other player if in 1v1 singlescreen
-	}
 
 	drawGame();
 });
