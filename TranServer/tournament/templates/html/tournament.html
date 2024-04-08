@@ -32,7 +32,7 @@
 			</div>
 			<div class="separator-line"></div>
 			<div class="row">
-				<div class="select-text">
+				<div class="select-text first-below-line">
 					<div class="parameter-name"><strong>Ball Width:</strong></div>
 					<div class="control">
 						<input type="range" id="ball-width" name="ball-width" min="5" max="30" step="5" value="10">
@@ -69,6 +69,24 @@
 				</div>						
 		</div>
 		<div class="row">
+			<div class="select-text full-width">
+				<div class="parameter-name"><strong>Game Mode:</strong></div>
+				<div class="control">
+					<select id="game-mode">
+						<option value="2">Two Players</option>
+						<option value="4">Four Players</option>
+						<option value="1">Mix</option>
+					</select>
+				</div>
+				<div class="select-text">
+					<div class="parameter-name"><strong>Win Point:</strong></div>
+					<div class="control">
+						<input type="range" id="win-point" name="win-point" min="3" max="15" step="1" value="5">
+						<span id="win-point-value">5</span>
+					</div>
+				</div>						
+		</div>
+		<div class="row">
 			<div class="select-text">
 				<div class="parameter-name"><strong>Player Amount:</strong></div>
 				<div class="control">
@@ -79,19 +97,16 @@
 						<option value="8">8</option>
 						<option value="10">10</option>
 						<option value="12">12</option>
-					</select>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="select-text full-width">
-				<div class="parameter-name"><strong>Game Mode:</strong></div>
-				<div class="control">
-					<select id="game-mode">
-						<option value="0">AI</option>
-						<option value="1">Player</option>
-						<option value="2">Two Player</option>
-						<option value="4">Four Player</option>
+						<option value="14">14</option>
+						<option value="16">16</option>
+						<option value="18">18</option>
+						<option value="20">20</option>
+						<option value="22">22</option>
+						<option value="24">24</option>
+						<option value="26">26</option>
+						<option value="28">28</option>
+						<option value="30">30</option>
+						<option value="32">32</option>
 					</select>
 				</div>
 			</div>
