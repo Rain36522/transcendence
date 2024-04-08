@@ -60,4 +60,3 @@ def home_page(request):
 def online_game(request):
     return render(request, 'html/onlineGame.html')
 
-
