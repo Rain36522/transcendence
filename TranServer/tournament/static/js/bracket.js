@@ -1,11 +1,11 @@
 import { Match } from './match.js';
 
-const tournamentSize = 8; // amount of matches during first round
+const tournamentSize = [8, 4, 2, 1]
 const matchesMap = {}; // Store all matches by unique key (level-id)
 
 // Data for testing purposes
 const simulatedData = [
-    { id: 1, level: 0, player1Id: "J7", player2Id: "J8", player3Id: "J9", player4Id: "J10", score1: 0, score2: 0, score3: 0, score4: 0, status: "to be played", gameLink: ""},
+    { id: 1, level: 0, player1Id: "J7", player2Id: "J8", player3Id: "J9", player4Id: "J10", score1: 6, score2: 9, score3: 6, score4: 9, status: "to be played", gameLink: ""},
     { id: 2, level: 0, player1Id: "J7", player2Id: "J8", player3Id: "J9", player4Id: "J10", score1: 0, score2: 0, score3: 0, score4: 0, status: "to be played", gameLink: ""},
     { id: 3, level: 0, player1Id: "J7", player2Id: "J8", player3Id: "J9", player4Id: "J10", score1: 0, score2: 0, score3: 0, score4: 0, status: "to be played", gameLink: ""},
     { id: 4, level: 0, player1Id: "J7", player2Id: "J8", player3Id: "J9", player4Id: "J10", score1: 0, score2: 0, score3: 0, score4: 0, status: "to be played", gameLink: ""},
@@ -14,7 +14,7 @@ const simulatedData = [
     { id: 7, level: 0, player1Id: "J7", player2Id: "J8", player3Id: "J9", player4Id: "J10", score1: 0, score2: 0, score3: 0, score4: 0, status: "to be played", gameLink: ""},
     { id: 8, level: 0, player1Id: "J7", player2Id: "J8", player3Id: "J9", player4Id: "J10", score1: 0, score2: 0, score3: 0, score4: 0, status: "to be played", gameLink: ""},
     { id: 1, level: 1, player1Id: "J1", player2Id: "J3", score1: 1, score2: 2, status: "finished", gameLink: "" },
-    { id: 2, level: 1, player1Id: "J5", player2Id: "J7", score1: 0, score2: 0, status: "to be played", gameLink: ""}
+    { id: 3, level: 1, player1Id: "J5", player2Id: "J7", score1: 0, score2: 0, status: "to be played", gameLink: ""}
 ];
 
 const simulatedData2 = [
@@ -35,26 +35,21 @@ const simulatedData3 = [
 // tournament initialization
 function initializeTournament(tournamentSize) {
     const bracketContainer = document.getElementById('tournamentBracket');
-    bracketContainer.innerHTML = ''; // Clear the container before adding new elements
-
-    const totalRounds = Math.ceil(Math.log2(tournamentSize)) + 1;
-
-    for (let round = 0; round < totalRounds; round++) {
+    bracketContainer.innerHTML = '';
+ 
+    tournamentSize.forEach((size, index) => {
         const column = document.createElement('div');
         column.classList.add('column');
-        column.setAttribute('data-round', round);
-
-        const matchesInRound = Math.ceil(tournamentSize / Math.pow(2, round));
-
-        for (let matchIndex = 0; matchIndex < matchesInRound; matchIndex++) {
-            // Create a new match object and store it in the matchesMap
-            const match = new Match(round, matchIndex + 1, "Waiting for players...");
-            matchesMap[`${round}-${matchIndex + 1}`] = match;
-            // Add the match HTML to the column
+        column.setAttribute('data-level', index);
+    
+        for (let matchIndex = 0; matchIndex < size; matchIndex++) {
+            const match = new Match(index, matchIndex + 1, "Waiting for players...");
+            matchesMap[`${index}-${matchIndex + 1}`] = match;
             column.appendChild(match.generateHTML());
         }
+    
         bracketContainer.appendChild(column);
-    }   
+    });
 }
 
 function updateTournament(updatedMatches) {
