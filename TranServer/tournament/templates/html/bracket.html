@@ -8,10 +8,9 @@
 		<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
 		<link rel="stylesheet" href="{% static 'bracket.css' %}">
 	</head>
-	<body>
+	<body data-pseudoutilisateur="{{ myUser }}">
 		<div class="theme theme-dark">
-			<div class="bracket" id="tournamentBracket">
-			</div>
+			<div class="bracket" id="tournamentBracket"></div>
 		</div>
 		<script type="module" src="{% static 'js/bracket.js' %}"></script>
 	</body>
