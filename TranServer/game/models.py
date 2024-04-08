@@ -12,7 +12,7 @@ class Game(models.Model):
     Speed = models.DecimalField(max_digits=5, decimal_places=2, default=1)
     acceleration = models.DecimalField(max_digits=5, decimal_places=2, default=1)
     winpoint = models.PositiveIntegerField(default=5)
-    gamemode = models.PositiveIntegerField(default=0) #0 offline, 1 2p, 2 4p,
+    gamemode = models.PositiveIntegerField(default=0) #0 offline, 1 2p, 2 4p, 3 IA
 
 class GameUser(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

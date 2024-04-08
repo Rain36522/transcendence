@@ -13,44 +13,40 @@ BGREENLIGHT = "\033[92m"
 ORANGE = "\033[38;2;255;165;0m"
 
 def getMixLevel(player):
-        game4p = 1
-        game2p = 0
+    game2p = 0
+    game4p = 0
+    while player >= 6:
+        player -= 6
+        game2p += 1
+        game4p += 1
+    while player >= 4:
         player -= 4
-        while player > 4 and not ((player) / 2) % 2:
-            game4p += 1
-            player -= 4
-        while player >= 8:
-            game4p += 1
-            player -= 4
-        while player:
-            game2p += 1
-            player -= 2
-        if (game2p + game4p) % 2 and game2p >= 2:
-            game2p -= 2
-            game4p += 1
-        while (game2p + game4p) % 2:
-            game4p -= 1
-            game2p += 2
-        if not game2p and game4p >=  4:
-            game2p = 4
-            game4p -= 2
-        if game4p >= 4:
-            game4p -= 2
-            game2p += 4
-        liste = []
-        while game4p and game2p:
-            if randint(1, 2) % 2:
-                liste.append(4)
-                game4p -= 1
-            else:
-                liste.append(2)
-                game2p -= 1
-        while game4p:
+        game4p += 1
+    while player >= 2:
+        player -= 2
+        game2p += 1
+    if (game4p + game2p) % 2 and game4p:
+        game4p -= 1
+        game2p += 2
+    elif (game4p + game2p) % 2:
+        game2p -= 2
+        game4p += 1
+    liste = []
+    while game4p and game2p:
+        if randint(1, 2) % 2:
             liste.append(4)
             game4p -= 1
+        else:
+            liste.append(2)
             game2p -= 1
-        return liste
-        
+    while game4p:
+        liste.append(4)
+        game4p -= 1
+    while game2p:
+        liste.append(2)
+        game2p -= 1
+    return liste
+
 def GenerateMixTree(player):
     MatchListe = []
     while player >= 6:
