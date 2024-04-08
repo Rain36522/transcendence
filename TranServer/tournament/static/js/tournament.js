@@ -1,4 +1,43 @@
 document.addEventListener("DOMContentLoaded", function() {
+    // Fonction pour mettre à jour les options du sélecteur player-amount
+    function updatePlayerAmountOptions() {
+        var gameModeSelect = document.getElementById('game-mode');
+        var playerAmountSelect = document.getElementById('player-amount');
+        
+        // Effacer les options actuelles
+        playerAmountSelect.innerHTML = '';
+
+        // Ajouter les nouvelles options en fonction du mode de jeu sélectionné
+        if (gameModeSelect.value === '2') {
+            [4, 8, 16, 32].forEach(function(option) {
+                var newOption = document.createElement('option');
+                newOption.value = option;
+                newOption.textContent = option;
+                playerAmountSelect.appendChild(newOption);
+            });
+        } else if (gameModeSelect.value === '4') {
+            [8, 16, 32].forEach(function(option) {
+                var newOption = document.createElement('option');
+                newOption.value = option;
+                newOption.textContent = option;
+                playerAmountSelect.appendChild(newOption);
+            });
+        } else if (gameModeSelect.value === '1') { // Mix mode
+            for (var i = 6; i <= 32; i += 2) {
+                var newOption = document.createElement('option');
+                newOption.value = i;
+                newOption.textContent = i;
+                playerAmountSelect.appendChild(newOption);
+            }
+        }
+    }
+
+    // Appeler la fonction lors du chargement de la page
+    updatePlayerAmountOptions();
+
+    // Appeler la fonction à chaque changement du mode de jeu
+    document.getElementById('game-mode').addEventListener('change', updatePlayerAmountOptions);
+    
     // Fonction pour mettre à jour la valeur d'un slider et l'afficher
     function updateSliderValue(sliderId, valueId) {
         var slider = document.getElementById(sliderId);
