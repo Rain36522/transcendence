@@ -27,7 +27,7 @@ game = {
 gameSettings = {
     "ballwidth" : 0.03, #max size plank size calculation
     "planksize" : 0.3, #max size 50%
-    "Speed" : 0.01,
+    "Speed" : 0.002,
     "acceleration" : 0.01, #increase speed each bounce
     "playeramount" : 2,
     "winpoint" : 10,
@@ -37,6 +37,13 @@ gameSettings = {
     "user4" : "",
     "gameid" : 0,
 }
+
+gameEndDjango = {
+    "user1" : ("", 3),
+    "user2" : ("", 4),
+    "user3" : ("", 5),
+    "user4" : ("", 2),
+    }
 
 def putDatagameSettings(data, settings):
     elem = ["ballwidth", "planksize", "Speed", "acceleration", "playeramount", "winpoint", "user1", "user2", "user3", "user4", "gameid"]
