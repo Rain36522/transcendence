@@ -11,27 +11,27 @@ export class Player
 
 	// store current keys status (pressed/released)
 	updateKeysPressed(event, value){
-		;
-		if (this.gameParams.isSolo && this.gameParams.nbPlayers == 1){ //if 1v1 singlescreen, player 1 uses "w" and "s" keys and player 2 uses arrow keys
-			if (event.key == "w")
-				this.keysPressed["up"] = value;
-			else if (event.key == "s")
-				this.keysPressed["down"] = value;
-		}else{
+		if ((event.key == "ArrowUp" || event.key == "ArrowDown") && this.gameParams.isSolo && this.gameParams.nbPlayers == 2 && this.PlayerID == 2)
+		{
 			if (event.key == "ArrowUp")
 				this.keysPressed["up"] = value;
 			else if (event.key == "ArrowDown")
 				this.keysPressed["down"] = value;
+		} else {
+			if (event.key == "w")
+				this.keysPressed["up"] = value;
+			else if (event.key == "s")
+				this.keysPressed["down"] = value;
 	}}
 
 	// send key status to server
-	sendKeyStatus(ws){
-		//if (!ws || ws.readyState !== WebSocket.OPEN)
-		//	return;
+	sendKeyStatus(ws) {
+		// if (!ws || ws.readyState !== WebSocket.OPEN)
+		// 	return;
 		if (this.keysPressed["up"] && !this.keysPressed["down"])
-			{console.log(`sending ${this.PlayerID}u`); ws.send(this.PlayerID + "u");}
+			{console.log(`sending ${this.PlayerID}u`); /*ws.send(this.PlayerID + "u");*/}
 		else if (this.keysPressed["down"] && !this.keysPressed["up"])
-			{console.log(`sending ${this.PlayerID}d`); ws.send(this.PlayerID + "d");}
+			{console.log(`sending ${this.PlayerID}d`); /*ws.send(this.PlayerID + "d");*/}
 	}
 
 	// rotate if needed to put player on the left side of the screen
