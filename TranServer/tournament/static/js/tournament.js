@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function() {
         console.log(JSON.stringify(tournamentSettings));
 
         // Exemple d'envoi des données, remplacez l'URL par la vôtre
-        fetch('!!! ICI IL FAUT METTRE L`ENDROIT OU ENVOYER LE JSON !!!', {
+        fetch('', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
