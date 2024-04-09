@@ -31,7 +31,7 @@ class DjangoCli:
             try:
                 self.websocket = await websockets.connect(self.DjangoUrl)
                 self.print(GREEN + "GameServ, connected to Daphne.")
-                await self.websocket.send("connected")
+                # await self.websocket.send("connected")
                 break
             except:
                 self.print(ORANGE + "Server daphne not available.")

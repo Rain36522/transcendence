@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required
 from django.middleware.csrf import get_token
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
-from .models import Member
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer  # Import JSONRenderer
 from rest_framework import status
