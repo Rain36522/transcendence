@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	||====================[websocket communication]=====================||
 	\*__________________________________________________________________*/
 	function connectWebSocket() {
-		const url = `ws://127.0.0.1:8001/wsGame/3sdfsdfsdf/username`; // Adjust URL as needed
+		const url = `ws://127.0.0.1:8001/wsGame/1/username`; // Adjust URL as needed
 		ws = new WebSocket(url);
 
 		ws.onopen = () =>
