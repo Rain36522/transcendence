@@ -174,15 +174,15 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.addEventListener('keydown', (event) => {
 		if (gameSettings.status !== "playing")
 			return;
-		players[playerID - 1].updateKeysPressed(event, true);
+		players[playerID - 1].updateKeysPressed(event, true, ws);
 		if (gameSettings.isSolo == true && gameSettings.nbPlayers == 2 && event.key == "ArrowUp" || event.key == "ArrowDown")
-			players[1].updateKeysPressed(event, true);
+			players[1].updateKeysPressed(event, true, ws);
 	});
 	// Event listeners for key releases
 	document.addEventListener('keyup', (event) => {
-		players[playerID - 1].updateKeysPressed(event, false); // Update keysPressed for the player
+		players[playerID - 1].updateKeysPressed(event, false, ws); // Update keysPressed for the player
 		if (gameSettings.isSolo && gameSettings.nbPlayers == 2)
-			players[1].updateKeysPressed(event, false); // Update keysPressed for the other player if in 1v1 singlescreen
+			players[1].updateKeysPressed(event, false, ws); // Update keysPressed for the other player if in 1v1 singlescreen
 	});
 
 	drawGame();
