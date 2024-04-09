@@ -9,7 +9,7 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-
+from user.models import User
 
 class ChatListView(APIView):
     """Contains the endpoint for getting all of a users' chats,\n
@@ -63,11 +63,19 @@ class ChatListView(APIView):
         Args:
            route: /api/chat
         """
-        serializer = ChatSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        chat_data = request.data
+        print(chat_data)
+        chat = Chat.objects.create()
+        request.data["participants"].append(request.user.username)
+        for username in request.data["participants"]:
+            user_exists = User.objects.filter(username=username).exists()
+            if user_exists:
+                user = User.objects.get(username = username)
+                chat.participants.add(user.id)
+        chat.save()
+        
+        
+        return Response("", status=status.HTTP_201_CREATED)
 
     def delete(self, request, chat_id=None):
         """Deletes the current user from the chat.\n

@@ -1,4 +1,6 @@
 from django.urls import path, include
+# from .views import tournament_settings
+# from .views import bracket
 from .views import tournamentSettings, TournamentView #, TournamentAddUser
 from django.urls import path
 from . import views
