@@ -76,6 +76,16 @@ body {
 	display: flex;
 	margin-top: auto;
 }
+.message-box {
+	padding: 10px;
+	margin: 5px 0;
+	background-color: #BDE0FE;
+	border-radius: 10px;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+	max-width: 80%;
+}
+
 .message-input input {
 	flex-grow: 1;
 	margin-right: 10px;
@@ -131,4 +141,133 @@ header {
 	letter-spacing: 1px;
 	padding: 12px 20px;
 	cursor: pointer;
+}
+
+.new-chat-button-container {
+    margin-top: auto; /* Place le bouton en bas */
+    margin-left: 20px; /* Décalage vers la gauche */
+}
+
+.new-chat-container {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+}
+
+#newChatButton {
+    padding: 12px 24px;
+    background-color: #FFFF99;
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+	position: absolute;
+	bottom: 20px; /* Ajustez en fonction de l'espace désiré du bas */
+	left: 20px; /* Ajustez pour aligner comme désiré */
+}
+
+#newChatButton:hover {
+    background-color: #ffff4f;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+}
+
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    border: 1px solid black;
+    border-radius: 10px;
+    z-index: 10;
+    background-color: white;
+    width: 500px;
+    max-width: 80%;
+    transition: 200ms ease-in-out;
+}
+
+.modal.active {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.modal-header {
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid black;
+}
+
+.modal-header .title {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.modal-header .close-button {
+    cursor: pointer;
+    border: none;
+    outline: none;
+    background: none;
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.modal-body {
+    padding: 10px 15px;
+}
+
+#overlay {
+    position: fixed;
+    opacity: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, .5);
+    pointer-events: none;
+    transition: 200ms ease-in-out;
+}
+
+#overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+#overlay {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 10;
+}
+
+.modal {
+	display: none;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 11;
+	background: white;
+	padding: 20px;
+	border-radius: 8px;
+	width: 300px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal.active, #overlay.active {
+	display: block;
+}
+
+body.active-modal {
+	overflow: hidden;
+}
+
+.chat-container.active-modal, .video-container.active-modal {
+	filter: blur(4px);
 }

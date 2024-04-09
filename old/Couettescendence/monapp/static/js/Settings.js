@@ -7,7 +7,8 @@ export class Settings
 		this.playersNames = []; // names of the players
 		for (let i = 1; i <= this.nbPlayers; i++)
 			this.playersNames.push(data[`player${i}Name`] || `Player${i}`);
-		this.isSolo = data.isSolo || true; // if no other players on other screens
+		console.log(`data.isSolo: ${data.isSolo}`);
+		this.isSolo = data.isSolo; // if no other players on other screens
 		this.status = data.status || "waiting"; // if the game is running
 		this.winPoints = data.winPoints || 10;
 

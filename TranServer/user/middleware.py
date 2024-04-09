@@ -12,11 +12,9 @@ class LoginRequiredMiddleware:
 
     def process_view(self, request, view_func, view_args, view_kwargs):
         if not request.user.is_authenticated:
-            # Liste des URL pour lesquelles le middleware ne s'appliquera pas
             exceptions = [
                 reverse('login'),
                 reverse('signup'),
-                # Ajoute ici d'autres exceptions au besoin
             ]
             if request.path not in exceptions:
                 return redirect(settings.LOGIN_URL)

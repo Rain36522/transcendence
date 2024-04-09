@@ -1,0 +1,17 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Tournament bracket</title>
+		<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
+		<link rel="stylesheet" href="{% static 'bracket.css' %}">
+	</head>
+	<body data-pseudoutilisateur="{{ myUser }}">
+		<div class="theme theme-dark">
+			<div class="bracket" id="tournamentBracket"></div>
+		</div>
+		<script type="module" src="{% static 'js/bracket.js' %}"></script>
+	</body>
+</html>
