@@ -3,6 +3,11 @@ import json
 from tournament.models import Tournament
 from channels.generic.websocket import AsyncWebsocketConsumer
 
+
+""" Tournament ws manager
+When a user join a brodcast of actual state of tournament is send to each player
+it s made by the function getUpdate
+"""
 class TournamentConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         if not self.scope['user'].is_authenticated:

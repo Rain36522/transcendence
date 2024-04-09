@@ -13,6 +13,8 @@ from time import time
 import asyncio
 from channels.layers import get_channel_layer
 import json
+from .consumer import launchGame
+
 
 # @login_required
 class newGame(APIView):
@@ -27,10 +29,10 @@ class newGame(APIView):
             serializer = GameSettingsSerializer(data=data)
             if serializer.is_valid():
                 instance = serializer.save()  # Enregistre les données et récupère l'objet sauvegardé
-                data["gameid"] = instance.id  # Obtient l'ID de l'objet sauvegardé
-                self.sendNewGame(data)
-                return redirect(f'/game/id/' + str(instance.id))
-        return HttpResponse("Error 400")
+                self.addPlayer(instance)
+                launchGame(instance)
+                return redirect(f'/game' + str(instance.id))
+        return HttpResponse("Error 400", status=400)
     
     def changeData(self, data):
         if data.get("ballwidth") and data.get("planksize") and data.get("Speed") and data.get("acceleration"):
@@ -53,6 +55,10 @@ class newGame(APIView):
         }
         )
         print("message send")
+
+    def addPlayer(self, game):
+        user = GameUser.objects.create(user=user, game=game)
+        game.gameuser_set.add(user)
 
 def gamePage(request, id):
     return HttpResponse("Success")

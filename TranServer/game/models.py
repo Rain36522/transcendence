@@ -12,7 +12,7 @@ class Game(models.Model):
     winpoint = models.PositiveIntegerField(default=5)
     gamemode = models.PositiveIntegerField(default=0) #0 offline, 1 2p, 2 4p, 3 IA
     nextGame = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
-    gameRuning = models.BooleanField(default=False)
+    gameRunning = models.BooleanField(default=False)
     gameLevel = models.PositiveIntegerField(default=0) # level in tournament tree view
     levelPos = models.PositiveIntegerField(default=0) # position in level
 

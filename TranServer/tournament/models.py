@@ -3,4 +3,4 @@ from user.models import User
 # from game.models import Game
 
 class Tournament(models.Model):
-    pass
+    playerNumber = models.PositiveIntegerField(default=0)
