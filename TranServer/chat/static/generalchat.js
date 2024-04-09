@@ -210,6 +210,6 @@ document.getElementById('createGroupButton').addEventListener('click', function(
             'X-CSRFToken': getCookie('csrftoken')
         },
         body: JSON.stringify(participants)
-    })
+    }).then(data => {load_chats()})
 	participants = {"participants":[]}
 });
