@@ -1,10 +1,10 @@
 export class Match {
-	constructor(level, id, ...players) {
+	constructor(level, pos, ...players) {
 		this.level = level;
-		this.id = id;
+		this.pos = pos;
 		this.players = players;
 		this.scores = new Array(players.length).fill(0);
-		this.status = "to be played"; // "live", "finished", "to be played"
+		this.isRunning = false; // "live", "finished", "to be played"
 		this.gameLink = "";
 	}
 
@@ -13,11 +13,11 @@ export class Match {
 	}
 
 	setFinished() {
-		this.status = "finished";
+		this.isRunning = false;
 	}
 
 	setLive(gameLink) {
-		this.status = "live";
+		this.isRunning = true;
 		this.gameLink = gameLink;
 	}
 
@@ -35,17 +35,24 @@ export class Match {
 			}
 		}
 	
-		this.status = data.status;
-		this.gameLink = data.gameLink;
+		this.isRunning = data.isRunning;
+		this.gameLink = data.gameId;
 	}
 	
 	
 
 	generateHTML() {
 		let matchElement;
+
+		if (this.isRunning)
+			this.status = "playing";
+		else if (this.scores.some(score => score !== 0))
+			this.status = "finished";
+		else
+			this.status = "waiting";
 	
 		// Crée un élément <a> ou <div> comme conteneur principal selon le statut du match
-		if (this.status === "playing" && this.gameLink) {
+		if (this.isRunning == true && this.gameLink) {
 			matchElement = document.createElement('a');
     		matchElement.href = `/game/${this.gameLink}/`;
     		matchElement.classList.add('match-link');
@@ -55,7 +62,7 @@ export class Match {
 	
 		const statusClass = this.status.replace(/\s+/g, '-').toLowerCase();
 		matchElement.classList.add('match', statusClass);
-		matchElement.setAttribute('data-id', this.id);
+		matchElement.setAttribute('data-id', this.pos);
 		matchElement.setAttribute('data-level', this.level);
 	
 		// Déterminer l'index du gagnant et traiter tous les autres comme perdants si le match est terminé
@@ -83,22 +90,7 @@ export class Match {
 			`;
 			matchElement.appendChild(playerElement);
 		});
-		if (this.level >= 0) { // Supposons que seuls les matchs après le premier niveau ont des lignes de connexion
-			const linesContainer = document.createElement('div');
-			linesContainer.className = 'match-lines';
-		
-			// Créez la ligne horizontale
-			const lineHorizontal = document.createElement('div');
-			lineHorizontal.className = 'line one';
-			linesContainer.appendChild(lineHorizontal);
-		
-			// Créez la ligne verticale reliant les deux matchs
-			const lineVertical = document.createElement('div');
-			lineVertical.className = 'line two';
-			linesContainer.appendChild(lineVertical);
-		
-			matchElement.appendChild(linesContainer);
-		}
+
 	
 		return matchElement;
 	}		
