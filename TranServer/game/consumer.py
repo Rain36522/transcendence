@@ -31,15 +31,15 @@ class GameServerConsumer(AsyncWebsocketConsumer):
         # Here you should handle incoming messages, but for now, let's just send a response back
         data = json.loads(text_data)
         game = Game.objects.get(pk=data["gameid"])
-        winer = await self.putGameResultDb(game, data)
-        tournamentId = game.tournament_set.id
-        if tournamentId:
-            await self.tournamentEndGame(tournamentId, game, winer)
+        winner = await self.putGameResultDb(game, data)
+        if game.tournament_set and winner:
+            tournamentId = game.tournament_set.id
+            await self.tournamentEndGame(tournamentId, game, winner)
         
-    async def tournamentEndGame(self, tournamentId, game, winer):
+    async def tournamentEndGame(self, tournamentId, game, winner):
         if game.nextGame:
             next = game.nextGame_set.id
-            newuser = GameUser.objects.create(user=winer.user, game=next)
+            newuser = GameUser.objects.create(user=winner.user, game=next)
             game.gameuser_set.add(newuser)
             if game.gameuser_set.count() == game.gamemode * 2:
                 launchGame(next)
@@ -47,9 +47,9 @@ class GameServerConsumer(AsyncWebsocketConsumer):
         self.sendUpdateTournamentview(next, tournamentId)
                 
     
-    async def putGameResultDb(self, game, data): #return winer
+    async def putGameResultDb(self, game, data): #return winner
         point = 0
-        winer = None 
+        winner = None 
         game.gameRunning = False
         gameusers = game.gameuser_set.all()
         for gameuser in gameusers:
@@ -58,7 +58,7 @@ class GameServerConsumer(AsyncWebsocketConsumer):
                     gameuser.points = value[1]
                     if point < value[1]:
                         point = value[1]
-                        winer = gameuser
+                        winner = gameuser
                     break
         return winer
 
