@@ -13,12 +13,12 @@ from channels.layers import get_channel_layer
 from django.shortcuts import redirect
 from random import randint
 from .models import Tournament
-from game.models import Game
+from game.models import Game, GameUser
 from game.serializers import GameSettingsSerializer
-
 import json
+from random import choice
 
-class tournament_settings(APIView):
+class tournamentSettings(APIView):
     def get(self, request):
         return render(request, 'html/tournament.html')
     
@@ -34,7 +34,7 @@ class tournament_settings(APIView):
             self.generateStandardTree(self.data["playerNumber"], 2)
         self.createGamesDb()
 
-        return redirect(f'/tournament/id/1')
+        return redirect('/tournament/adduser/' + self.tournament.id)
     
 
     def getMixLevel(self, player):
@@ -96,45 +96,82 @@ class tournament_settings(APIView):
         # game = Game.objects.create(tournament=tournament)
 
     def createGameDb(self):
-        i = 0
-        for level in self.MatchListe:
-            for gamePlayer in level:
-                self.putGamesDb(i, gamePlayer)
-            i += 1
+        i = len(self.MatchListe) - 1
+        oldListe = None
+        for level in reversed(self.MatchListe):
+            j = 0
+            liste = []
+            for gamePlayer in level: # iterate game in level. value 2 or 4
+                nextGameId = 0
+                if oldListe:
+                    for element in oldListe:
+                        if element[0]:
+                            nextGameId = element[1]
+                            element[0] -= 1
+                            break
+                id = self.putGamesDb(i, j, gamePlayer, nextGameId)
+                liste.append((gamePlayer, id))
+                j += 1
+            oldListe = liste.copy()
+            i -= 1
     
-    def putGamesDb(self, level, gameMode):
+    def putGamesDb(self, level, levelPos, gameMode, nextGameId):
         if gameMode == 2:
             self.data["gamemode"] = 1
         else:
             self.data["gamemode"] = 2
+        self.data["gameLevel"] = level
+        self.data["levelPos"] = levelPos
+        self.data["nextGame"] = nextGameId
         serializer = GameSettingsSerializer(data=self.data)
         # Vérifier la validité du sérialiseur
         if serializer.is_valid():
             # Sauvegarder les données dans la base de données
             serializer.save()
+        return serializer.id
+    
+# def TournamentAddUser(request, id):
+#     return render(request, 'addUser.html')
 
 
 class TournamentView(APIView):
     def get(self, request, id):
         self.id = id
+        self.request = request
+        id = self.newUserConnection()
+        if id:
+            return redirect("/game/" + str(id) + "/")
         print("id :", id)
-        return HttpResponse("Success")
+        # return HttpResponse("Success", "username":request.user.username)
 
-    def addUser(self):
-        tournament = Tournament.objects.get(pk=self.id)
-        Tournament.add(request.user)
-    def getData(self):
-        pass
+    # if user as to play: return gameid
+    def newUserConnection(self):
+        self.tournament = Tournament.objects.get(pk=self.id)
+        if self.request.user in self.tournament.players:
+            return self.checkUserState()
+        elif self.tournament.gameuser_set.count() < self.tournament.playerNumber:
+            self.putUserInGame()
+        return 0
+    
+    def checkUserState(self):
+        game = self.tournament.game_set.filter(players=self.request.user, gameRuning=True)
+        if game:
+            return game[0].id
 
-def sendNewGame(self, dat, id):
-    print("sending new msg")
-    data = json.dumps(data)
-    channel_layer = get_channel_layer()
-    async_to_sync(channel_layer.group_send)(
-    "tournament_" + id,
-    {
-        "type": "send_data",
-        "data": data,
-    }
-    )
-    print("message send")
+    def putUserInGame(self):
+        games = self.tournament.game_set.filter(gameLevel=0)
+        availablGame = []
+        availablPlace = 0
+        for game in games:
+            if game.gamemode == 1 and game.players.count() < 2:
+                availablGame.append(game)
+                availablPlace += 2 - game.players.count()
+            elif game.gamemode == 2 and game.players.count < 4:
+                availablGame.append(game)
+                availablPlace += 4 - game.players.count()
+        if availablGame:
+            game = choice(availablGame)
+            user = GameUser.objects.create(user=self.request.user, game=game)
+        if availablPlace <= 1:
+            return True
+        return False

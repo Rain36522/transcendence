@@ -1,5 +1,6 @@
 from channels.layers import get_channel_layer
 import json
+from tournament.models import Tournament
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 class TournamentConsumer(AsyncWebsocketConsumer):
@@ -13,6 +14,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
         await self.accept()
+        data = getUpdate(self.tournamentId)
+        await self.send(text_data=json.dumps(data))
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(
@@ -24,6 +27,27 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     #     # Here you should handle incoming messages, but for now, let's just send a response back
     #     print(text_data)
 
-    async def send_data(self, event):
-        data = event["data"]
-        await self.send(text_data=json.dumps(data))
+
+
+
+def getUpdate(id):
+    tournament = Tournament.objects.get(pk=id)
+    data = []
+    games = tournament.game_set.all()
+    for game in games:
+        data.append(putGameInDict(game))
+    return data
+
+def putGameInDict(game):
+    dico = {}
+    gameusers = game.gameuser_set.all()
+    i = 0
+    dico["gameIs"] = game.id
+    for gameuser in gameusers:
+        dico['player{}Id'.format(i)] = gameuser.user.username
+        dico['score{}'.format(i)] = gameuser.points
+        i += 1
+    dico["isRuning"] = game.gameRuning
+    dico["level"] = game.gameLevel
+    dico["pos"] = game.levelPos
+    return dico
