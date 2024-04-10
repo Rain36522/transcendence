@@ -13,6 +13,7 @@ from .views import (
     upload_profile_pic_api,
     test_upload,
     user_info_api,
+    FriendListView,
 )
 from django.views.generic.base import RedirectView
 
@@ -37,4 +38,10 @@ urlpatterns = [
     path("test_upload/", test_upload),
     path("api/user_info/<str:username>/", user_info_api, name="user_info_api_other"),
     path("api/user_info/", user_info_api, name="user_info_api_own"),
+    path("api/friends/", FriendListView.as_view(), name="api_user_friends"),
+    path(
+        "api/friends/<str:username>/",
+        FriendListView.as_view(),
+        name="api_user_friends_other",
+    ),
 ]

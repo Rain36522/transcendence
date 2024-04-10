@@ -28,3 +28,15 @@ class SerializerOtherProfile(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'date_joined', 'is_active', 'wins', 'total_games']
+        
+class FriendSerializer(serializers.ModelSerializer):
+    friends = UserSerializer_Username(many=True)
+    class Meta:
+        model = User
+        fields = ['friends']
+
+class BlockedSerializer(serializers.ModelSerializer):
+    friends = UserSerializer_Username(many=True)
+    class Meta:
+        model = User
+        fields = ['friends']

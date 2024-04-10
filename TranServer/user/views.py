@@ -15,9 +15,11 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .serializers import (
+    FriendSerializer,
     UserSerializer,
     SerializerPersonalProfile,
     SerializerOtherProfile,
+    BlockedSerializer,
 )
 import mimetypes
 import os
@@ -185,3 +187,97 @@ def user_info_api(request, username=None):
             return Response({"error": str(e)}, status=500)
     serializer = SerializerPersonalProfile(request.user)
     return JsonResponse(serializer.data, status=200)
+
+
+class FriendListView(APIView):
+    renderer_classes = [JSONRenderer]
+
+    # Get friends
+    @login_required
+    def get(self, request, username=None):
+        friends = FriendSerializer(request.user)
+        return JsonResponse(friends.data, status=200)
+
+    # Add friend
+    @login_required
+    def post(self, request, username=None):
+        if not username:
+            return JsonResponse({"error": "No username provided"}, status=400)
+        try:
+            user = User.objects.get(username=username)
+            if user.id == request.user.id:
+                return JsonResponse(
+                    {"error": "Cannot add yourself as a friend"}, status=400
+                )
+            if request.user.friends.filter(id=user.id).exists():
+                return JsonResponse(
+                    {"error": "User already added as a friend"}, status=400
+                )
+            request.user.friends.add(user.id)
+            
+            return JsonResponse({}, status=201)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "User not found"}, status=404)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
+
+    # Delete friend
+    @login_required
+    def delete(self, request, username=None):
+        if not username:
+            return JsonResponse({"error": "No username provided"}, status=400)
+        try:
+            user = User.objects.get(username=username)
+            if not request.user.friends.filter(id=user.id).exists():
+                return JsonResponse({"error": "User is not in your friends list"}, status=400)
+            request.user.friends.remove(user)
+            return JsonResponse({}, status=200)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "User not found"}, status=404)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
+
+
+class BlockedListView(APIView):
+    renderer_classes = [JSONRenderer]
+
+    @login_required
+    def get(self, request, username=None):
+        blocked = BlockedSerializer(request.user)
+        return JsonResponse(blocked.data, status=200)
+    
+    @login_required
+    def post(self, request, username=None):
+        if not username:
+            return JsonResponse({"error": "No username provided"}, status=400)
+        try:
+            user = User.objects.get(username=username)
+            if user.id == request.user.id:
+                return JsonResponse(
+                    {"error": "Cannot block yourself"}, status=400
+                )
+            if request.user.blocked.filter(id=user.id).exists():
+                return JsonResponse(
+                    {"error": "User already blocked"}, status=400
+                )
+            request.user.blocked.add(user.id)
+            return JsonResponse({}, status=201)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "User not found"}, status=404)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
+
+    @login_required
+    def delete(self, request, username=None):
+        if not username:
+            return JsonResponse({"error": "No username provided"}, status=400)
+        try:
+            user = User.objects.get(username=username)
+            if not request.user.blocked.filter(id=user.id).exists():
+                return JsonResponse({"error": "User is not in your blocked list"}, status=400)
+            request.user.blocked.remove(user)
+            return JsonResponse({}, status=200)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "User not found"}, status=404)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
