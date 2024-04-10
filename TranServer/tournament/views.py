@@ -35,6 +35,7 @@ class tournamentSettings(APIView):
     
     def post(self, request):
         self.data = request.data.copy()
+        print("data :", self.data["playerNumber"])
         self.tournament = Tournament.objects.create(playerNumber=self.data["playerNumber"])
         if self.data["gamesettings"] == "0":
             self.generateMixTree(self.data["playerNumber"])
@@ -42,8 +43,11 @@ class tournamentSettings(APIView):
             self.generateStandardTree(self.data["playerNumber"], 2)
         else:
             self.generateStandardTree(self.data["playerNumber"], 2)
+        print("a")
         self.createGamesDb()
+        print("a")
         putUserInGame(self.tournament, request.user)
+        print("a")
         return render(request, 'addUser.html', {'id': self.tournament.id})
 
 

@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
-    // Fonction pour mettre à jour les options du sélecteur player-amount
+    // Fonction pour mettre à jour les options du sélecteur playerNumber
     function updatePlayerAmountOptions() {
-        var gameModeSelect = document.getElementById('game-mode');
-        var playerAmountSelect = document.getElementById('player-amount');
+        var gameModeSelect = document.getElementById('gamesettings');
+        var playerAmountSelect = document.getElementById('playerNumber');
         
         // Effacer les options actuelles
         playerAmountSelect.innerHTML = '';
@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function() {
     updatePlayerAmountOptions();
 
     // Appeler la fonction à chaque changement du mode de jeu
-    document.getElementById('game-mode').addEventListener('change', updatePlayerAmountOptions);
+    document.getElementById('gamesettings').addEventListener('change', updatePlayerAmountOptions);
     
     // Fonction pour mettre à jour la valeur d'un slider et l'afficher
     function updateSliderValue(sliderId, valueId) {
@@ -49,22 +49,22 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // Mise à jour des valeurs des sliders
-    updateSliderValue('ball-width', 'ball-width-value');
-    updateSliderValue('plank-size', 'plank-size-value');
-    updateSliderValue('speed', 'speed-value');
+    updateSliderValue('ballwidth', 'ballwidth-value');
+    updateSliderValue('planksize', 'planksize-value');
+    updateSliderValue('Speed', 'Speed-value');
     updateSliderValue('acceleration', 'acceleration-value');
-    updateSliderValue('win-point', 'win-point-value'); // Ajouté pour gérer le slider Win Point
+    updateSliderValue('winpoint', 'winpoint-value'); // Ajouté pour gérer le slider Win Point
 
     // Gestion de l'envoi des données au clic sur le bouton "CREATE"
     document.querySelector('.create-button').addEventListener('click', function() {
         var tournamentSettings = {
-            ballWidth: document.getElementById('ball-width').value,
-            plankSize: document.getElementById('plank-size').value,
-            speed: document.getElementById('speed').value,
+            ballwidth: document.getElementById('ballwidth').value,
+            planksize: document.getElementById('planksize').value,
+            Speed: document.getElementById('Speed').value,
             acceleration: document.getElementById('acceleration').value,
-            playerAmount: document.getElementById('player-amount').value,
-            winPoint: document.getElementById('win-point').value,
-            gameMode: document.getElementById('game-mode').value,
+            playerNumber: document.getElementById('playerNumber').value,
+            winpoint: document.getElementById('winpoint').value,
+            gamesettings: document.getElementById('gamesettings').value,
         };
         console.log(JSON.stringify(tournamentSettings));
 
