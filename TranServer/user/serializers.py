@@ -19,8 +19,12 @@ class UserSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         return user
 
-class UserSerializerProfile(serializers.ModelSerializer):
+class SerializerPersonalProfile(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email', 'username', 'first_name', 'last_name', 'date_joined', 'is_active', 'wins', 'total_games']
 
+class SerializerOtherProfile(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'date_joined', 'is_active', 'wins', 'total_games']
