@@ -15,6 +15,10 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .serializers import UserSerializer, UserSerializerProfile
+import mimetypes
+import os
+from django.conf import settings
+
 
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
@@ -71,6 +75,39 @@ def user_login_api(request):
     else:
         return JsonResponse({'error': 'Invalid username or password'}, status=400)
 
+@api_view(['GET'])
+@renderer_classes([JSONRenderer])
+@login_required
+def user_profile_pic_api(request, username):
+    user = get_object_or_404(User, username=username)
+    if user.profile_picture:
+        path = user.profile_picture.path
+        content_type, _ = mimetypes.guess_type(path)
+        with open(path, 'rb') as f:
+            return HttpResponse(f.read(), content_type=content_type)
+    default_image_path = os.path.join(settings.MEDIA_ROOT, 'default_profile.png')
+    with open(default_image_path, 'rb') as f:
+        return HttpResponse(f.read(), content_type='image/png')
+
+
+@api_view(['POST'])
+@renderer_classes([JSONRenderer])
+@login_required
+def upload_profile_pic_api(request):
+    if 'profile_picture' in request.FILES:
+        profile_picture = request.FILES['profile_picture']
+
+        # Retrieve the user based on your authentication mechanism
+        user = request.user  # Or however you authenticate the user in your app
+
+        # Save the profile picture to the user's profile
+        user.profile_picture = profile_picture
+        user.save()
+        return HttpResponse({'message': 'Upload successful'}, status=201)
+    return HttpResponse({'message': 'No file found'}, status=201)
+    
+
+
 class SignUpView(generic.CreateView):
     form_class = CustomUserCreationForm
     success_url = reverse_lazy('login')
@@ -84,6 +121,10 @@ def logout_view(request):
     logout(request)
     return redirect('user_login')
 
+
+@login_required
+def test_upload(request):
+    return render(request, 'html/test_upload.html')
 
 @login_required
 def user_dashboard(request):
