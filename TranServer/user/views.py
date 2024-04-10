@@ -14,7 +14,7 @@ from .models import User
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .serializers import UserSerializer
+from .serializers import UserSerializer, UserSerializerProfile
 
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
@@ -106,3 +106,10 @@ def profile(request):
 @login_required
 def dashboard(request):
     return render(request, 'dashboard.html', {'user': request.user})
+
+@login_required
+@api_view(['GET'])
+@renderer_classes([JSONRenderer])
+def user_info_api(request, username=None):
+    serializer = UserSerializerProfile(request.user)
+    return JsonResponse(serializer.data, status=200)
