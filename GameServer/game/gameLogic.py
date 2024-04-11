@@ -19,13 +19,20 @@ login / logout
 """
 
 class gameLogic:
-    def __init__(self, client, gameSet, game):
+    def __init__(self, client, gameSet, game, userlist):
         self.client = client
+        self.userlist = userlist
         self.game = game
         self.gameSet = gameSet
         self.players = []
-        self.players.append(Player("abc", "token1", 0.2, 1))
-        self.players.append(Player("def", "token2", 0.2, 2))
+        i = 1
+        if gameSet["playeramount"] == 1:
+            self.players.append(Player("1", "1", 0.2, 1))
+            self.players.append(Player("2", "2", 0.2, 2))
+        else:
+            for user in userlist:
+                self.players.append(Player(user, user, 0.2, i))
+                i += 1
         self.initUser()
         self.plankdist = 0.45 # distance from middle to plank
         self.ball = Ball(float(gameSet["ballwidth"]), 0.006)
@@ -118,6 +125,7 @@ class gameLogic:
                             await self.client.sendMsg(self.game)
                             break
                     self.ball.reset()
+                self.game["users"] = self.userlist
                 await self.client.sendMsg(self.game)
                 await asyncio.sleep(0.02)
                 
