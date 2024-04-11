@@ -3,7 +3,6 @@ import { Player } from './Player.js';
 
 let gameSettings;
 let players;
-let playerID = 1;// Can be 1, 2, 3 or 4
 let canvas, CanvasContext, scoreBoard;
 let isImage, fieldImage, backgroundImage, ballImage;
 let nbPaddles = 2;
@@ -27,7 +26,7 @@ function drawGame() {
 	canvas.height = gameSettings.gameHeight;
 
 	// If playerID is 'j2', rotate the canvas for the player's perspective
-	players[playerID - 1].applyRotation(CanvasContext);
+	players[gameSettings.playerID - 1].applyRotation(CanvasContext);
 
 	// Draw field
 	if (isImage)
@@ -57,20 +56,20 @@ function drawGame() {
 		CanvasContext.fill();
 
 	// Restore the original state if the canvas was rotated for player 2
-	if (isImage || playerID === '2' || playerID === '3' || playerID === '4')
+	if (isImage || gameSettings.playerID === '2' || gameSettings.playerID === '3' || gameSettings.playerID === '4')
 		CanvasContext.restore();
 
 	// Calculs ajustés pour chaque position
 	const positions = [ [1, 2, 3], [0, 3, 2], [3, 1, 0], [2, 0, 1]];
 	// Sélectionner les positions relatives basées sur playerID
-	const [pRight, pTop, pBottom] = positions[playerID - 1];
+	const [pRight, pTop, pBottom] = positions[gameSettings.playerID - 1];
 
 	// Affichage pour 2 joueurs : joueur actuel et à droite uniquement
 	if (nbPaddles === 2)
-		scoreBoard.innerHTML = `${gameSettings.playersNames[playerID - 1]}: ${players[playerID - 1].Points} - ${gameSettings.playersNames[pRight]}: ${players[pRight].Points}`;
+		scoreBoard.innerHTML = `${gameSettings.playersNames[gameSettings.playerID - 1]}: ${players[gameSettings.playerID - 1].Points} - ${gameSettings.playersNames[pRight]}: ${players[pRight].Points}`;
 	else { // Affichage pour 4 joueurs avec toutes positions
 		scoreBoard.innerHTML = `${gameSettings.playersNames[pTop]}: ${players[pTop].Points}<br>`;
-		scoreBoard.innerHTML += `${gameSettings.playersNames[playerID - 1]}: ${players[playerID - 1].Points} - ${gameSettings.playersNames[pRight]}: ${players[pRight].Points}<br>`;
+		scoreBoard.innerHTML += `${gameSettings.playersNames[gameSettings.playerID - 1]}: ${players[gameSettings.playerID - 1].Points} - ${gameSettings.playersNames[pRight]}: ${players[pRight].Points}<br>`;
 		scoreBoard.innerHTML += `${gameSettings.playersNames[pBottom]}: ${players[pBottom].Points}`;
 	}
 	// Make sure to hide waiting screen and end game screen
@@ -143,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	||====================[websocket communication]=====================||
 	\*__________________________________________________________________*/
 	function connectWebSocket() {
-		const url = `ws://127.0.0.1:8001/wsGame/1/username`; // Adjust URL as needed
+		var url = 'wss://' + window.location.host + '/wsGame/' + gameSettings.gameID + '/' + gameSettings.userID + '/';
 		ws = new WebSocket(url);
 
 		ws.onopen = () =>
@@ -174,13 +173,13 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.addEventListener('keydown', (event) => {
 		if (gameSettings.status !== "playing")
 			return;
-		players[playerID - 1].updateKeysPressed(event, true, ws);
+		players[gameSettings.playerID - 1].updateKeysPressed(event, true, ws);
 		if (gameSettings.isSolo == true && gameSettings.nbPlayers == 2 && event.key == "ArrowUp" || event.key == "ArrowDown")
 			players[1].updateKeysPressed(event, true, ws);
 	});
 	// Event listeners for key releases
 	document.addEventListener('keyup', (event) => {
-		players[playerID - 1].updateKeysPressed(event, false, ws); // Update keysPressed for the player
+		players[gameSettings.playerID - 1].updateKeysPressed(event, false, ws); // Update keysPressed for the player
 		if (gameSettings.isSolo && gameSettings.nbPlayers == 2)
 			players[1].updateKeysPressed(event, false, ws); // Update keysPressed for the other player if in 1v1 singlescreen
 	});
