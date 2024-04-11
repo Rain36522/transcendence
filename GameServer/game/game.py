@@ -7,6 +7,16 @@ from sys import stderr
 from time import sleep
 from sys import stderr
 
+RESET = "\033[0m"
+RED = "\033[31m"
+GREEN = "\033[32m"
+YELLOW = "\033[33m"
+BLUE = "\033[34m"
+MAGENTA = "\033[35m"
+CYAN = "\033[36m"
+WHITE = "\033[37m"
+ORANGE = "\033[38;2;255;165;0m"
+
 # Convertir JSON en dictionnaire
 # gameSettings = loads(os.environ.get("newGame"))
 
@@ -58,27 +68,39 @@ def listUser(data):
 async def WaitUntilPlayers(ws, data):
     userlist = listUser(data)
     liste = []
+    i = 0
     while len(liste) < data["playeramount"]:
         msgs = ws.getMsg()
         if msgs:
             for msg in msgs:
                 if msg.endswith("login"):
                     msg = msg[:-5]
+                    print(MAGENTA, "New user connected to game instance", RESET, msg, file=stderr)
                     if userlist:
                         playerFree = data["playeramount"] - len(userlist)
                     else:
                         playerFree = data["playeramount"]
+                    print(MAGENTA, "PlayerFree :", playerFree, RESET, file=stderr)
                     if userlist and msg in userlist:
+                        print(MAGENTA, "USer add in liste know", RESET, file=stderr)
                         liste.append(msg)
-                        userlist.remove(msg)
-                    elif liste and len(liste) < playerFree and msg not in liste:
+                        i += 1
+                    elif liste and len(liste) <= playerFree and msg not in liste:
+                        print(MAGENTA, "USer add in liste", RESET, file=stderr)
                         liste.append(msg)
                     elif not liste and playerFree:
+                        print(MAGENTA, "USer add in liste", RESET, file=stderr)
                         liste.append(msg)
+                elif msg.endswith("logout"):
+                    msg = msg[:-6]
+                    if msg in liste:
+                        print(YELLOW, msg, "disconnected", RESET, file=stderr)
+                        liste.remove(msg)
 
         await asyncio.sleep(0.1)
     await asyncio.sleep(1)
     await ws.sendUserJoin(liste)
+    return liste
 
 
 def putDatagameSettings(data, settings):
@@ -102,10 +124,11 @@ if __name__ == "__main__":
     # Lancement du client WebSocket en parallèle
     asyncio.get_event_loop().run_until_complete(client.connect())
     asyncio.get_event_loop().create_task(client.receive_messages())
-    asyncio.get_event_loop().run_until_complete(WaitUntilPlayers(client, DjangoData))
+    userliste = asyncio.get_event_loop().run_until_complete(WaitUntilPlayers(client, DjangoData))
+    print("GAME CLIENT FINISH USER CONNECTION PROCESS!", file=stderr)
     # Lancement de la boucle d'événements asyncio pour attendre la connexion
     # Création d'une tâche pour exécuter une autre fonction en parallèle
-    gameLogicInstance = gameLogic(client, gameSettings, game)
+    gameLogicInstance = gameLogic(client, gameSettings, game, userliste)
     asyncio.get_event_loop().create_task(gameLogicInstance.gameInput())
 
     # Lancement de la boucle d'événements asyncio
