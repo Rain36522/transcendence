@@ -4,9 +4,7 @@ export class Settings
 		const data = JSON.parse(rawSettings);
 
 		this.nbPlayers = data.nbPlayers || 2; // number of players in the game
-		this.playersNames = []; // names of the players
-		for (let i = 1; i <= this.nbPlayers; i++)
-			this.playersNames.push(data[`player${i}Name`] || `Player${i}`);
+		this.playersNames = data.users && data.users.length > 0 ? data.users : Array.from({ length: this.nbPlayers }, (_, index) => `User${index + 1}`);
 		this.isSolo = data.isSolo; // if no other players on other screens
 		this.status = data.status || "waiting"; // if the game is running
 		this.winPoints = data.winPoints || 10;
@@ -27,7 +25,16 @@ export class Settings
 	
 		this.ballSize = data.ballSize || 0.03; // size of the ball
 		this.ballPosition = { x: 0, y: 0 }; // position of the ball
-		this.userID = data.user;
+		this.userName = data.user;
+		if (this.isSolo && this.nbPlayers === 2)
+			this.userID = 1;
+		else if (data.users)
+		{
+			console.log("et merde");
+			this.userID = this.playersNames.indexOf(this.userName) + 1;
+		}
+		else
+			this.userID = 1;
 		this.gameID = data.gameid;
 	}
 }
