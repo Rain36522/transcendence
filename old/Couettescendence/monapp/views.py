@@ -66,7 +66,7 @@ def pong_game(request):
         "paddleLength": 0.2,
         "paddleOffset": 0.02,
         "ballSize": 0.05,
-        "isSolo": False,
+        "isSolo": True,
         "isImage": False,
         "status": "playing"
     }

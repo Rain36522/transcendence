@@ -1,6 +1,7 @@
 import websockets
 import asyncio
 import os
+from json import dumps
 from sys import stderr
 
 RESET = "\033[0m"
@@ -82,13 +83,15 @@ class WebSocketServer:
         user = path[2]
         if gameid not in self.clients[1]:
             self.print(ORANGE + "Wrong game id")
+            self.print(self.clients[1])
+            self.print(gameid)
             await websocket.send("404")
             return
         self.addUser(websocket, gameid, user)
         await self.clients[1][gameid].send((user + "login"))
         try:
             async for message in websocket:
-                await self.execUserMsg(message, gameid, user)
+                await self.execUserMsg(message, gameid)
         finally:
             #send to game instance user disconnected.
             self.print("user disconnected")
@@ -116,15 +119,29 @@ class WebSocketServer:
                 del self.clients[2][gameid]
 
 
-    async def execUserMsg(self, message, gameid, user):
-        self.print(YELLOW + user + message)
+    async def execUserMsg(self, message, gameid):
         if gameid in self.clients[1]:
-            await self.clients[1][gameid].send((user + message))
+            await self.clients[1][gameid].send((message))
 
 async def main():
     # os.system("python3 game/game.py &") # launch game instance. detached mode
     ws = WebSocketServer("0.0.0.0", 8001)
     ws.run()
+    gameSettings = {
+        "ballwidth" : 0.03, #max size plank size calculation
+        "planksize" : 0.3, #max size 50%
+        "Speed" : 0.01,
+        "acceleration" : 0.01, #increase speed each bounce
+        "playeramount" : 2,
+        "winpoint" : 10,
+        "user1" : "",
+        "user2" : "",
+        "user3" : "",
+        "user4" : "",
+        "gameid" : 1
+    }
+    os.environ['newGame'] = dumps(dumps(gameSettings))
+    os.system("python3 game/game.py &")
     while True:
         await asyncio.sleep(0.1)
 

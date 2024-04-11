@@ -18,21 +18,15 @@
         <h1><a href="{% url 'home_page' %}" class="logo">Transcendance</a></h1>
         <div>
             <a href="{% url 'general_chat' %}" class="header-btn">Chat</a>
-            <a href="{% url 'user_logout' %}" class="header-btn">Logout</a>
+            <a href="{% url 'user_logout' %}" class="header-btn logout-btn">Logout</a>
             <a href="{% url 'user_dashboard' %}" class="header-btn profile-btn">Profile</a>
         </div>
-    </header>
-    <div class="video-container">
-        <img src="https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg" alt="Background Image">
-    </div>
+    </header>    
+    <div class="background-container"></div> <!-- Ajout du conteneur pour l'image de fond -->
     <div class="chat-container">
         <div class="user-list">
-            <div class="user" onclick="selectChat('User 1')">User 1</div>
-            <div class="user" onclick="selectChat('User 2')">User 2</div>
-            <div class="user" onclick="selectChat('User 3')">User 3</div>
-            <hr>
-            <div class="group" onclick="selectChat('Group 1')">Group 1</div>
-            <div class="group" onclick="selectChat('Group 2')">Group 2</div>
+            <div id = "userList">
+            </div>
             <button id="newChatButton">New Chat</button>
         </div>
         <div class="chat-window">
@@ -58,160 +52,8 @@
             <button id="createGroupButton" class="modal-footer-btn">Create the chat</button>
         </div>
     </div>
-    <script>
-    const socket = new WebSocket('wss://' + window.location.host + '/ws/your_url/1/');
+    <script src={% static 'utils.js' %}></script>
 
-    socket.addEventListener('open', function(event) {
-        console.log('WebSocket connection established.');
-    });
-
-    socket.addEventListener('error', function(event) {
-        console.error('WebSocket error:', event);
-    });
-
-    socket.addEventListener('message', function (event) {
-        const message = JSON.parse(event.data);
-        renderMessage(message);
-    });
-
-    function selectChat(chatName) {
-        document.querySelector('.selected-user').textContent = "Chatting with: " + chatName;
-        document.getElementById('messages').innerHTML = '';
-    }
-
-    function renderMessage(message) {
-        var messageBox = document.createElement('div');
-        messageBox.style.display = "flex";
-        messageBox.style.alignItems = "center";
-
-        var usernameElement = document.createElement('span');
-        usernameElement.textContent = message.username + ': ';
-        usernameElement.style.fontWeight = "bold";
-        usernameElement.style.marginRight = "5px";
-        messageBox.appendChild(usernameElement);
-        
-        if (message.message) {
-            const messageElement = document.createElement('div');
-            messageElement.textContent = message.message;
-            messageElement.classList.add('message-box');
-            messageBox.appendChild(messageElement);
-        }
-        if (message.image) {
-            const img = document.createElement('img');
-            img.src = message.image;
-            img.classList.add('image');
-            img.classList.add('message-box')
-            messageBox.appendChild(img);
-        }
-        document.getElementById('messages').appendChild(messageBox);
-        scrollToBottom();
-    }
-
-
-    async function fetchMessages(chatId) {
-        try {
-            const response = await fetch(`/api/messages/${chatId}/`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch messages');
-            }
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            console.error('Error fetching messages:', error);
-            return [];
-        }
-    }
-
-    fetchMessages(1).then(messages => {
-        console.log(messages);
-        for (const mess of messages){
-            renderMessage({
-                "message": mess.content,
-                "username": mess.sender,
-                "image": mess.image
-            });
-        }
-    })
-
-    document.getElementById('sendMessage').addEventListener('click', function(event) {
-        event.preventDefault();
-        sendMessage();
-    });
-
-    document.getElementById('messageText').addEventListener('keypress', function(event) {
-        scrollToBottom();
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            sendMessage();
-        }
-    });
-
-    document.getElementById('messageText').addEventListener('paste', function(event) {
-        const clipboardData = event.clipboardData || window.clipboardData;
-
-        for (const item of clipboardData.items) {
-            if (item.type.indexOf('image') !== -1) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const imageData = event.target.result;
-                    const imagePreview = document.getElementById('imagePreview');
-                    const img = document.createElement('img');
-                    img.src = imageData;
-                    imagePreview.innerHTML = '';
-                    imagePreview.appendChild(img);
-                    document.getElementById('imageData').value = imageData;
-                };
-                reader.readAsDataURL(item.getAsFile());
-            }
-        }
-    });
-
-    function scrollToBottom() {
-        const messagesContainer = document.getElementById('messages');
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-
-    function sendMessage() {
-        const messageText = document.getElementById('messageText').value.trim();
-        const imageData = document.getElementById('imageData').value;
-
-        if (messageText !== '') socket.send(JSON.stringify({message: messageText}));
-        if (imageData !== '') socket.send(JSON.stringify({image: imageData}));
-        document.getElementById('messageText').value = '';
-        document.getElementById('imageData').value = '';
-        document.getElementById('imagePreview').innerHTML = '';
-    }
-    const newChatButton = document.getElementById('newChatButton');
-    const overlay = document.getElementById('overlay');
-    const modal = document.getElementById('modal');
-    const closeButton = document.querySelector('.close-button');
-
-    newChatButton.addEventListener('click', () => {
-        modal.classList.add('active');
-        overlay.classList.add('active');
-        document.body.classList.add('active-modal');
-    });
-
-    overlay.addEventListener('click', () => {
-        modal.classList.remove('active');
-        overlay.classList.remove('active');
-        document.body.classList.remove('active-modal');
-    });
-
-    closeButton.addEventListener('click', () => {
-        modal.classList.remove('active');
-        overlay.classList.remove('active');
-        document.body.classList.remove('active-modal');
-    });
-    // Gestion de la recherche d'utilisateurs
-    document.getElementById('searchUser').addEventListener('input', function(e) {
-        // Implémentez la logique de recherche d'utilisateurs ici
-    });
-
-    // Gestion de la création du groupe
-    document.getElementById('createGroupButton').addEventListener('click', function() {
-        // Implémentez la logique de création de groupe ici
-    });
-    </script>
+    <script src={% static 'generalchat.js' %}></script>
 </body>
 </html>

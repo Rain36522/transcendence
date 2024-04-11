@@ -19,12 +19,14 @@
         <span>Please login</span>
     </div>
     <form id="login-form" method='post' action='/api/login/'>
+        {% csrf_token %}
         <input type="text" placeholder="Username" name="username">
         <input type="password" placeholder="Password" name="password">
         <button type="submit">Login</button>
     </form>
     <a href="{% url 'user_register' %}" id="register-link">Register</a>
 </div>
+<script src="{% static 'utils.js' %}"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -42,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => {
             if (response.ok) {
                 // Redirect upon successful login
-                window.location.href = '/dashboard'; // Replace '/dashboard' with the desired URL
+                window.history.pushState(null, null, '/dashboard');
             } else {
                 // Display error message if login fails
                 response.json().then(data => {
