@@ -35,19 +35,18 @@ class tournamentSettings(APIView):
     
     def post(self, request):
         self.data = request.data.copy()
-        print("data :", self.data["playerNumber"])
         self.tournament = Tournament.objects.create(playerNumber=self.data["playerNumber"])
+        print("Tournament DB ID", self.tournament.id)
         if self.data["gamesettings"] == "0":
-            self.generateMixTree(self.data["playerNumber"])
+            self.generateMixTree(int(self.data["playerNumber"]))
         elif self.data["gamesettings"] == "1":
-            self.generateStandardTree(self.data["playerNumber"], 2)
+            self.generateStandardTree(int(self.data["playerNumber"]), 2)
         else:
-            self.generateStandardTree(self.data["playerNumber"], 2)
-        print("a")
-        self.createGamesDb()
-        print("a")
+            self.generateStandardTree(int(self.data["playerNumber"]), 4)
+        if not self.createGamesDb():
+            print("DB not created!")
+            return HttpResponse("Error 500", status=500) # TODO rediriger vers error page
         putUserInGame(self.tournament, request.user)
-        print("a")
         return render(request, 'addUser.html', {'id': self.tournament.id})
 
 
@@ -86,7 +85,7 @@ class tournamentSettings(APIView):
             game2p -= 1
         return liste
 
-    def GenerateMixTree(self, player):
+    def GenerateMixTree(self, player : int):
         self.MatchListe = []
         while player >= 6:
             listeMatchLevel = self.getMixLevel(player)
@@ -99,17 +98,16 @@ class tournamentSettings(APIView):
         self.MatchListe.append(liste)
             
                 
-    def generateStandardTree(self, player, gameplayer):
+    def generateStandardTree(self, player : int, gameplayer : int):
         self.MatchListe = []
         while player >= gameplayer:
-            print("loop")
             player = player // gameplayer
             self.MatchListe.append([gameplayer] * player)
 
 
         # game = Game.objects.create(tournament=tournament)
 
-    def createGameDb(self):
+    def createGamesDb(self):
         i = len(self.MatchListe) - 1
         oldListe = None
         for level in reversed(self.MatchListe):
@@ -124,10 +122,13 @@ class tournamentSettings(APIView):
                             element[0] -= 1
                             break
                 id = self.putGamesDb(i, j, gamePlayer, nextGameId)
+                if not id:
+                    return False
                 liste.append((gamePlayer, id))
                 j += 1
             oldListe = liste.copy()
             i -= 1
+        return True
     
     def putGamesDb(self, level, levelPos, gameMode, nextGameId):
         if gameMode == 2:
@@ -136,13 +137,16 @@ class tournamentSettings(APIView):
             self.data["gamemode"] = 2
         self.data["gameLevel"] = level
         self.data["levelPos"] = levelPos
-        self.data["nextGame"] = nextGameId
+        if nextGameId:
+            self.data["nextGame"] = nextGameId
         serializer = GameSettingsSerializer(data=self.data)
-        # Vérifier la validité du sérialiseur
         if serializer.is_valid():
-            # Sauvegarder les données dans la base de données
-            serializer.save()
-        return serializer.id
+            return serializer.save().id
+        else:
+            errors = serializer.errors
+            print(errors)
+            return None
+
     
 # def TournamentAddUser(request, id):
 #     return render(request, 'addUser.html')
@@ -161,14 +165,15 @@ class TournamentView(APIView):
         id = self.newUserConnection()
         if id:
             return redirect("/game/" + str(id) + "/")
-        # return HttpResponse("Success", "username":request.user.username)
+        return HttpResponse("Success")
 
     # if user as to play: return gameid
     def newUserConnection(self):
         self.tournament = Tournament.objects.get(pk=self.id)
-        if self.request.user in self.tournament.players:
+        users = self.tournament.game_set.all().values_list('gameuser__user', flat=True)
+        if self.request.user in users:
             return self.checkUserState()
-        elif self.tournament.gameuser_set.count() < self.tournament.playerNumber:
+        elif users.count() < self.tournament.playerNumber:
             if putUserInGame(self.tournament, self.request.user):
                 launchTournament(self.tournament)
         return 0

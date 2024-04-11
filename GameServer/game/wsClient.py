@@ -33,5 +33,8 @@ class WebSocketClient:
     async def sendMsg(self, msg):
         import json
         await self.websocket.send(json.dumps(msg))
+        if msg["state"] == "game_over":
+            await self.websocket.close()
+            exit(0)
 
 

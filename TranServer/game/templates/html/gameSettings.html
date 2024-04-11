@@ -7,7 +7,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Online Game - launching</title>
 		<link rel="stylesheet" href="{% static 'home.css' %}">
-		<link rel="stylesheet" href="{% static 'onlineGame.css' %}">
+		<link rel="stylesheet" href="{% static 'gameSettings.css' %}">
 		<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
 	</head>
@@ -66,12 +66,14 @@
 						<option value="0">Offline</option>
 						<option value="1">2 Players</option>
 						<option value="2">4 Players</option>
+						<option value="3">IA Player</option>
 					</select>
 				</div>
 			</div>
 			<a href="#" class="create-link">Create</a>
 			<a href="{% url 'home_page' %}" class="exit-link">Exit</a>
 		</div>
-		<script src="{% static 'js/onlineGame.js' %}"></script>
+		<script src="{% static 'utils.js' %}"></script>
+		<script src="{% static 'js/gameSettings.js' %}"></script>
 	</body>
 </html>

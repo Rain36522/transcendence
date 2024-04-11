@@ -143,7 +143,15 @@ document.addEventListener('DOMContentLoaded', () => {
 	||====================[websocket communication]=====================||
 	\*__________________________________________________________________*/
 	function connectWebSocket() {
-		const url = `ws://127.0.0.1:8001/wsGame/1/username`; // Adjust URL as needed
+		var path = window.location.pathname;
+
+		// Diviser le chemin en segments en utilisant le caractère '/'
+		var segments = path.split('/');
+			
+		// La partie que tu cherches est probablement dans le deuxième segment (index 1)
+		var gameid = segments[2];
+		console.log("ID : " + gameid);
+		var url = 'wss://' + window.location.host + '/wsGame/' + gameid + '/username/';
 		ws = new WebSocket(url);
 
 		ws.onopen = () =>

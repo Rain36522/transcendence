@@ -82,7 +82,7 @@ class WebSocketServer:
         gameid = path[1]
         user = path[2]
         if gameid not in self.clients[1]:
-            self.print(ORANGE + "Wrong game id")
+            self.print(ORANGE + "Wrong game id :" + str(gameid))
             self.print(self.clients[1])
             self.print(gameid)
             await websocket.send("404")

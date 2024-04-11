@@ -57,7 +57,8 @@ def putDatagameSettings(data, settings):
 
 # Exemple d'utilisation du client WebSocket avec asyncio
 if __name__ == "__main__":
-    DjangoData = json.loads(json.loads(os.environ.get("newGame")))
+    DjangoData = json.loads(os.environ.get("newGame"))["message"]
+    print("Django data : ", DjangoData)
     gameSettings = putDatagameSettings(DjangoData, gameSettings)
     #connection with websocket server
     wsServ = "ws://localhost:8001/game/" + str(gameSettings["gameid"])
