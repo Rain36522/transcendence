@@ -42,8 +42,9 @@ function searchUsers() {
 
 	for (let user of users) {
 		var name = user.querySelector('.user-name').textContent.toLowerCase();
-		if (name.includes(searchText)) {
+		if (searchText && name.includes(searchText)) {
 			var userClone = user.cloneNode(true); // Cloner l'élément trouvé
+			userClone.addEventListener('click', handleInviteButtonClick);
 			searchResultDiv.appendChild(userClone); // Ajouter le clone au div de résultat
 			searchResultDiv.style.display = ''; // Afficher le div de résultat
 			break; // Sortir après avoir trouvé le premier utilisateur correspondant
@@ -59,35 +60,35 @@ document.querySelector('.search-container button').addEventListener('click', sea
 
 // Ecouteur d'événements pour les boutons "Invite"
 function handleInviteButtonClick(event) {
-    const userItem = event.target.closest('.user-item');
-    const clonedUserItem = userItem.cloneNode(true);
-    const userName = userItem.querySelector('.user-name').textContent; // Get the username
-    const isInvited = event.target.textContent === 'Invite';
+	const userItem = event.target.closest('.user-item');
+	const clonedUserItem = userItem.cloneNode(true);
+	const userName = userItem.querySelector('.user-name').textContent; // Get the username
+	const isInvited = event.target.textContent === 'Invite';
 
-    // Update the button text and color
-    event.target.textContent = isInvited ? '✖' : 'Invite';
-    event.target.style.backgroundColor = isInvited ? 'red' : '#4CAF50';
+	// Update the button text and color
+	event.target.textContent = isInvited ? '✖' : 'Invite';
+	event.target.style.backgroundColor = isInvited ? 'red' : '#4CAF50';
 
-    const targetContainerId = isInvited ? 'invitedUsers' : 'user-list';
-    const targetContainer = document.getElementById(targetContainerId);
+	const targetContainerId = isInvited ? 'invitedUsers' : 'user-list';
+	const targetContainer = document.getElementById(targetContainerId);
 
-    if (isInvited && targetContainerId === 'invitedUsers') {
-        // If inviting the user, search for and remove the original from the user list
-        const originalUserItems = document.querySelectorAll('#user-list .user-item');
-        originalUserItems.forEach(function (item) {
-            const itemUserName = item.querySelector('.user-name').textContent;
-            if (itemUserName === userName) {
-                item.remove(); // Remove the original item from the user list
-            }
-        });
-    }
+	if (isInvited && targetContainerId === 'invitedUsers') {
+		// If inviting the user, search for and remove the original from the user list
+		const originalUserItems = document.querySelectorAll('#user-list .user-item');
+		originalUserItems.forEach(function (item) {
+			const itemUserName = item.querySelector('.user-name').textContent;
+			if (itemUserName === userName) {
+				item.remove(); // Remove the original item from the user list
+			}
+		});
+	}
 
-    targetContainer.appendChild(userItem); // Add the invited user to the target container
+	targetContainer.appendChild(userItem); // Add the invited user to the target container
 }
 
 // Attach the event listener directly to each invite-button
 document.querySelectorAll('.invite-button').forEach(button => {
-    button.addEventListener('click', handleInviteButtonClick);
+	button.addEventListener('click', handleInviteButtonClick);
 });
 
 // Gestion du clic sur le fond flou pour fermer la popup

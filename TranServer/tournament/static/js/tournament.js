@@ -156,8 +156,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         for (let user of users) {
             var name = user.querySelector('.user-name').textContent.toLowerCase();
-            if (name.includes(searchText)) {
+
+            if (searchText && name.includes(searchText)) {
                 var userClone = user.cloneNode(true); // Cloner l'élément trouvé
+                userClone.addEventListener('click', handleInviteButtonClick);
                 searchResultDiv.appendChild(userClone); // Ajouter le clone au div de résultat
                 searchResultDiv.style.display = ''; // Afficher le div de résultat
                 break; // Sortir après avoir trouvé le premier utilisateur correspondant
