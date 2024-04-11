@@ -1,7 +1,7 @@
 export class Player
 {
 	constructor(PlayerID, PlayerName, gameParams){
-		this.PlayerID = PlayerID || "1"; // 1, 2, 3 our 4
+		this.PlayerID = PlayerID || 1; // 1, 2, 3 our 4
 		this.PlayerName = PlayerName || "bob"; // eg "BarnabéEnculeurDeMouches"
 		this.Points = 0; // Points scored by the player
 		this.Position = 0; // from -0.5 to 0.5, represents pos on the paddle slider
@@ -13,7 +13,7 @@ export class Player
 	updateKeysPressed(event, value, ws){
 		if (event.key != "w" && event.key != "s" && event.key != "ArrowUp" && event.key != "ArrowDown")
 			return;
-		let message = "";
+		var message = "";
 		if ((event.key == "ArrowUp" || event.key == "ArrowDown") && this.gameParams.isSolo && this.gameParams.nbPlayers == 2 && this.PlayerID == 2)
 		{
 			if (event.key == "ArrowUp" && this.keysPressed["up"] != value) {
@@ -67,7 +67,7 @@ export class Player
 		const realPaddlePos = (this.gameParams.gameHeight * (this.Position * -1 + 0.5)) - (this.gameParams.paddleLength / 2);
 		canvasContext.fillStyle = this.gameParams.paddleColor;
 
-		let x, y, width, height;
+		var x, y, width, height;
 
 		if (this.PlayerID < 3) {
 			width = this.gameParams.paddleWidth * this.gameParams.gameHeight;

@@ -53,6 +53,8 @@ def ajouter_resultat(request, points_joueur, points_ennemi, username_ennemi):
 import json  # Importez le module json
 
 def pong_game(request):
+    #besoin aussi de savoir playerID pour connaitre quel joueur on est
+    #besoin de gameID pour faire la connection et potentiellement l'addresse du serveur aussi
     contexte = {
         "nbPlayers": 2,
         "player1Name": "Shrek 1",
