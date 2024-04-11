@@ -197,3 +197,268 @@ body::before {
   filter: grayscale(100%);
   z-index: 0;
 }
+
+/* --------------------- new ---------------------- */
+
+.popup {
+  max-height: 70vh;
+  overflow-y: auto; /* Permet le défilement si nécessaire, mais vous pourriez vouloir le retirer pour laisser le contenu gérer le défilement */
+  padding-bottom: 70px;
+  width: 60%; /* Ajustez la largeur au besoin */
+  display: none; /* Par défaut, la popup est cachée */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.885); /* Fond semi-transparent */
+  padding: 20px;
+  border-radius: 10px;
+  z-index: 9999; /* Assure que la popup est affichée au-dessus de tout le reste */
+  color: rgb(0, 0, 0);
+}
+
+.popup-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Alignement vertical */
+  height: auto; /* Ajustez en fonction du contenu */
+  min-height: 70vh; /* Hauteur minimale pour supporter différents contenus */
+  max-height: 95vh; /* Limite de hauteur pour éviter les débordements hors de l'écran */
+}
+
+.popup-content h3 {
+  margin-top: 20px; /* Ajuster l'espace entre le haut de la popup et le titre */
+  text-align: center; /* Centrer le texte */
+  font-size: 28px; /* Augmenter la taille du texte */
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px; /* Ajuster la position verticale de la croix pour qu'elle soit à 10px du bord supérieur de la popup */
+  right: 5px; /* Ajustez selon le besoin pour déplacer la croix vers la gauche */
+  cursor: pointer;
+  font-size: 24px;
+  color: black; /* Changer la couleur de la croix en noir */
+}
+
+/* Ajout de flou à l'arrière-plan lorsque la popup est ouverte */
+.popup-opened {
+  backdrop-filter: blur(5px);
+}
+
+.blur-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(5px);
+  z-index: 9998; /* Assure que la div est affichée en dessous de la popup */
+  display: none; /* Par défaut, la div est cachée */
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  background-color: rgba(255, 255, 255, 0.2); /* Couleur de fond de la barre de recherche */
+  border-radius: 5px; /* Coins arrondis */
+  border: 2px solid #2196F3; /* Ajouter un contour solide noir autour de la barre de recherche */
+  padding: 5px 10px; /* Ajouter un espacement intérieur */
+}
+
+.search-container input[type="text"] {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: transparent; /* Fond transparent pour le champ de recherche */
+  color: rgb(0, 0, 0); /* Couleur du texte */
+}
+
+.search-container button {
+  padding: 10px 20px;
+  background-color: #2196F3;
+  color: rgb(255, 255, 255);
+  border: 2px solid #2196F3; /* Ajout d'une bordure solide de la même couleur que l'arrière-plan */
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s; /* Ajout d'une transition pour une meilleure expérience utilisateur */
+}
+
+.search-container button:hover {
+  background-color: #0b7dda;
+  border-color: #0b7dda; /* Changement de la couleur de la bordure au survol */
+}
+
+.start-button {
+  display: block; /* Assurer que le bouton soit bloqué et non en ligne */
+  margin: 30px auto; /* Augmenter la marge pour plus d'espace autour */
+  padding: 20px 40px; /* Augmenter le padding pour un bouton plus grand */
+  background-color: #2196F3; /* Couleur de fond */
+  color: white; /* Couleur du texte */
+  font-size: 32px; /* Augmenter la taille du texte pour un bouton plus visible */
+  border: none; /* Aucune bordure */
+  border-radius: 10px; /* Bords plus arrondis */
+  cursor: pointer; /* Curseur pointeur */
+  transition: background-color 0.3s ease; /* Transition pour l'interaction */
+  box-shadow: 0px 8px 15px rgba(0,0,0,0.2); /* Ajouter une ombre pour un effet de profondeur */
+}
+
+.start-button:hover {
+  background-color: #0b7dda; /* Changement de couleur de fond au survol */
+  box-shadow: 0px 5px 12px rgba(0,0,0,0.3); /* Ombre plus prononcée pour l'effet au survol */
+}
+
+/* CSS pour la mise en forme de la liste des utilisateurs */
+.user-list {
+  display: flex;
+  flex-direction: column; /* Pour empiler les éléments les uns sur les autres */
+  align-items: center; /* Pour aligner les éléments horizontalement au centre */
+}
+
+/* Style de la bordure autour de la liste des utilisateurs */
+.user-list-container {
+  border: 2px solid #ccc; /* Bordure solide */
+  padding: 10px; /* Marge interne */
+  margin: 0 10px; /* Ajoutez ou ajustez la marge si nécessaire pour l'espacement */
+  overflow: auto; /* Ajoute un défilement si le contenu dépasse */
+  width: 48%; /* Ajuste la largeur de chaque conteneur pour qu'ils s'adaptent dans une vue côte à côte */
+  max-width: 48%; /* Optionnel: limite la largeur à environ la moitié du conteneur parent pour équilibrer l'espace */
+  max-height: 200px; /* Hauteur maximale avant de déclencher le défilement */
+  flex: 1; /* Assurez-vous que chaque conteneur prend une largeur égale */
+}
+
+/* Style du slider */
+.slider {
+  width: 100%; /* Largeur du slider */
+}
+
+/* Style des slides (à adapter en fonction de la librairie de slider utilisée) */
+.slick-slide {
+  margin: 0 5px; /* Espacement entre chaque slide */
+}
+
+.user-item {
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  justify-content: space-between; /* Pour aligner les éléments de chaque utilisateur sur la largeur */
+  align-items: center; /* Pour aligner les éléments verticalement au centre */
+  width: 80%; /* Largeur de l'utilisateur pour éviter qu'il ne soit trop large */
+  margin-bottom: 20px; /* Espacement entre chaque utilisateur */
+}
+
+.user-image {
+  width: 50px; /* Taille de la photo de profil */
+  height: 50px;
+  border-radius: 50%; /* Pour arrondir l'image de profil */
+  margin-right: 10px; /* Espacement à droite de l'image de profil */
+}
+
+.user-name {
+  flex-grow: 1; /* Pour que le nom d'utilisateur occupe tout l'espace restant */
+  margin-right: 10px; /* Espacement à droite du nom d'utilisateur */
+}
+
+.invite-button {
+  padding: 10px 15px; /* Ajustez le rembourrage au besoin */
+  background-color: #4CAF50; /* Couleur de fond initiale */
+  color: white; /* Couleur du texte */
+  border: none; /* Supprimer la bordure par défaut */
+  cursor: pointer; /* Change le curseur pour indiquer qu'il s'agit d'un élément cliquable */
+  border-radius: 5px; /* Arrondit les coins */
+  transition: background-color 0.3s, transform 0.3s; /* Ajoute une transition pour le survol */
+}
+
+.invite-button:hover {
+  background-color: #45a049; /* Couleur de fond au survol */
+  transform: scale(1.05); /* Légère augmentation de la taille au survol */
+}
+
+.invite-button.deselected {
+  background-color: red; /* Couleur de fond pour le mode désélectionné */
+  color: white; /* Couleur du texte */
+}
+
+.invite-button.deselected::after {
+  content: "✖"; /* Symbole de la croix */
+  color: white;
+}
+
+input[type="text"], input[type="search"], select, button {
+  outline: none; /* Supprime l'outline */
+  /* Ajoutez d'autres propriétés de style au besoin pour le focus */
+}
+
+input[type="text"]:focus, input[type="search"]:focus, select:focus, button:focus {
+  border: 2px solid #cccccc00; /* Exemple de changement de bordure au focus */
+  /* Vous pouvez ajuster la couleur et le style de la bordure au focus selon votre design */
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.user-list-frame {
+  position: relative;
+  width: 80%; /* Ajustez selon la largeur désirée */
+  background-color: #fff; /* Couleur de fond */
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 20px; /* Espacement au-dessus de la liste des utilisateurs */
+}
+
+#nonInvitedUsers {
+  background-color: #f0f0f0;
+}
+
+#invitedUsers, .popup-content > .user-list {
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 2px solid #ccc;
+  background-color: #f0f0f0; /* Fond pour les utilisateurs non invités */
+}
+
+#invitedUsers {
+  margin-top: 10px; /* Espace au-dessus du cadre des utilisateurs invités */
+  margin-bottom: 10px; /* Espace en dessous avant le bouton Start */
+}
+
+.users-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px; /* Ajoute un peu d'espace entre les deux colonnes */
+}
+
+.user-lists-container {
+  display: flex; /* Utilise Flexbox */
+  justify-content: space-between; /* Espacement entre les conteneurs */
+  align-items: flex-start; /* Alignement au sommet */
+}
+
+.user-list-container, .invited-users {
+  flex: 1; /* Fait en sorte que les deux conteneurs prennent la même largeur */
+  display: flex;
+  flex-direction: column;
+  max-height: 300px; /* Ajustez selon vos besoins */
+  overflow-y: auto; /* Permet le défilement vertical si nécessaire */
+  width: 48%; /* Assigne une largeur pour éviter qu'ils s'étendent trop */
+}
+
+.user-and-invited-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.users-and-invited-container {
+  display: flex; /* Utilise Flexbox pour aligner les enfants côte à côte */
+  justify-content: space-between; /* Espacement entre les enfants */
+  width: 100%; /* Assure que le conteneur prend toute la largeur disponible */
+  flex-wrap: wrap; /* Permet aux éléments de passer à la ligne suivante si l'espace est insuffisant */
+}
