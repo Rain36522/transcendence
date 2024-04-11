@@ -54,6 +54,7 @@ class WebSocketServer:
         self.print("New game connection")
         gameid = path[6:]
         self.clients[1][gameid] = websocket
+        self.clients[1]["user" + gameid] = None
         try:
             async for message in websocket:
                 await self.execGameMsg(message, gameid)
@@ -62,6 +63,9 @@ class WebSocketServer:
             del self.clients[1][gameid]
 
     async def execGameMsg(self, message, gameid):
+        if message.startswith("autorisedusers"):
+            print(GREEN, "User autorisation added")
+            self.clients[1]["user" + gameid] = dumps(message[14:])
         if message.startswith("finish"):
             self.finishGames.append(message[6:])
         elif gameid in self.clients[2]:
@@ -82,16 +86,16 @@ class WebSocketServer:
         gameid = path[1]
         user = path[2]
         if gameid not in self.clients[1]:
-            self.print(ORANGE + "Wrong game id")
+            self.print(ORANGE + "Wrong game id :" + str(gameid))
             self.print(self.clients[1])
-            self.print(gameid)
             await websocket.send("404")
             return
-        self.addUser(websocket, gameid, user)
+        if self.addUser(websocket, gameid, user):
+            return
         await self.clients[1][gameid].send((user + "login"))
         try:
             async for message in websocket:
-                await self.execUserMsg(message, gameid)
+                await self.execUserMsg(message, gameid, user)
         finally:
             #send to game instance user disconnected.
             self.print("user disconnected")
@@ -102,12 +106,16 @@ class WebSocketServer:
     def addUser(self, websocket, gameid, user):
         find = False
         if gameid in self.clients[2]:
+            if user in list(self.clients[2][gameid])[0]:
+                print(ORANGE, "User already connected. Connection refused", file=stderr)
+                return True
             self.clients[2][gameid].add((user, websocket))
             find = True
         if not find:
             newset = set()
             newset.add((user, websocket))
             self.clients[2][gameid] = newset
+        return False
     
     def rmUser(self, websocket, gameid):
         if gameid in self.clients[2]:
@@ -119,8 +127,8 @@ class WebSocketServer:
                 del self.clients[2][gameid]
 
 
-    async def execUserMsg(self, message, gameid):
-        if gameid in self.clients[1]:
+    async def execUserMsg(self, message, gameid, user):
+        if gameid in self.clients[1] and (not self.clients[1]["user" + gameid] or user in self.clients[1]["user" + gameid]):
             await self.clients[1][gameid].send((message))
 
 async def main():

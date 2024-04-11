@@ -35,6 +35,10 @@ class GameServerConsumer(AsyncWebsocketConsumer):
         if game.tournament_set and winner:
             tournamentId = game.tournament_set.id
             await self.tournamentEndGame(tournamentId, game, winner)
+    
+    async def game_msg(self, event):
+        message = event['message']  # Accéder au message dans l'événement
+        await self.send(text_data=json.dumps({"message": message}))
         
     async def tournamentEndGame(self, tournamentId, game, winner):
         if game.nextGame:
@@ -60,7 +64,7 @@ class GameServerConsumer(AsyncWebsocketConsumer):
                         point = value[1]
                         winner = gameuser
                     break
-        return winer
+        return winner
 
     async def sendUpdateTournamentview(self, game, tournamentId):
         async_to_sync(self.channel_layer.group_send)(
@@ -96,23 +100,23 @@ class launchGame:
         return dico
     
     def generateGame(self, game, dico):
-        if game.gamemode == 0 or game.gamemode == 1: #2p offline, 2p online
+        if game.gamemode == 1: #2p offline, 2p online
             dico["playeramount"] = 2
         elif game.gamemode == 2: # 4p
             dico["playeramount"] = 4
         else: #game.gamemode = 3 = IA
             dico["playeramount"] = 1
-        users = game.gameuser_set.all()
+        users = game.gameuser_set.all().values_list('user__username', flat=True)
         i = 0
         for user in users:
-            dico["user{}".format(i)] = get_token(user)
+            dico["user{}".format(i)] = user
         return dico
     
     def sendData(self, data):
         async_to_sync(self.chanelLayer.group_send)(
             'gameServer',
             {
-                'type': 'new_game',
-                'message': json.loads(data),
+                'type': 'game_msg',
+                'message': data,
             }
         )

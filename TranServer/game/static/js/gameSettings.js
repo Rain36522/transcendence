@@ -16,19 +16,20 @@ document.addEventListener("DOMContentLoaded", function() {
 	// Create button
 	document.querySelector('.create-link').addEventListener('click', function(event) {
 		var gameSettings = {
-			ballSize: document.getElementById('ball-size').value,
-			raquetSize: document.getElementById('raquet-size').value,
-			gameSpeed: document.getElementById('game-speed').value,
-			gameAcceleration: document.getElementById('game-acceleration').value,
-			winPoint: document.getElementById('win-point').value,
-			gameMode: document.getElementById('game-mode').value,
+			ballwidth: document.getElementById('ball-size').value,
+			planksize: document.getElementById('raquet-size').value,
+			Speed: document.getElementById('game-speed').value,
+			acceleration: document.getElementById('game-acceleration').value,
+			winpoint: document.getElementById('win-point').value,
+			gamemode: document.getElementById('game-mode').value,
 		};
 		console.log(JSON.stringify(gameSettings));
 		
-		fetch('!!! ICI IL FAUT METTRE L`ENDROIT OU ENVOYER LE JSON !!!', {
+		fetch('', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
+				'X-CSRFToken': getCookie('csrftoken')
 			},
 			body: JSON.stringify(gameSettings),
 		})

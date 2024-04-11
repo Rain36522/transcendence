@@ -7,7 +7,6 @@ export class Settings
 		this.playersNames = []; // names of the players
 		for (let i = 1; i <= this.nbPlayers; i++)
 			this.playersNames.push(data[`player${i}Name`] || `Player${i}`);
-		console.log(`data.isSolo: ${data.isSolo}`);
 		this.isSolo = data.isSolo; // if no other players on other screens
 		this.status = data.status || "waiting"; // if the game is running
 		this.winPoints = data.winPoints || 10;
@@ -28,5 +27,7 @@ export class Settings
 	
 		this.ballSize = data.ballSize || 0.03; // size of the ball
 		this.ballPosition = { x: 0, y: 0 }; // position of the ball
+		this.userID = data.user;
+		this.gameID = data.gameid;
 	}
 }
