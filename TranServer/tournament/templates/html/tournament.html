@@ -1,17 +1,20 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="fr">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Tournament - settings</title>
-		<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
-		<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
-		<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-		<link rel="stylesheet" href="{% static 'tournament.css' %}">
-	</head>
-	<body>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Tournament - settings</title>
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="{% static 'tournament.css' %}">
+</head>
+
+<body>
+	<div id="content-container-replace">
 		<div class="vignette"></div>
 
 		<header>
@@ -66,48 +69,51 @@
 						<input type="range" id="winpoint" name="winpoint" min="3" max="15" step="1" value="5">
 						<span id="winpoint-value">5</span>
 					</div>
-				</div>						
-		</div>
-		<div class="row">
-			<div class="select-text full-width">
-				<div class="parameter-name"><strong>Game Mode:</strong></div>
-				<div class="control">
-					<select id="gamesettings">
-						<option value="2">Two Players</option>
-						<option value="4">Four Players</option>
-						<option value="1">Mix</option>
-					</select>
 				</div>
 			</div>
-		</div>
-		<div class="row">
-			<div class="select-text">
-				<div class="parameter-name"><strong>Player Amount:</strong></div>
-				<div class="control">
-					<select id="playerNumber">
-						<option value="2">2</option>
-						<option value="4">4</option>
-						<option value="6">6</option>
-						<option value="8">8</option>
-						<option value="10">10</option>
-						<option value="12">12</option>
-						<option value="14">14</option>
-						<option value="16">16</option>
-						<option value="18">18</option>
-						<option value="20">20</option>
-						<option value="22">22</option>
-						<option value="24">24</option>
-						<option value="26">26</option>
-						<option value="28">28</option>
-						<option value="30">30</option>
-						<option value="32">32</option>
-					</select>
+			<div class="row">
+				<div class="select-text full-width">
+					<div class="parameter-name"><strong>Game Mode:</strong></div>
+					<div class="control">
+						<select id="gamesettings">
+							<option value="2">Two Players</option>
+							<option value="4">Four Players</option>
+							<option value="1">Mix</option>
+						</select>
+					</div>
 				</div>
 			</div>
-		</div>
+			<div class="row">
+				<div class="select-text">
+					<div class="parameter-name"><strong>Player Amount:</strong></div>
+					<div class="control">
+						<select id="playerNumber">
+							<option value="2">2</option>
+							<option value="4">4</option>
+							<option value="6">6</option>
+							<option value="8">8</option>
+							<option value="10">10</option>
+							<option value="12">12</option>
+							<option value="14">14</option>
+							<option value="16">16</option>
+							<option value="18">18</option>
+							<option value="20">20</option>
+							<option value="22">22</option>
+							<option value="24">24</option>
+							<option value="26">26</option>
+							<option value="28">28</option>
+							<option value="30">30</option>
+							<option value="32">32</option>
+						</select>
+					</div>
+				</div>
+			</div>
 			<button class="create-button"><strong>CREATE</strong></button>
 			<a href="{% url 'home_page' %}" class="exit-link">Exit</a>
 		</div>
-		<script src="{% static 'js/tournament.js' %}"></script>	
-	</body>
+		<script src="{% static 'utils.js' %}"></script>
+		<script src="{% static 'js/tournament.js' %}"></script>
+	</div>
+</body>
+
 </html>
