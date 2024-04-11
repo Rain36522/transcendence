@@ -97,6 +97,7 @@ class launchGame:
         dico["planksize"] = game.planksize
         dico["Speed"] = game.Speed
         dico["winpoint"] = game.winpoint
+        dico["gamemode"] = game.gamemode
         return dico
     
     def generateGame(self, game, dico):

@@ -96,11 +96,20 @@ async def WaitUntilPlayers(ws, data):
                     if msg in liste:
                         print(YELLOW, msg, "disconnected", RESET, file=stderr)
                         liste.remove(msg)
+                        if msg in userlist:
+                            i -= 1
 
         await asyncio.sleep(0.1)
     await asyncio.sleep(1)
     await ws.sendUserJoin(liste)
     return liste
+
+def updateUser(userlist, data):
+    if data["gamemode"] == 0:
+        return ["Player1", "Player2"]
+    elif data["gamemode"] == 3:
+        userliste.append("IA")
+    return userliste
 
 
 def putDatagameSettings(data, settings):
@@ -125,9 +134,7 @@ if __name__ == "__main__":
     asyncio.get_event_loop().run_until_complete(client.connect())
     asyncio.get_event_loop().create_task(client.receive_messages())
     userliste = asyncio.get_event_loop().run_until_complete(WaitUntilPlayers(client, DjangoData))
-    print("GAME CLIENT FINISH USER CONNECTION PROCESS!", file=stderr)
-    # Lancement de la boucle d'événements asyncio pour attendre la connexion
-    # Création d'une tâche pour exécuter une autre fonction en parallèle
+    userliste = updateUser(userliste, DjangoData)
     gameLogicInstance = gameLogic(client, gameSettings, game, userliste)
     asyncio.get_event_loop().create_task(gameLogicInstance.gameInput())
 

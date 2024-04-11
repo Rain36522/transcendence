@@ -74,7 +74,7 @@ def gamePage(request, id):
         player = 1
         solo = True
     elif game.gamemode == 0:
-        player = 2
+        player = 1
         solo = True
     elif game.gamemode == 1:
         player = 2
@@ -86,7 +86,7 @@ def gamePage(request, id):
         "paddleLength": game.planksize,
         "paddleOffset": 0.02,
         "ballSize": game.ballwidth,
-        "isSolo": True,
+        "isSolo": solo,
         "status": "waiting",
         "user": request.user.username,
         "gameid": id
