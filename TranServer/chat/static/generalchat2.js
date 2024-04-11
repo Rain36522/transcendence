@@ -58,34 +58,36 @@ document.getElementById('searchInput').addEventListener('input', searchUsers);
 document.querySelector('.search-container button').addEventListener('click', searchUsers);
 
 // Ecouteur d'événements pour les boutons "Invite"
-document.body.addEventListener('click', function (event) {
-	if (event.target.classList.contains('invite-button')) {
-		const userItem = event.target.closest('.user-item');
-		const clonedUserItem = userItem.cloneNode(true);
-		const userName = userItem.querySelector('.user-name').textContent; // Obtenez le nom d'utilisateur
-		const isInvited = event.target.textContent === 'Invite';
+function handleInviteButtonClick(event) {
+    const userItem = event.target.closest('.user-item');
+    const clonedUserItem = userItem.cloneNode(true);
+    const userName = userItem.querySelector('.user-name').textContent; // Get the username
+    const isInvited = event.target.textContent === 'Invite';
 
-		// Mettre à jour le texte et la couleur du bouton
-		event.target.textContent = isInvited ? '✖' : 'Invite';
-		event.target.style.backgroundColor = isInvited ? 'red' : '#4CAF50';
+    // Update the button text and color
+    event.target.textContent = isInvited ? '✖' : 'Invite';
+    event.target.style.backgroundColor = isInvited ? 'red' : '#4CAF50';
 
-		const targetContainerId = isInvited ? 'invitedUsers' : 'user-list';
-		const targetContainer = document.getElementById(targetContainerId);
+    const targetContainerId = isInvited ? 'invitedUsers' : 'user-list';
+    const targetContainer = document.getElementById(targetContainerId);
 
-		if (isInvited && targetContainerId === 'invitedUsers') {
-			// Si on invite l'utilisateur, cherchez et supprimez l'original de la liste des utilisateurs
-			const originalUserItems = document.querySelectorAll('#user-list .user-item');
-			originalUserItems.forEach(function (item) {
-				const itemUserName = item.querySelector('.user-name').textContent;
-				if (itemUserName === userName) {
-					item.remove(); // Supprimez l'élément d'origine de la liste des utilisateurs
-				}
-			});
-		}
+    if (isInvited && targetContainerId === 'invitedUsers') {
+        // If inviting the user, search for and remove the original from the user list
+        const originalUserItems = document.querySelectorAll('#user-list .user-item');
+        originalUserItems.forEach(function (item) {
+            const itemUserName = item.querySelector('.user-name').textContent;
+            if (itemUserName === userName) {
+                item.remove(); // Remove the original item from the user list
+            }
+        });
+    }
 
+    targetContainer.appendChild(userItem); // Add the invited user to the target container
+}
 
-		targetContainer.appendChild(userItem); // Ajoutez l'utilisateur invité au conteneur cible
-	}
+// Attach the event listener directly to each invite-button
+document.querySelectorAll('.invite-button').forEach(button => {
+    button.addEventListener('click', handleInviteButtonClick);
 });
 
 // Gestion du clic sur le fond flou pour fermer la popup
