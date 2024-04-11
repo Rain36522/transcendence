@@ -50,10 +50,8 @@ gameEndDjango = {
 def listUser(data):
     liste = []
     for cle, value in data.items():
-        print("data recieve django : ", cle, value, file=stderr)
         if cle.startswith("user"):
             if value:
-                print("data accepted as user : ", cle, value, file=stderr)
                 liste.append(value)
     return liste
 
@@ -64,27 +62,21 @@ async def WaitUntilPlayers(ws, data):
         msgs = ws.getMsg()
         if msgs:
             for msg in msgs:
-                print("New msg", file=stderr)
                 if msg.endswith("login"):
                     msg = msg[:-5]
-                    print("NewUser : ", msg, file=stderr)
                     if userlist:
                         playerFree = data["playeramount"] - len(userlist)
                     else:
                         playerFree = data["playeramount"]
                     if userlist and msg in userlist:
-                        print("add recomanded", file=stderr)
                         liste.append(msg)
                         userlist.remove(msg)
                     elif liste and len(liste) < playerFree and msg not in liste:
-                        print("add free", file=stderr)
                         liste.append(msg)
                     elif not liste and playerFree:
-                        print("add free", file=stderr)
                         liste.append(msg)
 
         await asyncio.sleep(0.1)
-    print("ALL USER JOIN", file=stderr)
     await asyncio.sleep(1)
     await ws.sendUserJoin(liste)
 

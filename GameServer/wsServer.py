@@ -106,7 +106,6 @@ class WebSocketServer:
     def addUser(self, websocket, gameid, user):
         find = False
         if gameid in self.clients[2]:
-            print("USER VALUE :", user, file=stderr)
             if user in list(self.clients[2][gameid])[0]:
                 print(ORANGE, "User already connected. Connection refused", file=stderr)
                 return True
