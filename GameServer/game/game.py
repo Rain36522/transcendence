@@ -28,7 +28,7 @@ game = {
 	"p2" : 0, # -0.5 -> 0.5
 	"p3" : 0, # -0.5 -> 0.5
 	"p4" : 0, # -0.5 -> 0.5
-	"state" : "pause",
+	"state" : "playing",
 	"score1" : 0,
 	"score2" : 0,
 	"score3" : 0,
@@ -133,6 +133,7 @@ if __name__ == "__main__":
     # Lancement du client WebSocket en parallèle
     asyncio.get_event_loop().run_until_complete(client.connect())
     asyncio.get_event_loop().create_task(client.receive_messages())
+    print(MAGENTA, "RECIEVED USER", RESET, file=stderr)
     userliste = asyncio.get_event_loop().run_until_complete(WaitUntilPlayers(client, DjangoData))
     userliste = updateUser(userliste, DjangoData)
     gameLogicInstance = gameLogic(client, gameSettings, game, userliste)
