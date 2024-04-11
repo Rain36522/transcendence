@@ -13,18 +13,17 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+    <div id="content-container-replace">
     <div class="vignette"></div>
     <header>
         <h1><a href="{% url 'home_page' %}" class="logo">Transcendance</a></h1>
         <div>
             <a href="{% url 'general_chat' %}" class="header-btn">Chat</a>
-            <a href="{% url 'user_logout' %}" class="header-btn">Logout</a>
+            <a href="{% url 'user_logout' %}" class="header-btn logout-btn">Logout</a>
             <a href="{% url 'user_dashboard' %}" class="header-btn profile-btn">Profile</a>
         </div>
-    </header>
-    <div class="video-container">
-        <img src="https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg" alt="Background Image">
-    </div>
+    </header>    
+    <div class="background-container"></div> <!-- Ajout du conteneur pour l'image de fond -->
     <div class="chat-container">
         <div class="user-list">
             <div id = "userList">
@@ -57,5 +56,8 @@
     <script src={% static 'utils.js' %}></script>
 
     <script src={% static 'generalchat.js' %}></script>
+</div>
+
+
 </body>
 </html>

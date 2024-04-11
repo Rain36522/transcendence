@@ -36,6 +36,7 @@ class gameLogic:
         self.initUser()
         self.plankdist = 0.45 # distance from middle to plank
         self.ball = Ball(float(gameSet["ballwidth"]), 0.006)
+        print("Game logic set")
 
 
     def print(self, msg):
