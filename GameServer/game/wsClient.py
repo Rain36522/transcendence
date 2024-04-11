@@ -1,12 +1,14 @@
 import asyncio
 import websockets
 from sys import stderr
+from json import dumps
 
 
 class WebSocketClient:
     def __init__(self, url):
         self.url = url
         self.messages = []
+
 
     async def connect(self):
         self.websocket = await websockets.connect(self.url)
@@ -31,7 +33,11 @@ class WebSocketClient:
         return msg
 
     async def sendMsg(self, msg):
-        import json
-        await self.websocket.send(json.dumps(msg))
+        await self.websocket.send(dumps(msg))
+        if msg["state"] == "game_over":
+            await self.websocket.close()
+            exit(0)
 
+    async def sendUserJoin(self, msg):
+        await self.websocket.send("autorisedusers" + dumps(msg))
 
