@@ -8,3 +8,4 @@ pip3 install djangorestframework
 pip3 install websockets
 pip3 install channels_redis
 pip3 install Pillow
+pip3 install djlint
