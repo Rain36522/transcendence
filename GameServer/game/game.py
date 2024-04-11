@@ -5,6 +5,7 @@ import json
 import asyncio
 from sys import stderr
 from time import sleep
+from sys import stderr
 
 # Convertir JSON en dictionnaire
 # gameSettings = loads(os.environ.get("newGame"))
@@ -45,6 +46,49 @@ gameEndDjango = {
     "user4" : ("", 2),
     }
 
+
+def listUser(data):
+    liste = []
+    for cle, value in data.items():
+        print("data recieve django : ", cle, value, file=stderr)
+        if cle.startswith("user"):
+            if value:
+                print("data accepted as user : ", cle, value, file=stderr)
+                liste.append(value)
+    return liste
+
+async def WaitUntilPlayers(ws, data):
+    userlist = listUser(data)
+    liste = []
+    while len(liste) < data["playeramount"]:
+        msgs = ws.getMsg()
+        if msgs:
+            for msg in msgs:
+                print("New msg", file=stderr)
+                if msg.endswith("login"):
+                    msg = msg[:-5]
+                    print("NewUser : ", msg, file=stderr)
+                    if userlist:
+                        playerFree = data["playeramount"] - len(userlist)
+                    else:
+                        playerFree = data["playeramount"]
+                    if userlist and msg in userlist:
+                        print("add recomanded", file=stderr)
+                        liste.append(msg)
+                        userlist.remove(msg)
+                    elif liste and len(liste) < playerFree and msg not in liste:
+                        print("add free", file=stderr)
+                        liste.append(msg)
+                    elif not liste and playerFree:
+                        print("add free", file=stderr)
+                        liste.append(msg)
+
+        await asyncio.sleep(0.1)
+    print("ALL USER JOIN", file=stderr)
+    await asyncio.sleep(1)
+    await ws.sendUserJoin(liste)
+
+
 def putDatagameSettings(data, settings):
     elem = ["ballwidth", "planksize", "Speed", "acceleration", "playeramount", "winpoint", "user1", "user2", "user3", "user4", "gameid"]
     if not data.get("gameid"):
@@ -66,7 +110,7 @@ if __name__ == "__main__":
     # Lancement du client WebSocket en parallèle
     asyncio.get_event_loop().run_until_complete(client.connect())
     asyncio.get_event_loop().create_task(client.receive_messages())
-
+    asyncio.get_event_loop().run_until_complete(WaitUntilPlayers(client, DjangoData))
     # Lancement de la boucle d'événements asyncio pour attendre la connexion
     # Création d'une tâche pour exécuter une autre fonction en parallèle
     gameLogicInstance = gameLogic(client, gameSettings, game)

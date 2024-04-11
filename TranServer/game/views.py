@@ -82,19 +82,17 @@ def gamePage(request, id):
         player = 4
     contexte = {
         "nbPlayers": player,
-        "player1Name": "",
-        "player2Name": "",
-        "player3Name": "",
-        "player4Name": "",
-        "paddleColor": "",
         "paddleWidth": 0.02,
         "paddleLength": game.planksize,
         "paddleOffset": 0.02,
         "ballSize": game.ballwidth,
         "isSolo": True,
-        "isImage": False,
-        "status": "playing"
+        "status": "waiting",
+        "user": request.user.username,
+        "gameid": id
     }
+    print("USER : ", contexte["user"])
+    print("gameid : ", contexte["gameid"])
     contexte_json = json.dumps(contexte)
     return render(request, 'monapp/pong.html', {'contexte_json': contexte_json})
 

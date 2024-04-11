@@ -100,7 +100,7 @@ class launchGame:
         return dico
     
     def generateGame(self, game, dico):
-        if game.gamemode == 0 or game.gamemode == 1: #2p offline, 2p online
+        if game.gamemode == 1: #2p offline, 2p online
             dico["playeramount"] = 2
         elif game.gamemode == 2: # 4p
             dico["playeramount"] = 4
