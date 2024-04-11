@@ -1,38 +1,44 @@
 body {
+	background-image: url('https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg');
+	background-size: cover;
+	background-position: center;
 	margin: 0;
 	padding: 0;
-	height: 100%;
+	height: 100vh;
 	overflow: hidden;
-	font-family: 'Roboto', sans-serif;
-}
-.video-container {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
 	z-index: -1;
-	overflow: hidden;
-}
-.video-container img {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-	filter: grayscale(100%); /* Ajout du filtre noir et blanc */
-}
-.video-container::before {
+  }
+  
+  body::before {
 	content: "";
 	position: absolute;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background-color: rgba(0, 0, 0, 0.5); /* Filtre noir avec opacité */
-	z-index: 1;
-}
+	background-image: url('https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg');
+	background-size: cover;
+	background-position: center;
+	filter: grayscale(100%);
+	z-index: 0;
+  }
+
+.background-container {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100vh;
+	background-image: url('https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg');
+	background-size: cover;
+	background-position: center;
+	filter: grayscale(100%);
+	z-index: -1;
+  }  
+
 .chat-container {
 	position: fixed;
-	top: 60%; /* Décalage vers le bas */
+	top: 55%; /* Décalage vers le bas */
 	left: 50%;
 	transform: translate(-50%, -50%);
 	width: 70%;
@@ -132,6 +138,18 @@ header {
 	border-radius: 5px;
 	text-decoration: none; /* Enlever le soulignement */
 }
+
+/* CSS pour ajuster uniquement les boutons "Logout" et "Profile" */
+.header-btn.logout-btn, .header-btn.profile-btn {
+    background-color: transparent; /* Enlève le fond jaune */
+    color: #fff; /* Change la couleur du texte en blanc */
+}
+
+/* Optionnel : Ajuster l'apparence au survol */
+.header-btn.logout-btn:hover, .header-btn.profile-btn:hover {
+    color: #fff; /* Maintient la couleur de texte en blanc */
+}
+
 .logout-link, .profile-link {
 	color: #ffffff;
 	text-decoration: none;
