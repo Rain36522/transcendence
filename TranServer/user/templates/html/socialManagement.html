@@ -7,27 +7,27 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
 
-
-<div id="content-container-replace">
-  <div class="frame">
-    <div class="tab-container">
-      <div class="tab"><a href="{% url 'account_information' %}" style="color: #000000;">Account Information</a></div>
-      <div class="tab"><a href="{% url 'user_dashboard' %}" style="color: #000000;">Dashboard</a></div>
-      <div class="tab active"><a href="{% url 'social_management' %}" style="color: #ffffff;">Social Management</a>
-      </div>
+<div class="frame">
+  <div class="tab-container">
+    <div class="tab"><a href="{% url 'account_information' %}" style="color: #000000;">Account Information</a></div>
+    <div class="tab"><a href="{% url 'user_dashboard' %}" style="color: #000000;">Dashboard</a></div>
+    <div class="tab active"><a href="{% url 'social_management' %}" style="color: #ffffff;">Social Management</a>
     </div>
-    <div class="content-area">
-      <div class="search-area">
-        <input type="text" placeholder="Search a user..." class="search-box">
-        <button type="button">Go!</button>
+  </div>
+  <div class="content-area">
+    <div class="search-area">
+      <input type="text" placeholder="Search a user..." id="search-box" class="search-box">
+      <button type="button">Go!</button>
+      <div id="searchResults" class="search-results" style="display: none;">
+        <!-- Les résultats de recherche seront affichés ici -->
       </div>
       <ul class="user-list">
-        <!-- Les éléments de la liste seront générés par JavaScript -->
+        <!-- Les résultats de recherche seront affichés ici -->
       </ul>
-      <a href="#" class="edit-link">Edit</a>
     </div>
-    <script src={% static 'utils.js' %}></script>
-    <script src={% static 'dashboard.js' %}></script>
+    <a href="#" class="edit-link">Edit</a>
   </div>
+  <script src={% static 'utils.js' %}></script>
+  <script src={% static 'dashboard.js' %}></script>
 </div>
 {% endblock %}

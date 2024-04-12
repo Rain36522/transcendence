@@ -178,7 +178,7 @@ nav ul li a {
   /* Les boutons sont empilés verticalement */
   align-items: center;
   /* Centre les boutons horizontalement */
-  margin-top: 100px;
+  margin-top: 300px;
   /* Augmente la marge supérieure pour les éloigner du haut */
 }
 

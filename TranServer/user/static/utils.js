@@ -59,14 +59,21 @@ window.onpopstate = function () {
     fetchPage(url);
 };
 
-const target = event.target;
-if (target.tagName === 'A' && target.getAttribute('href') !== '#') {
-    event.preventDefault();
-    const url = target.getAttribute('href');
-    fetchPage(url);
-    history.pushState(null, null, url);
+document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener('click', function (event) {
+        const target = event.target;
+        if (target.tagName === 'A' && target.getAttribute('href') !== '#') {
+            event.preventDefault();
+            const url = target.getAttribute('href');
+            fetchPage(url);
+            history.pushState(null, null, url);
 
-}
+        }
+    });
+
+
+});
+
 
 function getCookie(name) {
     const cookieValue = document.cookie.split(';')

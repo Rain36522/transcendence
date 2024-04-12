@@ -8,32 +8,30 @@
                     height:100%;
                     object-fit: cover" />
 </div>
-<div id="content-container-replace">
-    <div class="frame">
-        <div class="tab-container">
-            <a href="{% url 'account_information' %}" class="tab">Account Informations</a>
-            <a href="{% url 'user_dashboard' %}" class="tab active">Dashboard</a>
-            <a href="{% url 'social_management' %}" class="tab">Social Management</a>
-        </div>
-        <div class="profile-section">
-            <div class="profile-pic" id="profile-pic">
-                <div class="online-indicator"></div>
-            </div>
-            <!-- S'assurez que cet élément a un background-image par défaut ou via JS -->
-            <div class="profile-name">{{ user.username }}</div>
-            <div class="statistic">
-                Win rate : <span>70%</span><span class="progress-bar" style="width: 70%;">70%</span>
-            </div>
-            <div class="statistic">
-                Games won : <span>70</span><span class="progress-bar" style="width: 70%;">70%</span>
-            </div>
-            <div class="statistic">
-                Games lost : <span>30</span><span class="progress-bar"
-                    style="width: 30%; background-color: #f44336;">30</span>
-            </div>
-        </div>
-        <script src={% static 'utils.js' %}></script>
-        <script src={% static 'dashboard.js' %}></script>
+<div class="frame">
+    <div class="tab-container">
+        <a href="{% url 'account_information' %}" class="tab">Account Informations</a>
+        <a href="{% url 'user_dashboard' %}" class="tab active">Dashboard</a>
+        <a href="{% url 'social_management' %}" class="tab">Social Management</a>
     </div>
+    <div class="profile-section">
+        <div class="profile-pic" id="profile-pic">
+            <div class="online-indicator"></div>
+        </div>
+        <!-- S'assurez que cet élément a un background-image par défaut ou via JS -->
+        <div class="profile-name">{{ user.username }}</div>
+        <div class="statistic">
+            Win rate : <span>70%</span><span class="progress-bar" style="width: 70%;">70%</span>
+        </div>
+        <div class="statistic">
+            Games won : <span>70</span><span class="progress-bar" style="width: 70%;">70%</span>
+        </div>
+        <div class="statistic">
+            Games lost : <span>30</span><span class="progress-bar"
+                style="width: 30%; background-color: #f44336;">30</span>
+        </div>
+    </div>
+    <script src={% static 'utils.js' %}></script>
+    <script src={% static 'dashboard.js' %}></script>
 </div>
 {% endblock content %}

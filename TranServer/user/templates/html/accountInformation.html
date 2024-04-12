@@ -9,32 +9,30 @@
 <link rel="stylesheet" href="{% static 'home.css' %}">
 <link rel="stylesheet" href="{% static 'accountInformation.css' %}">
 
-<div id="content-container-replace">
-    <div class="image-container">
-        <img src="https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg"
-            alt="Votre image" style="width:100%; height:100%; object-fit: cover;">
+<div class="image-container">
+    <img src="https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg"
+        alt="Votre image" style="width:100%; height:100%; object-fit: cover;">
+</div>
+<div class="frame">
+    <div class="tab-container">
+        <a href="{% url 'account_information' %}" class="tab">Account Informations</a>
+        <a href="{% url 'user_dashboard' %}" class="tab active">Dashboard</a>
+        <a href="{% url 'social_management' %}" class="tab">Social Management</a>
     </div>
-    <div class="frame">
-        <div class="tab-container">
-            <a href="{% url 'account_information' %}" class="tab">Account Informations</a>
-            <a href="{% url 'user_dashboard' %}" class="tab active">Dashboard</a>
-            <a href="{% url 'social_management' %}" class="tab">Social Management</a>
+    <div class="content-area">
+        <div class="profile-section">
+            <img src="" alt="Photo de profil" class="profile-pic">
+            <button class="edit-profile-btn">Edit profile picture</button>
         </div>
-        <div class="content-area">
-            <div class="profile-section">
-                <img src="" alt="Photo de profil" class="profile-pic">
-                <button class="edit-profile-btn">Edit profile picture</button>
-            </div>
-            <div class="user-info">
-                <div><label>Username:</label><input type="text" value="Shrekito"></div>
-                <div><label>Mail:</label><input type="email" value="shrek@swamp.far"></div>
-                <div><label>Pronouns:</label><input type="text" value="They, them, it, whom"></div>
-                <div><label>Password:</label><input type="password" value="password"></div>
-            </div>
-            <a href="#" class="edit-link">Edit</a>
+        <div class="user-info">
+            <div><label>Username:</label><input type="text" value="Shrekito"></div>
+            <div><label>Mail:</label><input type="email" value="shrek@swamp.far"></div>
+            <div><label>Pronouns:</label><input type="text" value="They, them, it, whom"></div>
+            <div><label>Password:</label><input type="password" value="password"></div>
         </div>
-        <script src={% static 'utils.js' %}></script>
-        <script src={% static 'accountInformation.js' %}></script>
+        <a href="#" class="edit-link">Edit</a>
     </div>
+    <script src={% static 'utils.js' %}></script>
+    <script src={% static 'accountInformation.js' %}></script>
 </div>
 {% endblock %}
