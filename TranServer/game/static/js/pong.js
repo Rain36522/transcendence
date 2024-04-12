@@ -45,7 +45,13 @@ function drawGame() {
 		players[i].draw(CanvasContext);
 
 	// Draw ball
+	
+
 	CanvasContext.fillStyle = gameSettings.ballColor;
+	CanvasContext.fillRect(gameSettings.gameWidth * (gameSettings.ballPosition.x + 0.5 - gameSettings.ballSize / 4), 
+	gameSettings.gameHeight * (gameSettings.ballPosition.y + 0.5 - gameSettings.ballSize / 2),
+		gameSettings.ballSize * gameSettings.gameHeight,
+		gameSettings.ballSize * gameSettings.gameHeight);
 	CanvasContext.beginPath();
 	CanvasContext.arc(gameSettings.gameWidth * (gameSettings.ballPosition.x + 0.5),  gameSettings.gameHeight * (gameSettings.ballPosition.y + 0.5), gameSettings.ballSize * gameSettings.gameHeight / 2, 0, Math.PI * 2);
 	if (isImage) {
