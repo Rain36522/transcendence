@@ -64,6 +64,15 @@ def inputText(title, text, password=False, style=STYLE, defaultValue=""):
         default=defaultValue,
         style=style).run()
 
+def checkReturnValue(icode):
+    if icode >= 500:
+        Information("SERVEUR ERROR", "The connection with the serveur fail.")
+    elif icode >= 400:
+        Information("REQUEST ERROR", "The serveur return an error.")
+    else:
+        return True
+    return False
+
 def doexit(errorCode, errorMsg=""):
     system("clear")
     if errorMsg:

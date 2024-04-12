@@ -37,6 +37,7 @@ class User:
                 print("HERE")
                 doexit(1, "Error: Serveur not accessible.")
         Information("LOGIN", "User connection succes.", style=STYLSUCCESS)
+        return True
         
 
     def login(self, error=False):
@@ -57,6 +58,7 @@ class User:
         if pwd == None:
             return False
         value = self.Django.createUser(user, mail, pwd)
+        Information(str(value), "FAIL")
         while value != 200 and value != 500:
             result = Question3Value("REGISTRATION", "User or email already existing.", "signup", "login", "exit", style=STYLERROR)
             if result == 0:

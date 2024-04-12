@@ -5,7 +5,8 @@ from re import match
 
 
 class NewGameSettings:
-    def __init__(self):
+    def __init__(self, djangocom):
+        self.gameSettings = None
         termSize = os.get_terminal_size()
         if termSize.columns < 80 or termSize.lines < 20:
             while termSize.columns < 80 or termSize.lines < 20:
@@ -13,27 +14,48 @@ class NewGameSettings:
                 termSize = os.get_terminal_size()
         else:
             Information("TERMINAL SIZE", "Terminal must be biger than 80 column and 20 lines.", style=STYLSUCCESS)
-        var = False
-        while not var:
+        while True:
             value = Question3Value("GAME", "Would you join or create a new game", "join", "create", "Exit")
             if value == 1:
-                var = self.joinGame()
+                isok, self.gameSettings = self.joinGame(djangocom)
+                if isok and self.gameSettings["nbPlayers"] > 2:
+                    Information("ERROR GAME", "Max game 2 players", style=STYLERROR)
+                elif isok:
+                    break
             elif value == 0:
-                var = self.createNewGame()
+                isok, dict = self.createNewGame()
+                if isok:
+                    icode, path = djangocom.createGame(dict)
+                    if checkReturnValue(icode):
+                        icode, self.gameSettings = djangocom.getGameInfo(path)
+                    if checkReturnValue(icode):
+                        if self.gameSettings["nbPlayers"] > 2:
+                            Information("ERROR GAME", "Max game 2 players", style=STYLERROR)
+                        else:
+                            break
             else:
                 doexit(0, "User exit")
 
-    def joinGame(self):
-        return self.getGameUrl()
 
-    def getGameUrl(self):
-        value = inputText("JOIN GAME", "Type game url")
-        while value != None and not value.startswith("https://"):
-            value = inputText("JOIN GAME", "Url must start with https://.", style=STYLERROR)
+    def joinGame(self, djangocom):
+        run, value = self.getGameUrl()
+        gameData = None
+        while run:
+            if value:
+                icode, gameData = djangocom.getGameInfo(value)
+                if checkReturnValue(icode):
+                    break
+            run, value = self.getGameUrl(style=STYLERROR)
+        return run, gameData
+            
+
+
+    def getGameUrl(self, style=STYLE):
+        value = inputText("JOIN GAME", "Type game url", style=style)
         if value == None:
-            return False
+            return False, None
         else:
-            return True
+            return True, value
 
 
     def createNewGame(self):
@@ -44,16 +66,16 @@ class NewGameSettings:
         dict["planksize"] = self.getIntSettingRange("NEW GAME", "Plank size (10 - 40) :", 10, 40, 20)
         if dict["planksize"] == None:
             return False
-        dict["speed"] = self.getFloatSettingRange("NEW GAME", "Speed (0.5 - 3) :", 0.5, 3, 1)
-        if dict["speed"] == None:
+        dict["Speed"] = self.getFloatSettingRange("NEW GAME", "Speed (0.5 - 3) :", 0.5, 3, 1)
+        if dict["Speed"] == None:
             return False
         dict["acceleration"] = self.getIntSettingRange("NEW GAME", "Acceleration (0 - 10) :", 0, 10, 0)
         if dict["acceleration"] == None:
             return False
         dict["winpoint"] = self.getIntSettingRange("NEW GAME", "Win point (3 - 15) :", 3, 15, 5)
         if dict["winpoint"] == None:
-            return False
-        return True
+            return False, None
+        return True, dict
         # dict["gamemode"] = self.getGameMode()
 
 

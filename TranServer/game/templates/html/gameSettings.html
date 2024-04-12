@@ -70,7 +70,7 @@
 					</select>
 				</div>
 			</div>
-			<a href="#" class="create-link">Create</a>
+			<a href="#" class="create-link">Create</a>{% csrf_token %}
 			<a href="{% url 'home_page' %}" class="exit-link">Exit</a>
 		</div>
 		<script src="{% static 'utils.js' %}"></script>

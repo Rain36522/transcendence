@@ -2,7 +2,7 @@ import sys
 import os
 chemin_parent = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(chemin_parent)
-
+from DataTransmission import DataTransmission
 from color import *
 from ascii import Ascii
 from time import sleep
@@ -20,43 +20,53 @@ gameSettings = {
     "user3" : "",
     "user4" : ""
 }
+
 #add minimal screen size = width 40, height 20
 class GameGui2p:
-    def __init__(self, settings):
+    def __init__(self, settings, wsCli):
         self.term = Terminal()
+        self.wsCli = wsCli
         self.settings = settings
         os.system("clear")
         self.GetMapSize()
         self.putMap()
         self.height -= 2
         self.width -= 2
+        self.userpose = 0
         self.initPadelL()
         self.initPadelR()
         self.initBall()
-        sleep(3)
-        ox = 0.1
-        oy = 0.1
-        x = 0.5
-        y = 0.5
-        while True:
-            if x >= 1.8:
-                ox = -0.1
-            elif x <= 0.2:
-                ox = 0.1
-            if y >= 0.8 :
-                oy = -0.1
-            elif y <= 0.2:
-                oy = 0.1
-            self.updateBall(x, y)
-            sleep(0.05)
-            x += ox
-            y += oy
+    
 
-        sleep(3)
-        """MAP
-        Map generation in CLI.
-        Calculing the max size of map. Kipping litel space for score.
-        """
+    def  updateGame(self):
+        while True:
+            msg = self.wsCli.getMessage()
+            if msg["state"] == "game_over":
+                return
+            elif not self.userpose and self.settings["user"] in msg["users"]:
+                if msg["users"][0] == self.settings["user"]:
+                    self.userpos = 1
+                else:
+                    self.userpos = 2
+            if self.userpos == 2:
+                msg = self.updateMsg(msg, reverse=-1)
+                self.updatePadelL(msg["p2"])
+                self.updatePadelR(msg["p1"])
+            else:
+                msg = self.updateMsg(msg)
+                self.updatePadelL(msg["p1"])
+                self.updatePadelR(msg["p2"])
+            self.updateBall(msg["ballx"], msg["bally"])
+    
+    def updateMsg(self, msg, reverse=1):
+        liste = ["ballx", "bally", "p1", "p2"]
+        for elem in liste:
+                msg[elem] = msg[elem] * reverse + 0.5
+
+    """MAP
+    Map generation in CLI.
+    Calculing the max size of map. Kipping litel space for score.
+    """
     def GetMapSize(self):
         
         self.column = self.term.width // 2
@@ -89,11 +99,11 @@ class GameGui2p:
         self.skipStart()
         print("+", end="")
         print("--" * (self.width - 2) + "+")
-        """Paddels
-        Put the paddel.
-        When there is an padel update, we just change the padel pos by adding paddel or space char.
-        We only erase and put again in case of padel totaly outside of the actual padel.
-        """
+    """Paddels
+    Put the paddel.
+    When there is an padel update, we just change the padel pos by adding paddel or space char.
+     We only erase and put again in case of padel totaly outside of the actual padel.
+    """
     def calculPaddels(self, pos=-1):
         if pos == -1:
             midelpoint = self.height / 2 + 4
@@ -221,9 +231,3 @@ class GameGui2p:
     def skipStart(self):
         if self.start:
             print(" " * self.start, end="")
-
-# print(self.term.move_xy(self.start, 1))
-
-
-
-GameGui2p(gameSettings)

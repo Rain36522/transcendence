@@ -26,17 +26,17 @@ class newGame(APIView):
         print("POST FROM USER !", file=sys.stderr)
         data = self.changeData(request.data.copy())
         if data:
-            print("Data")
+            print("Data", file=sys.stderr)
             serializer = GameSettingsSerializer(data=data)
             if serializer.is_valid():
-                print("Seriallizer")
+                print("Seriallizer", file=sys.stderr)
                 instance = serializer.save()  # Enregistre les données et récupère l'objet sauvegardé
                 self.addPlayer(instance, request.user)
                 launchGame(instance)
                 return JsonResponse({"gameLink": "/game/" + str(instance.id)}, status=200)
             else:
-                print(serializer.errors)
-            print("no data")
+                print(serializer.errors, file=sys.stderr)
+        print("no data", file=sys.stderr)
         return HttpResponse("Error 400", status=400)
     
     def changeData(self, data):        
