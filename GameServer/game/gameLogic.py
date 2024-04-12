@@ -31,11 +31,14 @@ class gameLogic:
             self.players.append(Player("2", "2", 0.2, 2))
         else:
             for user in userlist:
-                self.players.append(Player(user, user, 0.2, i))
+                self.players.append(Player(user, user, gameSet["planksize"], i))
                 i += 1
         self.initUser()
         self.plankdist = 0.45 # distance from middle to plank
-        self.ball = Ball(float(gameSet["ballwidth"]), 0.006)
+        if len(self.players) == 4:
+            self.ball = Ball(float(gameSet["ballwidth"]), float(gameSet["ballwidth"]), 0.006)
+        elif len(self.players) == 2:
+            self.ball = Ball(float(gameSet["ballwidth"]), float(gameSet["ballwidth"]) / 2, 0.006)
         print("Game logic set")
 
 
@@ -136,7 +139,7 @@ class Player:
         self.plankPos = 0
         self.plankLength = plankLength
         self.token = token
-        self.offset = 0.45
+        self.offset = 0.49
         self.connected = False
         self.upperBound = 100
         self.lowerBound = -100
@@ -164,13 +167,14 @@ class Player:
         return {"x": self.plankPos, "y": 0.5}
 
 class Ball:
-    def __init__(self, size: float, speed: float):
+    def __init__(self, size: float, size_w: float, speed: float):
         self.size = size
         self.pos = {"x": 0.0, "y": 0.0}
         self.speed = speed
+        self.size_w = size_w
         self.init_speed = speed
         self.dir = {"x": 1.0 , "y": 0.0 }
-        self.c_a = 80
+        self.c_a = 70
         self.last_touch = ""
         self.temp_last_touch = ""
     
@@ -203,19 +207,27 @@ class Ball:
 
     def collide_paddle(self, px, py, s, p_dir, is_wall):
         if p_dir == "x": # paddle is like this: --
+            if py > 0:
+                py -= self.size / 2
+            else:
+                py += self.size / 2
             p_c = self.project_line(self.pos["y"], self.pos["x"], self.dir["y"], self.dir["x"], py)
             c_pos = {"x": p_c, "y": py} # collision position
             if not self.seg_collide(p_c, self.size, px, s):
                 return -1, 0, 0
             # down, y dir positive
-            new_dir = self.dir_angle(self.c_a * (p_c - px) / s + 90)
+            new_dir = self.dir_angle(self.c_a * (p_c - px) / (s / 2) + 90)
             # up, y dir negative
             if self.dir["y"] > 0:
-                    new_dir = self.dir_angle(self.c_a * (p_c - px) / s + 270)    
+                    new_dir = self.dir_angle(self.c_a * (p_c - px) / (s / 2) + 270)    
             if is_wall:
                 new_dir = self.dir_wall(self.dir)
             dist = self.dist(p_c, py, self.pos["x"], self.pos["y"])
             return dist, new_dir, c_pos
+        if px > 0:
+            px -= self.size_w / 2
+        else:
+            px += self.size_w / 2
         # paddle is like this: |  
         p_c = self.project_line(self.pos["x"], self.pos["y"], self.dir["x"], self.dir["y"], px) # find the y coordinate of the intersection point
         c_pos = {"x": px, "y": p_c}
@@ -224,6 +236,7 @@ class Ball:
             return -1, 0, 0
         
         # right, x dir positive
+        #offset (80) * (paddle_center - contact_point) / paddle_size)
         new_dir = self.dir_angle(180 + (self.c_a * (py - p_c) / s))
         # left, x dir negative
         if self.dir["x"] < 0:
