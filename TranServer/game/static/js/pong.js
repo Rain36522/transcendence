@@ -151,6 +151,12 @@ document.addEventListener('DOMContentLoaded', () => {
 			// parsing
 			console.log(event.data);
 			var data = JSON.parse(event.data);
+			if (data.users)
+			{
+				gameSettings.playersNames = data.users;
+				gameSettings.userID = gameSettings.playersNames.indexOf(gameSettings.userName) + 1;
+			}
+			gameSettings.status = data.state;
 			// ball update
 			gameSettings.ballPosition = { x: data.ballx, y: -1 * data.bally };
 			// update players

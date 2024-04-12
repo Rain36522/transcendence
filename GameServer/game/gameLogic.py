@@ -60,25 +60,16 @@ class gameLogic:
             if len(msg) < 5:
                 continue
             print(msg, file=stderr)
-            if msg[0] == "1":
-                print("P1", file=stderr)
+            player_i = -1
+            try:
+                player_i = int(msg[0])
+            except:
+                pass
+            if player_i > 0 and player_i < 5:
                 if msg[1] == "u":
-                    print("up", file=stderr)
-                    self.players[0].up = msg[4] == "n"
-                    print("turn on: ",  msg[4] == "n", file=stderr)
-
+                    self.players[player_i - 1].up = msg[4] == "n"
                 if msg[1] == "d":
-                    self.players[0].down = msg[4] == "n"
-            elif msg[0] == "2":
-                if msg[1] == "u":
-                    self.players[1].up = msg[4] == "n"
-                if msg[1] == "d":
-                    self.players[1].down = msg[4] == "n"
-
-            elif msg[0] == "3":
-                self.game["p3"] = self.doCmd(self.game["p3"], msg[1])
-            elif msg[0] == "4":
-                self.game["p4"] = self.doCmd(self.game["p4"], msg[1])
+                    self.players[player_i - 1].down = msg[4] == "n"
         # for message in messages:
         #     if message.endswith("login") and len(self.players) < self.gameSet["playeramount"]:
         #         player = self.getPlayer(message[:-5])
