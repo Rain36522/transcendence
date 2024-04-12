@@ -1,5 +1,6 @@
   /* Styles communs */
-  body, html {
+  body,
+  html {
     margin: 0;
     padding: 0;
     height: 100%;
@@ -39,10 +40,12 @@
 
   .logo {
     text-decoration: none;
-    color: #FFFF99; /* Changement de couleur */
-    font-size: 47px; /* Taille de police agrandie */
+    color: #FFFF99;
+    /* Changement de couleur */
+    font-size: 47px;
+    /* Taille de police agrandie */
   }
-  
+
   .additional-links ul {
     list-style: none;
     display: flex;
@@ -55,12 +58,15 @@
   .additional-links ul li a {
     text-decoration: none;
     color: white;
-    font-size: 24px; /* Taille de police agrandie */
-    font-weight: bold; /* Optionnel : rendre le texte en gras */
+    font-size: 24px;
+    /* Taille de police agrandie */
+    font-weight: bold;
+    /* Optionnel : rendre le texte en gras */
   }
 
   .additional-links ul li a.profile {
-    color: #FFFF99; /* Changement de couleur pour PROFILE */
+    color: #FFFF99;
+    /* Changement de couleur pour PROFILE */
   }
 
   /* Contenu */
@@ -97,7 +103,8 @@
     font-size: 24px;
   }
 
-  .select-text select, .select-text .slider {
+  .select-text select,
+  .select-text .slider {
     margin: 0 10px;
     font-size: 18px;
     background-color: #FFFF99;
@@ -113,7 +120,7 @@
   .create-button {
     padding: 20px 25px;
     background-color: #FFFF99;
-    color: #333;
+    color: #000000;
     border: none;
     border-radius: 25px;
     cursor: pointer;
@@ -124,7 +131,8 @@
     transition: all 0.3s ease;
   }
 
-  .create-button:hover, .create-button:focus {
+  .create-button:hover,
+  .create-button:focus {
     background-color: #cccc00;
     color: white;
     transform: translateY(-2px);
@@ -143,7 +151,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    box-shadow: 0 0 200px rgba(0,0,0,0.9) inset;
+    box-shadow: 0 0 200px rgba(0, 0, 0, 0.9) inset;
   }
 
   /* Styles de la vidéo */
@@ -171,7 +179,7 @@
     background-color: rgba(255, 255, 255, 0.95);
     border-radius: 10px;
     display: flex;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     z-index: 2;
     overflow: hidden;
   }
@@ -214,10 +222,10 @@
   .tab:last-of-type {
     border-bottom: none;
   }
-  
+
   .tab a {
-  text-decoration: none;
-}
+    text-decoration: none;
+  }
 
 
   .content-area {
@@ -247,14 +255,16 @@
     list-style: none;
     width: 100%;
     padding: 0;
-    justify-content: flex-start; /* Modifier cette ligne */
+    justify-content: flex-start;
+    /* Modifier cette ligne */
     margin-top: 10px;
   }
 
   .user-list li {
     display: flex;
     align-items: center;
-    justify-content: flex-start; /* Modifier de space-between à flex-start */
+    justify-content: flex-start;
+    /* Modifier de space-between à flex-start */
     padding: 10px 0;
   }
 
@@ -267,7 +277,8 @@
     background-size: cover;
     background-size: cover;
     background-position: center;
-    position: relative; /* Ajouté pour le positionnement de l'indicateur */
+    position: relative;
+    /* Ajouté pour le positionnement de l'indicateur */
   }
 
   .user-photo::before {
@@ -277,9 +288,11 @@
     left: 0;
     width: 100%;
     height: 100%;
-    /* background-color: rgba(255, 255, 255, 0.5); */ /* Commentez ou supprimez cette ligne pour supprimer le filtre blanc */
-    z-index: 1; /* Au-dessus de l'image, mais en-dessous du contenu texte */
-}
+    /* background-color: rgba(255, 255, 255, 0.5); */
+    /* Commentez ou supprimez cette ligne pour supprimer le filtre blanc */
+    z-index: 1;
+    /* Au-dessus de l'image, mais en-dessous du contenu texte */
+  }
 
   .user-info {
     display: flex;
@@ -287,34 +300,41 @@
   }
 
   .username {
-    margin-left: 10px; /* Ajustez cette valeur selon vos préférences */
+    margin-left: 10px;
+    /* Ajustez cette valeur selon vos préférences */
   }
 
   .status-indicator {
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    position: absolute; /* Position absolue par rapport à .user-photo */
-    right: 5px; /* Déplace l'indicateur vers la droite de la photo */
-    bottom: 0; /* Alignement au bas de la photo */
-    background-color: red; /* Rouge pour hors ligne, changez à vert pour en ligne */
-    z-index: 2; /* Au-dessus du filtre blanc */
+    position: absolute;
+    /* Position absolue par rapport à .user-photo */
+    right: 5px;
+    /* Déplace l'indicateur vers la droite de la photo */
+    bottom: 0;
+    /* Alignement au bas de la photo */
+    background-color: red;
+    /* Rouge pour hors ligne, changez à vert pour en ligne */
+    z-index: 2;
+    /* Au-dessus du filtre blanc */
   }
 
   .search-area button,
   .block-button {
     padding: 8px 15px;
     border: none;
-    background-color: #333;
+    background-color: #000000;
     color: #FFFFE0;
-    margin-left: 40px; /* Ajoutez un espace à gauche des boutons */
+    margin-left: 40px;
+    /* Ajoutez un espace à gauche des boutons */
     border-radius: 5px;
     cursor: pointer;
   }
 
   .edit-link {
     padding: 8px 24px;
-    background-color: #333;
+    background-color: #000000;
     color: #FFFFE0;
     text-decoration: none;
     border-radius: 5px;
@@ -324,7 +344,7 @@
   }
 
   .edit-link:hover {
-    background-color: #444;
+    background-color: #000000;
     color: #FFF;
   }
 
@@ -336,9 +356,12 @@
     padding: 0;
     height: 100vh;
     overflow: hidden;
-    z-index: -1; /* Placer en-dessous de tout le reste */
+    z-index: -1;
+    position: relative;
+    /* Assurez-vous que body est positionné pour les pseudo-éléments */
   }
 
+  /* Pseudo-élément pour l'effet noir et blanc */
   body::before {
     content: "";
     position: absolute;
@@ -346,9 +369,11 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg');
+    background-image: inherit;
+    /* Hérite l'image de fond du body */
     background-size: cover;
     background-position: center;
-    filter: grayscale(100%); /* Convertir en noir et blanc */
-    z-index: -1; /* Placer en-dessous de tout le reste */
+    filter: grayscale(100%);
+    z-index: -1;
+    /* Place ce calque en dessous de tout le contenu */
   }
