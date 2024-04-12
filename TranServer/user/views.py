@@ -74,13 +74,16 @@ def invite_user(request):
 @api_view(["POST"])
 @renderer_classes([JSONRenderer])
 def user_login_api(request):
-    username = request.POST["username"]
-    password = request.POST["password"]
-    user = authenticate(request, username=username, password=password)
-    if user is not None:
-        login(request, user)
-        return redirect("user_dashboard")
-    else:
+    try:
+        username = request.POST["username"]
+        password = request.POST["password"]
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect("user_dashboard")
+        else:
+            return JsonResponse({"error": "Invalid username or password"}, status=400)
+    except:
         return JsonResponse({"error": "Invalid username or password"}, status=400)
 
 
@@ -103,17 +106,16 @@ def user_profile_pic_api(request, username):
 @renderer_classes([JSONRenderer])
 @login_required
 def upload_profile_pic_api(request):
-    if "profile_picture" in request.FILES:
-        profile_picture = request.FILES["profile_picture"]
-
-        # Retrieve the user based on your authentication mechanism
-        user = request.user  # Or however you authenticate the user in your app
-
-        # Save the profile picture to the user's profile
-        user.profile_picture = profile_picture
-        user.save()
-        return HttpResponse({"message": "Upload successful"}, status=201)
-    return HttpResponse({"message": "No file found"}, status=201)
+    try:
+        if "profile_picture" in request.FILES:
+            profile_picture = request.FILES["profile_picture"]
+            user = request.user
+            user.profile_picture = profile_picture
+            user.save()
+            return HttpResponse({"message": "Upload successful"}, status=201)
+        return HttpResponse({"message": "No file found"}, status=201)
+    except:
+        return JsonResponse({"error": "Invalid request"}, status=403)
 
 
 class SignUpView(generic.CreateView):
