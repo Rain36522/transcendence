@@ -32,13 +32,13 @@ function replaceContent(html) {
 
 function loadScript(url) {
     return new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = url;
-            script.onload = () => {
-                resolve();
-            };
-            script.onerror = reject;
-            document.head.appendChild(script);
+        const script = document.createElement('script');
+        script.src = url;
+        script.onload = () => {
+            resolve();
+        };
+        script.onerror = reject;
+        document.head.appendChild(script);
     });
 }
 
@@ -59,21 +59,14 @@ window.onpopstate = function () {
     fetchPage(url);
 };
 
-document.addEventListener("DOMContentLoaded", function () {
-    document.addEventListener('click', function (event) {
-        const target = event.target;
-        if (target.tagName === 'A' && target.getAttribute('href') !== '#') {
-            event.preventDefault();
-            const url = target.getAttribute('href');
-            fetchPage(url);
-            history.pushState(null, null, url);
+const target = event.target;
+if (target.tagName === 'A' && target.getAttribute('href') !== '#') {
+    event.preventDefault();
+    const url = target.getAttribute('href');
+    fetchPage(url);
+    history.pushState(null, null, url);
 
-        }
-    });
-
-
-});
-
+}
 
 function getCookie(name) {
     const cookieValue = document.cookie.split(';')
