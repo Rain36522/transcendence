@@ -113,17 +113,6 @@ document.querySelectorAll('.invite-button').forEach(button => {
     button.addEventListener('click', handleInviteButtonClick);
 });
 
-
-// Attach the event listener directly to each invite-button
-document.querySelectorAll('.invite-button').forEach(button => {
-    button.addEventListener('click', handleInviteButtonClick);
-});
-
-// Attach the event listener directly to each invite-button
-document.querySelectorAll('.invite-button').forEach(button => {
-	button.addEventListener('click', handleInviteButtonClick);
-});
-
 // Gestion du clic sur le fond flou pour fermer la popup
 blurBackground.addEventListener('click', function () {
 	closePopup();
