@@ -29,7 +29,20 @@ def api_signup(request):
         user = serializer.save()
         login(request, user)
         return Response({"message": "User created successfully"}, status=201)
-    return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+@renderer_classes([JSONRenderer])
+def api_pending_invite(request):
+    try:
+        invites = request.user.sent_invites.all()
+        return Response(
+            UserSerializer_Username(invites, many=True).data,
+            status=status.HTTP_200_OK,
+        )
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class InviteListView(APIView):
@@ -74,9 +87,13 @@ class InviteListView(APIView):
                 return Response("Removed user", status=status.HTTP_200_OK)
             return Response("Invite does not exist", status=status.HTTP_400_BAD_REQUEST)
         except User.DoesNotExist:
-            return Response("User with provided username does not exist", status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                "User with provided username does not exist",
+                status=status.HTTP_404_NOT_FOUND,
+            )
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class BlockedListView(APIView):
     permission_classes = [IsAuthenticated]
@@ -100,9 +117,7 @@ class BlockedListView(APIView):
         try:
             user = User.objects.get(username=username)
             if user.blocked.filter(username=username):
-                return Response(
-                    "Already blocked", status=status.HTTP_400_BAD_REQUEST
-                )
+                return Response("Already blocked", status=status.HTTP_400_BAD_REQUEST)
             user.blocked.add(user)
             return Response("Added blocked", status=status.HTTP_200_OK)
         except Exception as e:
@@ -120,10 +135,12 @@ class BlockedListView(APIView):
                 return Response("Unblocked user", status=status.HTTP_200_OK)
             return Response("User is not blocked", status=status.HTTP_400_BAD_REQUEST)
         except User.DoesNotExist:
-            return Response("User with provided username does not exist", status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                "User with provided username does not exist",
+                status=status.HTTP_404_NOT_FOUND,
+            )
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 @api_view(["POST"])

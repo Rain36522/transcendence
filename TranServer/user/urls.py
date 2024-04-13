@@ -13,6 +13,7 @@ from .views import (
     upload_profile_pic_api,
     test_upload,
     InviteListView,
+    api_pending_invite,
 )
 from django.views.generic.base import RedirectView
 
@@ -41,4 +42,5 @@ urlpatterns = [
         name="invite_user_api_other",
     ),
     path("api/invite/", InviteListView.as_view(), name="invite_user_api"),
+    path("api/pending_invite/", api_pending_invite, name="pending_invite_api"),
 ]
