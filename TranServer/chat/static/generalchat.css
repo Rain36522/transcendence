@@ -422,11 +422,6 @@ header {
 	background-color: #f0f0f0; /* Fond pour les utilisateurs non invités */
   }
   
-  #invitedUsers {
-	margin-top: 10px; /* Espace au-dessus du cadre des utilisateurs invités */
-	margin-bottom: 10px; /* Espace en dessous avant le bouton Start */
-  }
-  
   .users-container {
 	display: flex;
 	justify-content: space-between;

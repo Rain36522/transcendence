@@ -87,7 +87,6 @@ function handleInviteButtonClick(event) {
     }
 
     document.getElementById('searchInput').value = ''; // Clear the search input
-    updateScrollbars(); // Update scrollbars after the operation
 }
 
 // Remove user from the original user list
@@ -118,23 +117,3 @@ blurBackground.addEventListener('click', function () {
 	closePopup();
 });
 
-
-function updateScrollbars() {
-	const userListContainer = document.getElementById('user-list');
-	const invitedUsersContainer = document.getElementById('invitedUsers');
-
-	if (userListContainer.children.length === 0) {
-		userListContainer.style.overflowY = 'hidden';
-	} else {
-		userListContainer.style.overflowY = 'auto';
-	}
-
-	if (invitedUsersContainer.children.length === 0) {
-		invitedUsersContainer.style.overflowY = 'hidden';
-	} else {
-		invitedUsersContainer.style.overflowY = 'auto';
-	}
-}
-
-// Appelez cette fonction après toute opération qui modifie le nombre d'utilisateurs invités
-updateScrollbars();
