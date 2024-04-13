@@ -1,49 +1,94 @@
 var users = [
-  { username: "Lolita564", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzO65Lpx5OR_-M92O1otaGdIt6nsTKfii_Bg&usqp=CAU", online: true, blocked: false },
-  { username: "Famacito", imageUrl: "https://risibank.fr/cache/medias/0/13/1326/132676/full.png", online: false, blocked: true },
-  { username: "Mania_xLeaderz", imageUrl: "https://cdn.gonzague.me/wp-content/uploads/2012/06/146646811-1200x900.gif", online: true, blocked: false }
+	{ username: "Lolita564", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzO65Lpx5OR_-M92O1otaGdIt6nsTKfii_Bg&usqp=CAU", online: true, blocked: false },
+	{ username: "Famacito", imageUrl: "https://risibank.fr/cache/medias/0/13/1326/132676/full.png", online: false, blocked: true },
+	{ username: "Mania_xLeaderz", imageUrl: "https://cdn.gonzague.me/wp-content/uploads/2012/06/146646811-1200x900.gif", online: true, blocked: false }
 ];
 
-document.addEventListener('DOMContentLoaded', function () {
-  // Attacher les événements pour la recherche et le bouton Go!
-  var searchButton = document.querySelector('.search-area button');
-  var searchInput = document.getElementById('search-box');
+function toggleBlock(index) {
+users[index].blocked = !users[index].blocked;
+updateUserStatusOnServer(users[index]); // Appel de la fonction pour mettre à jour sur le serveur
+displayUsers(users); // Mise à jour de l'affichage
+}
 
-  searchButton.addEventListener('click', searchUser);  // Écouteur pour le bouton Go!
-  searchInput.addEventListener('input', searchUser);  // Écouteur pour la saisie
-
-  displayUsers(users); // Affiche tous les utilisateurs au chargement initial
+function updateUserStatusOnServer(user) {
+fetch('/api/update-user-status', {
+	method: 'POST',
+	headers: {
+		'Content-Type': 'application/json',
+		// Assurez-vous d'inclure des headers pour l'authentification si nécessaire
+	},
+	body: JSON.stringify({
+		username: user.username,
+		blocked: user.blocked
+	})
+})
+.then(response => response.json())
+.then(data => {
+	console.log('Success:', data);
+	// Vous pouvez également gérer la mise à jour de l'interface utilisateur ici si nécessaire
+})
+.catch((error) => {
+	console.error('Error:', error);
 });
-
-// Fonction pour chercher des utilisateurs basée sur le texte saisi
-function searchUser() {
-  var searchText = document.getElementById('search-box').value.toLowerCase();
-  var filteredUsers = users.filter(user => user.username.toLowerCase().includes(searchText));
-  displayUsers(filteredUsers);
 }
 
-// Fonction pour afficher les utilisateurs dans la liste
-function displayUsers(filteredUsers) {
-  var userList = document.querySelector('.user-list');
-  userList.innerHTML = ''; // Nettoie la liste existante
-
-  filteredUsers.forEach(user => {
-    var userElement = document.createElement('li');
-    userElement.className = 'user-item';
-    userElement.innerHTML = `
-          <div class="user-info">
-              <img src="${user.imageUrl}" alt="${user.username}" class="user-image">
-              <span class="user-name">${user.username}</span>
-              <button onclick="toggleBlock('${user.username}')">${user.blocked ? 'Unblock' : 'Block'}</button>
-          </div>
-      `;
-    userList.appendChild(userElement);
-  });
+function sendAllUserStatusesToServer() {
+fetch('/api/bulk-update-user-status', {
+	method: 'POST',
+	headers: {
+		'Content-Type': 'application/json',
+		// Assurez-vous d'inclure des headers pour l'authentification si nécessaire
+	},
+	body: JSON.stringify(users)  // Envoie de l'ensemble des utilisateurs avec leur statut bloqué/débloqué
+})
+.then(response => response.json())
+.then(data => {
+	console.log('Bulk update success:', data);
+	// Ici vous pouvez afficher un message de confirmation ou autre feedback visuel
+})
+.catch((error) => {
+	console.error('Bulk update error:', error);
+});
 }
 
-// Fonction pour basculer l'état de blocage des utilisateurs
-function toggleBlock(username) {
-  var user = users.find(u => u.username === username);
-  user.blocked = !user.blocked;
-  searchUser(); // Rafraîchir l'affichage après modification de l'état
+function displayUsers(displayedUsers) {
+	var userList = document.querySelector('.user-list');
+	userList.innerHTML = ''; // Effacer la liste existante
+
+	displayedUsers.forEach(function(user, index) {
+		var li = document.createElement('li');
+		var blockButtonLabel = user.blocked ? 'Unblock' : 'Block';
+		li.innerHTML = `
+			<div class="user-info">
+				<div class="user-photo" style="background-image: url('${user.imageUrl}');"></div>
+				<span class="username">${user.username}</span>
+			</div>
+			<button class="block-button" onclick="toggleBlock(${index})">${blockButtonLabel}</button>
+		`;
+		userList.appendChild(li);
+	});
 }
+
+function filterAndDisplayUsers(query) {
+	var filteredUsers = users.filter(function(user) {
+		return user.username.toLowerCase().includes(query.toLowerCase());
+	});
+	displayUsers(filteredUsers); // Affiche uniquement les utilisateurs filtrés
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+	displayUsers(users); // Affiche tous les utilisateurs au chargement de la page
+
+	var searchBox = document.querySelector('.search-box');
+	var goButton = document.querySelector('.search-area button');
+
+	// Écouter les entrées dans le champ de recherche
+	searchBox.addEventListener('input', function() {
+		filterAndDisplayUsers(searchBox.value);
+	});
+
+	// Écouter les clics sur le bouton Go!
+	goButton.addEventListener('click', function() {
+		filterAndDisplayUsers(searchBox.value);
+	});
+});

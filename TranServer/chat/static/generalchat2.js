@@ -58,33 +58,66 @@ document.getElementById('searchInput').addEventListener('input', searchUsers);
 
 document.querySelector('.search-container button').addEventListener('click', searchUsers);
 
-// Ecouteur d'événements pour les boutons "Invite"
 function handleInviteButtonClick(event) {
-	const userItem = event.target.closest('.user-item');
-	const clonedUserItem = userItem.cloneNode(true);
-	const userName = userItem.querySelector('.user-name').textContent; // Get the username
-	const isInvited = event.target.textContent === 'Invite';
+    const userItem = event.target.closest('.user-item');
+    const userName = userItem.querySelector('.user-name').textContent;
+    const isInvited = event.target.textContent === 'Invite';
 
-	// Update the button text and color
-	event.target.textContent = isInvited ? '✖' : 'Invite';
-	event.target.style.backgroundColor = isInvited ? 'red' : '#4CAF50';
+    // Update the button text and color
+    event.target.textContent = isInvited ? '✖' : 'Invite';
+    event.target.style.backgroundColor = isInvited ? 'red' : '#4CAF50';
 
-	const targetContainerId = isInvited ? 'invitedUsers' : 'user-list';
-	const targetContainer = document.getElementById(targetContainerId);
+    if (isInvited) {
+        // Inviting the user: Remove any existing instance from user list and add to invited list
+        removeFromUserList(userName);
+        const clone = userItem.cloneNode(true);
+        clone.querySelector('.invite-button').textContent = '✖';
+        clone.querySelector('.invite-button').style.backgroundColor = 'red';
+        clone.querySelector('.invite-button').addEventListener('click', handleInviteButtonClick);
+        document.getElementById('invitedUsers').appendChild(clone); // Add to the invited list
+        userItem.remove(); // Remove the user item from search results or user list
+    } else {
+        // Uninviting the user: Remove from invited list and add back to user list
+        removeFromInvitedList(userName); // This will handle removal from the right pane
+        const clone = userItem.cloneNode(true);
+        clone.querySelector('.invite-button').textContent = 'Invite';
+        clone.querySelector('.invite-button').style.backgroundColor = '#4CAF50';
+        clone.querySelector('.invite-button').addEventListener('click', handleInviteButtonClick);
+        document.getElementById('user-list').appendChild(clone); // Add back to the user list
+    }
 
-	if (isInvited && targetContainerId === 'invitedUsers') {
-		// If inviting the user, search for and remove the original from the user list
-		const originalUserItems = document.querySelectorAll('#user-list .user-item');
-		originalUserItems.forEach(function (item) {
-			const itemUserName = item.querySelector('.user-name').textContent;
-			if (itemUserName === userName) {
-				item.remove(); // Remove the original item from the user list
-			}
-		});
-	}
-
-	targetContainer.appendChild(userItem); // Add the invited user to the target container
+    document.getElementById('searchInput').value = ''; // Clear the search input
+    updateScrollbars(); // Update scrollbars after the operation
 }
+
+// Remove user from the original user list
+function removeFromUserList(userName) {
+    document.querySelectorAll('#user-list .user-item').forEach(item => {
+        if (item.querySelector('.user-name').textContent === userName) {
+            item.remove();
+        }
+    });
+}
+
+// Remove user from the invited list
+function removeFromInvitedList(userName) {
+    document.querySelectorAll('#invitedUsers .user-item').forEach(item => {
+        if (item.querySelector('.user-name').textContent === userName) {
+            item.remove();
+        }
+    });
+}
+
+// Attach the event listener directly to each invite-button
+document.querySelectorAll('.invite-button').forEach(button => {
+    button.addEventListener('click', handleInviteButtonClick);
+});
+
+
+// Attach the event listener directly to each invite-button
+document.querySelectorAll('.invite-button').forEach(button => {
+    button.addEventListener('click', handleInviteButtonClick);
+});
 
 // Attach the event listener directly to each invite-button
 document.querySelectorAll('.invite-button').forEach(button => {
