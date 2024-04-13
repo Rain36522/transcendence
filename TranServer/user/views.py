@@ -1,23 +1,24 @@
-from django.contrib.auth import authenticate, login, get_user_model, logout
-from django.http import HttpResponse
-from django.urls import reverse_lazy
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
+from rest_framework.permissions import IsAuthenticated
 
+from django.http import HttpResponse, JsonResponse
+from django.urls import reverse_lazy
+from django.conf import settings
 from django.views import generic
-from .forms import CustomUserCreationForm, InvitationForm, AcceptInviteForm
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+
 from .models import User
-from django.contrib import messages
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from .serializers import UserSerializer
+from .serializers import UserSerializer, UserSerializer_Username
+from .forms import CustomUserCreationForm
+
 import mimetypes
 import os
-from django.conf import settings
 
 
 @api_view(["POST"])
@@ -28,47 +29,118 @@ def api_signup(request):
         user = serializer.save()
         login(request, user)
         return Response({"message": "User created successfully"}, status=201)
-    return Response(serializer.errors, status=400)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@login_required
-def invite_user(request):
-    current_user = request.user
+@api_view(["GET"])
+@renderer_classes([JSONRenderer])
+def api_pending_invite(request):
+    try:
+        invites = request.user.sent_invites.all()
+        return Response(
+            UserSerializer_Username(invites, many=True).data,
+            status=status.HTTP_200_OK,
+        )
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    invite_form = InvitationForm(current_user)
-    accept_form = AcceptInviteForm(current_user)
 
-    if request.method == "POST":
-        action = request.POST.get("action")
+class InviteListView(APIView):
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer]
 
-        if action == "invite":
-            invite_form = InvitationForm(current_user, request.POST)
-            if invite_form.is_valid():
-                username = invite_form.cleaned_data["username"]
-                invited_user = User.objects.get(username=username)
-                if invited_user in current_user.invites.all():
-                    messages.warning(request, f"User {username} is already invited.")
-                else:
-                    current_user.invites.add(invited_user)
-                    messages.success(request, f"Invitation sent to {username}.")
+    def get(self, request, username=None):
+        try:
+            invites = request.user.invites.all()
+            return Response(
+                UserSerializer_Username(invites, many=True).data,
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-        elif action == "accept":
-            accept_form = AcceptInviteForm(current_user, request.POST)
-            if accept_form.is_valid():
-                accept_from_user = accept_form.cleaned_data["accept_from"]
-                accept_from_user.invites.remove(current_user)
-                current_user.invites.remove(accept_from_user)
-                current_user.friends.add(accept_from_user)
-                messages.success(
-                    request,
-                    f"You have accepted the invite from {accept_from_user.username}.",
+    def post(self, request, username=None):
+        if not username:
+            return Response(
+                "Please provide a username", status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            user = User.objects.get(username=username)
+            if user.invites.filter(username=username):
+                return Response(
+                    "Invite already exists", status=status.HTTP_400_BAD_REQUEST
                 )
+            user.invites.add(user)
+            return Response("Added invite", status=status.HTTP_200_OK)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    return render(
-        request,
-        "invite_user.html",
-        {"invite_form": invite_form, "accept_form": accept_form},
-    )
+    def delete(self, request, username=None):
+        if not username:
+            return Response(
+                "Please provide a username", status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            user = User.objects.get(username=username)
+            if user.invites.filter(username=request.username):
+                user.invites.remove(user)
+                return Response("Removed user", status=status.HTTP_200_OK)
+            return Response("Invite does not exist", status=status.HTTP_400_BAD_REQUEST)
+        except User.DoesNotExist:
+            return Response(
+                "User with provided username does not exist",
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class BlockedListView(APIView):
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer]
+
+    def get(self, request, username=None):
+        try:
+            blocked = request.user.blocked.all()
+            return Response(
+                UserSerializer_Username(blocked, many=True).data,
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    def post(self, request, username=None):
+        if not username:
+            return Response(
+                "Please provide a username", status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            user = User.objects.get(username=username)
+            if user.blocked.filter(username=username):
+                return Response("Already blocked", status=status.HTTP_400_BAD_REQUEST)
+            user.blocked.add(user)
+            return Response("Added blocked", status=status.HTTP_200_OK)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, username=None):
+        if not username:
+            return Response(
+                "Please provide a username", status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            user = User.objects.get(username=username)
+            if user.blocked.filter(username=request.username):
+                user.blocked.remove(user)
+                return Response("Unblocked user", status=status.HTTP_200_OK)
+            return Response("User is not blocked", status=status.HTTP_400_BAD_REQUEST)
+        except User.DoesNotExist:
+            return Response(
+                "User with provided username does not exist",
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["POST"])
