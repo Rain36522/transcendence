@@ -19,7 +19,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=150, blank=True)
     date_joined = models.DateTimeField(default=timezone.now)
-    is_active = models.BooleanField(default=True)
+    last_active = models.DateTimeField(default=timezone.now)
     wins = models.PositiveIntegerField(default=0, verbose_name="Number of wins")
     total_games = models.PositiveIntegerField(default=0, verbose_name="Total number of games")
     friends = models.ManyToManyField('self', symmetrical=True)
