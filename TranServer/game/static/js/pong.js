@@ -48,7 +48,7 @@ function drawGame() {
 	
 
 	CanvasContext.fillStyle = gameSettings.ballColor;
-	CanvasContext.fillRect(gameSettings.gameWidth * (gameSettings.ballPosition.x + 0.5 - gameSettings.ballSize / 4), 
+	CanvasContext.fillRect(gameSettings.gameWidth * (gameSettings.ballPosition.x + 0.5 - gameSettings.ballSize / 2), 
 	gameSettings.gameHeight * (gameSettings.ballPosition.y + 0.5 - gameSettings.ballSize / 2),
 		gameSettings.ballSize * gameSettings.gameHeight,
 		gameSettings.ballSize * gameSettings.gameHeight);

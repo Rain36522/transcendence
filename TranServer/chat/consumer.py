@@ -1,3 +1,4 @@
+from sys import stderr
 from .models import Chat, Message
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
@@ -9,15 +10,28 @@ from django.core.files.base import ContentFile
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        if not self.scope["user"].is_authenticated:
-            await self.close()
-        self.chat_id = self.scope["url_route"]["kwargs"]["chat_id"]
-        self.room_group_name = f"chat_{self.chat_id}"
-        await self.channel_layer.group_add(self.room_group_name, self.channel_name)
-        await self.accept()
+        try:
+            if not self.scope["user"].is_authenticated:
+                await self.close()
+            self.chat_id = self.scope["url_route"]["kwargs"]["chat_id"]
+            await sync_to_async(self.get_user)()
+            self.room_group_name = f"chat_{self.chat_id}"
+            await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+            await self.accept()
+        except:
+            await self.close(1)
 
-    async def disconnect(self, close_code):
-        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+    def get_user(self):
+        Chat.objects.get(id=self.chat_id).participants.get(
+            username=self.scope["user"].username
+        )
+
+    async def disconnect(self, close_code=0):
+        if close_code == 0:
+            await self.channel_layer.group_discard(
+                self.room_group_name, self.channel_name
+            )
+        await super().disconnect(0)
 
     async def receive(self, text_data=None, bytes_data=None):
         if not text_data:
