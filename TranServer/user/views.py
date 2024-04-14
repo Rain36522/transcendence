@@ -12,6 +12,8 @@ from django.views import generic
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
+
 
 from .models import User
 from .serializers import UserSerializer, UserSerializer_Username
@@ -34,6 +36,7 @@ def api_signup(request):
 
 @api_view(["GET"])
 @renderer_classes([JSONRenderer])
+@login_required
 def api_pending_invite(request):
     try:
         invites = request.user.sent_invites.all()
@@ -156,7 +159,7 @@ def user_login_api(request):
         else:
             return JsonResponse({"error": "Invalid username or password"}, status=400)
     except:
-        return JsonResponse({"error": "Invalid username or password"}, status=400)
+        return JsonResponse({"error": "Invalid request"}, status=400)
 
 
 @api_view(["GET"])
@@ -164,14 +167,21 @@ def user_login_api(request):
 @login_required
 def user_profile_pic_api(request, username):
     user = get_object_or_404(User, username=username)
-    if user.profile_picture:
-        path = user.profile_picture.path
-        content_type, _ = mimetypes.guess_type(path)
-        with open(path, "rb") as f:
-            return HttpResponse(f.read(), content_type=content_type)
-    default_image_path = os.path.join(settings.MEDIA_ROOT, "default_profile.png")
-    with open(default_image_path, "rb") as f:
-        return HttpResponse(f.read(), content_type="image/png")
+    try:
+        if user.profile_picture:
+            path = user.profile_picture.path
+            content_type, _ = mimetypes.guess_type(path)
+            with open(path, "rb") as f:
+                return HttpResponse(f.read(), content_type=content_type)
+        default_image_path = os.path.join(settings.MEDIA_ROOT, "default_profile.png")
+        with open(default_image_path, "rb") as f:
+            return HttpResponse(f.read(), content_type="image/png")
+    except Exception as e:
+        return JsonResponse({"error": e}, status=500)
+
+
+ALLOWED_FILE_TYPES = ["image/jpeg", "image/png"]
+MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 
 
 @api_view(["POST"])
@@ -181,13 +191,45 @@ def upload_profile_pic_api(request):
     try:
         if "profile_picture" in request.FILES:
             profile_picture = request.FILES["profile_picture"]
+
+            # File type validation
+            if profile_picture.content_type not in ALLOWED_FILE_TYPES:
+                return JsonResponse({"error": "Invalid file type"}, status=400)
+
+            # File size limit
+            if profile_picture.size > MAX_FILE_SIZE:
+                return JsonResponse(
+                    {"error": "File size exceeds the limit"}, status=400
+                )
+
             user = request.user
+
+            # Check if the user already has a profile picture
+            if user.profile_picture:
+                try:
+                    # Delete the old profile picture file from the storage
+                    if os.path.isfile(user.profile_picture.path):
+                        os.remove(user.profile_picture.path)
+                except:
+                    pass
+
+            # Save the new profile picture
             user.profile_picture = profile_picture
             user.save()
-            return HttpResponse({"message": "Upload successful"}, status=201)
-        return HttpResponse({"message": "No file found"}, status=201)
+            return HttpResponse(
+                {"message": "Upload successful"}, status=status.HTTP_201_CREATED
+            )
+        return HttpResponse(
+            {"message": "No file found"}, status=status.HTTP_400_BAD_REQUEST
+        )
+    except ValidationError:
+        return JsonResponse(
+            {"error": "Invalid file"}, status=status.HTTP_400_BAD_REQUEST
+        )
     except:
-        return JsonResponse({"error": "Invalid request"}, status=403)
+        return JsonResponse(
+            {"error": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 class SignUpView(generic.CreateView):
