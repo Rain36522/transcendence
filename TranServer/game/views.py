@@ -19,7 +19,6 @@ from .consumer import launchGame
 # @login_required
 class newGame(APIView):
     def get(self, request):
-        print("GET", file=sys.stderr)
         return render(request, 'html/gameSettings.html')
     
     def post(self, request):

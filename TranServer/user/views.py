@@ -16,6 +16,7 @@ from django.core.exceptions import ValidationError
 
 
 from .models import User
+from chat.models import Chat
 from .serializers import UserSerializer, UserSerializer_Username
 from .forms import CustomUserCreationForm
 
@@ -29,6 +30,10 @@ def api_signup(request):
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
+        chat = Chat.objects.create()
+        chat.participants.add(user)
+        chat.is_personal = True
+        chat.save()
         login(request, user)
         return Response({"message": "User created successfully"}, status=201)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -46,6 +51,41 @@ def api_pending_invite(request):
         )
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class FriendListView(APIView):
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer]
+
+    def get(self, request, username=None):
+        try:
+            friends = request.user.friends.all()
+            return Response(
+                UserSerializer_Username(friends, many=True).data,
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def delete(self, request, username=None):
+        if not username:
+            return Response(
+                "Please provide a username", status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            user = User.objects.get(username=username)
+            if user.friends.filter(username=request.username):
+                user.friends.remove(user)
+                return Response("Removed user", status=status.HTTP_200_OK)
+            return Response("User is not friend", status=status.HTTP_400_BAD_REQUEST)
+        except User.DoesNotExist:
+            return Response(
+                "User with provided username does not exist",
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class InviteListView(APIView):
@@ -183,7 +223,6 @@ def user_profile_pic_api(request, username):
 ALLOWED_FILE_TYPES = ["image/jpeg", "image/png"]
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 
-
 @api_view(["POST"])
 @renderer_classes([JSONRenderer])
 @login_required
@@ -232,7 +271,6 @@ def upload_profile_pic_api(request):
         )
 
 
-class SignUpView(generic.CreateView):
     form_class = CustomUserCreationForm
     success_url = reverse_lazy("login")
     template_name = "html/register.html"
