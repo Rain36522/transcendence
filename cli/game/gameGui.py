@@ -4,6 +4,7 @@ chemin_parent = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(chemin_parent)
 from game.DataTransmission import DataTransmission
 from color import *
+from init.tools import doexit
 from ascii import Ascii
 from blessed import Terminal
 import asyncio
@@ -45,8 +46,11 @@ class GameGui2p:
         while True:
             await asyncio.sleep(0.03)
             msg = self.wsCli.getMessage()
-            if msg:
-                if msg["state"] == "game_over":
+            if str(msg).isdigit():
+                print("GAME GUI EXIT")
+                return msg
+            if msg and msg.get("state"):
+                if str(msg["state"]) == "game_over":
                     return msg
                 elif not self.userpose and self.settings["user"] in msg["users"]:
                     if msg["users"][0] == self.settings["user"]:

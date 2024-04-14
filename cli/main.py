@@ -13,7 +13,7 @@ import asyncio
 
 
 def getUrl(Django):
-    url = inputText("TRANSCENDANCE", "Write the server url.", defaultValue="https://127.0.0.1")
+    url = inputText("TRANSCENDANCE", "Write the server url.", defaultValue="https://10.11.13.4")
     if url == None:
         doexit(0, "User exit")
     while not checkUrlInput(url, Django):
@@ -67,7 +67,10 @@ if __name__ == "__main__":
             dataTransmission = DataTransmission(gameSettings, djangocom.url)
             gameGui = GameGui2p(gameSettings, dataTransmission)
             results = asyncio.run(runGame(dataTransmission, gameGui))
-            if asWin(results[2], gameSettings["user"]):
+            if str(results[0]).isdigit():
+                # os.system("clear")
+                Information("ERROR", "Is the game ready to play?", style=STYLERROR)
+            elif asWin(results[2], gameSettings["user"]):
                     Information("YOU WIN", "You win this game.", style=STYLSUCCESS)
             else:
                 Information("YOU LOOSE", "You loose this game.",style=STYLERROR)

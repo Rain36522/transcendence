@@ -10,6 +10,7 @@ class DataTransmission:
     def __init__(self, gameSettings, url):
         self.gameSettings = gameSettings
         self.message = None
+        self.errormsg = 0
         self.wsCli = None
         self.url = "wss" + url[5:] + "/wsGame/" + str(gameSettings["gameid"]) + "/" + str(gameSettings["user"]) + "/"
         self.w = False
@@ -17,6 +18,7 @@ class DataTransmission:
         self.u = False
         self.d = False
         self.isConnected = False
+        self.runKeyBinding = False
         self.is2player = gameSettings["isSolo"] and gameSettings["nbPlayers"] == 2
         if gameSettings["isSolo"]:
             self.playerpos = 1
@@ -34,10 +36,18 @@ class DataTransmission:
             try:
                 self.wsCli = await websockets.connect(self.url, ssl=ssl_context)
                 self.isConnected = True
-                KeyQueue = self.transmitKeys()
-                while True:
+                while not self.runKeyBinding and not self.errormsg:
+                    await asyncio.sleep(0.1)
+                if not self.errormsg:
+                    KeyQueue = self.transmitKeys()
+                while not self.errormsg and self.runKeyBinding:
                     key = await KeyQueue.get()
+                    if key == "EXIT":
+                        print("WS SERV EXIT")
+                        return self.errormsg
                     await self.wsCli.send(key)
+                print("WS SERV EXIT")
+                return self.errormsg
             except Exception as e:
                 print("ws Server connection failesd,", self.url)
                 self.wsCli = None
@@ -49,6 +59,11 @@ class DataTransmission:
         while True:
             # try:
             async for self.message in self.wsCli:
+                if str(self.message).isdigit():
+                    self.errormsg = self.message
+                    print("READ MSG EXIT")
+                    return self.errormsg
+                self.runKeyBinding = True
                 if not self.playerpos:
                     self.getUserPos()
             # except:
@@ -76,6 +91,9 @@ class DataTransmission:
         queue = asyncio.Queue()
         loop = asyncio.get_event_loop()
         def on_press(key):
+            if self.errormsg:
+                loop.call_soon_threadsafe(queue.put_nowait, "EXIT")
+                return
             if len(str(key)) == 3:
                 print("\b ", end="")
             elif len(str(key)) == 6 or len(str(key)) == 8:
@@ -94,6 +112,9 @@ class DataTransmission:
                 loop.call_soon_threadsafe(queue.put_nowait, "2d-on")
 
         def on_release(key):
+            if self.errormsg:
+                loop.call_soon_threadsafe(queue.put_nowait, "EXIT")
+                return
             if len(str(key)) == 3 and key.char == "w" and self.w:
                 self.w = False
                 loop.call_soon_threadsafe(queue.put_nowait, str(self.playerpos) + "u-off")

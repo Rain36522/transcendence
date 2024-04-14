@@ -85,6 +85,8 @@ def checkReturnValue(icode):
 
 def doexit(errorCode, errorMsg=""):
     system("clear")
-    if errorMsg:
+    if errorMsg and errorCode:
         print(RED, errorMsg, RESET)
+    elif errorMsg:
+        print(GREEN, errorMsg, RESET)
     exit(errorCode)
