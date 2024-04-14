@@ -64,6 +64,16 @@ def inputText(title, text, password=False, style=STYLE, defaultValue=""):
         default=defaultValue,
         style=style).run()
 
+def MultiChoiceInput(title, text, optionValue, style=STYLE):
+    return radiolist_dialog(
+        title=title,
+        text=text,
+        values=optionValue,
+        style=style
+    ).run()
+
+
+
 def checkReturnValue(icode):
     if icode >= 500:
         Information("SERVEUR ERROR", "The connection with the serveur fail.")

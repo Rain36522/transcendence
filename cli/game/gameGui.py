@@ -33,7 +33,7 @@ class GameGui2p:
         self.height -= 2
         self.width -= 2
         if settings["isSolo"]:
-            self.userpos = 1
+            self.userpose = 1
         else:
             self.userpose = 0
         self.initPadelL()
@@ -52,8 +52,8 @@ class GameGui2p:
                     if msg["users"][0] == self.settings["user"]:
                         self.userpos = 1
                     else:
-                        self.userpos = 2
-                if self.userpos == 2:
+                        self.userpose = 2
+                if self.userpose == 2:
                     msg = self.updateMsg(msg, reverse=-1)
                     self.updatePadelL(msg["p2"])
                     self.updatePadelR(msg["p1"])

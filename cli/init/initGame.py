@@ -32,6 +32,7 @@ class NewGameSettings:
                         if self.gameSettings["nbPlayers"] > 2:
                             Information("ERROR GAME", "Max game 2 players", style=STYLERROR)
                         else:
+                            Information("GAME", "New game created\nLink : " + djangocom.url + "/game/" + str(self.gameSettings["gameid"]) + "/\nGame id : " + str(self.gameSettings["gameid"]), style=STYLSUCCESS)
                             break
             else:
                 doexit(0, "User exit")
@@ -62,21 +63,23 @@ class NewGameSettings:
         dict = {}
         dict["ballwidth"] = self.getIntSettingRange("NEW GAME", "Ball width (5 - 30) :", 5, 30, 10)
         if dict["ballwidth"] == None:
-            return False
+            return False, None
         dict["planksize"] = self.getIntSettingRange("NEW GAME", "Plank size (10 - 40) :", 10, 40, 20)
         if dict["planksize"] == None:
-            return False
+            return False, None
         dict["Speed"] = self.getFloatSettingRange("NEW GAME", "Speed (0.5 - 3) :", 0.5, 3, 1)
         if dict["Speed"] == None:
-            return False
+            return False, None
         dict["acceleration"] = self.getIntSettingRange("NEW GAME", "Acceleration (0 - 10) :", 0, 10, 0)
         if dict["acceleration"] == None:
-            return False
+            return False, None
         dict["winpoint"] = self.getIntSettingRange("NEW GAME", "Win point (3 - 15) :", 3, 15, 5)
         if dict["winpoint"] == None:
             return False, None
+        dict["gamemode"] = MultiChoiceInput("NEW GAME", "Witch mode do you want?", [(0, "offline"), (1, "2 Players"), (3, "IA")])
+        if dict["gamemode"] == None:
+            return False, None
         return True, dict
-        # dict["gamemode"] = self.getGameMode()
 
 
     def getIntSettingRange(self, title, text, min, max, default):
