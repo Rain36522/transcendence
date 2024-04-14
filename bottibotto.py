@@ -11,6 +11,9 @@ class Vec2:
 		mag = math.sqrt(self.x ** 2 + self.y ** 2)
 		self.x /= mag
 		self.y /= mag
+		return self
+#end of Vec2
+
 
 #contains every information related to the ball
 class ball:
@@ -20,6 +23,8 @@ class ball:
 		self.acceleration = acceleration
 		self.pos = Vec2(0, 0)
 		self.dir = Vec2(0, 0)
+#end of ball
+
 
 #contains every information related do the paddle
 class paddle:
@@ -33,20 +38,23 @@ class paddle:
 	def collide(self, ball):
 		angle = 180 + (80 * (self.next_pos.y - ball.pos.y) / self.length)
 		return Vec2(math.cos(angle), math.sin(angle))
+#end of paddle
 
 
 #returns distance between a and b
 def find_distance(a, b):
 	return math.sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2)
+#end of find_distance
 	
 #returns the time required to travel between a and b
 def time_to_travel(a, b, speed):
 	return find_distance(a, b) / speed
+#end of time_to_travel
 
 
 #returns the first collision position with a border in the box{x{-0.5, 0.5}, y{-0.5, 0.5}}
-def find_collision_pos(pos, dir, diameter):
-	radius = diameter / 2
+def find_collision_pos(pos, dir, ball_diameter):
+	radius = ball_diameter / 2
 	
 	slope = dir.y / dir.x if dir.x != 0 else float('inf')
 	origin = pos.y - (slope * pos.x if dir.x != 0 else 0)
@@ -62,7 +70,7 @@ def find_collision_pos(pos, dir, diameter):
 		return collide_x
 	else:
 		return collide_x if dist_x < dist_y else collide_y
-
+#end of find_collision_pos
 
 
 #this functions returns time to next hit (cumulates every hit until y=0.5 or y=-0.5) and the x position of the next hit
@@ -87,9 +95,7 @@ def calculate_next_y_extremum_hit(ball, paddle):
 	else:
 		cumulated_time = time_to_hit
 	return cumulated_time, ball.pos.y
-
-
-
+#end of calculate_next_y_extremum_hit
 
 
 
@@ -107,11 +113,10 @@ def move_paddle_to_pos(paddle.pos, pos, time):
 			on attend
 		send le message "2d-off"
 	et voila le travail bebou
+#end of move_paddle_to_pos
 
 
-
-
-
+#bot routine
 def bottibotto_vit_sa_vie():
 	ball la_balle
 	
@@ -130,5 +135,6 @@ def bottibotto_vit_sa_vie():
 			wait en async time
 		else:
 			wait en async 1 seconde
+#end of bottibotto_vit_sa_vie
 	
-	#et voila on l'a bien baisé le noob d'adversaire
+#et voila on l'a bien baisé le noob d'adversaire
