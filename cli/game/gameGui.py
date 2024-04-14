@@ -47,7 +47,6 @@ class GameGui2p:
             await asyncio.sleep(0.03)
             msg = self.wsCli.getMessage()
             if str(msg).isdigit():
-                print("GAME GUI EXIT")
                 return msg
             if msg and msg.get("state"):
                 if str(msg["state"]) == "game_over":

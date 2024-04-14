@@ -38,23 +38,17 @@ class DataTransmission:
                 self.isConnected = True
                 while not self.runKeyBinding and not self.errormsg:
                     await asyncio.sleep(0.1)
-                # if not self.errormsg:
-                #     KeyQueue = self.transmitKeys()
+                if not self.errormsg:
+                    KeyQueue = self.transmitKeys()
                 i = 0
                 while not self.errormsg and self.runKeyBinding:
-                    i += 1
-                    if i == 1:
-                        await self.wsCli.send("1u-on")
-                    if i == 2:
-                        await self.wsCli.send("1u-off")
-                    await asyncio.sleep(0.1)
-                    # key = await KeyQueue.get()
-                    # if key == "EXIT":
-                    #     return self.errormsg
-                    # await self.wsCli.send(key)
+                    key = await KeyQueue.get()
+                    if key == "EXIT":
+                        return self.errormsg
+                    await self.wsCli.send(key)
                 return self.errormsg
             except Exception as e:
-                print("ws Server connection failesd,", self.url)
+                print("ws Server connection failed,", self.url)
                 self.wsCli = None
                 self.isConnected = False
 
