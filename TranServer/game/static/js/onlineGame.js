@@ -111,10 +111,6 @@ document.addEventListener('DOMContentLoaded', function () {
 	
 	document.querySelectorAll('.invite-button').forEach(button => {
 		button.addEventListener('click', handleInviteButtonClick);
-	});	
-	
-	document.querySelectorAll('.invite-button').forEach(button => {
-		button.addEventListener('click', handleInviteButtonClick);
 	});
 
 	// Gestion du clic sur le fond flou pour fermer la popup

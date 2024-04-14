@@ -98,15 +98,6 @@ function removeFromUserList(userName) {
     });
 }
 
-// Remove user from the invited list
-function removeFromInvitedList(userName) {
-    document.querySelectorAll('#invitedUsers .user-item').forEach(item => {
-        if (item.querySelector('.user-name').textContent === userName) {
-            item.remove();
-        }
-    });
-}
-
 // Attach the event listener directly to each invite-button
 document.querySelectorAll('.invite-button').forEach(button => {
     button.addEventListener('click', handleInviteButtonClick);
