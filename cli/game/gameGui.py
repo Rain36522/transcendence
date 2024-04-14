@@ -210,8 +210,8 @@ class GameGui2p:
     """
 
     def calculBall(self, balx, baly):
-        balx = balx * self.width
-        baly = baly * self.height
+        balx = balx * self.width * 2
+        baly = baly * (self.height - 2) + 1
         return round(balx - self.ballsize), round(baly - self.ballsize / 2)
 
     

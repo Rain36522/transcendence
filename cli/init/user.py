@@ -47,10 +47,10 @@ class User:
                 return None, None
             pwd = inputText("LOGIN", "Wrong login. password : ", True, STYLERROR)
         else:
-            user = inputText("LOGIN", "Please type your username: ")
+            user = inputText("LOGIN", "Please type your username: ", defaultValue="a")
             if user == None:
                 return None, None
-            pwd = inputText("LOGIN", "Please type your password: ", True)
+            pwd = inputText("LOGIN", "Please type your password: ", defaultValue="a")
         return user, pwd
 
     def doRegistration(self):

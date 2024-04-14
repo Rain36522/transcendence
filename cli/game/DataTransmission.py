@@ -38,15 +38,20 @@ class DataTransmission:
                 self.isConnected = True
                 while not self.runKeyBinding and not self.errormsg:
                     await asyncio.sleep(0.1)
-                if not self.errormsg:
-                    KeyQueue = self.transmitKeys()
+                # if not self.errormsg:
+                #     KeyQueue = self.transmitKeys()
+                i = 0
                 while not self.errormsg and self.runKeyBinding:
-                    key = await KeyQueue.get()
-                    if key == "EXIT":
-                        print("WS SERV EXIT")
-                        return self.errormsg
-                    await self.wsCli.send(key)
-                print("WS SERV EXIT")
+                    i += 1
+                    if i == 1:
+                        await self.wsCli.send("1u-on")
+                    if i == 2:
+                        await self.wsCli.send("1u-off")
+                    await asyncio.sleep(0.1)
+                    # key = await KeyQueue.get()
+                    # if key == "EXIT":
+                    #     return self.errormsg
+                    # await self.wsCli.send(key)
                 return self.errormsg
             except Exception as e:
                 print("ws Server connection failesd,", self.url)
@@ -61,7 +66,6 @@ class DataTransmission:
             async for self.message in self.wsCli:
                 if str(self.message).isdigit():
                     self.errormsg = self.message
-                    print("READ MSG EXIT")
                     return self.errormsg
                 self.runKeyBinding = True
                 if not self.playerpos:
