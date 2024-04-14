@@ -1,94 +1,104 @@
 var users = [
-	{ username: "Lolita564", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzO65Lpx5OR_-M92O1otaGdIt6nsTKfii_Bg&usqp=CAU", online: true, blocked: false },
-	{ username: "Famacito", imageUrl: "https://risibank.fr/cache/medias/0/13/1326/132676/full.png", online: false, blocked: true },
-	{ username: "Mania_xLeaderz", imageUrl: "https://cdn.gonzague.me/wp-content/uploads/2012/06/146646811-1200x900.gif", online: true, blocked: false }
+    { username: "Lolita564", imageUrl: "https://example.com/img1.jpg", status: "friend" },
+    { username: "Famacito", imageUrl: "https://example.com/img2.jpg", status: "pending" },
+    { username: "Mania_xLeaderz", imageUrl: "https://example.com/img3.jpg", status: "blocked" },
+    { username: "Bob", imageUrl: "https://example.com/img3.jpg", status: "blocked" },
+    { username: "Dorian", imageUrl: "https://example.com/img3.jpg", status: "pending" },
+    { username: "Zefou", imageUrl: "https://example.com/img3.jpg", status: "blocked" },
+    { username: "Nohan", imageUrl: "https://example.com/img3.jpg", status: "friend" },
+    { username: "Eve", imageUrl: "https://example.com/img4.jpg", status: "" } // Un utilisateur sans statut défini
 ];
 
-function toggleBlock(index) {
-users[index].blocked = !users[index].blocked;
-updateUserStatusOnServer(users[index]); // Appel de la fonction pour mettre à jour sur le serveur
-displayUsers(users); // Mise à jour de l'affichage
-}
-
-function updateUserStatusOnServer(user) {
-fetch('/api/update-user-status', {
-	method: 'POST',
-	headers: {
-		'Content-Type': 'application/json',
-		// Assurez-vous d'inclure des headers pour l'authentification si nécessaire
-	},
-	body: JSON.stringify({
-		username: user.username,
-		blocked: user.blocked
-	})
-})
-.then(response => response.json())
-.then(data => {
-	console.log('Success:', data);
-	// Vous pouvez également gérer la mise à jour de l'interface utilisateur ici si nécessaire
-})
-.catch((error) => {
-	console.error('Error:', error);
-});
-}
-
-function sendAllUserStatusesToServer() {
-fetch('/api/bulk-update-user-status', {
-	method: 'POST',
-	headers: {
-		'Content-Type': 'application/json',
-		// Assurez-vous d'inclure des headers pour l'authentification si nécessaire
-	},
-	body: JSON.stringify(users)  // Envoie de l'ensemble des utilisateurs avec leur statut bloqué/débloqué
-})
-.then(response => response.json())
-.then(data => {
-	console.log('Bulk update success:', data);
-	// Ici vous pouvez afficher un message de confirmation ou autre feedback visuel
-})
-.catch((error) => {
-	console.error('Bulk update error:', error);
-});
-}
-
-function displayUsers(displayedUsers) {
-	var userList = document.querySelector('.user-list');
-	userList.innerHTML = ''; // Effacer la liste existante
-
-	displayedUsers.forEach(function(user, index) {
-		var li = document.createElement('li');
-		var blockButtonLabel = user.blocked ? 'Unblock' : 'Block';
-		li.innerHTML = `
-			<div class="user-info">
-				<div class="user-photo" style="background-image: url('${user.imageUrl}');"></div>
-				<span class="username">${user.username}</span>
-			</div>
-			<button class="block-button" onclick="toggleBlock(${index})">${blockButtonLabel}</button>
-		`;
-		userList.appendChild(li);
-	});
-}
-
-function filterAndDisplayUsers(query) {
-	var filteredUsers = users.filter(function(user) {
-		return user.username.toLowerCase().includes(query.toLowerCase());
-	});
-	displayUsers(filteredUsers); // Affiche uniquement les utilisateurs filtrés
-}
-
 document.addEventListener('DOMContentLoaded', function() {
-	displayUsers(users); // Affiche tous les utilisateurs au chargement de la page
-
-	var searchBox = document.querySelector('.search-box');
-	var goButton = document.querySelector('.search-area button');
-
-	// Écouter les entrées dans le champ de recherche
-	searchBox.addEventListener('input', function() {
-		filterAndDisplayUsers(searchBox.value);
-	});
-
-	// Écouter les clics sur le bouton Go!
-	goButton.addEventListener('click', function() {
-		filterAndDisplayUsers(searchBox.value);
-	});
+    displayUsers(users);
+    var searchBox = document.querySelector('.search-box');
+    searchBox.addEventListener('input', function() {
+        var searchText = searchBox.value.toLowerCase();
+        var filteredUsers = users.filter(user => user.username.toLowerCase().includes(searchText));
+        displayUsers(filteredUsers);
+    });
 });
+
+function displayUsers(users) {
+    clearLists(); // Vide toutes les listes avant de les remplir
+
+    users.forEach(function(user) {
+        var li = createUserElement(user);
+        switch(user.status) {
+            case 'friend':
+                document.querySelector('.friends-list').appendChild(li);
+                break;
+            case 'pending':
+                document.querySelector('.pending-list').appendChild(li);
+                break;
+            case 'blocked':
+                document.querySelector('.blocked-list').appendChild(li);
+                break;
+            default:
+                document.querySelector('.users-list').appendChild(li);
+                break;
+        }
+    });
+}
+
+function clearLists() {
+    document.querySelector('.friends-list').innerHTML = '';
+    document.querySelector('.pending-list').innerHTML = '';
+    document.querySelector('.blocked-list').innerHTML = '';
+    document.querySelector('.users-list').innerHTML = '';
+}
+
+function createUserElement(user) {
+    var li = document.createElement('li');
+    li.className = "user-item";
+    li.innerHTML = `
+        <div class="user-photo" style="background-image: url('${user.imageUrl}');"></div>
+        <span class="username">${user.username}</span>
+        ${getActionButtons(user)}
+    `;
+    return li;
+}
+
+function getActionButtons(user) {
+    switch(user.status) {
+        case 'friend':
+            return `<button class="button remove-button" onclick="removeFriend('${user.username}')">Remove</button>`;
+        case 'pending':
+            return `<button class="button request-sent-button" onclick="cancelRequest('${user.username}')">Cancel Request</button>`;
+        case 'blocked':
+            return `<button class="button unblock-button" onclick="unblockUser('${user.username}')">Unblock</button>`;
+        default:
+            return `
+                <button class="button add-button user-button" onclick="addFriend('${user.username}')">Add</button>
+                <button class="button block-button user-button" onclick="blockUser('${user.username}')">Block</button>
+            `;
+    }
+}
+
+function updateUserStatus(username, newStatus) {
+    var user = users.find(u => u.username === username);
+    if (user) {
+        user.status = newStatus;
+        displayUsers(users);
+    }
+}
+
+function addFriend(username) {
+    updateUserStatus(username, 'pending');
+}
+
+function blockUser(username) {
+    updateUserStatus(username, 'blocked');
+}
+
+function cancelRequest(username) {
+    updateUserStatus(username, '');
+}
+
+function removeFriend(username) {
+    updateUserStatus(username, '');
+}
+
+function unblockUser(username) {
+    updateUserStatus(username, '');
+}

@@ -277,3 +277,14 @@ nav ul li a {
   z-index: 1;
   /* Place le dégradé au-dessus de la vidéo */
 }
+
+.header-btn {
+  color: #FFFFE0;  /* Assure la couleur du texte en blanc */
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px; /* Taille de police standard pour les boutons */
+  cursor: pointer;
+  padding: 12px 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-decoration: none; /* Supprime le soulignement */
+}

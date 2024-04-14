@@ -1,41 +1,80 @@
-  /* Styles communs */
-  body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    font-family: 'Montserrat', sans-serif;
-  }
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Poppins:wght@400;600&display=swap');
 
-  /* Image de fond avec effet noir et blanc */
-  body::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg');
-    background-size: cover;
-    background-position: center;
-    filter: grayscale(100%);
-    z-index: -1;
-  }
+/* Styles communs */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Roboto', sans-serif; /* Définit Roboto comme police par défaut */
+}
 
-  /* Header */
-  header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    z-index: 1;
-    padding: 20px;
-    box-sizing: border-box;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: grayscale(100%);
+  z-index: -1;
+}
+
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  z-index: 1;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header a:not(.logo) {
+  font-family: 'Poppins', sans-serif; /* Applique Poppins aux liens, sauf au logo */
+  font-size: 24px;
+  font-weight: 600;
+  text-decoration: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+header .logo {
+  font-family: 'Roboto', sans-serif; /* Garde Roboto pour le logo */
+  color: #FFFF99;
+  font-size: 47px;
+}
+
+header a:hover {
+  background-color: #444;
+  color: #FFF;
+  transform: translateY(-2px);
+}
+
+header .button, header a {
+  text-decoration: none;
+  color: white;
+  font-size: 24px; /* Taille de police agrandie */
+  font-weight: bold;
+  padding: 10px 20px; /* Padding ajouté pour donner de l'espace autour du texte */
+  border-radius: 4px; /* Bords arrondis pour les boutons */
+  transition: background-color 0.3s, transform 0.2s; /* Transition pour les interactions hover */
+}
+
+/* Ajouter des styles spécifiques pour le hover si nécessaire */
+header .button:hover, header a:hover {
+  background-color: #444; /* Changement de couleur au survol */
+  color: #FFF;
+  transform: translateY(-2px); /* Petit effet de levage au survol */
+}
 
   .logo {
     text-decoration: none;
@@ -161,23 +200,22 @@
     height: 100%;
   }
 
-  /* Styles du cadre */
   .frame {
     position: fixed;
-    top: 25%;
-    left: 15%;
-    width: 70%;
-    height: 60%;
+    top: 15%; 
+    left: 1%;  /* réduit pour que le cadre soit plus proche du bord gauche */
+    width: 98%; /* augmenté pour que le cadre soit plus proche du bord droit */
+    height: 80%;
     background-color: rgba(255, 255, 255, 0.95);
     border-radius: 10px;
     display: flex;
     box-shadow: 0 5px 15px rgba(0,0,0,0.5);
     z-index: 2;
     overflow: hidden;
-  }
+}
 
   .tab-container {
-    width: 25%;
+    width: 15%;
     background-color: #EEE;
     display: flex;
     flex-direction: column;
@@ -219,7 +257,6 @@
   text-decoration: none;
 }
 
-
   .content-area {
     flex-grow: 1;
     display: flex;
@@ -232,8 +269,9 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
-    padding-bottom: 20px;
-  }
+    padding: 20px 10px;
+    margin-bottom: 20px; /* Ajout d'un espace en dessous */
+  }  
 
   .search-box {
     flex-grow: 1;
@@ -277,7 +315,6 @@
     left: 0;
     width: 100%;
     height: 100%;
-    /* background-color: rgba(255, 255, 255, 0.5); */ /* Commentez ou supprimez cette ligne pour supprimer le filtre blanc */
     z-index: 1; /* Au-dessus de l'image, mais en-dessous du contenu texte */
 }
 
@@ -377,7 +414,6 @@
   header .header-btn {
     text-decoration: none; /* Supprime le soulignement */
     color: white; /* Définit la couleur du texte */
-    font-family: 'Montserrat', sans-serif; /* Assure la cohérence de la police */
     font-weight: bold; /* Assure que le texte est en gras */
     font-size: 24px; /* Taille de police uniforme */
 }
@@ -386,7 +422,114 @@
 .game-button {
     text-decoration: none;
     color: white;
-    font-family: 'Montserrat', sans-serif;
     font-size: 24px; /* Assurez-vous que la taille de la police est la même que les autres liens */
     font-weight: bold;
+}
+
+.sections-container {
+  display: flex;
+  flex-direction: row; /* Changez de 'column' à 'row' pour alignement horizontal */
+  align-items: flex-start; /* Aligner les éléments en haut */
+  justify-content: space-between; /* Distribue un espace équitable entre les sections */
+  width: 100%;
+  margin-top: 20px; /* Espace entre la barre de recherche et les sections */
+}
+
+.sections-container > section {
+  flex: 1; /* Chaque section prend une part égale de l'espace disponible */
+  margin: 0 10px; /* Marge entre les sections */
+  padding: 20px; /* Padding à l'intérieur de chaque section */
+  background-color: #f9f9f9; /* Couleur de fond pour distinguer les sections */
+  border-radius: 8px; /* Bordures arrondies pour les sections */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Ombre légère pour un effet de profondeur */
+}
+
+/* Styles de base pour tous les boutons */
+.button {
+  padding: 8px 15px; /* Taille adaptée pour les boutons plus petits */
+  font-size: 14px; /* Taille de texte réduite pour correspondre à la nouvelle taille du bouton */
+  color: white;
+  background-color: #4CAF50; /* Une couleur de fond par défaut pour tous les boutons */
+  border: none;
+  border-radius: 4px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  margin-left: 20px; /* Espace ajouté à gauche pour séparer du texte utilisateur */
+}
+
+/* Styles spécifiques pour chaque type de bouton */
+.remove-button {
+  background-color: #FF6347; /* Rouge pour une action critique */
+}
+
+.remove-button:hover, .remove-button:focus {
+  background-color: #E5533D; /* Un rouge plus sombre pour le survol */
+  transform: translateY(-2px);
+}
+
+.request-sent-button {
+  background-color: #FFD700; /* Jaune pour indiquer une attente */
+}
+
+.request-sent-button:hover, .request-sent-button:focus {
+  background-color: #E6C300; /* Jaune plus sombre pour le survol */
+}
+
+.unblock-button {
+  background-color: #32CD32; /* Vert pour une action positive */
+}
+
+.unblock-button:hover, .unblock-button:focus {
+  background-color: #2AB82A; /* Vert plus sombre pour le survol */
+  transform: translateY(-2px);
+}
+
+/* Décalage des boutons à droite des usernames */
+.user-info .button {
+  margin-left: 20px; /* Ajoute un espace entre le nom d'utilisateur et le bouton */
+}
+
+/* Styles généraux pour tous les liens du header */
+.header-btn {
+  text-decoration: none;
+  color: white;
+  font-size: 24px; /* Taille de police uniforme pour tous les boutons du header */
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 4px;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.header-btn:hover {
+  background-color: #444; /* Changement de couleur au survol */
+  color: #FFF;
+  transform: translateY(-2px); /* Petit effet de levage au survol */
+}
+
+/* Styles spécifiques pour le bouton Profile */
+.profile-btn {
+  background-color: #FFFF99; /* Fond jaune */
+  color: black !important; /* Texte en noir pour un bon contraste, forcé avec !important */
+  padding: 12px 24px; /* Ajustement du padding pour un look plus bouton */
+  border-radius: 4px; /* Bords arrondis */
+  transition: background-color 0.3s, color 0.3s; /* Transition pour couleur et fond */
+}
+
+.profile-btn:hover {
+  background-color: #E6C300; /* Jaune plus foncé pour le survol */
+  color: black !important; /* Maintient la couleur du texte en noir même au survol, forcé avec !important */
+  transform: scale(1.05); /* Légère augmentation de taille au survol */
+}
+
+.button.user-button {
+  background-color: #8A2BE2; /* Couleur violette */
+  color: white; /* Texte blanc pour le contraste */
+}
+
+.button.user-button:hover {
+  background-color: #7B26D9; /* Une teinte violette plus foncée au survol */
 }

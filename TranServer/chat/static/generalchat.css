@@ -36,6 +36,34 @@ body {
 	z-index: -1;
   }  
 
+  .header-btn, .logout-link, .profile-link, .game-button {
+    background-color: transparent; /* Enlève le fond pour tous */
+    color: white; /* Texte blanc pour tous */
+    font-family: 'Roboto', sans-serif;
+    font-size: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 12px 20px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none; /* Enlever le soulignement pour tous */
+}
+
+.header-btn:hover, .logout-link:hover, .profile-link:hover, .game-button:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Légère interaction sur le survol pour tous */
+    color: #FFFF99; /* Change la couleur du texte au survol */
+}
+
+/* Vous pouvez supprimer ou ajuster ces styles si certains ne sont plus nécessaires */
+.game-button {
+    background-color: transparent; /* Assure que le fond est transparent */
+    border: none; /* Pas de bordure */
+    color: white; /* Texte blanc */
+    text-decoration: none; /* Pas de soulignement */
+}
+
+
 .chat-container {
 	position: fixed;
 	top: 55%; /* Décalage vers le bas */
@@ -48,6 +76,19 @@ body {
 	border-radius: 20px;
 	z-index: 3;
 	box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.message-input textarea {
+    flex-grow: 1;  /* Assure que la zone de saisie prend tout l'espace horizontal disponible */
+    margin-right: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    resize: none; /* Empêche le redimensionnement */
+    width: 100%; /* S'étend sur toute la largeur disponible */
+    font-family: 'Roboto', sans-serif; /* Utilise Roboto pour la police */
+    font-size: 16px; /* Taille de la police appropriée */
+    color: #333; /* Couleur du texte, choisie pour une bonne lisibilité */
 }
 
 .user-list {

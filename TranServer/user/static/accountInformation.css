@@ -58,6 +58,19 @@ header {
     text-decoration: none;
 }
 
+.header-btn, .game-button {
+    background: none;
+    border: none;
+    color: #FFFFE0;  /* Assurez que la couleur correspond aux autres liens */
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 12px 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-decoration: none;  /* Supprime le soulignement */
+}
+
 .profile-btn {
     background-color: #FFFF99;
     border-radius: 5px;
@@ -90,6 +103,7 @@ header {
     border-right: 2px solid #CCC;
 }
 
+/* Style par défaut pour tous les onglets */
 .tab {
     width: 100%;
     text-align: center;
@@ -97,20 +111,34 @@ header {
     cursor: pointer;
     transition: background-color 0.3s, transform 0.2s;
     border-radius: 5px;
-    color: #333;
-    background-color: #DDD;
+    color: #333;  /* Texte foncé par défaut */
+    background-color: #DDD;  /* Fond gris clair par défaut */
     font-weight: 700;
     border-bottom: 1px solid #CCC;
     text-decoration: none;
 }
 
-.tab.active {
-    background-color: #000000;
-    color: #FFF;
+/* Styles pour les boutons non actifs spécifiques */
+.tab {
+    background-color: #DDD;  /* Gris clair pour non actif */
+    color: #333;  /* Texte foncé pour non actif */
 }
 
+.tab-container a.tab.account-info-btn {
+    background-color: #000000; /* Noir pour 'Account Information' */
+    color: #FFF; /* Texte blanc pour 'Account Information' */
+}
+
+/* Styles pour le bouton actif - spécifique pour 'Dashboard' et 'Social Management' */
+.tab[href*='user_dashboard'].active,
+.tab[href*='social_management'].active {
+    background-color: #DDD;  /* Gris clair pour actif */
+    color: #333;  /* Texte foncé pour actif */
+}
+
+/* Hover sur les onglets */
 .tab:hover {
-    background-color: #F0F0F0;
+    background-color: #F0F0F0;  /* Léger gris pour hover */
     transform: translateY(-2px);
 }
 
