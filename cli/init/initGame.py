@@ -1,5 +1,5 @@
-from tools import *
-from DjangoHttpsCommunication import DjangoCommunication
+from init.tools import *
+from init.DjangoHttpsCommunication import DjangoCommunication
 from re import match
 
 

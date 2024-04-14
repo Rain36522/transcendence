@@ -1,18 +1,22 @@
 import websockets
 from pynput.keyboard import Listener, Key
+import pynput
 import asyncio
 from json import loads
+from color import *
+import ssl
 
 class DataTransmission:
     def __init__(self, gameSettings, url):
         self.gameSettings = gameSettings
         self.message = None
         self.wsCli = None
-        self.url = url + "/game/" + int(gameSettings["gameId"])
+        self.url = "wss" + url[5:] + "/wsGame/" + str(gameSettings["gameid"]) + "/" + str(gameSettings["user"]) + "/"
         self.w = False
         self.s = False
         self.u = False
         self.d = False
+        self.isConnected = False
         self.is2player = gameSettings["isSolo"] and gameSettings["nbPlayers"] == 2
         if gameSettings["isSolo"]:
             self.playerpos = 1
@@ -21,75 +25,93 @@ class DataTransmission:
 
 
     
-    async def ConnectWs(self):
+    async def ConnectWsKeyBinding(self):
+        ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+        ssl_context.check_hostname = False
+        ssl_context.verify_mode = ssl.CERT_NONE
+        
         while not self.wsCli:
             try:
-                self.wsCli = await websockets.connect(self.url)
-                print("ws Server successfully connected to :", self.url)
+                self.wsCli = await websockets.connect(self.url, ssl=ssl_context)
+                self.isConnected = True
+                KeyQueue = self.transmitKeys()
+                while True:
+                    key = await KeyQueue.get()
+                    await self.wsCli.send(key)
             except Exception as e:
-                print("ws Server connection failed")
+                print("ws Server connection failesd,", self.url)
                 self.wsCli = None
-                await asyncio.sleep(0.5)
-    
+                self.isConnected = False
+
     async def receive_messages(self):
-        try:
-            async for self.message in self.websocket:
+        while not self.wsCli:
+            await asyncio.sleep(0.1)
+        while True:
+            # try:
+            async for self.message in self.wsCli:
                 if not self.playerpos:
                     self.getUserPos()
-        except:
-            await self.ConnectWs()
+            # except:
+            #     print(RED, "Reading msg error", RESET)
+            #     while not self.isConnected:
+            #         await asyncio.sleep(0.1)
     
     def getUserPos(self):
-        if self.message["users"][0] == self.gameSettings["user"]:
+        msg = loads(self.message)
+        if msg["users"][0] == self.gameSettings["user"]:
             self.playerpos = 1
         else:
             self.playerpos = 2
 
     def getMessage(self):
-        return loads(self.message)
+        if self.message:
+            return loads(self.message)
+        else:
+            return None
     
     async def disconnect(self):
         await self.wsCli.close()
+    
+    def transmitKeys(self):
+        queue = asyncio.Queue()
+        loop = asyncio.get_event_loop()
+        def on_press(key):
+            if len(str(key)) == 3:
+                print("\b ", end="")
+            elif len(str(key)) == 6 or len(str(key)) == 8:
+                print("\b\b\b\b    ", end="")
+            if len(str(key)) == 3 and key.char == "w" and not self.w:
+                self.w = True
+                loop.call_soon_threadsafe(queue.put_nowait, str(self.playerpos) + "u-on")
+            elif len(str(key)) == 3 and key.char == "s" and not self.s:
+                self.s = True
+                loop.call_soon_threadsafe(queue.put_nowait, str(self.playerpos) + "d-on")
+            elif len(str(key)) == 6 and key == Key.up and not self.u and self.is2player:
+                self.u = True
+                loop.call_soon_threadsafe(queue.put_nowait, "2u-on")
+            elif len(str(key)) == 8 and key == Key.down and not self.d and self.is2player:
+                self.d = True
+                loop.call_soon_threadsafe(queue.put_nowait, "2d-on")
 
-    def on_press(self, key):
-        if len(str(key)) == 3:
-            print("\b ", end="")
-        elif len(str(key)) == 6 or len(str(key)) == 8:
-            print("\b\b\b\b    ", end="")
-        if len(str(key)) == 3 and key.char == "w" and not self.w:
-            self.w = True
-            self.wsCli.send(str(self.playerpos) + "u-on")
-        elif len(str(key)) == 3 and key.char == "s" and not self.s:
-            self.s = True
-            self.wsCli.send(str(self.playerpos) + "d-on")
-        elif len(str(key)) == 6 and key == Key.up and not self.u and self.is2player:
-            self.u = True
-            self.wsCli.send("2u-on")
-        elif len(str(key)) == 8 and key == Key.down and not self.d and self.is2player:
-            self.d = True
-            self.wsCli.send("2d-on")
+        def on_release(key):
+            if len(str(key)) == 3 and key.char == "w" and self.w:
+                self.w = False
+                loop.call_soon_threadsafe(queue.put_nowait, str(self.playerpos) + "u-off")
+            elif len(str(key)) == 3 and key.char == "s" and self.s:
+                self.s = False
+                loop.call_soon_threadsafe(queue.put_nowait, str(self.playerpos) + "d-off")
+            elif len(str(key)) == 6 and key == Key.up and self.u and self.is2player:
+                self.u = False
+                loop.call_soon_threadsafe(queue.put_nowait, "2d-on")
+            elif len(str(key)) == 8 and key == Key.down and self.d and self.is2player:
+                self.d = False
+                loop.call_soon_threadsafe(queue.put_nowait, "2d-off")
+        pynput.keyboard.Listener(on_press=on_press, on_release=on_release).start()
+        return queue
 
-    def on_release(self, key):
-        if len(str(key)) == 3: # replace char by space
-            print("\b ", end="")
-        elif len(str(key)) == 6 or len(str(key)) == 8:
-            print("\b\b\b\b    ", end="")
-        if len(str(key)) == 3 and key.char == "w" and self.w:
-            self.w = False
-            self.wsCli.send(str(self.playerpos) + "u-off")
-        elif len(str(key)) == 3 and key.char == "s" and self.s:
-            self.s = False
-            self.wsCli.send(str(self.playerpos) + "d-off")
-        elif len(str(key)) == 6 and key == Key.up and self.u and self.is2player:
-            self.wsCli.send("2u-off")
-            self.u = False
-        elif len(str(key)) == 8 and key == Key.down and self.d and self.is2player:
-            self.d = False
-            self.wsCli.send("2d-off")
-        
-    def run(self):
-        with Listener(on_press=self.on_press, on_release=self.on_release) as listener:
-            listener.join()
+
+    # async def runKeyBinding(self):
+            # await websockets.send(key)
 
 
 # game = {
@@ -118,13 +140,12 @@ class DataTransmission:
 #         self.kb.add(KeyDown)(self.keyDown)  # Supprimer les parenthèses ici
 
 #     async def KeyUp(self, event):
-#         await self.wsCli.send(self.usertoken + "u")
+#         await await self.wsCli.send(self.usertoken + "u")
     
 #     async def KeyDown(self, event):
-#         await self.wsCli.send(self.usertoken + "u")
+#         await await self.wsCli.send(self.usertoken + "u")
 
 #     async def loop():
 #         while True:
 #             user_input = await prompt('', key_bindings=self.kb)
 #             await asyncio.sleep(0.01)
-        

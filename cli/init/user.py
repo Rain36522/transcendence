@@ -1,6 +1,6 @@
 from re import match
-from tools import *
-from DjangoHttpsCommunication import DjangoCommunication
+from init.tools import *
+from init.DjangoHttpsCommunication import DjangoCommunication
 
 
 class User:

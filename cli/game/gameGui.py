@@ -2,11 +2,11 @@ import sys
 import os
 chemin_parent = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(chemin_parent)
-from DataTransmission import DataTransmission
+from game.DataTransmission import DataTransmission
 from color import *
 from ascii import Ascii
-from time import sleep
 from blessed import Terminal
+import asyncio
 
 gameSettings = {
     "ballwidth" : 0.1, #max size plank size calculation
@@ -32,36 +32,42 @@ class GameGui2p:
         self.putMap()
         self.height -= 2
         self.width -= 2
-        self.userpose = 0
+        if settings["isSolo"]:
+            self.userpos = 1
+        else:
+            self.userpose = 0
         self.initPadelL()
         self.initPadelR()
         self.initBall()
     
 
-    def  updateGame(self):
+    async def  updateGame(self):
         while True:
+            await asyncio.sleep(0.03)
             msg = self.wsCli.getMessage()
-            if msg["state"] == "game_over":
-                return
-            elif not self.userpose and self.settings["user"] in msg["users"]:
-                if msg["users"][0] == self.settings["user"]:
-                    self.userpos = 1
+            if msg:
+                if msg["state"] == "game_over":
+                    return msg
+                elif not self.userpose and self.settings["user"] in msg["users"]:
+                    if msg["users"][0] == self.settings["user"]:
+                        self.userpos = 1
+                    else:
+                        self.userpos = 2
+                if self.userpos == 2:
+                    msg = self.updateMsg(msg, reverse=-1)
+                    self.updatePadelL(msg["p2"])
+                    self.updatePadelR(msg["p1"])
                 else:
-                    self.userpos = 2
-            if self.userpos == 2:
-                msg = self.updateMsg(msg, reverse=-1)
-                self.updatePadelL(msg["p2"])
-                self.updatePadelR(msg["p1"])
-            else:
-                msg = self.updateMsg(msg)
-                self.updatePadelL(msg["p1"])
-                self.updatePadelR(msg["p2"])
-            self.updateBall(msg["ballx"], msg["bally"])
+                    msg = self.updateMsg(msg)
+                    self.updatePadelL(msg["p1"])
+                    self.updatePadelR(msg["p2"])
+                self.updateBall(msg["ballx"], msg["bally"])
     
     def updateMsg(self, msg, reverse=1):
         liste = ["ballx", "bally", "p1", "p2"]
         for elem in liste:
                 msg[elem] = msg[elem] * reverse + 0.5
+        return msg
 
     """MAP
     Map generation in CLI.
@@ -83,8 +89,10 @@ class GameGui2p:
             self.start = 0
         else:
             self.start = self.column - self.width
-        self.padelsize = self.settings["planksize"] * self.height
-        self.ballsize = self.settings["ballwidth"] * self.height
+        for cle, value in self.settings.items():
+            print(cle, ":", value)
+        self.padelsize = self.settings["paddleLength"] * self.height
+        self.ballsize = self.settings["ballSize"] * self.height
     
     def putMap(self):
         print(self.term.move_xy(0, 3))
@@ -143,7 +151,6 @@ class GameGui2p:
             self.changePadel(self.padelL["x"], high, low, "█")
             self.padelL["low"] = low
             self.padelL["high"] = high
-            sleep(3)
             return
 
         if self.padelL["low"] > low: # case of padel go down
@@ -167,7 +174,6 @@ class GameGui2p:
             self.changePadel(self.padelR["x"], high, low, "█")
             self.padelR["low"] = low
             self.padelR["high"] = high
-            sleep(3)
             return
         
         if self.padelR["low"] > low: # case of padel go down
@@ -193,7 +199,6 @@ class GameGui2p:
         j = start
         while j < stop:
             print(self.term.move_xy(xpos, j) + char)
-            sleep(0.1)
             j += 1
     
     """Ball

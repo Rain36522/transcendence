@@ -1,46 +1,35 @@
-from pynput.keyboard import Listener, Key
-import sys
+import asyncio
+import pynput
+import websockets
+import ssl
 
-class inputUser:
-    def __init__(self, is2player):
-        self.is2player = is2player
-        self.w = False
-        self.s = False
-        self.u = False
-        self.d = False
-        self.run()
+def transmit_keys():
+    # Start a keyboard listener that transmits keypresses into an
+    # asyncio queue, and immediately return the queue to the caller.
+    queue = asyncio.Queue()
+    loop = asyncio.get_event_loop()
+    def on_press(key):
+        # this callback is invoked from another thread, so we can't
+        # just queue.put_nowait(key.char), we have to go through
+        # call_soon_threadsafe
+        loop.call_soon_threadsafe(queue.put_nowait, key.char)
+    def on_relase(key):
+        # this callback is invoked from another thread, so we can't
+        # just queue.put_nowait(key.char), we have to go through
+            # call_soon_threadsafe
+        print("Key relase")
+        loop.call_soon_threadsafe(queue.put_nowait, str(key.char) + " off")
+    pynput.keyboard.Listener(on_press=on_press, on_release=on_relase).start()
+    return queue
 
-    def on_press(self, key):
-        if len(str(key)) == 3:
-            print("\b ", end="")
-        elif len(str(key)) == 6 or len(str(key)) == 8:
-            print("\b\b\b\b    ", end="")
-        if len(str(key)) == 3 and key.char == "w" and not self.w:
-            self.w = True
-        elif len(str(key)) == 3 and key.char == "s" and not self.s:
-            self.s = True
-        elif len(str(key)) == 6 and key == Key.up and not self.u and self.is2player:
-            self.u = True
-        elif len(str(key)) == 8 and key == Key.down and not self.d and self.is2player:
-            self.d = True
+async def main():
+    ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+    ssl_context.check_hostname = False
+    ssl_context.verify_mode = ssl.CERT_NONE
+    key_queue = transmit_keys()
+    async with websockets.connect("wss://127.0.0.1/wsGame/1/a", ssl=ssl_context) as websocket:
+        while True:
+            key = await key_queue.get()
+            print("Pressed key :", str(key))
 
-    def on_release(self, key):
-        if len(str(key)) == 3: # replace char by space
-            print("\b ", end="")
-        elif len(str(key)) == 6 or len(str(key)) == 8:
-            print("\b\b\b\b    ", end="")
-        if len(str(key)) == 3 and key.char == "w" and self.w:
-            self.w = False
-        elif len(str(key)) == 3 and key.char == "s" and self.s:
-            self.s = False
-        elif len(str(key)) == 6 and key == Key.up and self.u and self.is2player:
-            self.u = False
-        elif len(str(key)) == 8 and key == Key.down and self.d and self.is2player:
-            self.d = False
-        
-    def run(self):
-        with Listener(on_press=self.on_press, on_release=self.on_release) as listener:
-            listener.join()
-
-
-inputUser(True)
+asyncio.run(main())
