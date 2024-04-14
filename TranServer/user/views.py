@@ -17,8 +17,12 @@ from django.core.exceptions import ValidationError
 
 from .models import User
 from chat.models import Chat
-from .serializers import UserSerializer, UserSerializer_Username
-from .forms import CustomUserCreationForm
+from .serializers import (
+    UserSerializer,
+    UserSerializer_Username,
+    PersonalUserSerializer,
+    OtherUserSerializer,
+)
 
 import mimetypes
 import os
@@ -66,7 +70,6 @@ class FriendListView(APIView):
             )
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
 
     def delete(self, request, username=None):
         if not username:
@@ -223,6 +226,7 @@ def user_profile_pic_api(request, username):
 ALLOWED_FILE_TYPES = ["image/jpeg", "image/png"]
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 
+
 @api_view(["POST"])
 @renderer_classes([JSONRenderer])
 @login_required
@@ -271,11 +275,6 @@ def upload_profile_pic_api(request):
         )
 
 
-    form_class = CustomUserCreationForm
-    success_url = reverse_lazy("login")
-    template_name = "html/register.html"
-
-
 @login_required
 def account_information(request):
     return render(request, "html/accountInformation.html")
@@ -317,3 +316,37 @@ def profile(request):
 @login_required
 def dashboard(request):
     return render(request, "dashboard.html", {"user": request.user})
+
+
+@api_view(["GET"])
+@renderer_classes([JSONRenderer])
+@login_required
+def search_usernames_api(request, username=None):
+    if username:
+        MAX_RESULTS = 10
+        matching_users = User.objects.filter(username__icontains=username)[:MAX_RESULTS]
+        usernames = [user.username for user in matching_users]
+        return JsonResponse({"usernames": usernames}, status=status.HTTP_200_OK)
+    else:
+        return JsonResponse(
+            {"error": "Please provide a search term"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+
+@api_view(["GET"])
+@renderer_classes([JSONRenderer])
+@login_required
+def profile_info_api(request, username=None):
+    try:
+        if username:
+            user = get_object_or_404(User, username=username)
+            serializer = OtherUserSerializer(user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        serializer = PersonalUserSerializer(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except:
+        return JsonResponse(
+            {"error": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST
+        )

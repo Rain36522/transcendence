@@ -15,6 +15,8 @@ from .views import (
     api_pending_invite,
     FriendListView,
     BlockedListView,
+    search_usernames_api,
+    profile_info_api,
 )
 from django.views.generic.base import RedirectView
 
@@ -45,4 +47,11 @@ urlpatterns = [
     path("api/pending_invite/", api_pending_invite, name="pending_invite_api"),
     path("api/friends/", FriendListView.as_view(), name="friends_user_api"),
     path("api/blocked/", BlockedListView.as_view(), name="blocked_user_api"),
+    path(
+        "api/search/<str:username>/", search_usernames_api, name="search_usernames_api"
+    ),
+    path(
+        "api/profile/<str:username>/", profile_info_api, name="profile_info_api_other"
+    ),
+    path("api/profile/", profile_info_api, name="profile_info_api"),
 ]
