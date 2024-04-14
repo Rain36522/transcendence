@@ -104,7 +104,7 @@ async def WaitUntilPlayers(ws, data):
     await ws.sendUserJoin(liste)
     return liste
 
-def updateUser(userlist, data):
+def updateUser(userliste, data):
     if data["gamemode"] == 0:
         return ["Player1", "Player2"]
     elif data["gamemode"] == 3:
@@ -122,22 +122,75 @@ def putDatagameSettings(data, settings):
             settings[i] = data[i]
     return settings
 
-# Exemple d'utilisation du client WebSocket avec asyncio
-if __name__ == "__main__":
+# # Exemple d'utilisation du client WebSocket avec asyncio
+# if __name__ == "__main__":
+#     DjangoData = json.loads(os.environ.get("newGame"))["message"]
+#     print("Django data : ", DjangoData)
+#     gameSettings = putDatagameSettings(DjangoData, gameSettings)
+#     #connection with websocket server
+#     wsServ = "ws://localhost:8001/game/" + str(gameSettings["gameid"])
+#     client = WebSocketClient(wsServ)
+#     # Lancement du client WebSocket en parallèle
+#     asyncio.get_event_loop().run_until_complete(client.connect())
+#     asyncio.get_event_loop().create_task(client.receive_messages())
+#     print(MAGENTA, "RECIEVED USER", RESET, file=stderr)
+#     userliste = asyncio.get_event_loop().run_until_complete(WaitUntilPlayers(client, DjangoData))
+#     userliste = updateUser(userliste, DjangoData)
+#     gameLogicInstance = gameLogic(client, gameSettings, game, userliste)
+#     asyncio.get_event_loop().create_task(gameLogicInstance.start_game())
+
+#     # Lancement de la boucle d'événements asyncio
+#     asyncio.get_event_loop().run_forever()
+
+async def main():
+    gameSettings = {
+        "ballwidth" : 0.03, #max size plank size calculation
+        "planksize" : 0.3, #max size 50%
+        "Speed" : 0.002,
+        "acceleration" : 0.01, #increase speed each bounce
+        "playeramount" : 2,
+        "winpoint" : 10,
+        "user1" : "",
+        "user2" : "",
+        "user3" : "",
+        "user4" : "",
+        "gameid" : 0,
+    }
+
+    game = {
+        "ballx" : 0, # -0.5 -> 0.5
+        "bally" : 0, # -0.5 -> 0.5
+        "p1" : 0, # -0.5 -> 0.5
+        "p2" : 0, # -0.5 -> 0.5
+        "p3" : 0, # -0.5 -> 0.5
+        "p4" : 0, # -0.5 -> 0.5
+        "state" : "playing",
+        "score1" : 0,
+        "score2" : 0,
+        "score3" : 0,
+        "score4" : 0
+    }
+
+    print("|[---Creating game instance...---]|")
     DjangoData = json.loads(os.environ.get("newGame"))["message"]
     print("Django data : ", DjangoData)
     gameSettings = putDatagameSettings(DjangoData, gameSettings)
-    #connection with websocket server
     wsServ = "ws://localhost:8001/game/" + str(gameSettings["gameid"])
-    client = WebSocketClient(wsServ)
-    # Lancement du client WebSocket en parallèle
-    asyncio.get_event_loop().run_until_complete(client.connect())
-    asyncio.get_event_loop().create_task(client.receive_messages())
-    print(MAGENTA, "RECIEVED USER", RESET, file=stderr)
-    userliste = asyncio.get_event_loop().run_until_complete(WaitUntilPlayers(client, DjangoData))
-    userliste = updateUser(userliste, DjangoData)
-    gameLogicInstance = gameLogic(client, gameSettings, game, userliste)
-    asyncio.get_event_loop().create_task(gameLogicInstance.gameInput())
 
-    # Lancement de la boucle d'événements asyncio
-    asyncio.get_event_loop().run_forever()
+    client = WebSocketClient(wsServ)
+    await client.connect()
+    asyncio.create_task(client.receive_messages())
+    print(MAGENTA, "RECIEVED USER", RESET, file=stderr)
+
+    userliste = await WaitUntilPlayers(client, DjangoData)
+    userliste = updateUser(userliste, DjangoData)
+
+    print("|[---Userlist---]|", userliste)
+    print("|[--Launching game logic instance--]|")
+    game_logic_instance = gameLogic(client, gameSettings, game, userliste)
+    await game_logic_instance.start_game()  # Assurez-vous que la méthode start est bien définie pour démarrer BottiBotto et toute autre initialisation asynchrone
+
+    print("|[---Game instance created---]|")
+
+if __name__ == "__main__":
+    asyncio.run(main())
