@@ -1,6 +1,5 @@
 from django.urls import path
 from .views import (
-    SignUpView,
     account_information,
     user_dashboard,
     user_login,
@@ -14,6 +13,8 @@ from .views import (
     test_upload,
     InviteListView,
     api_pending_invite,
+    FriendListView,
+    BlockedListView,
 )
 from django.views.generic.base import RedirectView
 
@@ -32,7 +33,6 @@ urlpatterns = [
         name="user_profile_pic_api",
     ),
     path("api/upload_profile/", upload_profile_pic_api, name="upload_profile_pic_api"),
-    path("signup/", SignUpView.as_view(), name="signup"),
     path("api/signup/", api_signup, name="api_signup"),
     path("logout/", logout_view, name="user_logout"),
     path("test_upload/", test_upload),
@@ -43,4 +43,6 @@ urlpatterns = [
     ),
     path("api/invite/", InviteListView.as_view(), name="invite_user_api"),
     path("api/pending_invite/", api_pending_invite, name="pending_invite_api"),
+    path("api/friends/", FriendListView.as_view(), name="friends_user_api"),
+    path("api/blocked/", BlockedListView.as_view(), name="blocked_user_api"),
 ]

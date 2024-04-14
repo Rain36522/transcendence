@@ -19,8 +19,10 @@ function startChatSocket(chatId) {
 	});
 }
 
-function selectChat(chatName, chatId) {
+function selectChat(chatName, chatId, is_personal) {
 	document.querySelector('.selected-user').textContent = "Chatting with: " + chatName;
+	if (is_personal)
+		document.querySelector('.selected-user').textContent = "Game Invitations";
 	document.getElementById('messages').innerHTML = '';
 	open_chat(chatId)
 }
@@ -90,11 +92,13 @@ function load_chats() {
 			userList.innerHTML = ''; // Clear existing content
 			console.log(chats)
 			for (const chat of chats) {
-				const usernames = chat.participants.map(participant => participant.username).join(', ');
+				let usernames = chat.participants.map(participant => participant.username).join(', ');
+				if (chat.is_personal)
+					usernames = 'Game Invitations'
 				const userDiv = document.createElement('div');
 				userDiv.classList.add('user');
 				userDiv.textContent = usernames;
-				userDiv.addEventListener('click', () => selectChat(usernames, chat.id));
+				userDiv.addEventListener('click', () => selectChat(usernames, chat.id, chat.is_personal));
 				userList.appendChild(userDiv);
 			}
 		}
