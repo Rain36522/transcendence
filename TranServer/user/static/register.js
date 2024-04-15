@@ -21,7 +21,8 @@ document.getElementById("signupForm").addEventListener("submit", function(event)
     })
     .then(response => {
         if (response.ok) {
-            window.location.href = '/dashboard';
+            window.history.pushState(null, null, '/dashboard/');
+            fetchPage('/dashboard/');
         } else {
             response.json().then(data => {
                 // Itérer sur chaque clé de l'objet d'erreur et concaténer les messages

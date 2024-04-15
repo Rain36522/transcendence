@@ -19,8 +19,10 @@ function startChatSocket(chatId) {
 	});
 }
 
-function selectChat(chatName, chatId) {
+function selectChat(chatName, chatId, is_personal) {
 	document.querySelector('.selected-user').textContent = "Chatting with: " + chatName;
+	if (is_personal)
+		document.querySelector('.selected-user').textContent = "Game Invitations";
 	document.getElementById('messages').innerHTML = '';
 	open_chat(chatId)
 }
@@ -90,11 +92,13 @@ function load_chats() {
 			userList.innerHTML = ''; // Clear existing content
 			console.log(chats)
 			for (const chat of chats) {
-				const usernames = chat.participants.map(participant => participant.username).join(', ');
+				let usernames = chat.participants.map(participant => participant.username).join(', ');
+				if (chat.is_personal)
+					usernames = 'Game Invitations'
 				const userDiv = document.createElement('div');
 				userDiv.classList.add('user');
 				userDiv.textContent = usernames;
-				userDiv.addEventListener('click', () => selectChat(usernames, chat.id));
+				userDiv.addEventListener('click', () => selectChat(usernames, chat.id, chat.is_personal));
 				userList.appendChild(userDiv);
 			}
 		}
@@ -135,84 +139,3 @@ function sendMessage() {
 }
 
 load_chats();
-
-var newChatButton = document.getElementById('newChatButton');
-var overlay = document.getElementById('overlay');
-var modal = document.getElementById('modal');
-var closeButton = document.querySelector('.close-button');
-document.getElementById('sendMessage').addEventListener('click', function (event) {
-	event.preventDefault();
-	sendMessage();
-});
-
-document.getElementById('messageText').addEventListener('keypress', function (event) {
-	scrollToBottom();
-	if (event.key === 'Enter') {
-		event.preventDefault();
-		sendMessage();
-	}
-});
-
-document.getElementById('messageText').addEventListener('paste', function (event) {
-	const clipboardData = event.clipboardData || window.clipboardData;
-
-	for (const item of clipboardData.items) {
-		if (item.type.indexOf('image') !== -1) {
-			const reader = new FileReader();
-			reader.onload = function (event) {
-				const imageData = event.target.result;
-				const imagePreview = document.getElementById('imagePreview');
-				const img = document.createElement('img');
-				img.src = imageData;
-				imagePreview.innerHTML = '';
-				imagePreview.appendChild(img);
-				document.getElementById('imageData').value = imageData;
-			};
-			reader.readAsDataURL(item.getAsFile());
-		}
-	}
-});
-
-newChatButton.addEventListener('click', () => {
-	modal.classList.add('active');
-	overlay.classList.add('active');
-	document.body.classList.add('active-modal');
-});
-
-overlay.addEventListener('click', () => {
-	modal.classList.remove('active');
-	overlay.classList.remove('active');
-	document.body.classList.remove('active-modal');
-});
-
-closeButton.addEventListener('click', () => {
-	modal.classList.remove('active');
-	overlay.classList.remove('active');
-	document.body.classList.remove('active-modal');
-});
-
-
-document.getElementById('searchUser').addEventListener('input', function (e) {
-	participants['participants'].push(e.target.value)
-});
-
-document.getElementById('createGroupButton').addEventListener('click', function () {
-	console.log(participants)
-	fetch('/api/chat/', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			'X-CSRFToken': getCookie('csrftoken')
-		},
-		body: JSON.stringify(participants)
-	}).then(data => { load_chats() })
-	participants = { "participants": [] }
-});
-
-
-
-// document.addEventListener('reattachEvent', function (event) {
-// 	console.log("Loaded from event")
-// 	if (document.getElementById('generalchat'))
-// 		load_all();
-// });

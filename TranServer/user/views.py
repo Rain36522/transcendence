@@ -1,23 +1,36 @@
-from django.contrib.auth import authenticate, login, get_user_model, logout
-from django.http import HttpResponse
-from django.urls import reverse_lazy
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
+from rest_framework.permissions import IsAuthenticated
 
-from django.views import generic
-from .forms import CustomUserCreationForm, InvitationForm, AcceptInviteForm
-from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, JsonResponse
+from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth import (
+    authenticate,
+    login,
+    logout,
+    password_validation,
+    update_session_auth_hash,
+)
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
+from django.utils import timezone
+
 from .models import User
-from django.contrib import messages
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from .serializers import UserSerializer
+from chat.models import Chat
+from .serializers import (
+    UserSerializer,
+    UserSerializer_Username,
+    PersonalUserSerializer,
+    OtherUserSerializer,
+)
+
 import mimetypes
 import os
-from django.conf import settings
+from datetime import timedelta
 
 
 @api_view(["POST"])
@@ -26,62 +39,175 @@ def api_signup(request):
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
+        chat = Chat.objects.create()
+        chat.participants.add(user)
+        chat.is_personal = True
+        chat.save()
         login(request, user)
         return Response({"message": "User created successfully"}, status=201)
-    return Response(serializer.errors, status=400)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(["GET"])
+@renderer_classes([JSONRenderer])
 @login_required
-def invite_user(request):
-    current_user = request.user
+def api_pending_invite(request):
+    try:
+        invites = request.user.sent_invites.all()
+        return Response(
+            UserSerializer_Username(invites, many=True).data,
+            status=status.HTTP_200_OK,
+        )
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    invite_form = InvitationForm(current_user)
-    accept_form = AcceptInviteForm(current_user)
 
-    if request.method == "POST":
-        action = request.POST.get("action")
+class FriendListView(APIView):
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer]
 
-        if action == "invite":
-            invite_form = InvitationForm(current_user, request.POST)
-            if invite_form.is_valid():
-                username = invite_form.cleaned_data["username"]
-                invited_user = User.objects.get(username=username)
-                if invited_user in current_user.invites.all():
-                    messages.warning(request, f"User {username} is already invited.")
-                else:
-                    current_user.invites.add(invited_user)
-                    messages.success(request, f"Invitation sent to {username}.")
+    def get(self, request, username=None):
+        try:
+            friends = request.user.friends.all()
+            return Response(
+                UserSerializer_Username(friends, many=True).data,
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-        elif action == "accept":
-            accept_form = AcceptInviteForm(current_user, request.POST)
-            if accept_form.is_valid():
-                accept_from_user = accept_form.cleaned_data["accept_from"]
-                accept_from_user.invites.remove(current_user)
-                current_user.invites.remove(accept_from_user)
-                current_user.friends.add(accept_from_user)
-                messages.success(
-                    request,
-                    f"You have accepted the invite from {accept_from_user.username}.",
+    def delete(self, request, username=None):
+        if not username:
+            return Response(
+                "Please provide a username", status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            user = User.objects.get(username=username)
+            if user.friends.filter(username=request.username):
+                user.friends.remove(user)
+                return Response("Removed user", status=status.HTTP_200_OK)
+            return Response("User is not friend", status=status.HTTP_400_BAD_REQUEST)
+        except User.DoesNotExist:
+            return Response(
+                "User with provided username does not exist",
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class InviteListView(APIView):
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer]
+
+    def get(self, request, username=None):
+        try:
+            invites = request.user.invites.all()
+            return Response(
+                UserSerializer_Username(invites, many=True).data,
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    def post(self, request, username=None):
+        if not username:
+            return Response(
+                "Please provide a username", status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            user = User.objects.get(username=username)
+            if user.invites.filter(username=username):
+                return Response(
+                    "Invite already exists", status=status.HTTP_400_BAD_REQUEST
                 )
+            user.invites.add(user)
+            return Response("Added invite", status=status.HTTP_200_OK)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    return render(
-        request,
-        "invite_user.html",
-        {"invite_form": invite_form, "accept_form": accept_form},
-    )
+    def delete(self, request, username=None):
+        if not username:
+            return Response(
+                "Please provide a username", status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            user = User.objects.get(username=username)
+            if user.invites.filter(username=request.username):
+                user.invites.remove(user)
+                return Response("Removed user", status=status.HTTP_200_OK)
+            return Response("Invite does not exist", status=status.HTTP_400_BAD_REQUEST)
+        except User.DoesNotExist:
+            return Response(
+                "User with provided username does not exist",
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class BlockedListView(APIView):
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer]
+
+    def get(self, request, username=None):
+        try:
+            blocked = request.user.blocked.all()
+            return Response(
+                UserSerializer_Username(blocked, many=True).data,
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    def post(self, request, username=None):
+        if not username:
+            return Response(
+                "Please provide a username", status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            user = User.objects.get(username=username)
+            if user.blocked.filter(username=username):
+                return Response("Already blocked", status=status.HTTP_400_BAD_REQUEST)
+            user.blocked.add(user)
+            return Response("Added blocked", status=status.HTTP_200_OK)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, username=None):
+        if not username:
+            return Response(
+                "Please provide a username", status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            user = User.objects.get(username=username)
+            if user.blocked.filter(username=request.username):
+                user.blocked.remove(user)
+                return Response("Unblocked user", status=status.HTTP_200_OK)
+            return Response("User is not blocked", status=status.HTTP_400_BAD_REQUEST)
+        except User.DoesNotExist:
+            return Response(
+                "User with provided username does not exist",
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["POST"])
 @renderer_classes([JSONRenderer])
 def user_login_api(request):
-    username = request.POST["username"]
-    password = request.POST["password"]
-    user = authenticate(request, username=username, password=password)
-    if user is not None:
-        login(request, user)
-        return redirect("user_dashboard")
-    else:
-        return JsonResponse({"error": "Invalid username or password"}, status=400)
+    try:
+        username = request.POST["username"]
+        password = request.POST["password"]
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect("user_dashboard")
+        else:
+            return JsonResponse({"error": "Invalid username or password"}, status=400)
+    except:
+        return JsonResponse({"error": "Invalid request"}, status=400)
 
 
 @api_view(["GET"])
@@ -89,37 +215,69 @@ def user_login_api(request):
 @login_required
 def user_profile_pic_api(request, username):
     user = get_object_or_404(User, username=username)
-    if user.profile_picture:
-        path = user.profile_picture.path
-        content_type, _ = mimetypes.guess_type(path)
-        with open(path, "rb") as f:
-            return HttpResponse(f.read(), content_type=content_type)
-    default_image_path = os.path.join(settings.MEDIA_ROOT, "default_profile.png")
-    with open(default_image_path, "rb") as f:
-        return HttpResponse(f.read(), content_type="image/png")
+    try:
+        if user.profile_picture:
+            path = user.profile_picture.path
+            content_type, _ = mimetypes.guess_type(path)
+            with open(path, "rb") as f:
+                return HttpResponse(f.read(), content_type=content_type)
+        default_image_path = os.path.join(settings.MEDIA_ROOT, "default_profile.png")
+        with open(default_image_path, "rb") as f:
+            return HttpResponse(f.read(), content_type="image/png")
+    except Exception as e:
+        return JsonResponse({"error": e}, status=500)
+
+
+ALLOWED_FILE_TYPES = ["image/jpeg", "image/png"]
+MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 
 
 @api_view(["POST"])
 @renderer_classes([JSONRenderer])
 @login_required
 def upload_profile_pic_api(request):
-    if "profile_picture" in request.FILES:
-        profile_picture = request.FILES["profile_picture"]
+    try:
+        if "profile_picture" in request.FILES:
+            profile_picture = request.FILES["profile_picture"]
 
-        # Retrieve the user based on your authentication mechanism
-        user = request.user  # Or however you authenticate the user in your app
+            # File type validation
+            if profile_picture.content_type not in ALLOWED_FILE_TYPES:
+                return JsonResponse({"error": "Invalid file type"}, status=400)
 
-        # Save the profile picture to the user's profile
-        user.profile_picture = profile_picture
-        user.save()
-        return HttpResponse({"message": "Upload successful"}, status=201)
-    return HttpResponse({"message": "No file found"}, status=201)
+            # File size limit
+            if profile_picture.size > MAX_FILE_SIZE:
+                return JsonResponse(
+                    {"error": "File size exceeds the limit"}, status=400
+                )
 
+            user = request.user
 
-class SignUpView(generic.CreateView):
-    form_class = CustomUserCreationForm
-    success_url = reverse_lazy("login")
-    template_name = "html/register.html"
+            # Check if the user already has a profile picture
+            if user.profile_picture:
+                try:
+                    # Delete the old profile picture file from the storage
+                    if os.path.isfile(user.profile_picture.path):
+                        os.remove(user.profile_picture.path)
+                except:
+                    pass
+
+            # Save the new profile picture
+            user.profile_picture = profile_picture
+            user.save()
+            return HttpResponse(
+                {"message": "Upload successful"}, status=status.HTTP_201_CREATED
+            )
+        return HttpResponse(
+            {"message": "No file found"}, status=status.HTTP_400_BAD_REQUEST
+        )
+    except ValidationError:
+        return JsonResponse(
+            {"error": "Invalid file"}, status=status.HTTP_400_BAD_REQUEST
+        )
+    except:
+        return JsonResponse(
+            {"error": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 @login_required
@@ -163,3 +321,158 @@ def profile(request):
 @login_required
 def dashboard(request):
     return render(request, "dashboard.html", {"user": request.user})
+
+
+@api_view(["GET"])
+@renderer_classes([JSONRenderer])
+@login_required
+def search_usernames_api(request, username=None):
+    if username:
+        MAX_RESULTS = 10
+        matching_users = User.objects.filter(username__icontains=username)[:MAX_RESULTS]
+        usernames = [user.username for user in matching_users]
+        return JsonResponse({"usernames": usernames}, status=status.HTTP_200_OK)
+    else:
+        return JsonResponse(
+            {"error": "Please provide a search term"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+
+@api_view(["GET"])
+@renderer_classes([JSONRenderer])
+@login_required
+def profile_info_api(request, username=None):
+    try:
+        if username:
+            user = get_object_or_404(User, username=username)
+            serializer = OtherUserSerializer(user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        serializer = PersonalUserSerializer(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except:
+        return JsonResponse(
+            {"error": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+
+@api_view(["GET"])
+@renderer_classes([JSONRenderer])
+@login_required
+def is_active_api(request, username=None):
+    try:
+        if username:
+            user = get_object_or_404(User, username=username)
+            cur_time = timezone.now()
+            last_active = cur_time - user.last_active < timedelta(minutes=5)
+            return Response(last_active, status=status.HTTP_200_OK)
+        return Response(
+            {"error": "Please provide a username"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    except:
+        return JsonResponse(
+            {"error": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+
+@api_view(["POST"])
+@renderer_classes([JSONRenderer])
+@login_required
+def update_profile_api(request):
+    try:
+        user = request.user
+
+        new_username = request.data.get("username")
+        new_email = request.data.get("email")
+        first_name = request.data.get("first_name")
+        last_name = request.data.get("last_name")
+
+        if not new_username and not new_email:
+            return Response(
+                {"error": "You must provide either a new username or a new email."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if (
+            new_username
+            and new_username != user.username
+            and User.objects.filter(username=new_username).exists()
+        ):
+            return Response(
+                {"error": "Username already exists."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if (
+            new_email
+            and new_email != user.email
+            and User.objects.filter(email=new_email).exists()
+        ):
+            return Response(
+                {"error": "Email already exists."}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if new_username:
+            user.username = new_username
+        if new_email:
+            user.email = new_email
+        if first_name:
+            user.first_name = first_name
+        if last_name:
+            user.first_name = first_name
+
+        user.save()
+        return Response(
+            {"message": "User information updated successfully."},
+            status=status.HTTP_200_OK,
+        )
+    except:
+        return JsonResponse(
+            {"error": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+
+@api_view(["POST"])
+@renderer_classes([JSONRenderer])
+@login_required
+def change_password_api(request):
+    try:
+        user = request.user
+        old_password = request.POST.get("old_password")
+        new_password = request.POST.get("new_password")
+
+        if not user.check_password(old_password):
+            return JsonResponse(
+                {"error": "Old password is incorrect"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        if old_password == new_password:
+            return JsonResponse(
+                {"error": "New password must be different from the old one"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        try:
+            password_validation.validate_password(new_password, user=user)
+        except ValidationError as e:
+            return JsonResponse(
+                {"error": e.messages}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        user.set_password(new_password)
+        user.save()
+
+        update_session_auth_hash(request, user)
+        return JsonResponse(
+            {"message": "Password changed successfully"}, status=status.HTTP_200_OK
+        )
+    except Exception as e:
+        return JsonResponse(
+            {"error": "Bad request"}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+@login_required
+def test_password_change_view(request):
+    return render(request, "test_password_change.html")

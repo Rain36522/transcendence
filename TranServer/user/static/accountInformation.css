@@ -4,14 +4,16 @@ body {
     padding: 0;
     background-color: #f0f0f0;
 }
+
 .vignette {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    box-shadow: 0 0 200px rgba(0,0,0,0.9) inset;
+    box-shadow: 0 0 200px rgba(0, 0, 0, 0.9) inset;
 }
+
 .image-container {
     position: absolute;
     top: 0;
@@ -20,6 +22,7 @@ body {
     height: 100%;
     overflow: hidden;
 }
+
 .image-container img {
     width: 100%;
     height: 100%;
@@ -41,6 +44,7 @@ header {
     justify-content: space-between;
     align-items: center;
 }
+
 .header-btn {
     background: none;
     border: none;
@@ -53,11 +57,26 @@ header {
     letter-spacing: 1px;
     text-decoration: none;
 }
+
+.header-btn, .game-button {
+    background: none;
+    border: none;
+    color: #FFFFE0;  /* Assurez que la couleur correspond aux autres liens */
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 12px 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-decoration: none;  /* Supprime le soulignement */
+}
+
 .profile-btn {
     background-color: #FFFF99;
     border-radius: 5px;
     color: #000;
 }
+
 .frame {
     position: fixed;
     top: 20%;
@@ -67,10 +86,11 @@ header {
     background-color: rgba(255, 255, 255, 0.95);
     border-radius: 10px;
     display: flex;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     z-index: 11;
     overflow: hidden;
 }
+
 .tab-container {
     width: 25%;
     background-color: #EEE;
@@ -82,6 +102,8 @@ header {
     gap: 10px;
     border-right: 2px solid #CCC;
 }
+
+/* Style par défaut pour tous les onglets */
 .tab {
     width: 100%;
     text-align: center;
@@ -89,20 +111,37 @@ header {
     cursor: pointer;
     transition: background-color 0.3s, transform 0.2s;
     border-radius: 5px;
-    color: #333;
-    background-color: #DDD;
+    color: #333;  /* Texte foncé par défaut */
+    background-color: #DDD;  /* Fond gris clair par défaut */
     font-weight: 700;
     border-bottom: 1px solid #CCC;
     text-decoration: none;
 }
-.tab.active {
-    background-color: #000000;
-    color: #FFF;
+
+/* Styles pour les boutons non actifs spécifiques */
+.tab {
+    background-color: #DDD;  /* Gris clair pour non actif */
+    color: #333;  /* Texte foncé pour non actif */
 }
+
+.tab-container a.tab.account-info-btn {
+    background-color: #000000; /* Noir pour 'Account Information' */
+    color: #FFF; /* Texte blanc pour 'Account Information' */
+}
+
+/* Styles pour le bouton actif - spécifique pour 'Dashboard' et 'Social Management' */
+.tab[href*='user_dashboard'].active,
+.tab[href*='social_management'].active {
+    background-color: #DDD;  /* Gris clair pour actif */
+    color: #333;  /* Texte foncé pour actif */
+}
+
+/* Hover sur les onglets */
 .tab:hover {
-    background-color: #F0F0F0;
+    background-color: #F0F0F0;  /* Léger gris pour hover */
     transform: translateY(-2px);
 }
+
 .content-area {
     flex-grow: 1;
     display: flex;
@@ -111,25 +150,24 @@ header {
     padding: 20px;
     gap: 20px;
 }
-.profile-pic {
-    width: 120px;
-    height: 120px;
-    background-color: #ccc;
-    border-radius: 50%;
-    border: 3px solid #FFFFE0;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
-}
+
 .user-info {
     display: flex;
     flex-direction: column;
     width: 60%;
+    margin-top: 40px;
+    /* Ajoutez une marge en haut pour baisser les éléments */
+    padding-left: 40px;
+    /* Ajoutez du padding à gauche pour décaler vers la droite */
 }
+
 .user-info div {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
 }
+
 .user-info div input {
     border: 1px solid #CCC;
     border-radius: 5px;
@@ -137,17 +175,55 @@ header {
     font-size: 14px;
     width: 60%;
 }
+
 .edit-link {
     align-self: center;
     margin-top: auto;
     padding: 8px 24px;
-    background-color: #333;
-    color: #FFFFE0;
+    background-color: #000000;
+    color: #ffffff;
     text-decoration: none;
     border-radius: 5px;
     transition: background-color 0.3s, color 0.3s;
 }
+
 .edit-link:hover {
-    background-color: #444;
+    background-color: #000000;
     color: #FFF;
+}
+
+.profile-section {
+    display: flex;
+    flex-direction: column;
+    /* Alignement vertical */
+    align-items: center;
+    /* Centrage horizontal */
+    margin-top: 20px;
+}
+
+.profile-pic {
+    width: 120px;
+    /* taille fixe */
+    height: 120px;
+    /* taille fixe */
+    border-radius: 50%;
+    /* rend l'image ronde */
+    border: 3px solid #000000;
+    /* bordure */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    /* ombre */
+}
+
+.edit-profile-btn {
+    padding: 8px 16px;
+    background-color: #000000;
+    /* couleur du bouton */
+    color: #ffffff;
+    /* couleur du texte */
+    border: none;
+    border-radius: 5px;
+    margin-top: 10px;
+    /* espace entre l'image et le bouton */
+    cursor: pointer;
+    /* style de curseur */
 }
