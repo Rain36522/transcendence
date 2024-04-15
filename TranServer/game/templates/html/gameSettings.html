@@ -75,7 +75,8 @@
                     </select>
                 </div>
             </div>
-            <a href="#" id="create-link" class="create-link">Create</a>{% csrf_token %}
+            {% csrf_token %}
+            <a href="#" id="create-link" class="create-link">Create</a>
             <a href="{% url 'home_page' %}" class="exit-link">Exit</a>
         </div>
 
