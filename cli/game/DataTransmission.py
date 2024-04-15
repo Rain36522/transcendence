@@ -39,7 +39,12 @@ class DataTransmission:
                 while not self.runKeyBinding and not self.errormsg:
                     await asyncio.sleep(0.1)
                 if not self.errormsg:
-                    KeyQueue = self.transmitKeys()
+                    if self.is2player:
+                        KeyQueue = self.transmitKeys2P()
+                    elif self.playerpos == 1:
+                        KeyQueue = self.transmitKeysP1()
+                    else:
+                        KeyQueue = self.transmitKeysP2()
                 i = 0
                 while not self.errormsg and self.runKeyBinding:
                     key = await KeyQueue.get()
@@ -61,9 +66,9 @@ class DataTransmission:
                 if str(self.message).isdigit():
                     self.errormsg = self.message
                     return self.errormsg
-                self.runKeyBinding = True
                 if not self.playerpos:
                     self.getUserPos()
+                self.runKeyBinding = True
             # except:
             #     print(RED, "Reading msg error", RESET)
             #     while not self.isConnected:
@@ -85,7 +90,7 @@ class DataTransmission:
     async def disconnect(self):
         await self.wsCli.close()
     
-    def transmitKeys(self):
+    def transmitKeysP1(self):
         queue = asyncio.Queue()
         loop = asyncio.get_event_loop()
         def on_press(key):
@@ -98,10 +103,73 @@ class DataTransmission:
                 print("\b\b\b\b    ", end="")
             if len(str(key)) == 3 and key.char == "w" and not self.w:
                 self.w = True
-                loop.call_soon_threadsafe(queue.put_nowait, str(self.playerpos) + "u-on")
+                loop.call_soon_threadsafe(queue.put_nowait, "1u-on")
             elif len(str(key)) == 3 and key.char == "s" and not self.s:
                 self.s = True
-                loop.call_soon_threadsafe(queue.put_nowait, str(self.playerpos) + "d-on")
+                loop.call_soon_threadsafe(queue.put_nowait, "1d-on")
+
+        def on_release(key):
+            if self.errormsg:
+                loop.call_soon_threadsafe(queue.put_nowait, "EXIT")
+                return
+            if len(str(key)) == 3 and key.char == "w" and self.w:
+                self.w = False
+                loop.call_soon_threadsafe(queue.put_nowait, "1u-off")
+            elif len(str(key)) == 3 and key.char == "s" and self.s:
+                self.s = False
+                loop.call_soon_threadsafe(queue.put_nowait, "1d-off")
+        pynput.keyboard.Listener(on_press=on_press, on_release=on_release).start()
+        return queue
+
+    def transmitKeysP2(self):
+        queue = asyncio.Queue()
+        loop = asyncio.get_event_loop()
+        def on_press(key):
+            if self.errormsg:
+                loop.call_soon_threadsafe(queue.put_nowait, "EXIT")
+                return
+            if len(str(key)) == 3:
+                print("\b ", end="")
+            elif len(str(key)) == 6 or len(str(key)) == 8:
+                print("\b\b\b\b    ", end="")
+            if len(str(key)) == 3 and key.char == "w" and not self.w:
+                self.w = True
+                loop.call_soon_threadsafe(queue.put_nowait, "2d-on")
+            elif len(str(key)) == 3 and key.char == "s" and not self.s:
+                self.s = True
+                loop.call_soon_threadsafe(queue.put_nowait, "2u-on")
+
+        def on_release(key):
+            if self.errormsg:
+                loop.call_soon_threadsafe(queue.put_nowait, "EXIT")
+                return
+            if len(str(key)) == 3 and key.char == "w" and self.w:
+                self.w = False
+                loop.call_soon_threadsafe(queue.put_nowait, "2d-off")
+            elif len(str(key)) == 3 and key.char == "s" and self.s:
+                self.s = False
+                loop.call_soon_threadsafe(queue.put_nowait, "2u-off")
+        pynput.keyboard.Listener(on_press=on_press, on_release=on_release).start()
+        return queue
+
+
+    def transmitKeys2P(self):
+        queue = asyncio.Queue()
+        loop = asyncio.get_event_loop()
+        def on_press(key):
+            if self.errormsg:
+                loop.call_soon_threadsafe(queue.put_nowait, "EXIT")
+                return
+            if len(str(key)) == 3:
+                print("\b ", end="")
+            elif len(str(key)) == 6 or len(str(key)) == 8:
+                print("\b\b\b\b    ", end="")
+            if len(str(key)) == 3 and key.char == "w" and not self.w:
+                self.w = True
+                loop.call_soon_threadsafe(queue.put_nowait, "1u-on")
+            elif len(str(key)) == 3 and key.char == "s" and not self.s:
+                self.s = True
+                loop.call_soon_threadsafe(queue.put_nowait, "1d-on")
             elif len(str(key)) == 6 and key == Key.up and not self.u and self.is2player:
                 self.u = True
                 loop.call_soon_threadsafe(queue.put_nowait, "2u-on")
@@ -115,10 +183,10 @@ class DataTransmission:
                 return
             if len(str(key)) == 3 and key.char == "w" and self.w:
                 self.w = False
-                loop.call_soon_threadsafe(queue.put_nowait, str(self.playerpos) + "u-off")
+                loop.call_soon_threadsafe(queue.put_nowait, "1u-off")
             elif len(str(key)) == 3 and key.char == "s" and self.s:
                 self.s = False
-                loop.call_soon_threadsafe(queue.put_nowait, str(self.playerpos) + "d-off")
+                loop.call_soon_threadsafe(queue.put_nowait, "1d-off")
             elif len(str(key)) == 6 and key == Key.up and self.u and self.is2player:
                 self.u = False
                 loop.call_soon_threadsafe(queue.put_nowait, "2d-on")
@@ -128,43 +196,3 @@ class DataTransmission:
         pynput.keyboard.Listener(on_press=on_press, on_release=on_release).start()
         return queue
 
-
-    # async def runKeyBinding(self):
-            # await websockets.send(key)
-
-
-# game = {
-# 	"ballx" : 0, # -0.5 -> 0.5
-# 	"bally" : 0, # -0.5 -> 0.5
-# 	"p1" : 0, # -0.5 -> 0.5
-# 	"p2" : 0, # -0.5 -> 0.5
-# 	"p3" : 0, # -0.5 -> 0.5
-# 	"p4" : 0, # -0.5 -> 0.5
-# 	"state" : "playing",
-# 	"score1" : 0,
-# 	"score2" : 0,
-# 	"score3" : 0,
-# 	"score4" : 0,
-#   "users" : ["usera", "userb"]
-# }
-
-
-# class KeyBinding:
-#     def __init__(self, username, usertoken, KeyUp, KeyDown, wsCli):
-#         self.usertoken = usertoken
-#         self.username = username
-#         self.wsCli = wsCli
-#         self.kb = KeyBindings()
-#         self.kb.add(keyUp)(self.keyUp)  # Supprimer les parenthèses ici
-#         self.kb.add(KeyDown)(self.keyDown)  # Supprimer les parenthèses ici
-
-#     async def KeyUp(self, event):
-#         await await self.wsCli.send(self.usertoken + "u")
-    
-#     async def KeyDown(self, event):
-#         await await self.wsCli.send(self.usertoken + "u")
-
-#     async def loop():
-#         while True:
-#             user_input = await prompt('', key_bindings=self.kb)
-#             await asyncio.sleep(0.01)

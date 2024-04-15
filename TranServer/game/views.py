@@ -74,7 +74,7 @@ def gamePage(request, id):
         player = 1
         solo = True
     elif game.gamemode == 0:
-        player = 1
+        player = 2
         solo = True
     elif game.gamemode == 1:
         player = 2
