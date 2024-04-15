@@ -94,7 +94,7 @@ class GameGui2p:
             self.width += 4
             self.height += 1
         if self.width >= self.column - 4:
-            self.start = 0
+            self.start = 1
         else:
             self.start = (self.column - self.width) // 2
         self.padelsize = self.settings["paddleLength"] * self.height
@@ -130,7 +130,7 @@ class GameGui2p:
             start += 1
 
     def updatePaddelL(self, newPos):
-        print(BYELLOW)
+        print(self.term.move_xy(0, 0), BYELLOW)
         start, stop = self.calculateNewPaddelPos(newPos)
         while start < self.padelLu and self.padelLu > 0:
             self.putCharInMap(1, self.padelLu, "█")
@@ -144,7 +144,7 @@ class GameGui2p:
         while stop > self.padelLd and self.padelLd < self.height + 1:
             self.putCharInMap(1, self.padelLd, "█")
             self.padelLd += 1
-        print(RESET)
+        print(self.term.move_xy(0, 0), RESET)
     
     def updatePaddelR(self, newPos):
         start, stop = self.calculateNewPaddelPos(newPos)
@@ -179,7 +179,7 @@ class GameGui2p:
         elif stopy > self.height + 1:
             stopy = self.height + 1
         if char == "█":
-            print(ORANGE)
+            print(self.term.move_xy(0, 0), ORANGE)
         y = self.bally
         while y < stopy:
             i = self.ballx
@@ -188,7 +188,7 @@ class GameGui2p:
                 i += 1
             y += 1
         if char == "█":
-            print(RESET)
+            print(self.term.move_xy(0, 0), RESET)
         
     def updateBall(self, posx, posy):
         self.putBall(" ")
@@ -198,6 +198,7 @@ class GameGui2p:
         
 
     def putCharInMap(self, posx, posy, charToPut):
-        posx += self.start + 0
+        posx += self.start
         posy += 4
-        print(self.term.move_xy(posx, posy) + str(charToPut))
+        if posx < self.width + self.start + 1 and posx > self.start and posy < self.height + 4 and posy > 4:
+            print(self.term.move_xy(posx, posy) + str(charToPut))
