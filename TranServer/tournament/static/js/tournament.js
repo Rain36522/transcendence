@@ -175,32 +175,36 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function handleInviteButtonClick(event) {
         const userItem = event.target.closest('.user-item');
-        const clonedUserItem = userItem.cloneNode(true);
-        const userName = userItem.querySelector('.user-name').textContent; // Get the username
+        const userName = userItem.querySelector('.user-name').textContent; // Obtenir le nom d'utilisateur
         const isInvited = event.target.textContent === 'Invite';
-
-        // Update the button text and color
+    
+        // Mettre à jour le texte du bouton et la couleur
         event.target.textContent = isInvited ? '✖' : 'Invite';
         event.target.style.backgroundColor = isInvited ? 'red' : '#4CAF50';
-
+    
         const targetContainerId = isInvited ? 'invitedUsers' : 'user-list';
         const targetContainer = document.getElementById(targetContainerId);
-
-        if (isInvited && targetContainerId === 'invitedUsers') {
-            // If inviting the user, search for and remove the original from the user list
-            const originalUserItems = document.querySelectorAll('#user-list .user-item');
-            originalUserItems.forEach(function (item) {
-                const itemUserName = item.querySelector('.user-name').textContent;
-                if (itemUserName === userName) {
-                    item.remove(); // Remove the original item from the user list
-                }
-            });
-        }
-
-        targetContainer.appendChild(userItem); // Add the invited user to the target container
+    
+        // Gérer le déplacement de l'utilisateur entre les listes
+        const sourceContainerId = isInvited ? 'user-list' : 'invitedUsers';
+        const sourceContainer = document.getElementById(sourceContainerId);
+        const sourceUserItems = sourceContainer.querySelectorAll('.user-item');
+        sourceUserItems.forEach(function(item) {
+            const itemUserName = item.querySelector('.user-name').textContent;
+            if (itemUserName === userName) {
+                item.remove(); // Enlever l'élément original du conteneur source
+            }
+        });
+    
+        targetContainer.appendChild(userItem); // Ajouter l'utilisateur invité au conteneur cible
+    
+        // Vider la barre de recherche
+        document.getElementById('searchInput').value = '';
+        document.getElementById('searchResult').style.display = 'none'; // Masquer les résultats de la recherche
+        document.getElementById('searchResult').innerHTML = ''; // Vider le contenu des résultats
     }
-
-    // Attach the event listener directly to each invite-button
+    
+    // Attacher l'écouteur d'événements directement à chaque bouton d'invitation
     document.querySelectorAll('.invite-button').forEach(button => {
         button.addEventListener('click', handleInviteButtonClick);
     });

@@ -23,6 +23,7 @@
         <header>
             <h1><a href="{% url 'home_page' %}" class="logo">Transcendance</a></h1>
             <div>
+                <a href="{% url 'home_page' %}" class="game-button">GAME</a>
                 <a href="{% url 'general_chat' %}" class="header-btn">Chat</a>
                 <a href="{% url 'user_logout' %}" class="header-btn logout-btn">Logout</a>
                 <a href="{% url 'user_dashboard' %}" class="header-btn profile-btn">Profile</a>
@@ -107,7 +108,6 @@
         <script src={% static 'generalchat.js' %}></script>
         <script src={% static 'generalchat2.js' %}></script>
     </div>
-
 
 </body>
 

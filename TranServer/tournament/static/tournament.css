@@ -42,10 +42,17 @@ header {
 .additional-links ul {
   list-style: none;
   display: flex;
-  gap: 10px;
+  gap: 30px; /* Augmenté de 10px à 30px pour plus d'espace */
   margin: 0;
   padding: 0;
   margin-left: auto;
+}
+
+/* Ajustement pour les écrans plus petits */
+@media (max-width: 600px) {
+  .additional-links ul {
+    gap: 15px; /* Espace réduit pour les petits écrans */
+  }
 }
 
 .additional-links ul li a {
@@ -57,7 +64,7 @@ header {
 
 .content {
   position: fixed;
-  top: 50%;
+  top: 60%; /* Déjà ajusté pour baisser le cadre */
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 2;
@@ -69,17 +76,49 @@ header {
   box-sizing: border-box;
   color: white;
   border-radius: 10px;
-  width: 35%;
-  height: 60%;
+  width: 70%; /* Augmenté de 50% à 70% pour agrandir encore plus en longueur */
+  height: 70%;
   background-color: rgba(44, 44, 44, 0.714);
+}
+
+.row {
+  display: flex;
+  justify-content: space-between; /* Assure que l'espace entre les éléments est bien réparti */
+  margin-bottom: 20px; /* Ajoute de l'espace en dessous de chaque ligne pour la séparation */
 }
 
 .select-text {
   display: flex;
-  justify-content: space-between;
+  flex: 1 1 48%; /* S'assure que chaque élément prend à peu près la moitié de l'espace, ajustez selon les besoins */
   align-items: center;
-  margin-bottom: 20px;
+  justify-content: space-between; /* Distribue l'espace entre les éléments à l'intérieur de .select-text */
+  padding: 0 10px; /* Ajoute de l'espace à gauche et à droite à l'intérieur de chaque élément */
+}
+
+.parameter-name {
+  white-space: nowrap; /* Empêche le texte de passer à la ligne */
+}
+
+.control {
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* Alignement des contrôles vers la droite */
+}
+
+.control input[type="range"], .control select {
+  flex-grow: 1; /* Permet aux éléments de formulaire d'utiliser tout l'espace disponible */
+  margin-left: 20px; /* Espacement entre le label et l'input */
+}
+
+/* Styles supplémentaires pour assurer la visibilité et la fonctionnalité */
+input[type="range"] {
+  width: auto; /* Permet à l'input range de s'ajuster à l'espace disponible */
+}
+
+select {
+  width: 100%; /* Utilise tout l'espace disponible pour les select */
+  cursor: pointer; /* Indique que l'élément est cliquable */
 }
 
 .select-text strong {

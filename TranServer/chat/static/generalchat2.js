@@ -1,118 +1,97 @@
-
+// Définition des variables de base pour le popup et le fond flou
 var popup = document.querySelector('.popup');
 var blurBackground = document.querySelector('.blur-background');
 
-blurBackground.addEventListener('click', function (event) {
-	if (event.target === blurBackground) {
-		popup.style.display = 'none';
-		blurBackground.style.display = 'none';
-	}
+// Gestionnaire d'événements pour fermer la popup lorsque le fond flou est cliqué
+blurBackground.addEventListener('click', function(event) {
+    if (event.target === blurBackground) {
+        popup.style.display = 'none';
+        blurBackground.style.display = 'none';
+    }
 });
+
 // Fonction pour ouvrir la popup
 function openPopup() {
-	popup.style.display = 'block';
-	document.body.style.overflow = 'hidden';
-	blurBackground.style.display = 'block';
+    popup.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    blurBackground.style.display = 'block';
 }
+
+// Fonction pour fermer la popup
 function closePopup() {
-	let popup = document.getElementById('popup');
-	popup.style.display = 'none';
-	document.body.style.overflow = '';
-	document.querySelector('.blur-background').style.display = 'none';
+    popup.style.display = 'none';
+    document.body.style.overflow = '';
+    blurBackground.style.display = 'none';
 }
 
-var newChatButton = document.getElementById('newChatButton');
-var inviteButtons = document.querySelectorAll('.invite-button');
-var popup = document.getElementById('popup');
-var blurBackground = document.querySelector('.blur-background');
-var searchInput = document.getElementById('searchInput');
-var searchButton = document.querySelector('.search-container button');
-var userItems = document.querySelectorAll('.user-item');
-
-newChatButton.addEventListener('click', function (event) {
-	openPopup();
-});
-
-function searchUsers() {
-	var searchText = document.getElementById('searchInput').value.toLowerCase();
-	var users = document.querySelectorAll('.user-item');
-	var searchResultDiv = document.getElementById('searchResult');
-	searchResultDiv.innerHTML = ''; // Effacer les résultats précédents
-	searchResultDiv.style.display = 'none'; // Masquer le div en attendant
-
-	for (let user of users) {
-		var name = user.querySelector('.user-name').textContent.toLowerCase();
-		if (searchText && name.includes(searchText)) {
-			var userClone = user.cloneNode(true); // Cloner l'élément trouvé
-			userClone.addEventListener('click', handleInviteButtonClick);
-			searchResultDiv.appendChild(userClone); // Ajouter le clone au div de résultat
-			searchResultDiv.style.display = ''; // Afficher le div de résultat
-			break; // Sortir après avoir trouvé le premier utilisateur correspondant
-		}
-	}
-}
-
-// Modifier l'écouteur d'événements pour utiliser la fonction searchUsers lors de la saisie
+// Attachement des écouteurs d'événements à des éléments de l'UI
+document.getElementById('newChatButton').addEventListener('click', openPopup);
 document.getElementById('searchInput').addEventListener('input', searchUsers);
-
-
 document.querySelector('.search-container button').addEventListener('click', searchUsers);
-
-// Ecouteur d'événements pour les boutons "Invite"
-function handleInviteButtonClick(event) {
-	const userItem = event.target.closest('.user-item');
-	const clonedUserItem = userItem.cloneNode(true);
-	const userName = userItem.querySelector('.user-name').textContent; // Get the username
-	const isInvited = event.target.textContent === 'Invite';
-
-	// Update the button text and color
-	event.target.textContent = isInvited ? '✖' : 'Invite';
-	event.target.style.backgroundColor = isInvited ? 'red' : '#4CAF50';
-
-	const targetContainerId = isInvited ? 'invitedUsers' : 'user-list';
-	const targetContainer = document.getElementById(targetContainerId);
-
-	if (isInvited && targetContainerId === 'invitedUsers') {
-		// If inviting the user, search for and remove the original from the user list
-		const originalUserItems = document.querySelectorAll('#user-list .user-item');
-		originalUserItems.forEach(function (item) {
-			const itemUserName = item.querySelector('.user-name').textContent;
-			if (itemUserName === userName) {
-				item.remove(); // Remove the original item from the user list
-			}
-		});
-	}
-
-	targetContainer.appendChild(userItem); // Add the invited user to the target container
-}
-
-// Attach the event listener directly to each invite-button
 document.querySelectorAll('.invite-button').forEach(button => {
-	button.addEventListener('click', handleInviteButtonClick);
+    button.addEventListener('click', handleInviteButtonClick);
 });
+blurBackground.addEventListener('click', closePopup);
 
-// Gestion du clic sur le fond flou pour fermer la popup
-blurBackground.addEventListener('click', function () {
-	closePopup();
-});
+// Fonction pour chercher des utilisateurs et mettre à jour l'affichage des résultats
+function searchUsers() {
+    var searchText = document.getElementById('searchInput').value.toLowerCase();
+    var users = document.querySelectorAll('.user-item');
+    var searchResultDiv = document.getElementById('searchResult');
+    searchResultDiv.innerHTML = ''; // Effacer les résultats précédents
+    searchResultDiv.style.display = 'none'; // Masquer le div en attendant
 
-
-function updateScrollbars() {
-	const userListContainer = document.getElementById('user-list');
-	const invitedUsersContainer = document.getElementById('invitedUsers');
-
-	if (userListContainer.children.length === 0) {
-		userListContainer.style.overflowY = 'hidden';
-	} else {
-		userListContainer.style.overflowY = 'auto';
-	}
-
-	if (invitedUsersContainer.children.length === 0) {
-		invitedUsersContainer.style.overflowY = 'hidden';
-	} else {
-		invitedUsersContainer.style.overflowY = 'auto';
-	}
+    for (let user of users) {
+        var name = user.querySelector('.user-name').textContent.toLowerCase();
+        if (searchText && name.includes(searchText)) {
+            var userClone = user.cloneNode(true); // Cloner l'élément trouvé
+            userClone.querySelector('.invite-button').addEventListener('click', handleInviteButtonClick);
+            searchResultDiv.appendChild(userClone); // Ajouter le clone au div de résultat
+            searchResultDiv.style.display = ''; // Afficher le div de résultat
+            break; // Sortir après avoir trouvé le premier utilisateur correspondant
+        }
+    }
 }
 
-// Appelez cette fonction après toute opération qui modifie le nombre d'utilisateurs invités
-updateScrollbars();
+// Gestionnaire pour les clics sur les boutons d'invitation
+function handleInviteButtonClick(event) {
+    const userItem = event.target.closest('.user-item');
+    const userName = userItem.querySelector('.user-name').textContent;
+    const isInvited = event.target.textContent === 'Invite';
+
+    event.target.textContent = isInvited ? '✖' : 'Invite';
+    event.target.style.backgroundColor = isInvited ? 'red' : '#4CAF50';
+
+    if (isInvited) {
+        removeFromUserList(userName);
+        userItem.querySelector('.invite-button').textContent = '✖';
+        userItem.querySelector('.invite-button').style.backgroundColor = 'red';
+        document.getElementById('invitedUsers').appendChild(userItem);
+    } else {
+        removeFromInvitedList(userName);
+        userItem.querySelector('.invite-button').textContent = 'Invite';
+        userItem.querySelector('.invite-button').style.backgroundColor = '#4CAF50';
+        document.getElementById('user-list').appendChild(userItem);
+    }
+    document.getElementById('searchInput').value = ''; // Clear the search input
+}
+
+// Fonction pour retirer un utilisateur de la liste des utilisateurs non invités
+function removeFromUserList(userName) {
+    var items = document.querySelectorAll('#user-list .user-item');
+    items.forEach(function(item) {
+        if (item.querySelector('.user-name').textContent === userName) {
+            item.remove();
+        }
+    });
+}
+
+// Fonction pour retirer un utilisateur de la liste des utilisateurs invités
+function removeFromInvitedList(userName) {
+    var items = document.querySelectorAll('#invitedUsers .user-item');
+    items.forEach(function(item) {
+        if (item.querySelector('.user-name').textContent === userName) {
+            item.remove();
+        }
+    });
+}

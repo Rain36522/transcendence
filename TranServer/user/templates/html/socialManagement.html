@@ -2,51 +2,52 @@
 {% load static %}
 
 {% block content %}
-
 <link rel="stylesheet" href="{% static 'socialManagement.css' %}">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
 
-
-  <div class="frame">
+<div class="frame">
     <div class="tab-container">
-      <div class="tab"><a href="{% url 'account_information' %}" style="color: #000000;">Account Information</a></div>
-      <div class="tab"><a href="{% url 'user_dashboard' %}" style="color: #000000;">Dashboard</a></div>
-      <div class="tab active"><a href="{% url 'social_management' %}" style="color: #ffffff;">Social Management</a></div>      
+        <div class="tab"><a href="{% url 'account_information' %}" style="color: #000000;">Account Information</a></div>
+        <div class="tab"><a href="{% url 'user_dashboard' %}" style="color: #000000;">Dashboard</a></div>
+        <div class="tab active"><a href="{% url 'social_management' %}" style="color: #ffffff;">Social Management</a></div>      
     </div>
     <div class="content-area">
-      <div class="search-area">
-        <input type="text" placeholder="Search a user..." class="search-box">
-        <button type="button">Go!</button>
-      </div>
-      <ul class="user-list">
-        <!-- Les éléments de la liste seront générés par JavaScript -->
-      </ul>
-      <a href="#" class="edit-link">Edit</a>
-    </div>
-  </div>
-  <script src="{% static 'utils.js' %}"></script>
+        <div class="search-area">
+            <input type="text" placeholder="Search a user..." class="search-box">
+            <button type="button">Go!</button>
+        </div>
+        <div class="sections-container">
+            <!-- Barre de recherche -->
+            <!-- Sections -->
+            <section class="friends-section">
+                <h3>Friends</h3>
+                <ul class="user-list friends-list">
+                    <!-- Friends list will be generated here -->
+                </ul>
+            </section>
+            <section class="pending-section">
+                <h3>Pending Requests</h3>
+                <ul class="user-list pending-list">
+                    <!-- Pending requests will be generated here -->
+                </ul>
+            </section>
+            <section class="blocked-section">
+                <h3>Blocked Users</h3>
+                <ul class="user-list blocked-list">
+                    <!-- Blocked users will be generated here -->
+                </ul>
+            </section>
+            <section class="users-section">
+                <h3>Users</h3>
+                <ul class="user-list users-list">
+                    <!-- Les utilisateurs généraux seront générés ici -->
+                </ul>
+            </section>            
+        </div>
+    </div>    
+    <script src={% static 'utils.js' %}></script>
+    <script src={% static 'socialManagement.js' %}></script>
+</div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var users = [            {username: "Lolita564", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzO65Lpx5OR_-M92O1otaGdIt6nsTKfii_Bg&usqp=CAU", online: true},            {username: "Famacito", imageUrl: "https://risibank.fr/cache/medias/0/13/1326/132676/full.png", online: false},            {username: "Mania_xLeaderz", imageUrl: "https://cdn.gonzague.me/wp-content/uploads/2012/06/146646811-1200x900.gif", online: true}        ];
-
-        var userList = document.querySelector('.user-list');
-        userList.innerHTML = ''; // Clear existing list items
-
-        users.forEach(function(user) {
-          var li = document.createElement('li');
-          li.innerHTML = `
-              <div class="user-info">
-                  <div class="user-photo" style="background-image: url('${user.imageUrl}');">
-                      <span class="status-indicator" style="background-color: ${user.online ? 'green' : 'red'};"></span>
-                  </div>
-                  <span class="username">${user.username}</span>
-              </div>
-              <button class="block-button">${user.online ? 'Block' : 'Unblock'}</button>`;
-          userList.appendChild(li);
-        });
-    });
-  </script>
-
-  {% endblock %}
+{% endblock %}

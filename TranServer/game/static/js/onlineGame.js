@@ -78,32 +78,37 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	function handleInviteButtonClick(event) {
 		const userItem = event.target.closest('.user-item');
-		const clonedUserItem = userItem.cloneNode(true);
-		const userName = userItem.querySelector('.user-name').textContent; // Get the username
+		const userName = userItem.querySelector('.user-name').textContent; // Obtenir le nom d'utilisateur
 		const isInvited = event.target.textContent === 'Invite';
-
-		// Update the button text and color
+	
+		// Mettre à jour le texte du bouton et la couleur
 		event.target.textContent = isInvited ? '✖' : 'Invite';
 		event.target.style.backgroundColor = isInvited ? 'red' : '#4CAF50';
-
+	
 		const targetContainerId = isInvited ? 'invitedUsers' : 'user-list';
 		const targetContainer = document.getElementById(targetContainerId);
-
-		if (isInvited && targetContainerId === 'invitedUsers') {
-			// If inviting the user, search for and remove the original from the user list
-			const originalUserItems = document.querySelectorAll('#user-list .user-item');
-			originalUserItems.forEach(function (item) {
-				const itemUserName = item.querySelector('.user-name').textContent;
-				if (itemUserName === userName) {
-					item.remove(); // Remove the original item from the user list
-				}
-			});
-		}
-
-		targetContainer.appendChild(userItem); // Add the invited user to the target container
+		const sourceContainerId = isInvited ? 'user-list' : 'invitedUsers';
+		const sourceContainer = document.getElementById(sourceContainerId);
+	
+		// Si on invite l'utilisateur, chercher et supprimer l'original de la liste des utilisateurs
+		const sourceUserItems = sourceContainer.querySelectorAll('.user-item');
+		sourceUserItems.forEach(function(item) {
+			const itemUserName = item.querySelector('.user-name').textContent;
+			if (itemUserName === userName) {
+				item.remove(); // Enlever l'élément original du conteneur source
+			}
+		});
+	
+		// Ajouter l'utilisateur invité au conteneur cible
+		targetContainer.appendChild(userItem);
+	
+		// Vider la barre de recherche
+		document.getElementById('searchInput').value = '';
+		// Masquer les résultats de recherche si nécessaire
+		document.getElementById('searchResult').style.display = 'none';
+		document.getElementById('searchResult').innerHTML = '';
 	}
-
-	// Attach the event listener directly to each invite-button
+	
 	document.querySelectorAll('.invite-button').forEach(button => {
 		button.addEventListener('click', handleInviteButtonClick);
 	});

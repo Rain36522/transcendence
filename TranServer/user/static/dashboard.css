@@ -4,14 +4,16 @@ body {
 	padding: 0;
 	background-color: #f0f0f0;
 }
+
 .vignette {
 	position: fixed;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
-	box-shadow: 0 0 200px rgba(0,0,0,0.9) inset;
+	box-shadow: 0 0 200px rgba(0, 0, 0, 0.9) inset;
 }
+
 .image-container {
 	position: absolute;
 	top: 0;
@@ -20,21 +22,23 @@ body {
 	height: 100%;
 	overflow: hidden;
 }
+
 .image-container img {
-width: 100%;
-height: 100%;
-object-fit: cover;
-filter: grayscale(100%);
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	filter: grayscale(100%);
 }
 
 .image-container::before {
-content: "";
-position: absolute;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background-color: rgba(0, 0, 0, 0.5); /* Opacité réglable */
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	/* Opacité réglable */
 }
 
 header {
@@ -51,6 +55,7 @@ header {
 	justify-content: space-between;
 	align-items: center;
 }
+
 .header-btn {
 	background: none;
 	border: none;
@@ -63,26 +68,33 @@ header {
 	letter-spacing: 1px;
 	text-decoration: none;
 }
+
 .profile-btn {
 	background-color: #FFFF99;
 	border-radius: 5px;
 	color: #000;
 }
-.frame
-{
-  position: fixed;
-  top: 19%; /* Ajustez la position verticale pour la baisser légèrement */
-  left: 50%; /* Recentrez horizontalement */
-  transform: translateX(-50%); /* Recentrez horizontalement */
-  width: 60%; /* Conservez la largeur actuelle */
-  height: 75%; /* Conservez la hauteur actuelle */
-  background-color: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
-  display: flex;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-  z-index: 5;
-  overflow: hidden;
+
+.frame {
+	position: fixed;
+	top: 19%;
+	/* Ajustez la position verticale pour la baisser légèrement */
+	left: 50%;
+	/* Recentrez horizontalement */
+	transform: translateX(-50%);
+	/* Recentrez horizontalement */
+	width: 60%;
+	/* Conservez la largeur actuelle */
+	height: 75%;
+	/* Conservez la hauteur actuelle */
+	background-color: rgba(255, 255, 255, 0.95);
+	border-radius: 20px;
+	display: flex;
+	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+	z-index: 5;
+	overflow: hidden;
 }
+
 .tab-container {
 	width: 25%;
 	background-color: #EEE;
@@ -94,6 +106,7 @@ header {
 	gap: 20px;
 	border-right: 3px solid #CCC;
 }
+
 .tab {
 	width: 100%;
 	text-align: center;
@@ -104,42 +117,56 @@ header {
 	color: #333;
 	background-color: #F5F5F5;
 	font-weight: 700;
-	border-bottom: 
-	2px solid #DDD;
-	text-decoration: none; /* Ajoutez cette ligne pour enlever le soulignement */
+	border-bottom:
+		2px solid #DDD;
+	text-decoration: none;
+	/* Ajoutez cette ligne pour enlever le soulignement */
 }
+
 .tab.active {
 	background-color: #000000;
 	color: #FFF;
 }
+
 .tab:hover {
-	background-color: #CFD8DC;
+	background-color: #F0F0F0;
 	transform: translateY(-5px);
 }
+
 .profile-section {
 	width: 75%;
 	display: flex;
 	flex-direction: column;
-	align-items: center; /* Centrer les éléments horizontalement */
+	align-items: center;
+	/* Centrer les éléments horizontalement */
 	padding: 30px;
 }
+
 .profile-pic {
-width: 140px;
-height: 140px;
-border-radius: 70px; /* Assure la forme circulaire */
-background-color: #DDD;
-background-image: url('shrek.jpg'); /* Image de profil par défaut */
-background-size: cover;
-background-position: center;
-margin-bottom: 20px; /* Réduit la marge inférieure pour rapprocher du nom d'utilisateur */
-border: 5px solid #BBB;
+	position: relative;
+	/* Ajout important ici */
+	width: 140px;
+	height: 140px;
+	border-radius: 70px;
+	/* Assure la forme circulaire */
+	background-color: #DDD;
+	background-image: url('shrek.jpg');
+	/* Image de profil par défaut */
+	background-size: cover;
+	background-position: center;
+	margin-bottom: 20px;
+	/* Réduit la marge inférieure pour rapprocher du nom d'utilisateur */
+	border: 5px solid #BBB;
 }
+
 .profile-name {
-font-size: 28px;
-margin-top: 0px; /* Ajout pour contrôler l'espacement au-dessus du nom d'utilisateur */
-margin-bottom: 10px; /* Ajustez selon besoin */
-color: #333;
-font-weight: 800;
+	font-size: 28px;
+	margin-top: 0px;
+	/* Ajout pour contrôler l'espacement au-dessus du nom d'utilisateur */
+	margin-bottom: 10px;
+	/* Ajustez selon besoin */
+	color: #333;
+	font-weight: 800;
 }
 
 .statistic {
@@ -147,15 +174,18 @@ font-weight: 800;
 	color: #666;
 	margin: 10px 0;
 }
+
 .statistic span {
 	font-weight: 700;
 	color: #000;
 }
+
 .upload-btn-wrapper {
 	margin-bottom: 20px;
 	overflow: hidden;
 	display: inline-block;
 }
+
 .upload-btn-wrapper input[type="file"] {
 	font-size: 100px;
 	position: absolute;
@@ -163,6 +193,7 @@ font-weight: 800;
 	top: 0;
 	opacity: 0;
 }
+
 .progress-bar {
 	display: block;
 	height: 25px;
@@ -172,4 +203,19 @@ font-weight: 800;
 	line-height: 25px;
 	color: white;
 	margin-top: 15px;
+}
+
+.online-indicator {
+	width: 30px;
+	height: 30px;
+	border-radius: 15px;
+	/* Cela crée une forme circulaire */
+	background-color: green;
+	/* Vert indique en ligne, changez à rouge pour hors ligne */
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+	border: 3px solid white;
+	/* Ajoute une bordure pour mieux voir sur des fonds variés */
+	z-index: 100;
 }
