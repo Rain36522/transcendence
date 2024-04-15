@@ -1,3 +1,4 @@
+from sys import stderr
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, renderer_classes
@@ -76,6 +77,21 @@ class FriendListView(APIView):
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+    def post(self, request, username=None):
+        try:
+            friend = request.user.invites.filter(username=username)
+            if friend:
+                request.user.friends.add(friend.first())
+                request.user.invites.remove(friend.first())
+                return JsonResponse(
+                    {"message": "accepted friend invite"}, status=status.HTTP_200_OK
+                )
+            return JsonResponse(
+                {"error": "no invite found"}, status=status.HTTP_400_BAD_REQUEST
+            )
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
     def delete(self, request, username=None):
         if not username:
             return Response(
@@ -83,8 +99,8 @@ class FriendListView(APIView):
             )
         try:
             user = User.objects.get(username=username)
-            if user.friends.filter(username=request.username):
-                user.friends.remove(user)
+            if user.friends.filter(username=request.user.username):
+                user.friends.remove(request.user)
                 return Response("Removed user", status=status.HTTP_200_OK)
             return Response("User is not friend", status=status.HTTP_400_BAD_REQUEST)
         except User.DoesNotExist:
@@ -96,9 +112,24 @@ class FriendListView(APIView):
             return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(["DELETE"])
+@renderer_classes([JSONRenderer])
+@login_required
+def undo_invite_api(request, username):
+    try:
+        user = User.objects.get(username=username)
+        user.invites.remove(request.user)
+        return Response("Rescinded invited", status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response("Invalid request", status=status.HTTP_400_BAD_REQUEST)
+
+
 class InviteListView(APIView):
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
+    """
+    Get your invites
+    """
 
     def get(self, request, username=None):
         try:
@@ -110,6 +141,10 @@ class InviteListView(APIView):
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+    """
+    Send invites to someone
+    """
+
     def post(self, request, username=None):
         if not username:
             return Response(
@@ -117,14 +152,37 @@ class InviteListView(APIView):
             )
         try:
             user = User.objects.get(username=username)
+            if request.user.blocked.filter(username=username):
+                return Response(
+                    "You can't invite a user that you've blocked",
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            if user.blocked.filter(username=request.user.username):
+                return Response(
+                    "You can't invite a user that has blocked you",
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             if user.invites.filter(username=username):
                 return Response(
                     "Invite already exists", status=status.HTTP_400_BAD_REQUEST
                 )
-            user.invites.add(user)
+            if request.user == user:
+                return Response(
+                    "You cannot invite yourself", status=status.HTTP_400_BAD_REQUEST
+                )
+            if request.user.invites.filter(username=username):
+                request.user.invites.remove(user)
+                request.user.friends.add(user)
+                return Response("Added as friend", status=status.HTTP_200_OK)
+
+            user.invites.add(request.user)
             return Response("Added invite", status=status.HTTP_200_OK)
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    """
+    Reject an invite
+    """
 
     def delete(self, request, username=None):
         if not username:
@@ -133,8 +191,8 @@ class InviteListView(APIView):
             )
         try:
             user = User.objects.get(username=username)
-            if user.invites.filter(username=request.username):
-                user.invites.remove(user)
+            if request.user.invites.filter(username=user.username):
+                request.user.invites.remove(user)
                 return Response("Removed user", status=status.HTTP_200_OK)
             return Response("Invite does not exist", status=status.HTTP_400_BAD_REQUEST)
         except User.DoesNotExist:
@@ -167,9 +225,19 @@ class BlockedListView(APIView):
             )
         try:
             user = User.objects.get(username=username)
-            if user.blocked.filter(username=username):
+            if request.user.blocked.filter(username=username):
                 return Response("Already blocked", status=status.HTTP_400_BAD_REQUEST)
-            user.blocked.add(user)
+            if request.user == user:
+                return Response(
+                    "You cannot block yourself", status=status.HTTP_400_BAD_REQUEST
+                )
+            request.user.blocked.add(user)
+            if request.user.invites.filter(username=username):
+                request.user.invites.remove(user)
+            if user.invites.filter(username=request.user.username):
+                user.invites.remove(request.user)
+            if request.user.friends.filter(username=username):
+                request.user.friends.remove(user)
             return Response("Added blocked", status=status.HTTP_200_OK)
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -181,8 +249,8 @@ class BlockedListView(APIView):
             )
         try:
             user = User.objects.get(username=username)
-            if user.blocked.filter(username=request.username):
-                user.blocked.remove(user)
+            if request.user.blocked.filter(username=user.username):
+                request.user.blocked.remove(user)
                 return Response("Unblocked user", status=status.HTTP_200_OK)
             return Response("User is not blocked", status=status.HTTP_400_BAD_REQUEST)
         except User.DoesNotExist:
@@ -192,6 +260,21 @@ class BlockedListView(APIView):
             )
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+@renderer_classes([JSONRenderer])
+def user_exist_api(request, username=None):
+    try:
+        if username:
+            User.objects.get(username=username)
+            return Response(True, status=status.HTTP_200_OK)
+        else:
+            return Response(
+                "Please provide a username", status=status.HTTP_400_BAD_REQUEST
+            )
+    except:
+        return Response(False, status=status.HTTP_200_OK)
 
 
 @api_view(["POST"])
@@ -472,6 +555,7 @@ def change_password_api(request):
         return JsonResponse(
             {"error": "Bad request"}, status=status.HTTP_400_BAD_REQUEST
         )
+
 
 @login_required
 def test_password_change_view(request):

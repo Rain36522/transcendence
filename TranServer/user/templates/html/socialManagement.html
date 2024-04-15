@@ -15,8 +15,12 @@
     </div>
     <div class="content-area">
         <div class="search-area">
+            <div class="search-selection">
             <input type="text" placeholder="Search a user..." class="search-box">
-            <button type="button">Go!</button>
+            </div>
+            <button type="button" id="invite_btn">Invite</button>
+            <button type="button" id="block_btn">Block</button>
+            <h1 id="error_message"></h1>
         </div>
         <div class="sections-container">
             <!-- Les sections existantes -->
@@ -42,12 +46,6 @@
                 <h3>Waiting for Approval</h3>
                 <ul class="user-list waiting-approval-list">
                     <!-- Les demandes en attente d'approbation seront générées ici -->
-                </ul>
-            </section>
-            <section class="users-section">
-                <h3>Users</h3>
-                <ul class="user-list users-list">
-                    <!-- Les utilisateurs généraux seront générés ici -->
                 </ul>
             </section>
         </div>
