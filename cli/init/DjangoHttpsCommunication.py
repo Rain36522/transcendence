@@ -52,8 +52,6 @@ class DjangoCommunication:
         }
         try:
             response = self.session.post(self.url + "/api/signup/", data=data, verify=False)
-            print(ORANGE, response.text, RESET)
-            system("clear")
             return response.status_code
         except:
             return 500
