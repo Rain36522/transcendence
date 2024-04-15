@@ -116,32 +116,34 @@
                 <a href="{% url 'home_page' %}" class="exit-link">Exit</a>
             </div>
         </div>
+        <a href="#" id="create-link" class="create-button">Create</a>
+        <a href="{% url 'home_page' %}" class="exit-link">exit</a>
+    </div>
 
-        <div id="popup" class="popup">
-            <div class="popup-content">
-                <span class="close-btn" onclick="closePopup()">&times;</span>
-                <h3>Invite players to the game!</h3>
-                <div class="search-container">
-                    <input type="text" id="searchInput" placeholder="Search...">
-                    <button type="button">Search</button>
-                </div>
-                <!-- Nouvelle section pour afficher le résultat de la recherche -->
-                <div id="searchResult" class="search-result" style="display: none;">
-                    <!-- Le résultat de la recherche sera injecté ici -->
-                </div>
-                <div class="users-and-invited-container"> <!-- Conteneur parent pour Flexbox -->
-                    <div class="user-list-container" id="user-list"> <!-- Ajoutez l'identifiant ici -->
-                        <div class="user-list">
-                            <!-- Les utilisateurs seront affichés ici -->
-                        </div>
-                    </div>
-                    <div class="user-list-container" id="invitedUsers">
-                        <h3>Invited Players</h3>
-                        <!-- Les utilisateurs invités seront affichés ici -->
-                    </div>
-                </div>
-                <button class="start-button">Start</button>
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <span class="close-btn" onclick="closePopup()">&times;</span>
+            <h3>Invite players to the game!</h3>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search...">
+                <button type="button">Search</button>
             </div>
+            <!-- Nouvelle section pour afficher le résultat de la recherche -->
+            <div id="searchResult" class="search-result" style="display: none;">
+                <!-- Le résultat de la recherche sera injecté ici -->
+            </div>
+            <div class="users-and-invited-container"> <!-- Conteneur parent pour Flexbox -->
+                <div class="user-list-container" id="user-list"> <!-- Ajoutez l'identifiant ici -->
+                    <div class="user-list">
+                        <!-- Les utilisateurs seront affichés ici -->
+                    </div>
+                </div>
+                <div class="user-list-container" id="invitedUsers">
+                    <h3>Invited Players</h3>
+                    <!-- Les utilisateurs invités seront affichés ici -->
+                </div>
+            </div>
+            <button class="start-button">Start</button>
         </div>
         <script src="{% static 'utils.js' %}"></script>
         <script src="{% static 'js/tournament.js' %}"></script>

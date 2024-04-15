@@ -17,6 +17,9 @@ from .views import (
     BlockedListView,
     search_usernames_api,
     profile_info_api,
+    is_active_api,
+    change_password_api,
+    test_password_change_view,
 )
 from django.views.generic.base import RedirectView
 
@@ -54,4 +57,11 @@ urlpatterns = [
         "api/profile/<str:username>/", profile_info_api, name="profile_info_api_other"
     ),
     path("api/profile/", profile_info_api, name="profile_info_api"),
+    path("api/last_active/<str:username>/", is_active_api, name="is_active_api"),
+    path("api/change_password/", change_password_api, name="change_password_api"),
+    path(
+        "test/change_password/",
+        test_password_change_view,
+        name="test_password_change_view",
+    ),
 ]

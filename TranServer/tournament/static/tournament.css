@@ -65,11 +65,27 @@ header {
 }
 
 .content {
+  display: flex;
+  flex-direction: row;
+  /* Changer en row pour aligner les colonnes côte à côte */
+  justify-content: center;
+  align-items: start;
+  /* Aligner les colonnes en haut */
+  padding: 20px;
+  box-sizing: border-box;
+  width: 100%;
+  /* Ajuster la largeur si nécessaire */
   position: fixed;
+<<<<<<< HEAD
   top: 50%;
+=======
+  top: 60%;
+  /* Déjà ajusté pour baisser le cadre */
+>>>>>>> master
   left: 50%;
   transform: translate(-50%, -50%);
   display: flex;
+<<<<<<< HEAD
   flex-direction: column;
   align-items: center;
   width: 70%;
@@ -77,6 +93,12 @@ header {
   padding: 20px;
   box-sizing: border-box;
   color: white;
+=======
+  color: white;
+  border-radius: 10px;
+  /* Augmenté de 50% à 70% pour agrandir encore plus en longueur */
+  height: 70%;
+>>>>>>> master
   background-color: rgba(44, 44, 44, 0.714);
   border-radius: 10px;
   overflow: auto;

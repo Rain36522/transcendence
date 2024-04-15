@@ -1,6 +1,6 @@
 from re import match
-from tools import *
-from DjangoHttpsCommunication import DjangoCommunication
+from init.tools import *
+from init.DjangoHttpsCommunication import DjangoCommunication
 
 
 class User:
@@ -23,7 +23,7 @@ class User:
         if pwd == None:
             return False
         value = self.Django.loginUser(user, pwd)
-        while value != 200 and value != 500:
+        while value >= 400 and value != 500:
             result = Question3Value("LOGIN", "Login fail.", "Retry", "signup", "exit", style=STYLERROR)
             if result == 1:
                 user, pwd = self.login(error=True)
@@ -34,9 +34,9 @@ class User:
             else:
                 doexit(1, "User exit.")
         if value == 500:
-                print("HERE")
                 doexit(1, "Error: Serveur not accessible.")
         Information("LOGIN", "User connection succes.", style=STYLSUCCESS)
+        return True
         
 
     def login(self, error=False):
@@ -49,7 +49,7 @@ class User:
             user = inputText("LOGIN", "Please type your username: ")
             if user == None:
                 return None, None
-            pwd = inputText("LOGIN", "Please type your password: ", True)
+            pwd = inputText("LOGIN", "Please type your password: ", password=True)
         return user, pwd
 
     def doRegistration(self):
@@ -57,7 +57,9 @@ class User:
         if pwd == None:
             return False
         value = self.Django.createUser(user, mail, pwd)
-        while value != 200 and value != 500:
+        if value >=400:
+            Information(str(value), "Error " + str(value))
+        while value >=400 and value != 500:
             result = Question3Value("REGISTRATION", "User or email already existing.", "signup", "login", "exit", style=STYLERROR)
             if result == 0:
                 self.doLogin()
