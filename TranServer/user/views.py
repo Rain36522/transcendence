@@ -6,14 +6,18 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.permissions import IsAuthenticated
 
 from django.http import HttpResponse, JsonResponse
-from django.urls import reverse_lazy
 from django.conf import settings
-from django.views import generic
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import (
+    authenticate,
+    login,
+    logout,
+    password_validation,
+    update_session_auth_hash,
+)
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-
+from django.utils import timezone
 
 from .models import User
 from chat.models import Chat
@@ -26,6 +30,7 @@ from .serializers import (
 
 import mimetypes
 import os
+from datetime import timedelta
 
 
 @api_view(["POST"])
@@ -350,3 +355,124 @@ def profile_info_api(request, username=None):
         return JsonResponse(
             {"error": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST
         )
+
+
+@api_view(["GET"])
+@renderer_classes([JSONRenderer])
+@login_required
+def is_active_api(request, username=None):
+    try:
+        if username:
+            user = get_object_or_404(User, username=username)
+            cur_time = timezone.now()
+            last_active = cur_time - user.last_active < timedelta(minutes=5)
+            return Response(last_active, status=status.HTTP_200_OK)
+        return Response(
+            {"error": "Please provide a username"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    except:
+        return JsonResponse(
+            {"error": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+
+@api_view(["POST"])
+@renderer_classes([JSONRenderer])
+@login_required
+def update_profile_api(request):
+    try:
+        user = request.user
+
+        new_username = request.data.get("username")
+        new_email = request.data.get("email")
+        first_name = request.data.get("first_name")
+        last_name = request.data.get("last_name")
+
+        if not new_username and not new_email:
+            return Response(
+                {"error": "You must provide either a new username or a new email."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if (
+            new_username
+            and new_username != user.username
+            and User.objects.filter(username=new_username).exists()
+        ):
+            return Response(
+                {"error": "Username already exists."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if (
+            new_email
+            and new_email != user.email
+            and User.objects.filter(email=new_email).exists()
+        ):
+            return Response(
+                {"error": "Email already exists."}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if new_username:
+            user.username = new_username
+        if new_email:
+            user.email = new_email
+        if first_name:
+            user.first_name = first_name
+        if last_name:
+            user.first_name = first_name
+
+        user.save()
+        return Response(
+            {"message": "User information updated successfully."},
+            status=status.HTTP_200_OK,
+        )
+    except:
+        return JsonResponse(
+            {"error": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+
+@api_view(["POST"])
+@renderer_classes([JSONRenderer])
+@login_required
+def change_password_api(request):
+    try:
+        user = request.user
+        old_password = request.POST.get("old_password")
+        new_password = request.POST.get("new_password")
+
+        if not user.check_password(old_password):
+            return JsonResponse(
+                {"error": "Old password is incorrect"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        if old_password == new_password:
+            return JsonResponse(
+                {"error": "New password must be different from the old one"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        try:
+            password_validation.validate_password(new_password, user=user)
+        except ValidationError as e:
+            return JsonResponse(
+                {"error": e.messages}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        user.set_password(new_password)
+        user.save()
+
+        update_session_auth_hash(request, user)
+        return JsonResponse(
+            {"message": "Password changed successfully"}, status=status.HTTP_200_OK
+        )
+    except Exception as e:
+        return JsonResponse(
+            {"error": "Bad request"}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+@login_required
+def test_password_change_view(request):
+    return render(request, "test_password_change.html")
