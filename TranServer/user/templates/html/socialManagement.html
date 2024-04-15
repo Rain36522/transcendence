@@ -10,7 +10,8 @@
     <div class="tab-container">
         <div class="tab"><a href="{% url 'account_information' %}" style="color: #000000;">Account Information</a></div>
         <div class="tab"><a href="{% url 'user_dashboard' %}" style="color: #000000;">Dashboard</a></div>
-        <div class="tab active"><a href="{% url 'social_management' %}" style="color: #ffffff;">Social Management</a></div>      
+        <div class="tab active"><a href="{% url 'social_management' %}" style="color: #ffffff;">Social Management</a>
+        </div>
     </div>
     <div class="content-area">
         <div class="search-area">
@@ -18,8 +19,7 @@
             <button type="button">Go!</button>
         </div>
         <div class="sections-container">
-            <!-- Barre de recherche -->
-            <!-- Sections -->
+            <!-- Les sections existantes -->
             <section class="friends-section">
                 <h3>Friends</h3>
                 <ul class="user-list friends-list">
@@ -38,14 +38,20 @@
                     <!-- Blocked users will be generated here -->
                 </ul>
             </section>
+            <section class="waiting-approval-section">
+                <h3>Waiting for Approval</h3>
+                <ul class="user-list waiting-approval-list">
+                    <!-- Les demandes en attente d'approbation seront générées ici -->
+                </ul>
+            </section>
             <section class="users-section">
                 <h3>Users</h3>
                 <ul class="user-list users-list">
                     <!-- Les utilisateurs généraux seront générés ici -->
                 </ul>
-            </section>            
+            </section>
         </div>
-    </div>    
+    </div>
     <script src={% static 'utils.js' %}></script>
     <script src={% static 'socialManagement.js' %}></script>
 </div>

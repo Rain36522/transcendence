@@ -51,7 +51,7 @@ class newGame(APIView):
         print("POST FROM USER !", file=sys.stderr)
         data = self.changeData(request.data.copy())
         if data:
-            print("Data")
+            print("Data", file=sys.stderr)
             serializer = GameSettingsSerializer(data=data)
             if serializer.is_valid():
                 print("Seriallizer")
@@ -79,8 +79,8 @@ class newGame(APIView):
                     {"gameLink": "/game/" + str(instance.id)}, status=200
                 )
             else:
-                print(serializer.errors)
-            print("no data")
+                print(serializer.errors, file=sys.stderr)
+        print("no data", file=sys.stderr)
         return HttpResponse("Error 400", status=400)
 
     def changeData(self, data):
@@ -124,7 +124,7 @@ def gamePage(request, id):
         player = 1
         solo = True
     elif game.gamemode == 0:
-        player = 1
+        player = 2
         solo = True
     elif game.gamemode == 1:
         player = 2
