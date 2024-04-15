@@ -34,7 +34,6 @@ class User:
             else:
                 doexit(1, "User exit.")
         if value == 500:
-                print("HERE")
                 doexit(1, "Error: Serveur not accessible.")
         Information("LOGIN", "User connection succes.", style=STYLSUCCESS)
         return True

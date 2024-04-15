@@ -20,7 +20,7 @@ import asyncio
 #         "user": request.user.username,
 #         "gameid": id
 #     }
-# game = {
+# gameData = {
 # 	"ballx" : 0, # -0.5 -> 0.5
 # 	"bally" : 0, # -0.5 -> 0.5
 # 	"p1" : 0, # -0.5 -> 0.5
@@ -68,7 +68,7 @@ class GameGui2p:
                     await asyncio.sleep(1)
                     system("clear")
                     print(self.asciiData.putString("Press Q", beginstr=GREEN, endstr=RESET))
-                    print()
+                    print("")
                     print(self.asciiData.putString("For EXIT!", beginstr=GREEN, endstr=RESET))
                     return msg
                 elif not self.userpose and self.settings["user"] in msg["users"]:

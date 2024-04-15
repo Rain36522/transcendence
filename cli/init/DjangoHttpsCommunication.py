@@ -113,18 +113,3 @@ class DjangoCommunication:
         else:
             gameinfo = loads(response.text[start:stop])
             return 200, gameinfo
-
-
-
-    # contexte = {
-    #     "nbPlayers": player,
-    #     "paddleWidth": 0.02,
-    #     "paddleLength": game.planksize,
-    #     "paddleOffset": 0.02,
-    #     "ballSize": game.ballwidth,
-    #     "isSolo": solo,
-    #     "status": "waiting",
-    #     "user": request.user.username,
-    #     "gameid": id
-    # }
-
