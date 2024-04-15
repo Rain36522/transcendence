@@ -33,20 +33,20 @@ nav ul li:last-child {
   /* Ajoute une marge à gauche pour aligner les liens avec Transcendence */
 }
 
-/* Style pour la vidéo */
 #background-video {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  min-width: 100%;
-  min-height: 100%;
-  width: auto;
-  height: auto;
-  z-index: 0;
-  /* Assurez-vous que la vidéo est en arrière-plan */
+  position: fixed;
+  /* Changez de 'absolute' à 'fixed' pour couvrir tout l'écran */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* S'assure que la vidéo couvre la zone disponible sans perdre les proportions */
+  z-index: -1;
+  /* Assurez-vous que la vidéo reste en arrière-plan */
+  overflow: hidden;
+  /* Masque la barre de défilement */
   opacity: 0.9;
-  /* Réduit l'opacité pour assombrir la vidéo */
 }
 
 #background-video::before {
@@ -73,14 +73,14 @@ nav ul li:last-child {
   box-shadow: 0 0 200px rgba(0, 0, 0, 0.9) inset;
 }
 
-html,
-body {
+body,
+html {
   height: 100%;
+  /* Assure que la taille du corps et de html prend tout l'écran */
   margin: 0;
   padding: 0;
-  font-family: 'Roboto', sans-serif;
-  background-color: #b3ecff;
-  /* Ajoute le fond bleu à l'ensemble de la page */
+  overflow: hidden;
+  /* Ajoutez ceci pour supprimer la barre de défilement sur tout le corps si nécessaire */
 }
 
 header {
@@ -247,44 +247,48 @@ nav ul li a {
   text-transform: uppercase;
 }
 
-/* Style pour la vidéo */
-#background-video {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  min-width: 100%;
-  min-height: 100%;
-  width: auto;
-  height: auto;
-  z-index: 0;
-  /* Assurez-vous que la vidéo est en arrière-plan */
-  opacity: 0.9;
-  /* Réduit l'opacité pour assombrir la vidéo */
-}
-
-#background-video::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at top left, rgba(0, 0, 0, 0.8), transparent),
-    radial-gradient(circle at top right, rgba(0, 0, 0, 0.8), transparent),
-    radial-gradient(circle at bottom left, rgba(0, 0, 0, 0.8), transparent),
-    radial-gradient(circle at bottom right, rgba(0, 0, 0, 0.8), transparent);
-  z-index: 1;
-  /* Place le dégradé au-dessus de la vidéo */
-}
-
 .header-btn {
-  color: #FFFFE0;  /* Assure la couleur du texte en blanc */
+  color: #FFFFE0;
+  /* Assure la couleur du texte en blanc */
   font-family: 'Roboto', sans-serif;
-  font-size: 20px; /* Taille de police standard pour les boutons */
+  font-size: 20px;
+  /* Taille de police standard pour les boutons */
   cursor: pointer;
   padding: 12px 20px;
   text-transform: uppercase;
   letter-spacing: 1px;
-  text-decoration: none; /* Supprime le soulignement */
+  text-decoration: none;
+  /* Supprime le soulignement */
+}
+
+.game-button {
+  display: inline-block;
+  /* Pour permettre l'ajustement de padding et autres styles de bloc */
+  padding: 12px 20px;
+  /* Ajustez selon vos besoins */
+  background-color: #FFFF99;
+  /* Jaune clair pastel fluo, comme vos autres éléments jaunes */
+  color: #000;
+  /* Couleur du texte, noir pour contraste */
+  text-transform: uppercase;
+  /* Texte en majuscules */
+  text-decoration: none;
+  /* Supprime le soulignement par défaut des liens */
+  font-family: 'Roboto', sans-serif;
+  /* Uniformité de la police avec le reste du site */
+  font-size: 20px;
+  /* Taille de la police */
+  border-radius: 5px;
+  /* Coins arrondis */
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  /* Ombre légère pour un effet 3D */
+  transition: background-color 0.3s, color 0.3s;
+  /* Transition pour hover */
+}
+
+.game-button:hover {
+  background-color: #ffff0c;
+  /* Jaune plus vif au survol */
+  color: #FFFFFF;
+  /* Texte blanc au survol */
 }
