@@ -40,15 +40,16 @@ def InitCli():
     # Information("TRANSCENDANCE", "Welcome to the transcendance CLI")
     getUrl(Django)
     User(Django)
-    return Django
+    return Django, asciiData
 
 def asWin(message, username):
     if message:
-        if message["p1"] > message["p2"] and message["user1"] == username:
-            return True, 
-        elif message["p1"] < message["p2"] and message["user1"] != username:
-            return True
-    return False
+        if message["score1"] > message["score2"]:
+            return message["users"][0]
+        else :
+            return message["users"][1]
+
+
 
 async def runGame(dataTransmission, gameGui):
     wsKey = asyncio.create_task(dataTransmission.ConnectWsKeyBinding())
@@ -58,19 +59,17 @@ async def runGame(dataTransmission, gameGui):
 
 
 if __name__ == "__main__":
-    djangocom = InitCli()
+    djangocom, asciidata = InitCli()
     while True:
         gameSettings = NewGameSettings(djangocom).gameSettings
         if not gameSettings:
             Information("UNKNOW ERROR", "Unknow Error! Retry!", style=STYLERROR)
         else:
             dataTransmission = DataTransmission(gameSettings, djangocom.url)
-            gameGui = GameGui2p(gameSettings, dataTransmission)
+            gameGui = GameGui2p(gameSettings, dataTransmission, asciidata)
             results = asyncio.run(runGame(dataTransmission, gameGui))
             if str(results[0]).isdigit():
-                # os.system("clear")
+                os.system("clear")
                 Information("ERROR", "Is the game ready to play?", style=STYLERROR)
-            elif asWin(results[2], gameSettings["user"]):
-                    Information("YOU WIN", "You win this game.", style=STYLSUCCESS)
             else:
-                Information("YOU LOOSE", "You loose this game.",style=STYLERROR)
+                Information("END GAME", str(asWin(results[2], gameSettings["user"])) + " wins this game.")

@@ -4,6 +4,7 @@ import pynput
 import asyncio
 from json import loads
 from color import *
+import ascii
 import ssl
 
 class DataTransmission:
@@ -17,6 +18,9 @@ class DataTransmission:
         self.s = False
         self.u = False
         self.d = False
+        self.exit = False
+        self.exitDone = False
+        self.loop = None
         self.isConnected = False
         self.runKeyBinding = False
         self.is2player = gameSettings["isSolo"] and gameSettings["nbPlayers"] == 2
@@ -37,7 +41,7 @@ class DataTransmission:
                 self.wsCli = await websockets.connect(self.url, ssl=ssl_context)
                 self.isConnected = True
                 while not self.runKeyBinding and not self.errormsg:
-                    await asyncio.sleep(0.1)
+                    await asyncio.sleep(0.05)
                 if not self.errormsg:
                     if self.is2player:
                         KeyQueue = self.transmitKeys2P()
@@ -47,13 +51,16 @@ class DataTransmission:
                         KeyQueue = self.transmitKeysP2()
                 i = 0
                 while not self.errormsg and self.runKeyBinding:
+                    if self.exit:
+                        await self.disconnect()
+                        return None
                     key = await KeyQueue.get()
                     if key == "EXIT":
                         return self.errormsg
                     await self.wsCli.send(key)
                 return self.errormsg
             except Exception as e:
-                print("ws Server connection failed,", self.url)
+                print(RED, "ws Server connection failed,", self.url)
                 self.wsCli = None
                 self.isConnected = False
 
@@ -61,18 +68,21 @@ class DataTransmission:
         while not self.wsCli:
             await asyncio.sleep(0.1)
         while True:
-            # try:
-            async for self.message in self.wsCli:
-                if str(self.message).isdigit():
-                    self.errormsg = self.message
-                    return self.errormsg
-                if not self.playerpos:
-                    self.getUserPos()
-                self.runKeyBinding = True
-            # except:
-            #     print(RED, "Reading msg error", RESET)
-            #     while not self.isConnected:
-            #         await asyncio.sleep(0.1)
+            try:
+                async for self.message in self.wsCli:
+                    if str(self.message).isdigit():
+                        self.errormsg = self.message
+                        return self.errormsg
+                    if not self.playerpos:
+                        self.getUserPos()
+                    if self.runKeyBinding and loads(self.message)["state"] == "game_over":
+                        self.exit = True
+                        return None
+                    self.runKeyBinding = True
+            except:
+                print(RED, "Reading msg error connection.s", RESET)
+                while not self.isConnected:
+                    await asyncio.sleep(0.1)
     
     def getUserPos(self):
         msg = loads(self.message)
@@ -92,107 +102,137 @@ class DataTransmission:
     
     def transmitKeysP1(self):
         queue = asyncio.Queue()
-        loop = asyncio.get_event_loop()
+        self.loop = asyncio.get_event_loop()
         def on_press(key):
-            if self.errormsg:
-                loop.call_soon_threadsafe(queue.put_nowait, "EXIT")
-                return
-            if len(str(key)) == 3:
-                print("\b ", end="")
-            elif len(str(key)) == 6 or len(str(key)) == 8:
-                print("\b\b\b\b    ", end="")
-            if len(str(key)) == 3 and key.char == "w" and not self.w:
-                self.w = True
-                loop.call_soon_threadsafe(queue.put_nowait, "1u-on")
-            elif len(str(key)) == 3 and key.char == "s" and not self.s:
-                self.s = True
-                loop.call_soon_threadsafe(queue.put_nowait, "1d-on")
+            try:
+                if self.errormsg:
+                    self.loop.call_soon_threadsafe(queue.put_nowait, "EXIT")
+                    return
+                if self.exit and not self.exitDone:
+                    self.exitDone = True
+                    self.loop.call_soon_threadsafe(queue.put_nowait, "q")
+                    return None
+                if len(str(key)) == 3:
+                    print("\b ", end="")
+                elif len(str(key)) == 6 or len(str(key)) == 8:
+                    print("\b\b\b\b    ", end="")
+                if len(str(key)) == 3 and key.char == "w" and not self.w:
+                    self.w = True
+                    self.loop.call_soon_threadsafe(queue.put_nowait, "1d-on")
+                elif len(str(key)) == 3 and key.char == "s" and not self.s:
+                    self.s = True
+                    self.loop.call_soon_threadsafe(queue.put_nowait, "1u-on")
+            except:
+                return None
 
         def on_release(key):
-            if self.errormsg:
-                loop.call_soon_threadsafe(queue.put_nowait, "EXIT")
-                return
-            if len(str(key)) == 3 and key.char == "w" and self.w:
-                self.w = False
-                loop.call_soon_threadsafe(queue.put_nowait, "1u-off")
-            elif len(str(key)) == 3 and key.char == "s" and self.s:
-                self.s = False
-                loop.call_soon_threadsafe(queue.put_nowait, "1d-off")
+            try:
+                if self.errormsg:
+                    self.loop.call_soon_threadsafe(queue.put_nowait, "EXIT")
+                    return
+                if len(str(key)) == 3 and key.char == "w" and self.w:
+                    self.w = False
+                    self.loop.call_soon_threadsafe(queue.put_nowait, "1d-off")
+                elif len(str(key)) == 3 and key.char == "s" and self.s:
+                    self.s = False
+                    self.loop.call_soon_threadsafe(queue.put_nowait, "1u-off")
+            except:
+                return None
         pynput.keyboard.Listener(on_press=on_press, on_release=on_release).start()
         return queue
 
     def transmitKeysP2(self):
         queue = asyncio.Queue()
-        loop = asyncio.get_event_loop()
+        self.loop = asyncio.get_event_loop()
         def on_press(key):
-            if self.errormsg:
-                loop.call_soon_threadsafe(queue.put_nowait, "EXIT")
-                return
-            if len(str(key)) == 3:
-                print("\b ", end="")
-            elif len(str(key)) == 6 or len(str(key)) == 8:
-                print("\b\b\b\b    ", end="")
-            if len(str(key)) == 3 and key.char == "w" and not self.w:
-                self.w = True
-                loop.call_soon_threadsafe(queue.put_nowait, "2d-on")
-            elif len(str(key)) == 3 and key.char == "s" and not self.s:
-                self.s = True
-                loop.call_soon_threadsafe(queue.put_nowait, "2u-on")
+            try:
+                if self.errormsg:
+                    self.loop.call_soon_threadsafe(queue.put_nowait, "EXIT")
+                    return
+                if self.exit and not self.exitDone:
+                    self.exitDone = True
+                    self.loop.call_soon_threadsafe(queue.put_nowait, "q")
+                    return None
+                if len(str(key)) == 3:
+                    print("\b ", end="")
+                elif len(str(key)) == 6 or len(str(key)) == 8:
+                    print("\b\b\b\b    ", end="")
+                if len(str(key)) == 3 and key.char == "w" and not self.w:
+                    self.w = True
+                    self.loop.call_soon_threadsafe(queue.put_nowait, "2u-on")
+                elif len(str(key)) == 3 and key.char == "s" and not self.s:
+                    self.s = True
+                    self.loop.call_soon_threadsafe(queue.put_nowait, "2d-on")
+            except:
+                return None
 
         def on_release(key):
-            if self.errormsg:
-                loop.call_soon_threadsafe(queue.put_nowait, "EXIT")
-                return
-            if len(str(key)) == 3 and key.char == "w" and self.w:
-                self.w = False
-                loop.call_soon_threadsafe(queue.put_nowait, "2d-off")
-            elif len(str(key)) == 3 and key.char == "s" and self.s:
-                self.s = False
-                loop.call_soon_threadsafe(queue.put_nowait, "2u-off")
+            try:
+                if self.errormsg:
+                    self.loop.call_soon_threadsafe(queue.put_nowait, "EXIT")
+                    return
+                if len(str(key)) == 3 and key.char == "w" and self.w:
+                    self.w = False
+                    self.loop.call_soon_threadsafe(queue.put_nowait, "2u-off")
+                elif len(str(key)) == 3 and key.char == "s" and self.s:
+                    self.s = False
+                    self.loop.call_soon_threadsafe(queue.put_nowait, "2d-off")
+            except:
+                return None
         pynput.keyboard.Listener(on_press=on_press, on_release=on_release).start()
         return queue
 
 
     def transmitKeys2P(self):
         queue = asyncio.Queue()
-        loop = asyncio.get_event_loop()
+        self.loop = asyncio.get_event_loop()
         def on_press(key):
-            if self.errormsg:
-                loop.call_soon_threadsafe(queue.put_nowait, "EXIT")
-                return
-            if len(str(key)) == 3:
-                print("\b ", end="")
-            elif len(str(key)) == 6 or len(str(key)) == 8:
-                print("\b\b\b\b    ", end="")
-            if len(str(key)) == 3 and key.char == "w" and not self.w:
-                self.w = True
-                loop.call_soon_threadsafe(queue.put_nowait, "1u-on")
-            elif len(str(key)) == 3 and key.char == "s" and not self.s:
-                self.s = True
-                loop.call_soon_threadsafe(queue.put_nowait, "1d-on")
-            elif len(str(key)) == 6 and key == Key.up and not self.u and self.is2player:
-                self.u = True
-                loop.call_soon_threadsafe(queue.put_nowait, "2u-on")
-            elif len(str(key)) == 8 and key == Key.down and not self.d and self.is2player:
-                self.d = True
-                loop.call_soon_threadsafe(queue.put_nowait, "2d-on")
+            try:
+                if self.exit and not self.exitDone:
+                    self.exitDone = True
+                    self.loop.call_soon_threadsafe(queue.put_nowait, "q")
+                    return None
+                if self.errormsg:
+                    self.loop.call_soon_threadsafe(queue.put_nowait, "EXIT")
+                    return
+                if len(str(key)) == 3:
+                    print("\b ", end="")
+                elif len(str(key)) == 6 or len(str(key)) == 8:
+                    print("\b\b\b\b    ", end="")
+                if len(str(key)) == 3 and key.char == "w" and not self.w:
+                    self.w = True
+                    self.loop.call_soon_threadsafe(queue.put_nowait, "1d-on")
+                elif len(str(key)) == 3 and key.char == "s" and not self.s:
+                    self.s = True
+                    self.loop.call_soon_threadsafe(queue.put_nowait, "1u-on")
+                elif len(str(key)) == 6 and key == Key.up and not self.u and self.is2player:
+                    self.u = True
+                    self.loop.call_soon_threadsafe(queue.put_nowait, "2d-on")
+                elif len(str(key)) == 8 and key == Key.down and not self.d and self.is2player:
+                    self.d = True
+                    self.loop.call_soon_threadsafe(queue.put_nowait, "2u-on")
+            except:
+                return None
 
         def on_release(key):
-            if self.errormsg:
-                loop.call_soon_threadsafe(queue.put_nowait, "EXIT")
-                return
-            if len(str(key)) == 3 and key.char == "w" and self.w:
-                self.w = False
-                loop.call_soon_threadsafe(queue.put_nowait, "1u-off")
-            elif len(str(key)) == 3 and key.char == "s" and self.s:
-                self.s = False
-                loop.call_soon_threadsafe(queue.put_nowait, "1d-off")
-            elif len(str(key)) == 6 and key == Key.up and self.u and self.is2player:
-                self.u = False
-                loop.call_soon_threadsafe(queue.put_nowait, "2d-on")
-            elif len(str(key)) == 8 and key == Key.down and self.d and self.is2player:
-                self.d = False
-                loop.call_soon_threadsafe(queue.put_nowait, "2d-off")
+            try:
+                if self.errormsg:
+                    self.loop.call_soon_threadsafe(queue.put_nowait, "EXIT")
+                    return
+                if len(str(key)) == 3 and key.char == "w" and self.w:
+                    self.w = False
+                    self.loop.call_soon_threadsafe(queue.put_nowait, "1d-off")
+                elif len(str(key)) == 3 and key.char == "s" and self.s:
+                    self.s = False
+                    self.loop.call_soon_threadsafe(queue.put_nowait, "1u-off")
+                elif len(str(key)) == 6 and key == Key.up and self.u and self.is2player:
+                    self.u = False
+                    self.loop.call_soon_threadsafe(queue.put_nowait, "2d-off")
+                elif len(str(key)) == 8 and key == Key.down and self.d and self.is2player:
+                    self.d = False
+                    self.loop.call_soon_threadsafe(queue.put_nowait, "2u-off")
+            except:
+                return None
         pynput.keyboard.Listener(on_press=on_press, on_release=on_release).start()
         return queue
 

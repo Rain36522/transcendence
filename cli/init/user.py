@@ -58,7 +58,8 @@ class User:
         if pwd == None:
             return False
         value = self.Django.createUser(user, mail, pwd)
-        Information(str(value), "FAIL")
+        if value >=400:
+            Information(str(value), "Error " + str(value))
         while value >=400 and value != 500:
             result = Question3Value("REGISTRATION", "User or email already existing.", "signup", "login", "exit", style=STYLERROR)
             if result == 0:

@@ -9,7 +9,7 @@ import asyncio
 
 
 
-# contexte = {
+# gamesettings = {
 #         "nbPlayers": player,
 #         "paddleWidth": 0.02,
 #         "paddleLength": game.planksize,
@@ -20,16 +20,31 @@ import asyncio
 #         "user": request.user.username,
 #         "gameid": id
 #     }
-
+# game = {
+# 	"ballx" : 0, # -0.5 -> 0.5
+# 	"bally" : 0, # -0.5 -> 0.5
+# 	"p1" : 0, # -0.5 -> 0.5
+# 	"p2" : 0, # -0.5 -> 0.5
+# 	"p3" : 0, # -0.5 -> 0.5
+# 	"p4" : 0, # -0.5 -> 0.5
+# 	"state" : "playing",
+# 	"score1" : 0,
+# 	"score2" : 0,
+# 	"score3" : 0,
+# 	"score4" : 0
+# }
 
 class GameGui2p:
-    def __init__(self, settings, wsCli):
+    def __init__(self, settings, wsCli, asciiData):
         print("START", settings)
+        self.asciiData = asciiData
         self.term = Terminal()
         self.wsCli = wsCli
         self.settings = settings
         self.pos = 0.5
         self.putNewMap()
+        self.pointP1 = -1
+        self.pointP2 = -1
         if settings["isSolo"]:
             self.userpose = 1
         else:
@@ -41,16 +56,24 @@ class GameGui2p:
     """
     async def updateGame(self):
         while True:
-            await asyncio.sleep(0.03)
+            if (self.column != self.term.width and self.term.width >= 80) or (self.line != self.term.height - 5 and self.term.height >= 20):
+                self.putNewMap()
+            await asyncio.sleep(0.04)
             msg = self.wsCli.getMessage()
             if str(msg).isdigit():
                 return msg
             elif msg:
+                self.updateScore(msg)
                 if str(msg["state"]) == "game_over":
+                    await asyncio.sleep(1)
+                    system("clear")
+                    print(self.asciiData.putString("Press Q", beginstr=GREEN, endstr=RESET))
+                    print()
+                    print(self.asciiData.putString("For EXIT!", beginstr=GREEN, endstr=RESET))
                     return msg
                 elif not self.userpose and self.settings["user"] in msg["users"]:
                     if msg["users"][0] == self.settings["user"]:
-                        self.userpos = 1
+                        self.userpose = 1
                     else:
                         self.userpose = 2
                 if self.userpose == 2:
@@ -63,6 +86,18 @@ class GameGui2p:
                     self.updatePaddelR(msg["p2"])
                 self.updateBall(msg["ballx"], msg["bally"])
     
+    def updateScore(self, msg):
+        if int(msg["score1"]) != self.pointP1:
+            self.pointP1 == int(msg["score1"])
+            string = msg["users"][0] + " : " + str(msg["score1"])
+            posx = self.start + self.width // 2 - len(string) // 2
+            print(BYELLOW + self.term.move_xy(posx, 0) + string, RESET)
+        if int(msg["score2"]) != self.pointP2:
+            self.pointP2 == int(msg["score2"])
+            string = msg["users"][1] + " : " + str(msg["score2"])
+            posx = self.start + self.width // 2 - len(string) // 2
+            print(BWHITE + self.term.move_xy(posx, 1) + string, RESET)
+
     def updateMsg(self, msg, revers=1):
         liste = ["ballx", "bally", "p1", "p2"]
         for elem in liste:
@@ -103,7 +138,6 @@ class GameGui2p:
             self.padelsize += 1
         if round(self.ballsize) % 2 != self.height % 2:
             self.ballsize += 1
-        print(self.padelsize, self.ballsize, self.height)
     
     def putMap(self):
         print(self.term.move_xy(0, 3), end="")
@@ -174,8 +208,8 @@ class GameGui2p:
             self.ballx = 2
         elif stopx >= self.width:
             stopx = self.width - 1
-        if self.bally <= 0:
-            self.bally = 1
+        if self.bally < 0:
+            self.bally = 0
         elif stopy > self.height + 1:
             stopy = self.height + 1
         if char == "█":
@@ -200,5 +234,5 @@ class GameGui2p:
     def putCharInMap(self, posx, posy, charToPut):
         posx += self.start
         posy += 4
-        if posx < self.width + self.start + 1 and posx > self.start and posy < self.height + 4 and posy > 4:
+        if posx < self.width + self.start + 1 and posx > self.start and posy < self.height + 4 and posy >= 4:
             print(self.term.move_xy(posx, posy) + str(charToPut))
