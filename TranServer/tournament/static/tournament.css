@@ -42,7 +42,8 @@ header {
 .additional-links ul {
   list-style: none;
   display: flex;
-  gap: 30px; /* Augmenté de 10px à 30px pour plus d'espace */
+  gap: 30px;
+  /* Augmenté de 10px à 30px pour plus d'espace */
   margin: 0;
   padding: 0;
   margin-left: auto;
@@ -51,7 +52,8 @@ header {
 /* Ajustement pour les écrans plus petits */
 @media (max-width: 600px) {
   .additional-links ul {
-    gap: 15px; /* Espace réduit pour les petits écrans */
+    gap: 15px;
+    /* Espace réduit pour les petits écrans */
   }
 }
 
@@ -63,62 +65,84 @@ header {
 }
 
 .content {
+  display: flex;
+  flex-direction: row;
+  /* Changer en row pour aligner les colonnes côte à côte */
+  justify-content: center;
+  align-items: start;
+  /* Aligner les colonnes en haut */
+  padding: 20px;
+  box-sizing: border-box;
+  width: 100%;
+  /* Ajuster la largeur si nécessaire */
   position: fixed;
-  top: 60%; /* Déjà ajusté pour baisser le cadre */
+  top: 60%;
+  /* Déjà ajusté pour baisser le cadre */
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 2;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  box-sizing: border-box;
   color: white;
   border-radius: 10px;
-  width: 70%; /* Augmenté de 50% à 70% pour agrandir encore plus en longueur */
+  /* Augmenté de 50% à 70% pour agrandir encore plus en longueur */
   height: 70%;
   background-color: rgba(44, 44, 44, 0.714);
 }
 
 .row {
   display: flex;
-  justify-content: space-between; /* Assure que l'espace entre les éléments est bien réparti */
-  margin-bottom: 20px; /* Ajoute de l'espace en dessous de chaque ligne pour la séparation */
+  justify-content: space-between;
+  /* Assure que l'espace entre les éléments est bien réparti */
+  margin-bottom: 20px;
+  /* Ajoute de l'espace en dessous de chaque ligne pour la séparation */
 }
 
 .select-text {
   display: flex;
-  flex: 1 1 48%; /* S'assure que chaque élément prend à peu près la moitié de l'espace, ajustez selon les besoins */
+  margin-bottom: 20px;
+  /* Assure un espacement vertical entre les contrôles */
+  flex: 1 1 48%;
+  /* S'assure que chaque élément prend à peu près la moitié de l'espace, ajustez selon les besoins */
   align-items: center;
-  justify-content: space-between; /* Distribue l'espace entre les éléments à l'intérieur de .select-text */
-  padding: 0 10px; /* Ajoute de l'espace à gauche et à droite à l'intérieur de chaque élément */
+  justify-content: space-between;
+  /* Distribue l'espace entre les éléments à l'intérieur de .select-text */
+  padding: 0 10px;
+  /* Ajoute de l'espace à gauche et à droite à l'intérieur de chaque élément */
 }
 
 .parameter-name {
-  white-space: nowrap; /* Empêche le texte de passer à la ligne */
+  white-space: nowrap;
+  /* Garde le nom du paramètre sur une seule ligne */
+  margin-right: 10px;
+  /* Assure un espace entre le nom du paramètre et le contrôle */
 }
 
 .control {
-  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: flex-end; /* Alignement des contrôles vers la droite */
+  width: 100%;
+  /* S'assure que le contrôle occupe tout l'espace disponible */
 }
 
-.control input[type="range"], .control select {
-  flex-grow: 1; /* Permet aux éléments de formulaire d'utiliser tout l'espace disponible */
-  margin-left: 20px; /* Espacement entre le label et l'input */
+.control input[type="range"],
+.control select {
+  flex-grow: 1;
+  /* Permet aux éléments de formulaire d'utiliser tout l'espace disponible */
+  margin-left: 20px;
+  /* Espacement entre le label et l'input */
 }
 
 /* Styles supplémentaires pour assurer la visibilité et la fonctionnalité */
 input[type="range"] {
-  width: auto; /* Permet à l'input range de s'ajuster à l'espace disponible */
+  width: auto;
+  /* Permet à l'input range de s'ajuster à l'espace disponible */
 }
 
 select {
-  width: 100%; /* Utilise tout l'espace disponible pour les select */
-  cursor: pointer; /* Indique que l'élément est cliquable */
+  width: 100%;
+  /* Utilise tout l'espace disponible pour les select */
+  cursor: pointer;
+  /* Indique que l'élément est cliquable */
 }
 
 .select-text strong {
@@ -574,4 +598,10 @@ button:focus {
   /* Assure que le conteneur prend toute la largeur disponible */
   flex-wrap: wrap;
   /* Permet aux éléments de passer à la ligne suivante si l'espace est insuffisant */
+}
+
+.settings-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
