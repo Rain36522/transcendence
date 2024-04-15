@@ -45,7 +45,7 @@ function selectChat(chatName, chatId, is_personal) {
   open_chat(chatId);
 }
 
-function renderMessage(message) {
+async function renderMessage(message) {
   var messageBox = document.createElement("div");
   messageBox.style.display = "flex";
   messageBox.style.alignItems = "center";
@@ -63,6 +63,8 @@ function renderMessage(message) {
       if (blocked[user].username == message.username)
         messageElement.textContent = "BLOCKED";
     }
+    if (await fetchBlockStatus(message.username))
+      messageElement.textContent = "BLOCKED";
     messageElement.classList.add("message-box");
     messageBox.appendChild(messageElement);
   }
@@ -75,6 +77,21 @@ function renderMessage(message) {
   }
   document.getElementById("messages").appendChild(messageBox);
   scrollToBottom();
+}
+
+async function fetchBlockStatus(username) {
+  try {
+    const response = await fetch(`/api/is_blocked/` + username);
+    if (!response.ok) {
+      throw new Error("Failed to fetch status");
+    }
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error("Error fetching status:", error);
+    return false;
+  }
 }
 
 async function fetchChats() {
@@ -126,16 +143,20 @@ function load_chats() {
   });
 }
 
+async function renderMessagesInOrder(messages) {
+  for (const mess of messages) {
+    await renderMessage({
+      message: mess.content,
+      username: mess.sender,
+      image: mess.image,
+    });
+  }
+}
+
 function open_chat(chatId) {
   fetchMessages(chatId).then((messages) => {
     console.log(messages);
-    for (const mess of messages) {
-      renderMessage({
-        message: mess.content,
-        username: mess.sender,
-        image: mess.image,
-      });
-    }
+    renderMessagesInOrder(messages);
   });
   startChatSocket(chatId);
 }

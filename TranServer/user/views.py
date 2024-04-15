@@ -124,6 +124,19 @@ def undo_invite_api(request, username):
         return Response("Invalid request", status=status.HTTP_400_BAD_REQUEST)
 
 
+@renderer_classes([JSONRenderer])
+@login_required
+@api_view(["GET"])
+def is_blocked_api(request, username):
+    try:
+        user = User.objects.get(username=username)
+        if user.blocked.filter(username=request.user.username):
+            return Response(True, status=status.HTTP_200_OK)
+        return Response(False, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response("Invalid request", status=status.HTTP_400_BAD_REQUEST)
+
+
 class InviteListView(APIView):
     permission_classes = [IsAuthenticated]
     renderer_classes = [JSONRenderer]
