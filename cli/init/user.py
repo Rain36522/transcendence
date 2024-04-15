@@ -23,7 +23,7 @@ class User:
         if pwd == None:
             return False
         value = self.Django.loginUser(user, pwd)
-        while value != 200 and value != 500:
+        while value >= 400 and value != 500:
             result = Question3Value("LOGIN", "Login fail.", "Retry", "signup", "exit", style=STYLERROR)
             if result == 1:
                 user, pwd = self.login(error=True)
@@ -59,7 +59,7 @@ class User:
             return False
         value = self.Django.createUser(user, mail, pwd)
         Information(str(value), "FAIL")
-        while value != 200 and value != 500:
+        while value >=400 and value != 500:
             result = Question3Value("REGISTRATION", "User or email already existing.", "signup", "login", "exit", style=STYLERROR)
             if result == 0:
                 self.doLogin()
