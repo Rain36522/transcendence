@@ -13,7 +13,7 @@ import asyncio
 
 
 def getUrl(Django):
-    url = inputText("TRANSCENDANCE", "Write the server url.", defaultValue="https://10.11.13.4")
+    url = inputText("TRANSCENDANCE", "Write the server url.")
     if url == None:
         doexit(0, "User exit")
     while not checkUrlInput(url, Django):
