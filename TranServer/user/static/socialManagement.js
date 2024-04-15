@@ -9,14 +9,12 @@ var users = [
     { username: "Eve", imageUrl: "https://example.com/img4.jpg", status: "" } // Un utilisateur sans statut défini
 ];
 
-document.addEventListener('DOMContentLoaded', function() {
-    displayUsers(users);
-    var searchBox = document.querySelector('.search-box');
-    searchBox.addEventListener('input', function() {
-        var searchText = searchBox.value.toLowerCase();
-        var filteredUsers = users.filter(user => user.username.toLowerCase().includes(searchText));
-        displayUsers(filteredUsers);
-    });
+displayUsers(users);
+var searchBox = document.querySelector('.search-box');
+searchBox.addEventListener('input', function() {
+    var searchText = searchBox.value.toLowerCase();
+    var filteredUsers = users.filter(user => user.username.toLowerCase().includes(searchText));
+    displayUsers(filteredUsers);
 });
 
 function displayUsers(users) {
