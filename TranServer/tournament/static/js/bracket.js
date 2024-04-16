@@ -1,7 +1,7 @@
 import { Match } from './match.js';
 
 const myUser = document.body.getAttribute('data-myUser');
-const tournamentSize = [8, 4, 2, 1]
+const tournamentSize = document.body.getAttribute('data-tournamentSize');
 const matchesMap = {}; // Store all matches by unique key (level-pos)
 
 // Data for testing purposes

@@ -48,10 +48,6 @@ function drawGame() {
 	
 
 	CanvasContext.fillStyle = gameSettings.ballColor;
-	CanvasContext.fillRect(gameSettings.gameWidth * (gameSettings.ballPosition.x + 0.5 - gameSettings.ballSize / 2), 
-	gameSettings.gameHeight * (gameSettings.ballPosition.y + 0.5 - gameSettings.ballSize / 2),
-		gameSettings.ballSize * gameSettings.gameHeight,
-		gameSettings.ballSize * gameSettings.gameHeight);
 	CanvasContext.beginPath();
 	CanvasContext.arc(gameSettings.gameWidth * (gameSettings.ballPosition.x + 0.5),  gameSettings.gameHeight * (gameSettings.ballPosition.y + 0.5), gameSettings.ballSize * gameSettings.gameHeight / 2, 0, Math.PI * 2);
 	if (isImage) {
@@ -84,7 +80,7 @@ function drawGame() {
 
 	if (gameSettings.status == "waiting")
 		document.getElementById('waitingScreen').style.display = 'block';
-	if (gameSettings.status == "end")
+	if (gameSettings.status == "game_over")
 	{
 		var winner = 'le Prince de LU';
 		for (var i = 0; i < nbPaddles; i++)
