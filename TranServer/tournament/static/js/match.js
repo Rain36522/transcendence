@@ -33,6 +33,10 @@ export class Match {
 				const scoreKey = `score${i}`;
 				this.scores.push(data[scoreKey] !== undefined ? data[scoreKey] : 0);
 			}
+			else if (i == 1){
+				this.players.push("waiting for players");
+				this.scores.push(0);
+			}
 		}
 	
 		this.isRunning = data.isRunning;
