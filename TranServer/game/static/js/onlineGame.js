@@ -75,6 +75,7 @@ document.getElementById('searchInput').addEventListener('input', searchUsers);
 
 document.querySelector('.search-container button').addEventListener('click', searchUsers);
 
+
 function handleInviteButtonClick(event) {
 	const userItem = event.target.closest('.user-item');
 	const userName = userItem.querySelector('.user-name').textContent; // Obtenir le nom d'utilisateur
