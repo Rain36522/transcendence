@@ -23,11 +23,13 @@ from .views import (
     undo_invite_api,
     user_exist_api,
     is_blocked_api,
+    profile_user,
 )
 from django.views.generic.base import RedirectView
 
 
 urlpatterns = [
+    path("profile_user/", profile_user, name="profile_user"),
     path("accountInformation/", account_information, name="account_information"),
     path("dashboard/", user_dashboard, name="user_dashboard"),
     path("dashboard/<str:username>/", user_dashboard, name="user_dashboard_other"),
