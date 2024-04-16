@@ -1,12 +1,6 @@
 var popup = document.querySelector('.popup');
 var blurBackground = document.querySelector('.blur-background');
 
-const createButton = document.querySelector('#create-link'); // Assurez-vous que l'identifiant ou la classe correspond à votre bouton HTML
-createButton.addEventListener('click', function (event) {
-	event.preventDefault();
-	openPopup();
-});
-
 blurBackground.addEventListener('click', function (event) {
 	if (event.target === blurBackground) {
 		popup.style.display = 'none';
@@ -86,35 +80,35 @@ document.addEventListener('DOMContentLoaded', function () {
 		const userItem = event.target.closest('.user-item');
 		const userName = userItem.querySelector('.user-name').textContent; // Obtenir le nom d'utilisateur
 		const isInvited = event.target.textContent === 'Invite';
-
+	
 		// Mettre à jour le texte du bouton et la couleur
 		event.target.textContent = isInvited ? '✖' : 'Invite';
 		event.target.style.backgroundColor = isInvited ? 'red' : '#4CAF50';
-
+	
 		const targetContainerId = isInvited ? 'invitedUsers' : 'user-list';
 		const targetContainer = document.getElementById(targetContainerId);
 		const sourceContainerId = isInvited ? 'user-list' : 'invitedUsers';
 		const sourceContainer = document.getElementById(sourceContainerId);
-
+	
 		// Si on invite l'utilisateur, chercher et supprimer l'original de la liste des utilisateurs
 		const sourceUserItems = sourceContainer.querySelectorAll('.user-item');
-		sourceUserItems.forEach(function (item) {
+		sourceUserItems.forEach(function(item) {
 			const itemUserName = item.querySelector('.user-name').textContent;
 			if (itemUserName === userName) {
 				item.remove(); // Enlever l'élément original du conteneur source
 			}
 		});
-
+	
 		// Ajouter l'utilisateur invité au conteneur cible
 		targetContainer.appendChild(userItem);
-
+	
 		// Vider la barre de recherche
 		document.getElementById('searchInput').value = '';
 		// Masquer les résultats de recherche si nécessaire
 		document.getElementById('searchResult').style.display = 'none';
 		document.getElementById('searchResult').innerHTML = '';
 	}
-
+	
 	document.querySelectorAll('.invite-button').forEach(button => {
 		button.addEventListener('click', handleInviteButtonClick);
 	});
