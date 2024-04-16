@@ -294,10 +294,12 @@ header a:hover {
   margin-bottom: 20px;
   /* Ajout d'un espace en dessous */
 }
+
 .search-selection {
   width: 100%;
   /* Ajout d'un espace en dessous */
 }
+
 .search-box {
   flex-grow: 1;
   margin-right: 10px;
@@ -485,7 +487,7 @@ header .header-btn {
 }
 
 /* Styles pour les listes dans les différentes sections */
-.sections-container > section {
+.sections-container>section {
   flex: 1;
   margin: 0 10px;
   padding: 20px;
@@ -663,4 +665,12 @@ header .header-btn {
 /* Style for the selected item in the dropdown */
 .autocomplete-item:hover {
   background-color: #ddd;
+}
+
+.game-button {
+  background-color: transparent;
+}
+
+.game-button:hover {
+  background-color: #444;
 }
