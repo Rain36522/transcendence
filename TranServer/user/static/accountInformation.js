@@ -13,3 +13,88 @@ document.querySelector('.edit-profile-btn').addEventListener('click', function (
 	};
 	fileInput.click();
 });
+
+/* ------------- NEW PARAMETERS ------------ */
+
+document.querySelectorAll('input[type="color"]').forEach(input => {
+	input.addEventListener('input', function () {
+		console.log(this.id + ' changed to ' + this.value);
+		// Ajoutez ici le code pour appliquer les couleurs à au backend
+	});
+});
+
+function openColorPicker(colorId) {
+	let button = document.getElementById(colorId);  // Récupère le bouton qui a été cliqué
+
+	let colorInput = document.createElement('input');
+	colorInput.type = 'color';
+	colorInput.style.position = 'absolute'; // Position absolue pour le placer correctement
+	colorInput.style.visibility = 'hidden'; // Rendre l'input invisible
+	colorInput.style.height = '0'; // Enlève l'encombrement visuel sans affecter la fonctionnalité
+
+	// Place l'input près du bouton
+	document.body.appendChild(colorInput); // Ajoute l'input au corps pour éviter des problèmes de clipping
+	let rect = button.getBoundingClientRect(); // Récupère les coordonnées du bouton
+	colorInput.style.left = `${rect.left}px`;
+	colorInput.style.top = `${rect.top}px`;
+
+	// Gère la sélection de la couleur
+	colorInput.onchange = e => {
+		document.getElementById(colorId).style.backgroundColor = e.target.value; // Applique la couleur
+		console.log(colorId + ' changed to ' + e.target.value); // Affiche la valeur choisie
+		document.body.removeChild(colorInput); // Supprime l'input après la sélection pour nettoyer le DOM
+	};
+
+	colorInput.click(); // Déclenche le sélecteur de couleur
+}
+
+document.querySelectorAll('.button-8').forEach(button => {
+	const pickr = Pickr.create({
+		el: button,
+		theme: 'classic', // Thème visuel du sélecteur
+		swatches: [ // Exemples de couleurs prédéfinies
+			'rgba(244, 67, 54, 1)',
+			'rgba(233, 30, 99, 0.95)',
+			'rgba(156, 39, 176, 0.9)',
+			'rgba(103, 58, 183, 0.85)',
+		],
+		components: {
+			preview: true,
+			opacity: true,
+			hue: true,
+			interaction: {
+				hex: true,
+				rgba: true,
+				hsla: true,
+				hsva: true,
+				cmyk: true,
+				input: true,
+				clear: true,
+				save: true
+			}
+		}
+	});
+
+	pickr.on('save', (color, instance) => {
+		const colorValue = color.toRGBA().toString();
+		button.style.backgroundColor = colorValue;
+		console.log(button.getAttribute('id') + ' changed to ' + colorValue);
+		pickr.hide();
+	});
+});
+
+document.getElementById('updatePasswordBtn').addEventListener('click', function () {
+	var currentPassword = document.getElementById('currentPassword').value;
+	var newPassword = document.getElementById('newPassword').value;
+	var passwordError = document.getElementById('passwordError');
+
+	// Supposons que 'passwordCorrecte' est le mot de passe actuel (cette partie devrait être vérifiée côté serveur)
+	if (currentPassword === "passwordCorrecte") {
+		passwordError.style.display = 'none';
+		alert("Password updated successfully!");  // Vous pouvez également mettre à jour ce message ou effectuer d'autres actions
+		// Envoyez le nouveau mot de passe au serveur pour mise à jour
+	} else {
+		passwordError.style.display = 'block';
+		passwordError.textContent = 'Incorrect current password';  // Afficher le message d'erreur
+	}
+});
