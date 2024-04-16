@@ -395,18 +395,21 @@ def test_upload(request):
 
 
 @login_required
-def user_dashboard(request):
+def user_dashboard(request, username=None):
+    user = request.user
+    if username:
+        user = User.objects.get(username=username)
     ratio_w = 0
     ratio_l = 0
-    losses = request.user.total_games - request.user.wins
-    if request.user.total_games != 0:
-        ratio_w = request.user.wins / request.user.total_games
-        ratio_l = losses / request.user.total_games
+    losses = user.total_games - user.wins
+    if user.total_games != 0:
+        ratio_w = user.wins / user.total_games
+        ratio_l = losses / user.total_games
     return render(
         request,
         "html/dashboard.html",
         {
-            "user": request.user,
+            "user": user,
             "losses": losses,
             "ratio_w": ratio_w,
             "ratio_l": ratio_l,

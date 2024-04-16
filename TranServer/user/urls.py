@@ -30,6 +30,7 @@ from django.views.generic.base import RedirectView
 urlpatterns = [
     path("accountInformation/", account_information, name="account_information"),
     path("dashboard/", user_dashboard, name="user_dashboard"),
+    path("dashboard/<str:username>/", user_dashboard, name="user_dashboard_other"),
     path("login/", user_login, name="user_login"),
     path("register/", user_register, name="user_register"),
     path("socialManagement/", social_management, name="social_management"),

@@ -1,4 +1,6 @@
-fetch("/api/profile_pic/")
+var username = document.getElementById("username").textContent;
+
+fetch("/api/profile_pic/" + username + "/")
   .then((response) => response.blob())
   .then((blob) => {
     // Convert the blob to a base64 encoded string
