@@ -4,8 +4,9 @@ from gameLogic import gameLogic
 import json
 import asyncio
 from sys import stderr
-from time import sleep
+from time import sleep, time
 from sys import stderr
+from random import choice
 
 RESET = "\033[0m"
 RED = "\033[31m"
@@ -70,7 +71,8 @@ async def WaitUntilPlayers(ws, data):
     userlist = listUser(data)
     liste = []
     i = 0
-    while len(liste) < data["playeramount"]:
+    start = time()
+    while len(liste) < data["playeramount"] and time() - start <= 120:
         msgs = ws.getMsg()
         if msgs:
             for msg in msgs:
@@ -101,7 +103,13 @@ async def WaitUntilPlayers(ws, data):
                             i -= 1
 
         await asyncio.sleep(0.1)
-    await asyncio.sleep(1)
+    await asyncio.sleep(0.5)
+    if len(liste) < data["playeramount"]:
+        print(ORANGE, "No user join the game auto ending", RESET, file=stderr)
+        if len(userlist) == data["playeramount"]:
+            while len(liste) < data["playeramount"]:
+                liste.append("")
+            return liste
     await ws.sendUserJoin(liste)
     return liste
 
@@ -123,6 +131,45 @@ def putDatagameSettings(data, settings):
             settings[i] = data[i]
     return settings
 
+async def playerInGame(userliste, wsCli, data):
+    missingplayer = userliste.count("")
+    userlocked = listUser(data)
+    print(YELLOW, userliste, userlocked, RESET, file=stderr)
+    if not missingplayer and len(userliste) == data["playeramount"]:
+        return True
+    if "" in userliste:
+        userliste = userliste.remove("")
+    if not userlocked and not userliste:
+        print(RED, "Sending null game result!")
+        dico = {
+        "user1" : ("", 0),
+        "user2" : ("", 0),
+        "user3" : ("", 0),
+        "user4" : ("", 0),
+        "gameid" : data["gameid"]
+        }
+        print(GREEN, "NO USERS", RESET)
+        await wsCli.sendEndGame(dico, gameError=True)
+        return False
+    for user in userlocked:
+        if userliste and user not in userliste:
+            userliste.append(user)
+        elif not userliste:
+            userliste = [user]
+    winer = choice(userliste)
+    print(GREEN, "WINNER :", winer, RESET)
+    dico = {}
+    j = 1
+    for user in userliste:
+        if user == winer:
+            dico[f"user{j}"] = (user, 1)
+        else:
+            dico[f"user{j}"] = (user, 0)
+    dico["gameid"] = data["gameid"]
+    await wsCli.sendEndGame(dico, gameError=True)
+    return False
+
+
 # Exemple d'utilisation du client WebSocket avec asyncio
 if __name__ == "__main__":
     DjangoData = json.loads(os.environ.get("newGame"))["message"]
@@ -136,6 +183,10 @@ if __name__ == "__main__":
     asyncio.get_event_loop().create_task(client.receive_messages())
     print(MAGENTA, "RECIEVED USER", RESET, file=stderr)
     userliste = asyncio.get_event_loop().run_until_complete(WaitUntilPlayers(client, DjangoData))
+    result = asyncio.get_event_loop().run_until_complete(playerInGame(userliste, client, DjangoData))
+    print(RED, "RESULT :", result, RESET, file=stderr)
+    if not result:
+        exit(0)
     userliste = updateUser(userliste, DjangoData)
     gameLogicInstance = gameLogic(client, gameSettings, game, userliste)
     asyncio.get_event_loop().create_task(gameLogicInstance.gameInput())

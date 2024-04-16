@@ -119,6 +119,7 @@ class gameLogic:
 						if self.game["score" + str(player.num)] >= int(self.gameSet["winpoint"]):
 							self.game["state"] = "game_over"
 							await self.client.sendMsg(self.game)
+							await self.sendEndMsg()
 							break
 					self.ball.reset()
 				await self.client.sendMsg(self.game)
@@ -135,6 +136,15 @@ class gameLogic:
 				return player
 		return 0
 	#getPlayer end
+	
+	async def sendEndMsg(self):
+		dico = {}
+		j = 1
+		for user in self.game["users"]:
+			dico[f"user{j}"] = (user, self.game[f"score{j}"])
+			j += 1
+		dico["gameid"] = self.gameSet["gameid"]
+		await self.client.sendEndGame(dico)
 #gameLogic end
 
 
