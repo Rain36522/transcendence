@@ -309,9 +309,12 @@ def user_login_api(request):
 @api_view(["GET"])
 @renderer_classes([JSONRenderer])
 @login_required
-def user_profile_pic_api(request, username):
-    user = get_object_or_404(User, username=username)
+def user_profile_pic_api(request, username=None):
     try:
+        if username:
+            user = get_object_or_404(User, username=username)
+        else:
+            user = request.user
         if user.profile_picture:
             path = user.profile_picture.path
             content_type, _ = mimetypes.guess_type(path)
@@ -338,7 +341,7 @@ def upload_profile_pic_api(request):
 
             # File type validation
             if profile_picture.content_type not in ALLOWED_FILE_TYPES:
-                return JsonResponse({"error": "Invalid file type"}, status=400)
+                return JsonResponse({"error¬": "Invalid file type"}, status=400)
 
             # File size limit
             if profile_picture.size > MAX_FILE_SIZE:
@@ -349,21 +352,21 @@ def upload_profile_pic_api(request):
             user = request.user
 
             # Check if the user already has a profile picture
-            if user.profile_picture:
-                try:
-                    # Delete the old profile picture file from the storage
-                    if os.path.isfile(user.profile_picture.path):
-                        os.remove(user.profile_picture.path)
-                except:
-                    pass
+            # if user.profile_picture:
+            #     try:
+            #         # Delete the old profile picture file from the storage
+            #         if os.path.isfile(user.profile_picture.path):
+            #             os.remove(user.profile_picture.path)
+            #     except:
+            #         pass
 
             # Save the new profile picture
             user.profile_picture = profile_picture
             user.save()
-            return HttpResponse(
+            return JsonResponse(
                 {"message": "Upload successful"}, status=status.HTTP_201_CREATED
             )
-        return HttpResponse(
+        return JsonResponse(
             {"message": "No file found"}, status=status.HTTP_400_BAD_REQUEST
         )
     except ValidationError:
