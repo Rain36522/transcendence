@@ -394,6 +394,9 @@ def test_upload(request):
     return render(request, "html/test_upload.html")
 
 
+def profile_user(request, username=None):
+    return render(request, "html/profile_user.html")
+
 @login_required
 def user_dashboard(request, username=None):
     user = request.user
