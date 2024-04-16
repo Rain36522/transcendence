@@ -20,6 +20,9 @@ from .views import (
     is_active_api,
     change_password_api,
     test_password_change_view,
+    undo_invite_api,
+    user_exist_api,
+    is_blocked_api,
 )
 from django.views.generic.base import RedirectView
 
@@ -42,14 +45,24 @@ urlpatterns = [
     path("logout/", logout_view, name="user_logout"),
     path("test_upload/", test_upload),
     path(
-        "api/invite/<str:username/",
+        "api/invite/<str:username>/",
         InviteListView.as_view(),
         name="invite_user_api_other",
     ),
     path("api/invite/", InviteListView.as_view(), name="invite_user_api"),
     path("api/pending_invite/", api_pending_invite, name="pending_invite_api"),
     path("api/friends/", FriendListView.as_view(), name="friends_user_api"),
+    path(
+        "api/friends/<str:username>/",
+        FriendListView.as_view(),
+        name="friends_user_api_other",
+    ),
     path("api/blocked/", BlockedListView.as_view(), name="blocked_user_api"),
+    path(
+        "api/blocked/<str:username>/",
+        BlockedListView.as_view(),
+        name="blocked_user_api_other",
+    ),
     path(
         "api/search/<str:username>/", search_usernames_api, name="search_usernames_api"
     ),
@@ -64,4 +77,7 @@ urlpatterns = [
         test_password_change_view,
         name="test_password_change_view",
     ),
+    path("api/undo_invite/<str:username>/", undo_invite_api, name="undo_invite_api"),
+    path("api/exist/<str:username>/", user_exist_api, name="user_exist_api"),
+    path("api/is_blocked/<str:username>/", is_blocked_api, name="is_blocked_api"),
 ]
