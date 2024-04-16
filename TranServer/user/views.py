@@ -27,6 +27,8 @@ from .serializers import (
     UserSerializer_Username,
     PersonalUserSerializer,
     OtherUserSerializer,
+    ColorsUserSerializer,
+    ColorUpdateSerializer,
 )
 
 import mimetypes
@@ -275,6 +277,37 @@ class BlockedListView(APIView):
             return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
+class ColorView(APIView):
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer]
+
+    def get(self, request):
+        try:
+            return Response(
+                ColorsUserSerializer(request.user).data,
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    def post(self, request):
+        try:
+            user = request.user
+            serializer = ColorUpdateSerializer(
+                instance=user, data=request.data, partial=True
+            )
+            if serializer.is_valid():
+                serializer.save()
+                return Response(
+                    {"message": "Colors updated successfully"},
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
 @api_view(["GET"])
 @renderer_classes([JSONRenderer])
 def user_exist_api(request, username=None):
@@ -396,6 +429,7 @@ def test_upload(request):
 
 def profile_user(request, username=None):
     return render(request, "html/profile_user.html")
+
 
 @login_required
 def user_dashboard(request, username=None):
