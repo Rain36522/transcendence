@@ -149,8 +149,7 @@ header {
 	height: 140px;
 	border-radius: 70px;
 	/* Assure la forme circulaire */
-	background-color: #DDD;
-	background-image: url('shrek.jpg');
+	background-color: #ffffff;
 	/* Image de profil par défaut */
 	background-size: cover;
 	background-position: center;
