@@ -1,4 +1,4 @@
-export class Match {
+ class Match {
 	constructor(level, pos, ...players) {
 		this.level = level;
 		this.pos = pos;
