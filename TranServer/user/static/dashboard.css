@@ -218,3 +218,12 @@ header {
 	/* Ajoute une bordure pour mieux voir sur des fonds variés */
 	z-index: 100;
 }
+
+.game-button {
+	color: #FFFFE0;
+	background-color: transparent;
+}
+
+.game-button:hover {
+	background-color: #444;
+}
