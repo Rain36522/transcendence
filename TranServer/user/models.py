@@ -26,6 +26,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(default=timezone.now)
     last_active = models.DateTimeField(default=timezone.now)
     wins = models.PositiveIntegerField(default=0, verbose_name="Number of wins")
+    ball_color = models.CharField(max_length=7, default="#FFFFFF")
+    paddle_color = models.CharField(max_length=7, default="#FFFFFF")
+    enemy_paddle_color = models.CharField(max_length=7, default="#FFFFFF")
+    frame_color = models.CharField(max_length=7, default="#FFFFFF")
+    background_color = models.CharField(max_length=7, default="#000000")
     total_games = models.PositiveIntegerField(
         default=0, verbose_name="Total number of games"
     )
