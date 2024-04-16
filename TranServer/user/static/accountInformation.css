@@ -1,394 +1,391 @@
 body {
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f0f0f0;
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f0f0f0;
 }
 
 .vignette {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    box-shadow: 0 0 200px rgba(0, 0, 0, 0.9) inset;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-shadow: 0 0 200px rgba(0, 0, 0, 0.9) inset;
 }
 
 .image-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
 .image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: grayscale(100%);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%);
 }
 
 header {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: rgba(0, 0, 0, 0.596);
-    color: #FFFFE0;
-    z-index: 10;
-    padding: 20px;
-    box-sizing: border-box;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.596);
+  color: #ffffe0;
+  z-index: 10;
+  padding: 20px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .header-btn {
-    background: none;
-    border: none;
-    color: #FFFFE0;
-    font-family: 'Poppins', sans-serif;
-    font-size: 20px;
-    cursor: pointer;
-    padding: 12px 20px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    text-decoration: none;
+  background: none;
+  border: none;
+  color: #ffffe0;
+  font-family: "Poppins", sans-serif;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 12px 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-decoration: none;
 }
 
 .header-btn,
 .game-button {
-    background: none;
-    border: none;
-    color: #FFFFE0;
-    /* Assurez que la couleur correspond aux autres liens */
-    font-family: 'Poppins', sans-serif;
-    font-size: 20px;
-    cursor: pointer;
-    padding: 12px 20px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    text-decoration: none;
-    /* Supprime le soulignement */
+  background: none;
+  border: none;
+  color: #ffffe0;
+  /* Assurez que la couleur correspond aux autres liens */
+  font-family: "Poppins", sans-serif;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 12px 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-decoration: none;
+  /* Supprime le soulignement */
 }
 
 .profile-btn {
-    background-color: #FFFF99;
-    border-radius: 5px;
-    color: #000;
+  background-color: #ffff99;
+  border-radius: 5px;
+  color: #000;
 }
 
 .frame {
-    position: fixed;
-    top: 20%;
-    left: 15%;
-    width: 70%;
-    height: 60%;
-    background-color: rgba(255, 255, 255, 0.95);
-    border-radius: 10px;
-    display: flex;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-    z-index: 11;
-    overflow: hidden;
+  position: fixed;
+  top: 20%;
+  left: 15%;
+  width: 70%;
+  height: 60%;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 10px;
+  display: flex;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  z-index: 11;
+  overflow: hidden;
 }
 
 .tab-container {
-    width: 25%;
-    background-color: #EEE;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: start;
-    padding: 20px;
-    gap: 10px;
-    border-right: 2px solid #CCC;
+  width: 25%;
+  background-color: #eee;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  padding: 20px;
+  gap: 10px;
+  border-right: 2px solid #ccc;
 }
 
 /* Style par défaut pour tous les onglets */
 .tab {
-    width: 100%;
-    text-align: center;
-    padding: 15px 0;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-    border-radius: 5px;
-    color: #333;
-    /* Texte foncé par défaut */
-    background-color: #DDD;
-    /* Fond gris clair par défaut */
-    font-weight: 700;
-    border-bottom: 1px solid #CCC;
-    text-decoration: none;
+  width: 100%;
+  text-align: center;
+  padding: 15px 0;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  border-radius: 5px;
+  color: #333;
+  /* Texte foncé par défaut */
+  background-color: #ddd;
+  /* Fond gris clair par défaut */
+  font-weight: 700;
+  border-bottom: 1px solid #ccc;
+  text-decoration: none;
 }
 
 /* Styles pour les boutons non actifs spécifiques */
 .tab {
-    background-color: #DDD;
-    /* Gris clair pour non actif */
-    color: #333;
-    /* Texte foncé pour non actif */
+  background-color: #ddd;
+  /* Gris clair pour non actif */
+  color: #333;
+  /* Texte foncé pour non actif */
 }
 
 .tab-container a.tab.account-info-btn {
-    background-color: #000000;
-    /* Noir pour 'Account Information' */
-    color: #FFF;
-    /* Texte blanc pour 'Account Information' */
+  background-color: #000000;
+  /* Noir pour 'Account Information' */
+  color: #fff;
+  /* Texte blanc pour 'Account Information' */
 }
 
 /* Styles pour le bouton actif - spécifique pour 'Dashboard' et 'Social Management' */
-.tab[href*='user_dashboard'].active,
-.tab[href*='social_management'].active {
-    background-color: #DDD;
-    /* Gris clair pour actif */
-    color: #333;
-    /* Texte foncé pour actif */
+.tab[href*="user_dashboard"].active,
+.tab[href*="social_management"].active {
+  background-color: #ddd;
+  /* Gris clair pour actif */
+  color: #333;
+  /* Texte foncé pour actif */
 }
 
 /* Hover sur les onglets */
 .tab:hover {
-    background-color: #F0F0F0;
-    /* Léger gris pour hover */
-    transform: translateY(-2px);
+  background-color: #f0f0f0;
+  /* Léger gris pour hover */
+  transform: translateY(-2px);
 }
 
 .content-area {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    padding: 20px;
-    gap: 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 20px;
+  gap: 20px;
 }
 
 .user-info {
-    display: flex;
-    flex-direction: column;
-    width: 60%;
-    margin-top: 40px;
-    /* Ajoutez une marge en haut pour baisser les éléments */
-    padding-left: 40px;
-    /* Ajoutez du padding à gauche pour décaler vers la droite */
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+  margin-top: 40px;
+  /* Ajoutez une marge en haut pour baisser les éléments */
+  padding-left: 40px;
+  /* Ajoutez du padding à gauche pour décaler vers la droite */
 }
 
 .edit-link {
-    align-self: center;
-    margin-top: auto;
-    padding: 8px 24px;
-    background-color: #000000;
-    color: #ffffff;
-    text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.3s, color 0.3s;
+  align-self: center;
+  margin-top: auto;
+  padding: 8px 24px;
+  background-color: #000000;
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .edit-link:hover {
-    background-color: #000000;
-    color: #FFF;
+  background-color: #000000;
+  color: #fff;
 }
 
 .profile-section {
-    display: flex;
-    flex-direction: column;
-    /* Alignement vertical */
-    align-items: center;
-    /* Centrage horizontal */
-    margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  /* Alignement vertical */
+  align-items: center;
+  /* Centrage horizontal */
+  margin-top: 20px;
 }
 
 .profile-pic {
-    width: 120px;
-    /* taille fixe */
-    height: 120px;
-    /* taille fixe */
-    border-radius: 50%;
-    /* rend l'image ronde */
-    border: 3px solid #000000;
-    /* bordure */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-    /* ombre */
+  width: 120px;
+  /* taille fixe */
+  height: 120px;
+  /* taille fixe */
+  border-radius: 50%;
+  /* rend l'image ronde */
+  border: 3px solid #000000;
+  /* bordure */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  /* ombre */
 }
 
 .edit-profile-btn {
-    padding: 8px 16px;
-    background-color: #000000;
-    /* couleur du bouton */
-    color: #ffffff;
-    /* couleur du texte */
-    border: none;
-    border-radius: 5px;
-    margin-top: 10px;
-    /* espace entre l'image et le bouton */
-    cursor: pointer;
-    /* style de curseur */
+  padding: 8px 16px;
+  background-color: #000000;
+  /* couleur du bouton */
+  color: #ffffff;
+  /* couleur du texte */
+  border: none;
+  border-radius: 5px;
+  margin-top: 10px;
+  /* espace entre l'image et le bouton */
+  cursor: pointer;
+  /* style de curseur */
 }
 
 /* NOUVEAUX PARAMETRES */
 
 hr {
-    border: none;
-    height: 2px;
-    background-color: #ccc;
-    margin: 20px 0;
+  border: none;
+  height: 2px;
+  background-color: #ccc;
+  margin: 20px 0;
 }
 
 .color-settings {
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  padding: 20px;
 }
 
 .color-picker-row {
-    display: flex;
-    justify-content: start;
-    gap: 20px;
-    /* Espace entre les sélecteurs de couleur */
+  display: flex;
+  justify-content: start;
+  gap: 20px;
+  /* Espace entre les sélecteurs de couleur */
 }
 
 .color-picker-columns {
-    display: flex;
-    flex-wrap: nowrap;
-    /* Assurez-vous que tous les éléments restent sur une seule ligne */
-    overflow-x: auto;
-    /* Permet le défilement horizontal si nécessaire */
-    gap: 20px;
-    /* Espace entre les sélecteurs de couleur */
-    align-items: center;
-    /* Alignement vertical des éléments */
-    margin-top: 20px;
-    /* Ajoutez de l'espace supplémentaire si nécessaire pour abaisser la ligne des boutons */
+  display: flex;
+  flex-wrap: nowrap;
+  /* Assurez-vous que tous les éléments restent sur une seule ligne */
+  overflow-x: auto;
+  /* Permet le défilement horizontal si nécessaire */
+  gap: 20px;
+  /* Espace entre les sélecteurs de couleur */
+  align-items: center;
+  /* Alignement vertical des éléments */
+  margin-top: 20px;
+  /* Ajoutez de l'espace supplémentaire si nécessaire pour abaisser la ligne des boutons */
 }
 
 .color-column {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    /* Chaque colonne prend une part égale de l'espace */
-    padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  /* Chaque colonne prend une part égale de l'espace */
+  padding: 0 20px;
 }
 
 .color-picker {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .color-picker label {
-    margin-bottom: 10px;
-    font-size: 16px;
-    font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 input[type="color"] {
-    width: 150px;
-    /* Fixed width for uniformity */
-    height: 40px;
-    /* Fixed height for all buttons */
-    border: 2px solid #AAA;
-    /* Added border for better visibility */
-    border-radius: 8px;
-    /* Rounded borders for a modern look */
-    cursor: pointer;
-    background-color: #FFF;
-    /* Light background to enhance color visibility */
-    outline: none;
-    -webkit-appearance: none;
-    /* Remove default styling for WebKit browsers */
-    transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+  width: 150px;
+  /* Fixed width for uniformity */
+  height: 40px;
+  /* Fixed height for all buttons */
+  border: 2px solid #aaa;
+  /* Added border for better visibility */
+  border-radius: 8px;
+  /* Rounded borders for a modern look */
+  cursor: pointer;
+  background-color: #fff;
+  /* Light background to enhance color visibility */
+  outline: none;
+  -webkit-appearance: none;
+  /* Remove default styling for WebKit browsers */
+  transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
 }
 
 input[type="color"]:hover {
-    background-color: #cccccc;
-    /* Changement de couleur au survol pour un feedback visuel */
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    /* Ombre portée pour un effet de profondeur */
+  background-color: #cccccc;
+  /* Changement de couleur au survol pour un feedback visuel */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  /* Ombre portée pour un effet de profondeur */
 }
 
 input[type="color"]:hover,
 input[type="color"]:focus {
-    background-color: #F8F8F8;
-    /* Lighter background on hover/focus */
-    border-color: #333;
-    /* Darker border on hover/focus */
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
-    /* Shadow for depth */
+  background-color: #f8f8f8;
+  /* Lighter background on hover/focus */
+  border-color: #333;
+  /* Darker border on hover/focus */
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+  /* Shadow for depth */
 }
 
 input[type="color"]::-webkit-color-swatch-wrapper {
-    padding: 0;
-    width: 85%;
-    /* Taille de la vue de couleur adaptée */
-    height: 100%;
+  padding: 0;
+  width: 85%;
+  /* Taille de la vue de couleur adaptée */
+  height: 100%;
 }
 
 input[type="color"]::-webkit-color-swatch {
-    border: none;
-    border-radius: 3px;
-    /* Bords arrondis pour la vue de couleur */
+  border: none;
+  border-radius: 3px;
+  /* Bords arrondis pour la vue de couleur */
 }
 
 .button-8 {
-    padding: 10px 20px;
-    font-size: 16px;
-    text-align: center;
-    cursor: pointer;
-    outline: none;
-    color: #fff;
-    background-color: #4CAF50;
-    border: none;
-    border-radius: 5px;
-    box-shadow: 0 9px #999;
-    transition: 0.3s;
+  padding: 10px 20px;
+  font-size: 16px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  color: #fff;
+  background-color: #4caf50;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 9px #999;
+  transition: 0.3s;
 }
 
 .button-8:hover {
-    background-color: #3e8e41;
+  background-color: #3e8e41;
 }
 
 .button-8:active {
-    background-color: #3e8e41;
-    box-shadow: 0 5px #666;
-    transform: translateY(4px);
+  background-color: #3e8e41;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
 }
 
 .button-8:focus {
-    outline: none;
+  outline: none;
 }
 
 .game-settings-title {
-    padding: 10px 20px;
-    margin-bottom: 40px;
-    /* Augmenter cette marge si vous voulez plus d'espace */
-    border: 2px solid #666;
-    /* Bordure solide pour le cadre */
-    border-radius: 5px;
-    /* Coins arrondis pour le cadre */
-    text-align: center;
-    background-color: #fff;
-    /* Couleur de fond claire pour contraster avec le texte */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    /* Ombre légère pour effet de profondeur */
+  padding: 0px 20px;
+  /* Augmenter cette marge si vous voulez plus d'espace */
+  /* Bordure solide pour le cadre */
+  /* Coins arrondis pour le cadre */
+  text-align: center;
+  /* Couleur de fond claire pour contraster avec le texte */
+  margin: 0px 0px;
 }
 
-.user-info div {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
+h2 {
+  margin: 0px 0px;
 }
 
-.user-info div input {
-    border: 1px solid #CCC;
-    border-radius: 5px;
-    padding: 5px;
-    font-size: 14px;
-    width: 60%;
+.user-info form {
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.user-info form input {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  font-size: 14px;
+  width: 60%;
 }
 
 #updatePasswordBtn {
-    margin-bottom: 20px;
-    /* Augmentez cette valeur selon le besoin */
+  margin-bottom: 20px;
+  /* Augmentez cette valeur selon le besoin */
 }

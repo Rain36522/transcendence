@@ -86,23 +86,49 @@ document.querySelectorAll(".button-8").forEach((button) => {
   });
 });
 
-document
-  .getElementById("updatePasswordBtn")
-  .addEventListener("click", function () {
-    var currentPassword = document.getElementById("currentPassword").value;
-    var newPassword = document.getElementById("newPassword").value;
-    var passwordError = document.getElementById("passwordError");
+// document
+//   .getElementById("updatePasswordBtn")
+//   .addEventListener("click", function () {
+//     var currentPassword = document.getElementById("currentPassword").value;
+//     var newPassword = document.getElementById("newPassword").value;
+//     var passwordError = document.getElementById("passwordError");
 
-    // Supposons que 'passwordCorrecte' est le mot de passe actuel (cette partie devrait être vérifiée côté serveur)
-    if (currentPassword === "passwordCorrecte") {
-      passwordError.style.display = "none";
-      alert("Password updated successfully!"); // Vous pouvez également mettre à jour ce message ou effectuer d'autres actions
-      // Envoyez le nouveau mot de passe au serveur pour mise à jour
-    } else {
-      passwordError.style.display = "block";
-      passwordError.textContent = "Incorrect current password"; // Afficher le message d'erreur
-    }
+//     // Supposons que 'passwordCorrecte' est le mot de passe actuel (cette partie devrait être vérifiée côté serveur)
+//     if (currentPassword === "passwordCorrecte") {
+//       passwordError.style.display = "none";
+//       alert("Password updated successfully!"); // Vous pouvez également mettre à jour ce message ou effectuer d'autres actions
+//       // Envoyez le nouveau mot de passe au serveur pour mise à jour
+//     } else {
+//       passwordError.style.display = "block";
+//       passwordError.textContent = "Incorrect current password"; // Afficher le message d'erreur
+//     }
+//   });
+
+document.getElementById('passwordChangeForm').addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  var formData = new FormData(this);
+
+  fetch('/api/change_password/', {
+      method: 'POST',
+      body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+      if (data.error) {
+          document.getElementById('message').innerHTML = '<p style="color: red;">' + data.error + '</p>';
+      } else {
+          document.getElementById('message').innerHTML = '<p style="color: green;">' + data.message + '</p>';
+          // Clear form fields
+          document.getElementById('oldPassword').value = '';
+          document.getElementById('newPassword').value = '';
+      }
+  })
+  .catch(error => {
+      console.error('Error:', error);
+      document.getElementById('message').innerHTML = '<p style="color: red;">An unexpected error occurred. Please try again later.</p>';
   });
+});
 
 document
   .getElementById("uploadForm")
