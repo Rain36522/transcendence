@@ -5,6 +5,7 @@ from typing import Type, List
 import math
 import time
 from bottibotto import BottiBotto 
+import copy
 
 RESET = "\033[0m"
 RED = "\033[31m"
@@ -46,6 +47,7 @@ class gameLogic:
 			self.ball = Ball(
 				float(gameSet["ballwidth"]), float(gameSet["ballwidth"]), 0.25
 			)
+
 		elif len(self.players) == 2:
 			self.ball = Ball(
 				float(gameSet["ballwidth"]), float(gameSet["ballwidth"]) / 2, 0.25
@@ -95,7 +97,7 @@ class gameLogic:
  
 	# get the game state for bottibotto
 	async def get_game_state(self):
-		return self.game_state.copy()
+		return copy.deepcopy(self.game_state)
 	#get_game_state end
 
 	# print function
@@ -198,8 +200,8 @@ class Player:
 		self.token = token
 		self.offset = 0.49
 		self.connected = False
-		self.upperBound = 100
-		self.lowerBound = -100
+		self.upperBound = 0.5
+		self.lowerBound = -0.5
 		self.num = num
 		self.collision = []
 		self.speed = 1
@@ -398,8 +400,8 @@ class Ball:
 				# print("dist remaining", remaining_dist, file=stderr)
 				if self.temp_last_touch != "":
 					self.last_touch = self.temp_last_touch
-				if self.speed < 2:
-					self.speed *= 1.2
+				if self.speed < 1.75:
+					self.speed += 0.05
 			else:
 				# there is no collision within range
 				self.pos.x += self.dir.x * remaining_dist
