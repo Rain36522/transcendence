@@ -38,6 +38,11 @@ urlpatterns = [
     path(
         "api/profile_pic/<str:username>/",
         user_profile_pic_api,
+        name="user_profile_pic_api_other",
+    ),
+    path(
+        "api/profile_pic/",
+        user_profile_pic_api,
         name="user_profile_pic_api",
     ),
     path("api/upload_profile/", upload_profile_pic_api, name="upload_profile_pic_api"),

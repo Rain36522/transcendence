@@ -23,8 +23,12 @@
     </div>
     <div class="content-area">
         <div class="profile-section">
-            <img src="" alt="Photo de profil" class="profile-pic">
-            <button class="edit-profile-btn">Edit profile picture</button>
+            <img alt="Photo de profil" class="profile-pic" id="profile-pic">
+            <form id="uploadForm" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" id="profilePicture" name="profile_picture" accept="image/*">
+                <button class="edit-profile-btn" type="submit">Upload Profile Picture</button>
+              </form>
         </div>
 
         <div class="user-info">
