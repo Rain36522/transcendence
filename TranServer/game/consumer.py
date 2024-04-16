@@ -1,6 +1,6 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from tournament.consumer import putGameInDict
+from tournament.consumer import getUpdate
 from .models import Game, GameUser
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync, sync_to_async
@@ -35,24 +35,25 @@ class GameServerConsumer(AsyncWebsocketConsumer):
         game_id = data["gameid"]
         game = await sync_to_async(Game.objects.get)(pk=game_id)
         winner = await self.putGameResultDb(game, data)
-        if game.tournament and winner:
-            tournamentId = game.tournament.id
-            await self.tournamentEndGame(tournamentId, game, winner)
+        await self.tournamentEndGame(game, winner)
     
     async def game_msg(self, event):
         message = event['message']  # Accéder au message dans l'événement
         await self.send(text_data=json.dumps({"message": message}))
 
     @sync_to_async    
-    def tournamentEndGame(self, tournamentId, game, winner):
-        if game.nextGame:
-            next = game.nextGame_set.id
-            newuser = GameUser.objects.create(user=winner.user, game=next)
-            game.gameuser_set.add(newuser)
-            if game.gameuser_set.count() == game.gamemode * 2:
-                launchGame(next)
-
-        self.sendUpdateTournamentview(next, tournamentId)
+    def tournamentEndGame(self, game, winner):
+        if game.tournament and winner:
+            tournamentId = game.tournament.id
+            print("NEXT GAME : ", game.nextGame)
+            if game.nextGame:
+                print("NEXT GAME : ", game.nextGame)
+                nextGame = game.nextGame
+                GameUser.objects.create(user=winner.user, game=nextGame)
+                if nextGame.gameuser_set.count() == nextGame.gamemode * 2:
+                    print("LAUNCHING NEXT TOURNAMENT GAME", nextGame.gameuser_set.count(), nextGame.gamemode * 2)
+                    launchGame(nextGame)
+        self.sendUpdateTournamentview(tournamentId)
                 
     @sync_to_async
     def putGameResultDb(self, game, data): #return winner
@@ -79,12 +80,12 @@ class GameServerConsumer(AsyncWebsocketConsumer):
         game.save()
         return winner
 
-    async def sendUpdateTournamentview(self, game, tournamentId):
+    async def sendUpdateTournamentview(self, tournamentId):
         async_to_sync(self.channel_layer.group_send)(
             'tournament_' + str(tournamentId),
             {
                 'type': 'end_game',
-                'message': putGameInDict(game),
+                'message': getUpdate(tournamentId.id),
             }
             )
         
