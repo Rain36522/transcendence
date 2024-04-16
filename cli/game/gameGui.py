@@ -66,7 +66,7 @@ class GameGui2p:
                 self.updateScore(msg)
                 if str(msg["state"]) == "game_over":
                     await asyncio.sleep(1)
-                    system("clear")
+                    # system("clear")
                     print(self.asciiData.putString("Press Q", beginstr=GREEN, endstr=RESET))
                     print("")
                     print(self.asciiData.putString("For EXIT!", beginstr=GREEN, endstr=RESET))

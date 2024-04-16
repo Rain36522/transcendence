@@ -5,6 +5,7 @@ import asyncio
 from json import loads
 from color import *
 import ascii
+from sys import stderr
 import ssl
 
 class DataTransmission:
@@ -40,9 +41,10 @@ class DataTransmission:
             try:
                 self.wsCli = await websockets.connect(self.url, ssl=ssl_context)
                 self.isConnected = True
-                while not self.runKeyBinding and not self.errormsg:
+                while not self.runKeyBinding and not self.errormsg and not self.exit:
                     await asyncio.sleep(0.05)
-                if not self.errormsg:
+                if not self.errormsg and not self.exit:
+                    print("LAUNCH KEY BINDING", file=stderr)
                     if self.is2player:
                         KeyQueue = self.transmitKeys2P()
                     elif self.playerpos == 1:
@@ -50,14 +52,16 @@ class DataTransmission:
                     else:
                         KeyQueue = self.transmitKeysP2()
                 i = 0
-                while not self.errormsg and self.runKeyBinding:
+
+                while not self.errormsg:
                     if self.exit:
                         await self.disconnect()
                         return None
-                    key = await KeyQueue.get()
-                    if key == "EXIT":
-                        return self.errormsg
-                    await self.wsCli.send(key)
+                    elif self.runKeyBinding:
+                        key = await KeyQueue.get()
+                        if key == "EXIT":
+                            return self.errormsg
+                        await self.wsCli.send(key)
                 return self.errormsg
             except Exception as e:
                 print(RED, "ws Server connection failed,", self.url)
@@ -75,12 +79,12 @@ class DataTransmission:
                         return self.errormsg
                     if not self.playerpos:
                         self.getUserPos()
-                    if self.runKeyBinding and loads(self.message)["state"] == "game_over":
+                    if "\"state\": \"game_over\"" in self.message:
                         self.exit = True
                         return None
                     self.runKeyBinding = True
             except:
-                print(RED, "Reading msg error connection.s", RESET)
+                # print(RED, "Reading msg error connection.s", RESET)
                 while not self.isConnected:
                     await asyncio.sleep(0.1)
     

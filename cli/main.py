@@ -13,7 +13,7 @@ import asyncio
 
 
 def getUrl(Django):
-    url = inputText("TRANSCENDANCE", "Write the server url.")
+    url = inputText("TRANSCENDANCE", "Write the server url.", defaultValue="https://127.0.0.1")
     if url == None:
         doexit(0, "User exit")
     while not checkUrlInput(url, Django):
@@ -35,11 +35,11 @@ def InitCli():
     asciiData = Ascii()
     os.system("clear")
     Django = DjangoCommunication()
-    asciiData.putString("TRANSCENDENCE",GREEN, RESET)
-    asciiData.putString("    Cecile et David",BLUE, RESET)
-    asciiData.putString("Alexandre et Paul",BLUE, RESET)
-    sleep(4)
-    Information("TRANSCENDANCE", "Welcome to the transcendance CLI")
+    # asciiData.putString("TRANSCENDENCE",GREEN, RESET)
+    # asciiData.putString("    Cecile et David",BLUE, RESET)
+    # asciiData.putString("Alexandre et Paul",BLUE, RESET)
+    # sleep(4)
+    # Information("TRANSCENDANCE", "Welcome to the transcendance CLI")
     getUrl(Django)
     User(Django)
     return Django, asciiData
