@@ -12,16 +12,12 @@ class DjangoCommunication:
         self.csrfToken = ""
         self.url = None
         self.wsUrl = None
-        self.cookies = None
+        self.session = requests.Session()
         system("clear")
-
-    def setWsUrl(self, username, gameid):
-        url = self.url.split("/")
-        self.wsUrl = "wss://" + url[2] + "/wsGame/" + username + "/" + str(gameid)
 
     def CheckUrl(self, url):
         try:
-            response = requests.get(url + "/register/", verify=False)
+            response = self.session.get(url + "/register/", verify=False)
         except:
             return 500
         if  response.text.find("<input type=\"hidden\" name=\"csrfmiddlewaretoken\" value=\"") >= 0:
@@ -29,9 +25,9 @@ class DjangoCommunication:
             return response.status_code
         return 500
 
-    def setcsrfToken(self):
+    def setcsrfToken(self, path):
         try:
-            response = requests.get(self.url + "/register/", verify=False)
+            response = self.session.get(self.url + path, verify=False)
         except:
             return 500
         system("clear")
@@ -45,7 +41,7 @@ class DjangoCommunication:
             return 200
     
     def createUser(self, user, mail, password):
-        value = self.setcsrfToken()
+        value = self.setcsrfToken("/register")
         if value != 200:
             return value
         data = {
@@ -55,27 +51,63 @@ class DjangoCommunication:
         'csrfmiddlewaretoken': self.csrfToken
         }
         try:
-            response = requests.post(self.url + "/api/signup/", data=data, verify=False)
-            system("clear")
-            self.cookies = response.cookies
+            response = self.session.post(self.url + "/api/signup/", data=data, verify=False)
             return response.status_code
         except:
             return 500
     
     def loginUser(self, user, password):
+        value = self.setcsrfToken("/login/")
+        if value != 200:
+            return value
         data = {
-        'username': user,
-        'password': password
+            'username': user,
+            'password': password,
+            'csrfmiddlewaretoken': self.csrfToken
         }
         try:
-            print("65")
-            response = requests.post(self.url + "/api/login/", data=data, verify=False)
-            print("67")
-            self.cookies = response.cookies
-            system("clear")
-            return response.status_code
+            response = self.session.post(self.url + "/api/login/", data=data, verify=False)
         except:
             return 500
+        system("clear")
+        return response.status_code
 
-    def createGame(self):
-        pass
+
+    def createGame(self, data):
+        from json import loads
+        value = self.setcsrfToken("/newGame/")
+        data["csrfmiddlewaretoken"] = self.csrfToken
+        if value != 200:
+            print(RED, "CSRF ERROR", RESET)
+            return value, None
+        headers = {'Referer': self.url + "/newGame/"}
+        try:
+            response = self.session.post(self.url + "/newGame/", data=data, verify=False, headers=headers)
+        except:
+            return response.status_code
+        system("clear")
+        return response.status_code, loads(response.text)["gameLink"]
+    
+
+    def getGameInfo(self, path):
+        from json import loads
+        try:
+            if path.startswith("https://"):
+                url = path
+            elif path.isdigit():
+                url = self.url + "/game/" + path
+            else:
+                url = self.url + path
+            response = self.session.get(url, verify=False)
+        except:
+            return 500
+        system("clear")
+        if response.status_code >= 400:
+            return response.status_code, None
+        start = response.text.find("<script>window.contexteJson = ") + 31
+        stop = response.text.find(";</script>", start) - 1
+        if start == -1 or stop == -1 or abs(start - stop) < 10:
+            return 404, None
+        else:
+            gameinfo = loads(response.text[start:stop])
+            return 200, gameinfo

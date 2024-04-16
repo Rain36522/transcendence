@@ -7,9 +7,9 @@ body {
 	height: 100vh;
 	overflow: hidden;
 	z-index: -1;
-  }
-  
-  body::before {
+}
+
+body::before {
 	content: "";
 	position: absolute;
 	top: 0;
@@ -21,7 +21,7 @@ body {
 	background-position: center;
 	filter: grayscale(100%);
 	z-index: 0;
-  }
+}
 
 .background-container {
 	position: fixed;
@@ -34,11 +34,55 @@ body {
 	background-position: center;
 	filter: grayscale(100%);
 	z-index: -1;
-  }  
+}
+
+.header-btn,
+.logout-link,
+.profile-link,
+.game-button {
+	background-color: transparent;
+	/* Enlève le fond pour tous */
+	color: white;
+	/* Texte blanc pour tous */
+	font-family: 'Roboto', sans-serif;
+	font-size: 20px;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	padding: 12px 20px;
+	cursor: pointer;
+	border: none;
+	border-radius: 5px;
+	text-decoration: none;
+	/* Enlever le soulignement pour tous */
+}
+
+.header-btn:hover,
+.logout-link:hover,
+.profile-link:hover,
+.game-button:hover {
+	background-color: rgba(255, 255, 255, 0.2);
+	/* Légère interaction sur le survol pour tous */
+	color: #FFFF99;
+	/* Change la couleur du texte au survol */
+}
+
+/* Vous pouvez supprimer ou ajuster ces styles si certains ne sont plus nécessaires */
+.game-button {
+	background-color: transparent;
+	/* Assure que le fond est transparent */
+	border: none;
+	/* Pas de bordure */
+	color: white;
+	/* Texte blanc */
+	text-decoration: none;
+	/* Pas de soulignement */
+}
+
 
 .chat-container {
 	position: fixed;
-	top: 55%; /* Décalage vers le bas */
+	top: 55%;
+	/* Décalage vers le bas */
 	left: 50%;
 	transform: translate(-50%, -50%);
 	width: 70%;
@@ -47,44 +91,72 @@ body {
 	display: flex;
 	border-radius: 20px;
 	z-index: 3;
-	box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.message-input textarea {
+	flex-grow: 1;
+	/* Assure que la zone de saisie prend tout l'espace horizontal disponible */
+	margin-right: 10px;
+	padding: 10px;
+	border-radius: 5px;
+	border: 1px solid #ccc;
+	resize: none;
+	/* Empêche le redimensionnement */
+	width: 100%;
+	/* S'étend sur toute la largeur disponible */
+	font-family: 'Roboto', sans-serif;
+	/* Utilise Roboto pour la police */
+	font-size: 16px;
+	/* Taille de la police appropriée */
+	color: #333;
+	/* Couleur du texte, choisie pour une bonne lisibilité */
 }
 
 .user-list {
-    flex: 1; /* Donne au user-list la capacité de grandir et remplir l'espace disponible */
-    background-color: transparent; /* Rend le fond transparent */
-    overflow-y: auto;
-    border-top-left-radius: 20px;
-    border-bottom-left-radius: 20px;
+	flex: 1;
+	/* Donne au user-list la capacité de grandir et remplir l'espace disponible */
+	background-color: transparent;
+	/* Rend le fond transparent */
+	overflow-y: auto;
+	border-top-left-radius: 20px;
+	border-bottom-left-radius: 20px;
 }
 
 .chat-window {
-    flex: 2; /* Permet au chat-window de prendre deux fois plus d'espace que le user-list */
-    padding: 20px;
-    overflow-y: auto;
-    background-color: #fff;
-    display: flex;
-    flex-direction: column;
-    border-top-right-radius: 20px;
-    border-bottom-right-radius: 20px;
+	flex: 2;
+	/* Permet au chat-window de prendre deux fois plus d'espace que le user-list */
+	padding: 20px;
+	overflow-y: auto;
+	background-color: #fff;
+	display: flex;
+	flex-direction: column;
+	border-top-right-radius: 20px;
+	border-bottom-right-radius: 20px;
 }
 
-.user, .group {
+.user,
+.group {
 	padding: 10px;
 	cursor: pointer;
 	border-bottom: 1px solid #ddd;
 }
-.user:hover, .group:hover {
+
+.user:hover,
+.group:hover {
 	background-color: #e9e9e9;
 }
+
 .selected-user {
 	font-weight: bold;
 	margin-bottom: 20px;
 }
+
 .message-input {
 	display: flex;
 	margin-top: auto;
 }
+
 .message-box {
 	padding: 10px;
 	margin: 5px 0;
@@ -102,18 +174,24 @@ body {
 	border-radius: 5px;
 	border: 1px solid #ccc;
 }
+
 .message-input button {
 	padding: 10px 20px;
-	background-color: #FFFF99; /* Bouton jaune pale fluo */
+	background-color: #FFFF99;
+	/* Bouton jaune pale fluo */
 	color: #000;
 	border: none;
 	cursor: pointer;
 	border-radius: 5px;
 }
+
 .message-input button#sendMessage {
-	background-color: #000; /* Noir */
-	color: #fff; /* Blanc */
+	background-color: #000;
+	/* Noir */
+	color: #fff;
+	/* Blanc */
 }
+
 header {
 	position: fixed;
 	top: 0;
@@ -128,8 +206,10 @@ header {
 	justify-content: space-between;
 	align-items: center;
 }
+
 .header-btn {
-	background-color: #FFFF99; /* Bouton jaune pale fluo */
+	background-color: #FFFF99;
+	/* Bouton jaune pale fluo */
 	color: #000;
 	font-family: 'Roboto', sans-serif;
 	font-size: 20px;
@@ -139,21 +219,28 @@ header {
 	letter-spacing: 1px;
 	border: none;
 	border-radius: 5px;
-	text-decoration: none; /* Enlever le soulignement */
+	text-decoration: none;
+	/* Enlever le soulignement */
 }
 
 /* CSS pour ajuster uniquement les boutons "Logout" et "Profile" */
-.header-btn.logout-btn, .header-btn.profile-btn {
-    background-color: transparent; /* Enlève le fond jaune */
-    color: #fff; /* Change la couleur du texte en blanc */
+.header-btn.logout-btn,
+.header-btn.profile-btn {
+	background-color: transparent;
+	/* Enlève le fond jaune */
+	color: #fff;
+	/* Change la couleur du texte en blanc */
 }
 
 /* Optionnel : Ajuster l'apparence au survol */
-.header-btn.logout-btn:hover, .header-btn.profile-btn:hover {
-    color: #fff; /* Maintient la couleur de texte en blanc */
+.header-btn.logout-btn:hover,
+.header-btn.profile-btn:hover {
+	color: #fff;
+	/* Maintient la couleur de texte en blanc */
 }
 
-.logout-link, .profile-link {
+.logout-link,
+.profile-link {
 	color: #ffffff;
 	text-decoration: none;
 	font-family: 'Roboto', sans-serif;
@@ -165,303 +252,454 @@ header {
 }
 
 .new-chat-button-container {
-    margin-top: auto; /* Place le bouton en bas */
-    margin-left: 20px; /* Décalage vers la gauche */
+	margin-top: auto;
+	/* Place le bouton en bas */
+	margin-left: 20px;
+	/* Décalage vers la gauche */
 }
 
 .new-chat-container {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
+	position: fixed;
+	bottom: 20px;
+	left: 20px;
 }
 
 #newChatButton {
-    padding: 12px 24px;
-    background-color: #FFFF99;
-    color: rgb(0, 0, 0);
-    border: none;
-    border-radius: 25px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-weight: bold;
+	padding: 12px 24px;
+	background-color: #FFFF99;
+	color: rgb(0, 0, 0);
+	border: none;
+	border-radius: 25px;
+	font-size: 16px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+	font-weight: bold;
 	position: absolute;
-	bottom: 20px; /* Ajustez en fonction de l'espace désiré du bas */
-	left: 20px; /* Ajustez pour aligner comme désiré */
+	bottom: 20px;
+	/* Ajustez en fonction de l'espace désiré du bas */
+	left: 20px;
+	/* Ajustez pour aligner comme désiré */
 }
 
 #newChatButton:hover {
-    background-color: #ffff4f;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+	background-color: #ffff4f;
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
 }
 
 /* ------------------------- AJOUT EN PLUS -------------------------- */
 
 .popup {
-	max-height: 70vh;
-	overflow-y: auto; /* Permet le défilement si nécessaire, mais vous pourriez vouloir le retirer pour laisser le contenu gérer le défilement */
+	max-height: 85vh;
+	/* Augmenter la hauteur maximale de la pop-up */
+	overflow-y: hidden;
+	/* Masquer la barre de défilement verticale */
 	padding-bottom: 70px;
-	width: 60%; /* Ajustez la largeur au besoin */
-	display: none; /* Par défaut, la popup est cachée */
+	width: 80%;
+	/* Augmenter la largeur de la pop-up */
+	display: none;
 	position: fixed;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	background-color: rgba(255, 255, 255, 0.885); /* Fond semi-transparent */
+	background-color: rgba(255, 255, 255, 0.998);
 	padding: 20px;
 	border-radius: 10px;
-	z-index: 9999; /* Assure que la popup est affichée au-dessus de tout le reste */
+	z-index: 9999;
 	color: rgb(0, 0, 0);
-  }
-  
-  .popup-content {
+}
+
+.popup-content {
 	display: flex;
 	flex-direction: column;
-	justify-content: space-between; /* Alignement vertical */
-	height: auto; /* Ajustez en fonction du contenu */
-	min-height: 70vh; /* Hauteur minimale pour supporter différents contenus */
-	max-height: 95vh; /* Limite de hauteur pour éviter les débordements hors de l'écran */
-  }
-  
-  .popup-content h3 {
-	margin-top: 20px; /* Ajuster l'espace entre le haut de la popup et le titre */
-	text-align: center; /* Centrer le texte */
-	font-size: 28px; /* Augmenter la taille du texte */
-  }
-  
-  .close-btn {
+	justify-content: space-between;
+	height: auto;
+	min-height: 70vh;
+	max-height: 95vh;
+	font-family: 'Poppins', sans-serif;
+	/* Apply the Poppins font */
+	overflow-y: hidden;
+	/* Hide vertical scrollbar for content */
+}
+
+.popup-content h3 {
+	margin-top: 20px;
+	text-align: center;
+	font-size: 28px;
+}
+
+.close-btn {
 	position: absolute;
-	top: 10px; /* Ajuster la position verticale de la croix pour qu'elle soit à 10px du bord supérieur de la popup */
-	right: 5px; /* Ajustez selon le besoin pour déplacer la croix vers la gauche */
+	top: 10px;
+	/* Ajuster la position verticale de la croix pour qu'elle soit à 10px du bord supérieur de la popup */
+	right: 5px;
+	/* Ajustez selon le besoin pour déplacer la croix vers la gauche */
 	cursor: pointer;
 	font-size: 24px;
-	color: black; /* Changer la couleur de la croix en noir */
-  }
-  
-  /* Ajout de flou à l'arrière-plan lorsque la popup est ouverte */
-  .popup-opened {
-	backdrop-filter: blur(5px);
-  }
-  
-  .blur-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.808); /* Fond noir semi-transparent */
-    z-index: 999; /* Assure que la superposition est juste en dessous de la popup */
-    display: none; /* Caché par défaut */
+	color: black;
+	/* Changer la couleur de la croix en noir */
 }
-  
-  .search-container {
+
+/* Ajout de flou à l'arrière-plan lorsque la popup est ouverte */
+.popup-opened {
+	backdrop-filter: blur(5px);
+}
+
+.blur-background {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	backdrop-filter: blur(5px);
+	z-index: 9998;
+	background-color: rgba(0, 0, 0, 0.5);
+	/* Noir avec 50% d'opacité */
+	/* Assure que la div est affichée en dessous de la popup */
+	display: none;
+}
+
+.search-container {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	margin-bottom: 20px;
-	background-color: rgba(255, 255, 255, 0.2); /* Couleur de fond de la barre de recherche */
-	border-radius: 5px; /* Coins arrondis */
-	border: 2px solid #2196F3; /* Ajouter un contour solide noir autour de la barre de recherche */
-	padding: 5px 10px; /* Ajouter un espacement intérieur */
-  }
-  
-  .search-container input[type="text"] {
+	background-color: rgba(255, 255, 255, 0.2);
+	/* Couleur de fond de la barre de recherche */
+	border-radius: 5px;
+	/* Coins arrondis */
+	border: 2px solid #2196F3;
+	/* Ajouter un contour solide noir autour de la barre de recherche */
+	padding: 5px 10px;
+	/* Ajouter un espacement intérieur */
+}
+
+.search-container input[type="text"] {
 	flex: 1;
 	padding: 10px;
 	border: none;
 	border-radius: 5px;
-	background-color: transparent; /* Fond transparent pour le champ de recherche */
-	color: rgb(0, 0, 0); /* Couleur du texte */
-  }
-  
-  .search-container button {
+	background-color: transparent;
+	/* Fond transparent pour le champ de recherche */
+	color: rgb(0, 0, 0);
+	/* Couleur du texte */
+}
+
+.search-container button {
 	padding: 10px 20px;
 	background-color: #2196F3;
 	color: rgb(255, 255, 255);
-	border: 2px solid #2196F3; /* Ajout d'une bordure solide de la même couleur que l'arrière-plan */
+	border: 2px solid #2196F3;
+	/* Ajout d'une bordure solide de la même couleur que l'arrière-plan */
 	border-radius: 5px;
 	cursor: pointer;
-	transition: background-color 0.3s, border-color 0.3s; /* Ajout d'une transition pour une meilleure expérience utilisateur */
-  }
-  
-  .search-container button:hover {
+	transition: background-color 0.3s, border-color 0.3s;
+	/* Ajout d'une transition pour une meilleure expérience utilisateur */
+}
+
+.search-container button:hover {
 	background-color: #0b7dda;
-	border-color: #0b7dda; /* Changement de la couleur de la bordure au survol */
-  }
-  
-  .start-button {
-	display: block; /* Assurer que le bouton soit bloqué et non en ligne */
-	margin: 30px auto; /* Augmenter la marge pour plus d'espace autour */
-	padding: 20px 40px; /* Augmenter le padding pour un bouton plus grand */
-	background-color: #2196F3; /* Couleur de fond */
-	color: white; /* Couleur du texte */
-	font-size: 32px; /* Augmenter la taille du texte pour un bouton plus visible */
-	border: none; /* Aucune bordure */
-	border-radius: 10px; /* Bords plus arrondis */
-	cursor: pointer; /* Curseur pointeur */
-	transition: background-color 0.3s ease; /* Transition pour l'interaction */
-	box-shadow: 0px 8px 15px rgba(0,0,0,0.2); /* Ajouter une ombre pour un effet de profondeur */
-  }
-  
-  .start-button:hover {
-	background-color: #0b7dda; /* Changement de couleur de fond au survol */
-	box-shadow: 0px 5px 12px rgba(0,0,0,0.3); /* Ombre plus prononcée pour l'effet au survol */
-  }
-  
-  /* CSS pour la mise en forme de la liste des utilisateurs */
-  .user-list {
+	border-color: #0b7dda;
+	/* Changement de la couleur de la bordure au survol */
+}
+
+.start-button {
+	display: block;
+	/* Assurer que le bouton soit bloqué et non en ligne */
+	margin: 30px auto;
+	/* Augmenter la marge pour plus d'espace autour */
+	padding: 20px 40px;
+	/* Augmenter le padding pour un bouton plus grand */
+	background-color: #2196F3;
+	/* Couleur de fond */
+	color: white;
+	/* Couleur du texte */
+	font-size: 32px;
+	/* Augmenter la taille du texte pour un bouton plus visible */
+	border: none;
+	/* Aucune bordure */
+	border-radius: 10px;
+	/* Bords plus arrondis */
+	cursor: pointer;
+	/* Curseur pointeur */
+	transition: background-color 0.3s ease;
+	/* Transition pour l'interaction */
+	box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+	/* Ajouter une ombre pour un effet de profondeur */
+	font-family: 'Poppins', sans-serif;
+	font-weight: bold;
+}
+
+.start-button:hover {
+	background-color: #0b7dda;
+	/* Changement de couleur de fond au survol */
+	box-shadow: 0px 5px 12px rgba(0, 0, 0, 0.3);
+	/* Ombre plus prononcée pour l'effet au survol */
+}
+
+/* CSS pour la mise en forme de la liste des utilisateurs */
+.user-list {
 	display: flex;
-	flex-direction: column; /* Pour empiler les éléments les uns sur les autres */
-	align-items: center; /* Pour aligner les éléments horizontalement au centre */
-  }
-  
-  /* Style de la bordure autour de la liste des utilisateurs */
-  .user-list-container {
-	border: 2px solid #ccc; /* Bordure solide */
-	padding: 10px; /* Marge interne */
-	margin: 0 10px; /* Ajoutez ou ajustez la marge si nécessaire pour l'espacement */
-	overflow: auto; /* Ajoute un défilement si le contenu dépasse */
-	width: 48%; /* Ajuste la largeur de chaque conteneur pour qu'ils s'adaptent dans une vue côte à côte */
-	max-width: 48%; /* Optionnel: limite la largeur à environ la moitié du conteneur parent pour équilibrer l'espace */
-	flex: 1; /* Assurez-vous que chaque conteneur prend une largeur égale */
 	flex-direction: column;
-	display: flex;
-  }
-  
-  /* Style du slider */
-  .slider {
-	width: 100%; /* Largeur du slider */
-  }
-  
-  /* Style des slides (à adapter en fonction de la librairie de slider utilisée) */
-  .slick-slide {
-	margin: 0 5px; /* Espacement entre chaque slide */
-  }
-  
-  .user-item {
+	/* Pour empiler les éléments les uns sur les autres */
+	align-items: center;
+	/* Pour aligner les éléments horizontalement au centre */
+}
+
+.user-list-container h4 {
+	color: #333;
+	/* Couleur du texte */
+	font-size: 20px;
+	/* Taille du texte */
+	font-weight: bold;
+	/* Gras pour le titre */
+	padding: 10px 0;
+	/* Espacement au-dessus et en dessous du titre */
+	text-align: center;
+	/* Centrer le titre */
+	background-color: #f9f9f9;
+	/* Couleur de fond légère pour distinguer le titre */
+	border-radius: 8px 8px 0 0;
+	/* Arrondit les coins supérieurs */
+	margin-bottom: 10px;
+	/* Espace entre le titre et la liste */
+}
+
+/* Style du slider */
+.slider {
+	width: 100%;
+	/* Largeur du slider */
+}
+
+/* Style des slides (à adapter en fonction de la librairie de slider utilisée) */
+.slick-slide {
+	margin: 0 5px;
+	/* Espacement entre chaque slide */
+}
+
+.user-item {
 	margin-left: auto;
 	margin-right: auto;
 	display: flex;
-	justify-content: space-between; /* Pour aligner les éléments de chaque utilisateur sur la largeur */
-	align-items: center; /* Pour aligner les éléments verticalement au centre */
-	width: 80%; /* Largeur de l'utilisateur pour éviter qu'il ne soit trop large */
-	margin-bottom: 20px; /* Espacement entre chaque utilisateur */
-  }
-  
-  .user-image {
-	width: 50px; /* Taille de la photo de profil */
+	justify-content: space-between;
+	/* Pour aligner les éléments de chaque utilisateur sur la largeur */
+	align-items: center;
+	/* Pour aligner les éléments verticalement au centre */
+	width: 80%;
+	/* Largeur de l'utilisateur pour éviter qu'il ne soit trop large */
+	margin-bottom: 20px;
+	/* Espacement entre chaque utilisateur */
+}
+
+.user-image {
+	width: 50px;
+	/* Taille de la photo de profil */
 	height: 50px;
-	border-radius: 50%; /* Pour arrondir l'image de profil */
-	margin-right: 10px; /* Espacement à droite de l'image de profil */
-  }
-  
-  .user-name {
-	flex-grow: 1; /* Pour que le nom d'utilisateur occupe tout l'espace restant */
-	margin-right: 10px; /* Espacement à droite du nom d'utilisateur */
-  }
-  
-  .invite-button {
-	padding: 10px 15px; /* Ajustez le rembourrage au besoin */
-	background-color: #4CAF50; /* Couleur de fond initiale */
-	color: white; /* Couleur du texte */
-	border: none; /* Supprimer la bordure par défaut */
-	cursor: pointer; /* Change le curseur pour indiquer qu'il s'agit d'un élément cliquable */
-	border-radius: 5px; /* Arrondit les coins */
-	transition: background-color 0.3s, transform 0.3s; /* Ajoute une transition pour le survol */
-  }
-  
-  .invite-button:hover {
-	background-color: #45a049; /* Couleur de fond au survol */
-	transform: scale(1.05); /* Légère augmentation de la taille au survol */
-  }
-  
-  .invite-button.deselected {
-	background-color: red; /* Couleur de fond pour le mode désélectionné */
-	color: white; /* Couleur du texte */
-  }
-  
-  .invite-button.deselected::after {
-	content: "✖"; /* Symbole de la croix */
+	border-radius: 50%;
+	/* Pour arrondir l'image de profil */
+	margin-right: 10px;
+	/* Espacement à droite de l'image de profil */
+}
+
+.user-name {
+	flex-grow: 1;
+	/* Pour que le nom d'utilisateur occupe tout l'espace restant */
+	margin-right: 10px;
+	/* Espacement à droite du nom d'utilisateur */
+}
+
+.invite-button {
+	padding: 10px 15px;
+	/* Ajustez le rembourrage au besoin */
+	background-color: #4CAF50;
+	/* Couleur de fond initiale */
 	color: white;
-  }
-  
-  input[type="text"], input[type="search"], select, button {
-	outline: none; /* Supprime l'outline */
+	/* Couleur du texte */
+	border: none;
+	/* Supprimer la bordure par défaut */
+	cursor: pointer;
+	/* Change le curseur pour indiquer qu'il s'agit d'un élément cliquable */
+	border-radius: 5px;
+	/* Arrondit les coins */
+	transition: background-color 0.3s, transform 0.3s;
+	/* Ajoute une transition pour le survol */
+}
+
+.invite-button:hover {
+	background-color: #45a049;
+	/* Couleur de fond au survol */
+	transform: scale(1.05);
+	/* Légère augmentation de la taille au survol */
+}
+
+.invite-button.deselected {
+	background-color: red;
+	/* Couleur de fond pour le mode désélectionné */
+	color: white;
+	/* Couleur du texte */
+}
+
+.invite-button.deselected::after {
+	content: "✖";
+	/* Symbole de la croix */
+	color: white;
+}
+
+input[type="text"],
+input[type="search"],
+select,
+button {
+	outline: none;
+	/* Supprime l'outline */
 	/* Ajoutez d'autres propriétés de style au besoin pour le focus */
-  }
-  
-  input[type="text"]:focus, input[type="search"]:focus, select:focus, button:focus {
-	border: 2px solid #cccccc00; /* Exemple de changement de bordure au focus */
+}
+
+input[type="text"]:focus,
+input[type="search"]:focus,
+select:focus,
+button:focus {
+	border: 2px solid #cccccc00;
+	/* Exemple de changement de bordure au focus */
 	/* Vous pouvez ajuster la couleur et le style de la bordure au focus selon votre design */
-  }
-  
-  .container {
+}
+
+.container {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-  }
-  
-  .user-list-frame {
+}
+
+.user-list-frame {
 	position: relative;
-	width: 80%; /* Ajustez selon la largeur désirée */
-	background-color: #fff; /* Couleur de fond */
+	width: 80%;
+	/* Ajustez selon la largeur désirée */
+	background-color: #fff;
+	/* Couleur de fond */
 	padding: 15px;
 	border-radius: 10px;
 	box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-	margin-top: 20px; /* Espacement au-dessus de la liste des utilisateurs */
-  }
-  
-  #nonInvitedUsers {
+	margin-top: 20px;
+	/* Espacement au-dessus de la liste des utilisateurs */
+}
+
+#nonInvitedUsers {
 	background-color: #f0f0f0;
-  }
-  
-  #invitedUsers, .popup-content > .user-list {
+}
+
+#invitedUsers,
+.popup-content>.user-list {
 	margin-bottom: 20px;
 	padding: 10px;
 	border: 2px solid #ccc;
-	background-color: #f0f0f0; /* Fond pour les utilisateurs non invités */
-  }
-  
-  #invitedUsers {
-	margin-top: 10px; /* Espace au-dessus du cadre des utilisateurs invités */
-	margin-bottom: 10px; /* Espace en dessous avant le bouton Start */
-  }
-  
-  .users-container {
+	background-color: #f0f0f0;
+	/* Fond pour les utilisateurs non invités */
+}
+
+#invitedUsers {
+	margin-top: 10px;
+	/* Espace au-dessus du cadre des utilisateurs invités */
+	margin-bottom: 10px;
+	/* Espace en dessous avant le bouton Start */
+}
+
+.users-container {
 	display: flex;
 	justify-content: space-between;
-	gap: 20px; /* Ajoute un peu d'espace entre les deux colonnes */
-  }
-  
-  .user-lists-container {
-	display: flex; /* Utilise Flexbox */
-	justify-content: space-between; /* Espacement entre les conteneurs */
-	align-items: flex-start; /* Alignement au sommet */
-  }
-  
-  .user-list-container, .invited-users {
-	flex: 1; /* Fait en sorte que les deux conteneurs prennent la même largeur */
+	gap: 20px;
+	/* Ajoute un peu d'espace entre les deux colonnes */
+}
+
+.user-list-container,
+.invited-users {
+	flex: 1;
+	/* Fait en sorte que les deux conteneurs prennent la même largeur */
 	display: flex;
 	flex-direction: column;
-	max-height: 300px; /* Ajustez selon vos besoins */
-	overflow-y: auto; /* Permet le défilement vertical si nécessaire */
-	width: 48%; /* Assigne une largeur pour éviter qu'ils s'étendent trop */
-  }
+	max-height: 300px;
+	/* Ajustez selon vos besoins */
+	overflow-y: auto;
+	/* Permet le défilement vertical si nécessaire */
+	width: 48%;
+	/* Assigne une largeur pour éviter qu'ils s'étendent trop */
+}
 
-  .user-list-container, #invitedUsers {
-	overflow-y: auto; /* Permet un défilement vertical */
-	max-height: 300px; /* Hauteur maximale avant de déclencher le défilement */
-  }  
-  
-  .user-and-invited-container {
+.user-and-invited-container {
 	display: flex;
 	justify-content: space-between;
 	width: 100%;
-  }
-  
-  .users-and-invited-container {
-	display: flex; /* Utilise Flexbox pour aligner les enfants côte à côte */
-	justify-content: space-between; /* Espacement entre les enfants */
-	width: 100%; /* Assure que le conteneur prend toute la largeur disponible */
-	flex-wrap: wrap; /* Permet aux éléments de passer à la ligne suivante si l'espace est insuffisant */
-  }
+}
+
+.popup-content-flex {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: stretch;
+	width: 100%;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+#user-list,
+#invitedUsers {
+	flex: 1;
+	/* Ensures they take equal width */
+}
+
+/**/
+
+.users-and-invited-container {
+	display: flex;
+	justify-content: space-around;
+	/* Distribue l'espace uniformément autour des éléments */
+	width: 100%;
+	/* Prendre toute la largeur de la popup */
+	padding: 20px;
+	/* Ajouter un peu d'espace autour des conteneurs */
+}
+
+.user-container,
+.invited-container {
+	flex: 1;
+	/* Chaque conteneur prend une largeur égale */
+	display: flex;
+	flex-direction: column;
+	/* Organise les éléments en colonne */
+	align-items: center;
+	/* Centre les éléments verticalement */
+}
+
+.user-list-container {
+	width: 90%;
+	/* Ajuster la largeur pour s'adapter dans le conteneur parent */
+	margin: 10px;
+	/* Ajouter un peu d'espace autour du conteneur */
+	padding: 10px;
+	border: 2px solid #ccc;
+	background-color: #f0f0f0;
+	overflow-y: auto;
+	min-height: 300px;
+	/* Hauteur minimale pour une visibilité adéquate */
+	box-sizing: border-box;
+}
+
+.title-outside {
+	width: 90%;
+	/* Ajuster la largeur à celle du conteneur de liste */
+	margin-bottom: 10px;
+	/* Espacement avant la liste */
+	padding: 10px;
+	background-color: #333;
+	border-radius: 8px;
+	text-align: center;
+	font-size: 20px;
+	font-weight: bold;
+	color: #fff;
+	/* Couleur du texte en blanc pour contraster avec le fond sombre */
+}
+
+#startChatPrompt {
+	font-family: 'Poppins', sans-serif !important;
+}

@@ -31,39 +31,74 @@ header {
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
     z-index: 1;
-    padding: 20px;
-    box-sizing: border-box;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    text-transform: uppercase; /* Met tous les mots du header en majuscule */
-    padding: 5px; /* Réduire la hauteur totale du header */
+    padding: 10px 20px;
+    /* Ajusté pour plus de padding autour */
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+    /* Utiliser Roboto pour tout le header */
+    text-transform: uppercase;
+}
+
+/* Pour tous les liens dans le header */
+header a {
+    text-decoration: none;
+    color: white;
+    font-size: 24px;
+    /* Taille de police maintenue */
+    font-family: 'Roboto', sans-serif;
+    /* Assurer Roboto pour tous les liens */
+    padding: 10px 15px;
+    /* Ajusté pour plus de padding autour des liens */
+    margin: 0 10px;
+    /* Espacement entre les liens */
+    border-radius: 4px;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
 .logo {
     text-decoration: none;
-    color: #FFFF99; /* Couleur jaune pale fluo */
+    color: #FFFF99;
+    /* Couleur jaune pale fluo */
     font-size: 50px;
 }
 
+/* Pour la navigation additionnelle dans le header */
 .additional-links ul {
     list-style: none;
+    /* Supprime les marqueurs de liste */
     display: flex;
-    gap: 10px;
+    gap: 20px;
+    /* Augmenter l'espacement entre les éléments de liste */
     margin: 0;
     padding: 0;
     margin-left: auto;
+    /* Aligner la liste à droite */
+}
+
+.additional-links ul li {
+    padding: 0;
+    /* Ajuster au besoin */
 }
 
 /* Styles pour les éléments de texte du header */
 header a,
 header li {
-    font-size: 25px; /* Taille de police souhaitée */
+    font-size: 25px;
+    /* Taille de police souhaitée */
 }
 
 .additional-links ul li a {
     text-decoration: none;
     color: white;
+    padding: 10px 15px;
+    /* Ajuster le padding pour une meilleure touche visuelle */
+    margin: 0 10px;
+    /* Ajuster l'espacement entre les liens */
+    font-family: 'Roboto', sans-serif;
+    /* Assurer que la police est uniforme */
 }
 
 /* Contenu */
@@ -143,16 +178,24 @@ header li {
 
 /* Cadre de formulaire d'inscription */
 #login-container {
-    max-width: 500px; /* Agrandissement de la largeur du conteneur */
-    padding: 20px; /* Réduction du padding */
+    max-width: 500px;
+    /* Agrandissement de la largeur du conteneur */
+    padding: 20px;
+    /* Réduction du padding */
     border: 2px solid #000;
-    border-radius: 15px; /* Réduction du rayon de la bordure */
+    border-radius: 15px;
+    /* Réduction du rayon de la bordure */
     background-color: #3030309a;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.8); /* Réduction de l'ombre */
-    margin: 0 auto; /* Centrage horizontal */
-    margin-top: 145px; /* Réduction de la marge supérieure */
-    margin-bottom: 50px; /* Ajustement de la marge inférieure */
-    height: 70vh; /* Réduction de la hauteur */
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.8);
+    /* Réduction de l'ombre */
+    margin: 0 auto;
+    /* Centrage horizontal */
+    margin-top: 145px;
+    /* Réduction de la marge supérieure */
+    margin-bottom: 50px;
+    /* Ajustement de la marge inférieure */
+    height: 70vh;
+    /* Réduction de la hauteur */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -163,7 +206,8 @@ header li {
 }
 
 .split-text {
-    margin-bottom: 15px; /* Réduction de l'espace entre les éléments */
+    margin-bottom: 15px;
+    /* Réduction de l'espace entre les éléments */
 }
 
 .split-text span {
@@ -172,16 +216,19 @@ header li {
 }
 
 .welcome-text {
-    font-size: 40px; /* Réduction de la taille du texte de bienvenue */
+    font-size: 40px;
+    /* Réduction de la taille du texte de bienvenue */
 }
 
 .split-text span:not(.welcome-text) {
-    font-size: 50px; /* Réduction de la taille des autres textes */
+    font-size: 50px;
+    /* Réduction de la taille des autres textes */
 }
 
 #login-container form {
     width: 100%;
-    max-width: 400px; /* Largeur maximale du formulaire */
+    max-width: 400px;
+    /* Largeur maximale du formulaire */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -194,16 +241,19 @@ header li {
     box-sizing: border-box;
     font-size: 16px;
     border-radius: 5px;
-}        
+}
 
 input[type="text"],
 input[type="password"],
 button {
     width: calc(100% - 40px);
-    padding: 12px; /* Réduction du padding */
-    margin: 8px 0; /* Réduction de la marge */
+    padding: 12px;
+    /* Réduction du padding */
+    margin: 8px 0;
+    /* Réduction de la marge */
     box-sizing: border-box;
-    font-size: 16px; /* Réduction de la taille de la police */
+    font-size: 16px;
+    /* Réduction de la taille de la police */
     border-radius: 5px;
 }
 
@@ -215,7 +265,8 @@ button {
     cursor: pointer;
     font-weight: bold;
     transition: background-color 0.5s ease, transform 0.5s ease;
-    margin-top: 20px; /* Réduction de la marge supérieure */
+    margin-top: 20px;
+    /* Réduction de la marge supérieure */
 }
 
 button:hover,
@@ -232,19 +283,28 @@ button:focus {
     margin-top: 10px;
     text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
     font-weight: normal;
-    font-family: 'Arial', sans-serif; /* Changer la police d'écriture */
+    font-family: 'Arial', sans-serif;
+    /* Changer la police d'écriture */
 }
 
 /* Pour les éléments "TRANSCENDANCE" et "PROFILE" */
-.logo, .profile {
-    margin-left: 10px; /* Décaler TRANSCENDANCE du bord gauche */
-    margin-right: 10px; /* Décaler PROFILE du bord droit */
+.logo,
+.profile {
+    margin-left: 10px;
+    /* Décaler TRANSCENDANCE du bord gauche */
+    margin-right: 10px;
+    /* Décaler PROFILE du bord droit */
 }
 
 #error-message {
-    color: #ffff65; /* Jaune pâle fluo */
-    font-style: italic; /* Italique */
-    margin-top: 20px; /* Espace au-dessus du message */
-    text-align: center; /* Centrage du texte */
-    font-family: 'Arial', sans-serif; /* Utiliser Arial */
+    color: #ffff65;
+    /* Jaune pâle fluo */
+    font-style: italic;
+    /* Italique */
+    margin-top: 20px;
+    /* Espace au-dessus du message */
+    text-align: center;
+    /* Centrage du texte */
+    font-family: 'Arial', sans-serif;
+    /* Utiliser Arial */
 }

@@ -54,6 +54,7 @@ gameEndDjango = {
     "user2" : ("", 4),
     "user3" : ("", 5),
     "user4" : ("", 2),
+    "gameid" : 0
     }
 
 
@@ -82,14 +83,14 @@ async def WaitUntilPlayers(ws, data):
                         playerFree = data["playeramount"]
                     print(MAGENTA, "PlayerFree :", playerFree, RESET, file=stderr)
                     if userlist and msg in userlist:
-                        print(MAGENTA, "USer add in liste know", RESET, file=stderr)
+                        print(MAGENTA, "User add in liste know", RESET, file=stderr)
                         liste.append(msg)
                         i += 1
                     elif liste and len(liste) <= playerFree and msg not in liste:
-                        print(MAGENTA, "USer add in liste", RESET, file=stderr)
+                        print(MAGENTA, "User add in liste", RESET, file=stderr)
                         liste.append(msg)
                     elif not liste and playerFree:
-                        print(MAGENTA, "USer add in liste", RESET, file=stderr)
+                        print(MAGENTA, "User add in liste", RESET, file=stderr)
                         liste.append(msg)
                 elif msg.endswith("logout"):
                     msg = msg[:-6]
