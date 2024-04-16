@@ -49,8 +49,6 @@ class newGame(APIView):
 
     def post(self, request):
         print("POST FROM USER !", file=sys.stderr)
-        if not self.validate_limits(request.data):
-            return HttpResponse("Invalid settings", status=status.HTTP_400_BAD_REQUEST)
         data = self.changeData(request.data.copy())
         if data:
             print("Data", file=sys.stderr)
@@ -84,25 +82,6 @@ class newGame(APIView):
                 print(serializer.errors, file=sys.stderr)
         print("no data", file=sys.stderr)
         return HttpResponse("Error 400", status=400)
-
-    def validate_limits(self, data):
-        bw = data.get("ballwidth")
-        pl = data.get("planksize")
-        s = data.get("Speed")
-        a = data.get("acceleration")
-        if bw and pl and s and a:
-            return not (
-                int(bw) < 5
-                or int(bw) > 30
-                or int(pl) < 10
-                or int(pl) > 40
-                or float(s) < 0.5
-                or float(s) > 3
-                or float(a) < 0
-                or float(a) > 10
-            )
-        else:
-            return False
 
     def changeData(self, data):
         if (
