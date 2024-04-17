@@ -70,7 +70,6 @@ class DataTransmission:
                 self.wsCli = None
                 self.isConnected = False
                 if isDisconnected >= 20:
-                    print("WS EXITED", file=stderr)
                     self.message = dumps("500")
                     self.exit = True
                     return "500"

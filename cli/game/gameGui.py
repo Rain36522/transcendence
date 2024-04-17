@@ -95,12 +95,12 @@ class GameGui2p:
             score2 = int(msg["score1"])
         if score1 != self.pointP1:
             self.pointP1 == score1
-            string = msg["users"][0] + " : " + score1
+            string = msg["users"][0] + " : " + str(score1)
             posx = self.start + self.width // 2 - len(string) // 2
             print(BYELLOW + self.term.move_xy(posx, 0) + string, RESET)
         if score2 != self.pointP2:
             self.pointP2 == score2
-            string = msg["users"][1] + " : " + score2
+            string = msg["users"][1] + " : " + str(score2)
             posx = self.start + self.width // 2 - len(string) // 2
             print(BWHITE + self.term.move_xy(posx, 1) + string, RESET)
 
@@ -172,7 +172,7 @@ class GameGui2p:
     def updatePaddelL(self, newPos):
         print(self.term.move_xy(0, 0), BYELLOW)
         start, stop = self.calculateNewPaddelPos(newPos)
-        while start < self.padelLu and self.padelLu > 0:
+        while start < self.padelLu and self.padelLu >= 0:
             self.putCharInMap(1, self.padelLu, "█")
             self.padelLu -= 1
         while start > self.padelLu:
@@ -188,7 +188,7 @@ class GameGui2p:
     
     def updatePaddelR(self, newPos):
         start, stop = self.calculateNewPaddelPos(newPos)
-        while start < self.padelRu and self.padelRu > 0:
+        while start < self.padelRu and self.padelRu >= 0:
             self.putCharInMap(self.width, self.padelRu, "█")
             self.padelRu -= 1
         while start > self.padelRu:
