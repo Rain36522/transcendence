@@ -3,7 +3,7 @@ var popup = document.querySelector('.popup');
 var blurBackground = document.querySelector('.blur-background');
 
 // Gestionnaire d'événements pour fermer la popup lorsque le fond flou est cliqué
-blurBackground.addEventListener('click', function(event) {
+blurBackground.addEventListener('click', function (event) {
     if (event.target === blurBackground) {
         popup.style.display = 'none';
         blurBackground.style.display = 'none';
@@ -79,7 +79,7 @@ function handleInviteButtonClick(event) {
 // Fonction pour retirer un utilisateur de la liste des utilisateurs non invités
 function removeFromUserList(userName) {
     var items = document.querySelectorAll('#user-list .user-item');
-    items.forEach(function(item) {
+    items.forEach(function (item) {
         if (item.querySelector('.user-name').textContent === userName) {
             item.remove();
         }
@@ -89,9 +89,15 @@ function removeFromUserList(userName) {
 // Fonction pour retirer un utilisateur de la liste des utilisateurs invités
 function removeFromInvitedList(userName) {
     var items = document.querySelectorAll('#invitedUsers .user-item');
-    items.forEach(function(item) {
+    items.forEach(function (item) {
         if (item.querySelector('.user-name').textContent === userName) {
             item.remove();
         }
     });
 }
+
+// stabiliser le bouton create
+const createChatButton = document.querySelector('.start-button');
+createChatButton.addEventListener('mousedown', function (event) {
+    event.preventDefault(); // Empêche le navigateur de traiter l'interaction standard
+});
