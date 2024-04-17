@@ -70,7 +70,6 @@ class DataTransmission:
                 self.wsCli = None
                 self.isConnected = False
                 if isDisconnected >= 20:
-                    print("WS EXITED", file=stderr)
                     self.message = dumps("500")
                     self.exit = True
                     return "500"
@@ -81,7 +80,6 @@ class DataTransmission:
         while True:
             try:
                 async for self.message in self.wsCli:
-                    print("RECIEVED MSG", self.message, file=stderr)
                     if str(self.message).isdigit():
                         self.errormsg = self.message
                         return self.errormsg
