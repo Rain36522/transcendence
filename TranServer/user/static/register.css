@@ -1,10 +1,12 @@
-/* Styles communs */
-body,
-html {
+html,
+body {
+    height: 100%;
+    /* Assure que le body prend toute la hauteur de la fenêtre */
     margin: 0;
     padding: 0;
-    height: 100%;
     font-family: 'Montserrat', sans-serif;
+    position: relative;
+    /* Ajoutez cette ligne pour s'assurer que le positionnement relatif est défini */
 }
 
 /* Image de fond avec effet noir et blanc */
@@ -65,40 +67,11 @@ header a {
     font-size: 50px;
 }
 
-/* Pour la navigation additionnelle dans le header */
-.additional-links ul {
-    list-style: none;
-    /* Supprime les marqueurs de liste */
-    display: flex;
-    gap: 20px;
-    /* Augmenter l'espacement entre les éléments de liste */
-    margin: 0;
-    padding: 0;
-    margin-left: auto;
-    /* Aligner la liste à droite */
-}
-
-.additional-links ul li {
-    padding: 0;
-    /* Ajuster au besoin */
-}
-
 /* Styles pour les éléments de texte du header */
 header a,
 header li {
     font-size: 25px;
     /* Taille de police souhaitée */
-}
-
-.additional-links ul li a {
-    text-decoration: none;
-    color: white;
-    padding: 10px 15px;
-    /* Ajuster le padding pour une meilleure touche visuelle */
-    margin: 0 10px;
-    /* Ajuster l'espacement entre les liens */
-    font-family: 'Roboto', sans-serif;
-    /* Assurer que la police est uniforme */
 }
 
 /* Contenu */
@@ -176,33 +149,45 @@ header li {
     font-size: 20px;
 }
 
-/* Cadre de formulaire d'inscription */
 #login-container {
-    max-width: 500px;
-    /* Agrandissement de la largeur du conteneur */
-    padding: 20px;
-    /* Réduction du padding */
+    position: absolute;
+    /* Positionnement absolu pour permettre le centrage */
+    top: 50%;
+    /* Centre verticalement */
+    left: 50%;
+    /* Centre horizontalement */
+    transform: translate(-50%, -50%);
+    /* Compense pour le positionnement au centre exact */
+    max-width: 800px;
+    /* Largeur maximale pour plus de largeur */
+    width: 20%;
+    /* Utiliser une largeur relative pour la réactivité */
+    height: 50vh;
+    /* Augmenter la hauteur à 70% de la hauteur de la vue */
+    padding: 40px;
+    /* Padding intérieur pour plus d'espace autour des éléments */
     border: 2px solid #000;
+    /* Bordure visible */
     border-radius: 15px;
-    /* Réduction du rayon de la bordure */
+    /* Rayon de la bordure pour des coins arrondis */
     background-color: #3030309a;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.8);
-    /* Réduction de l'ombre */
-    margin: 0 auto;
-    /* Centrage horizontal */
-    margin-top: 145px;
-    /* Réduction de la marge supérieure */
-    margin-bottom: 50px;
-    /* Ajustement de la marge inférieure */
-    height: 70vh;
-    /* Réduction de la hauteur */
+    /* Couleur de fond avec transparence */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+    /* Ombre pour un effet de profondeur */
     display: flex;
+    /* Utilisation de Flexbox pour un alignement interne optimal */
     justify-content: center;
+    /* Alignement horizontal des contenus */
     align-items: center;
+    /* Alignement vertical des contenus */
     flex-direction: column;
+    /* Les éléments internes sont arrangés en colonne */
     color: rgb(234, 230, 230);
+    /* Couleur du texte */
     font-weight: bold;
+    /* Texte en gras pour une meilleure visibilité */
     text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    /* Ombre du texte pour un effet de profondeur */
 }
 
 .split-text {
@@ -307,4 +292,9 @@ button:focus {
     /* Centrage du texte */
     font-family: 'Arial', sans-serif;
     /* Utiliser Arial */
+}
+
+input#id_username {
+    margin-top: 40px;
+    /* Espace ajouté au-dessus du champ Username */
 }
