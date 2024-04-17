@@ -275,7 +275,16 @@ header a:hover {
 }
 
 .tab a {
+  display: block;
+  /* Rend l'élément cliquable sur toute la zone */
+  width: 100%;
+  /* Utilise toute la largeur disponible */
+  height: 100%;
+  /* Utilise toute la hauteur disponible */
+  text-align: center;
+  /* Centre le texte */
   text-decoration: none;
+  /* Supprime le soulignement */
 }
 
 .content-area {
@@ -294,10 +303,12 @@ header a:hover {
   margin-bottom: 20px;
   /* Ajout d'un espace en dessous */
 }
+
 .search-selection {
   width: 100%;
   /* Ajout d'un espace en dessous */
 }
+
 .search-box {
   flex-grow: 1;
   margin-right: 10px;
@@ -328,7 +339,7 @@ header a:hover {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #ddd;
+  background-color: #ffffff;
   margin-right: 5px;
   background-size: cover;
   background-size: cover;
@@ -485,7 +496,7 @@ header .header-btn {
 }
 
 /* Styles pour les listes dans les différentes sections */
-.sections-container > section {
+.sections-container>section {
   flex: 1;
   margin: 0 10px;
   padding: 20px;
@@ -663,4 +674,12 @@ header .header-btn {
 /* Style for the selected item in the dropdown */
 .autocomplete-item:hover {
   background-color: #ddd;
+}
+
+.game-button {
+  background-color: transparent;
+}
+
+.game-button:hover {
+  background-color: #444;
 }

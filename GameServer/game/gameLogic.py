@@ -4,6 +4,8 @@ from sys import stderr
 from typing import Type, List
 import math
 import time
+from bottibotto import BottiBotto 
+import copy
 
 RESET = "\033[0m"
 RED = "\033[31m"
@@ -26,6 +28,7 @@ delta_time = 0.0
 class gameLogic:
 	# constructor
 	def __init__(self, client, gameSet, game, userlist):
+		print("======STARTING GAME INITIALIZATION======", file=stderr)
 		self.client = client
 		self.userlist = userlist
 		self.game = game
@@ -44,12 +47,58 @@ class gameLogic:
 			self.ball = Ball(
 				float(gameSet["ballwidth"]), float(gameSet["ballwidth"]), 0.25
 			)
+
 		elif len(self.players) == 2:
 			self.ball = Ball(
 				float(gameSet["ballwidth"]), float(gameSet["ballwidth"]) / 2, 0.25
 			)
+
 		self.print("Game logic set")
 	#__init__ end
+ 
+	# start the game
+	async def start_game(self):
+		game_settings = await self.get_game_settings()
+		self.bottiBotto = BottiBotto(self, game_settings)
+		asyncio.create_task(self.bottiBotto.bottibotto_vit_sa_vie())
+		await self.gameInput()
+ 
+	# get game settings for bottibotto
+	async def get_game_settings(self):
+		return {
+			"ball_diameter": self.ball.size,
+			"ball_speed": self.ball.speed,
+			"ball_acceleration": 1,
+			"ball_dir": self.ball.dir.normalize(),
+			"ball_pos": self.ball.pos,
+			"paddle_length": self.players[1].plankLength,
+			"paddle_speed": self.players[1].speed
+		}
+	#get_game_settings end
+ 
+	# update the game state for bottibotto
+	async def update_state(self):
+		self.game_state = {
+			"ball_diameter": self.ball.size,
+			"ball_speed": self.ball.speed,
+			"ball_acceleration": 1,
+			"ball_dir": self.ball.dir.normalize(),
+			"ball_pos": self.ball.pos,
+			"paddle_length": self.players[1].plankLength,
+			"paddle_pos": self.players[1].getPos(),
+			"game_over": self.game["state"] == "game_over",
+		}
+	#update_state end
+
+	# set the paddle movement for bottibotto
+	async def set_bottibotto_paddle(self):
+		self.players[1].up, self.players[1].down = await self.bottiBotto.get_paddle_movement()
+	#set_bottibotto_paddle end
+ 
+	# get the game state for bottibotto
+	async def get_game_state(self):
+		return copy.deepcopy(self.game_state)
+	#get_game_state end
 
 	# print function
 	def print(self, msg):
@@ -94,6 +143,8 @@ class gameLogic:
 		last_time = time.perf_counter()
 		try:
 			while True:
+				await self.update_state()
+				await self.set_bottibotto_paddle()
 				current_time = time.perf_counter()
 				global delta_time
 				delta_time = current_time - last_time
@@ -159,8 +210,8 @@ class Player:
 		self.token = token
 		self.offset = 0.49
 		self.connected = False
-		self.upperBound = 100
-		self.lowerBound = -100
+		self.upperBound = 0.5
+		self.lowerBound = -0.5
 		self.num = num
 		self.collision = []
 		self.speed = 1
@@ -359,8 +410,8 @@ class Ball:
 				# print("dist remaining", remaining_dist, file=stderr)
 				if self.temp_last_touch != "":
 					self.last_touch = self.temp_last_touch
-				if self.speed < 2:
-					self.speed *= 1.2
+				if self.speed < 1.75:
+					self.speed += 0.05
 			else:
 				# there is no collision within range
 				self.pos.x += self.dir.x * remaining_dist

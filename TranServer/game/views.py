@@ -90,8 +90,8 @@ class newGame(APIView):
             data["ballwidth"] = int(data["ballwidth"]) / 100
             data["planksize"] = int(data["planksize"]) / 100
             data["Speed"] = float(data["Speed"]) / 10
-            if int(data["acceleration"]):
-                data["acceleration"] = int(data["acceleration"]) / 100
+            if float(data["acceleration"]):
+                data["acceleration"] = float(data["acceleration"]) / 100
 
             return data
         return None

@@ -166,6 +166,24 @@ function createUserElement(user) {
   var li = document.createElement("li");
   li.className = "user-item";
   li.setAttribute("data-username", user.username);
+  fetch("/api/profile_pic/" + user.username + "/")
+    .then((response) => response.blob())
+    .then((blob) => {
+      // Convert the blob to a base64 encoded string
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    })
+    .then((data) => {
+      li.innerHTML =
+        '<div class="user-photo" style="background-image: url(' +
+        data +
+        ');"></div>' +
+        li.innerHTML;
+    });
   /*
 <div class="user-photo" style="background-image: url('${
           user.imageUrl

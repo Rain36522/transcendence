@@ -1,8 +1,7 @@
 import { Match } from './match.js';
 
-const myUser = "JDjdjDJRDjrJREJYEJytfruryGEUYREUfytrdkuydrkURYGU%EJTYUE%K&UDI655d4htrfyWYT$KU&k58d65i67";
-const tournamentSizeString = document.body.getAttribute('data-tournamentSize');
-const tournamentSize = JSON.parse(tournamentSizeString);
+const myUser = document.body.getAttribute('data-myUser');
+const tournamentSize = document.body.getAttribute('data-tournamentSize');
 const matchesMap = {}; // Store all matches by unique key (level-pos)
 
 
