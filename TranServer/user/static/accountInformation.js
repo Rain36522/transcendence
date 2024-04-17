@@ -104,30 +104,30 @@ document.querySelectorAll(".button-8").forEach((button) => {
 //     }
 //   });
 
-document.getElementById('passwordChangeForm').addEventListener('submit', function(event) {
+document.getElementById('passwordChangeForm').addEventListener('submit', function (event) {
   event.preventDefault();
 
   var formData = new FormData(this);
 
   fetch('/api/change_password/', {
-      method: 'POST',
-      body: formData
+    method: 'POST',
+    body: formData
   })
-  .then(response => response.json())
-  .then(data => {
+    .then(response => response.json())
+    .then(data => {
       if (data.error) {
-          document.getElementById('message').innerHTML = '<p style="color: red;">' + data.error + '</p>';
+        document.getElementById('message').innerHTML = '<p style="color: red;">' + data.error + '</p>';
       } else {
-          document.getElementById('message').innerHTML = '<p style="color: green;">' + data.message + '</p>';
-          // Clear form fields
-          document.getElementById('oldPassword').value = '';
-          document.getElementById('newPassword').value = '';
+        document.getElementById('message').innerHTML = '<p style="color: green;">' + data.message + '</p>';
+        // Clear form fields
+        document.getElementById('oldPassword').value = '';
+        document.getElementById('newPassword').value = '';
       }
-  })
-  .catch(error => {
+    })
+    .catch(error => {
       console.error('Error:', error);
       document.getElementById('message').innerHTML = '<p style="color: red;">An unexpected error occurred. Please try again later.</p>';
-  });
+    });
 });
 
 document

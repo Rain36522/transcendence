@@ -82,10 +82,12 @@ header {
 
 .frame {
   position: fixed;
-  top: 20%;
+  top: 15%;
+  /* AjustÃ© pour centrer verticalement */
   left: 15%;
   width: 70%;
-  height: 60%;
+  height: 70%;
+  /* Hauteur augmentÃ©e */
   background-color: rgba(255, 255, 255, 0.95);
   border-radius: 10px;
   display: flex;
@@ -106,7 +108,7 @@ header {
   border-right: 2px solid #ccc;
 }
 
-/* Style par défaut pour tous les onglets */
+/* Style par dÃ©faut pour tous les onglets */
 .tab {
   width: 100%;
   text-align: center;
@@ -115,20 +117,20 @@ header {
   transition: background-color 0.3s, transform 0.2s;
   border-radius: 5px;
   color: #333;
-  /* Texte foncé par défaut */
+  /* Texte foncÃ© par dÃ©faut */
   background-color: #ddd;
-  /* Fond gris clair par défaut */
+  /* Fond gris clair par dÃ©faut */
   font-weight: 700;
   border-bottom: 1px solid #ccc;
   text-decoration: none;
 }
 
-/* Styles pour les boutons non actifs spécifiques */
+/* Styles pour les boutons non actifs spÃ©cifiques */
 .tab {
   background-color: #ddd;
   /* Gris clair pour non actif */
   color: #333;
-  /* Texte foncé pour non actif */
+  /* Texte foncÃ© pour non actif */
 }
 
 .tab-container a.tab.account-info-btn {
@@ -138,19 +140,19 @@ header {
   /* Texte blanc pour 'Account Information' */
 }
 
-/* Styles pour le bouton actif - spécifique pour 'Dashboard' et 'Social Management' */
+/* Styles pour le bouton actif - spÃ©cifique pour 'Dashboard' et 'Social Management' */
 .tab[href*="user_dashboard"].active,
 .tab[href*="social_management"].active {
   background-color: #ddd;
   /* Gris clair pour actif */
   color: #333;
-  /* Texte foncé pour actif */
+  /* Texte foncÃ© pour actif */
 }
 
 /* Hover sur les onglets */
 .tab:hover {
   background-color: #f0f0f0;
-  /* Léger gris pour hover */
+  /* LÃ©ger gris pour hover */
   transform: translateY(-2px);
 }
 
@@ -164,38 +166,53 @@ header {
 }
 
 .user-info {
-  position: relative; /* Important pour le positionnement absolu de .edit-link */
+  position: relative;
+  /* Important pour le positionnement absolu de .edit-link */
   display: flex;
   flex-direction: column;
-  width: 60%; /* Déjà défini, assurez-vous que cela correspond à votre layout */
+  width: 60%;
+  /* DÃ©jÃ  dÃ©fini, assurez-vous que cela correspond Ã  votre layout */
   margin-top: 40px;
   padding-left: 40px;
-  padding-bottom: 20px; /* Ajouter un padding en bas pour éviter que le bouton ne touche le bord lors du scrolling */
+  padding-bottom: 20px;
+  /* Ajouter un padding en bas pour Ã©viter que le bouton ne touche le bord lors du scrolling */
+  /* align-items: center; */
 }
 
 .edit-link {
-  position: absolute;
-  bottom: 10px; /* Ajusté pour placer le bouton à 10px du bas */
-  left: 62%; /* Décaler à 50% du début de .user-info */
-  transform: translateX(-50%); /* Centrer le bouton exactement */
+  margin: 100px 100px;
+  /* position: absolute; */
+  /* bottom: 10px; */
+  /* AjustÃ© pour placer le bouton Ã  10px du bas */
+  /* left: 62%; */
+  /* DÃ©caler Ã  50% du dÃ©but de .user-info */
+  /* transform: translateX(-50%); */
+  /* Centrer le bouton exactement */
   padding: 8px 24px;
   background-color: #000000;
   color: #FFFFFF;
+  font-size: 16px;
   text-decoration: none;
   border-radius: 5px;
-  transition: background-color 0.3s, color 0.3s;
+  /* transition: background-color 0.3s, color 0.3s; */
+  bottom: 120px;
+  /* margin-left: -110px; */
+  align-self: center;
 }
 
 .edit-link:hover {
-  background-color: #333333; /* Foncer légèrement au survol */
+  background-color: #333333;
+  /* Foncer lÃ©gÃ¨rement au survol */
   color: #fff;
 }
 
 .profile-section {
   display: flex;
   flex-direction: column;
-  align-items: center;  /* Centrage horizontal des éléments */
-  margin-top: 20px;  /* Espace en dessus des boutons */
+  align-items: center;
+  /* Centrage horizontal des Ã©lÃ©ments */
+  margin-top: 20px;
+  /* Espace en dessus des boutons */
 }
 
 .profile-pic {
@@ -208,21 +225,8 @@ header {
   border: 3px solid #000000;
   /* bordure */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  margin-bottom: 20px;  /* Espace entre la photo et les boutons */
-}
-
-.edit-profile-btn {
-  background-color: #000000;  /* Couleur de fond noir */
-  color: #FFFFFF;  /* Texte blanc */
-  padding: 10px 20px;  /* Padding approprié */
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.edit-profile-btn:hover {
-    background-color: #333333;  /* Foncer le bouton au survol */
+  margin-bottom: 20px;
+  /* Espace entre la photo et les boutons */
 }
 
 hr {
@@ -235,7 +239,7 @@ hr {
 .color-settings {
   display: flex;
   flex-direction: column;
-  align-items: start;
+  align-items: center;
   padding: 20px;
 }
 
@@ -243,35 +247,40 @@ hr {
   display: flex;
   justify-content: start;
   gap: 20px;
-  /* Espace entre les sélecteurs de couleur */
+  /* Espace entre les sÃ©lecteurs de couleur */
 }
 
 .color-picker-columns {
   display: flex;
   flex-wrap: nowrap;
-  /* Assurez-vous que tous les éléments restent sur une seule ligne */
   overflow-x: auto;
-  /* Permet le défilement horizontal si nécessaire */
-  gap: 20px;
-  /* Espace entre les sélecteurs de couleur */
+  gap: 30px;
+  /* Vous pouvez ajuster cette valeur comme souhaitÃ© */
   align-items: center;
-  /* Alignement vertical des éléments */
-  margin-top: 20px;
-  /* Ajoutez de l'espace supplémentaire si nécessaire pour abaisser la ligne des boutons */
+  /* justify-content: space-evenly; */
+  /* Assure une distribution uniforme de l'espace */
+  width: 100%;
+  /* Assure que le conteneur prend toute la largeur disponible */
+  margin: 30px 10px;
 }
 
 .color-column {
+  flex: 1;
+  /* Assure que chaque colonne prend une part Ã©gale de l'espace */
   display: flex;
   flex-direction: column;
-  flex: 1;
-  /* Chaque colonne prend une part égale de l'espace */
-  padding: 0 20px;
+  align-items: center;
+  /* Centre les Ã©lÃ©ments verticalement */
+  min-width: 150px;
+  /* DÃ©finissez une largeur minimum pour chaque colonne */
 }
 
 .color-picker {
-  display: flex;
+  /* display: flex; */
   flex-direction: column;
   align-items: flex-start;
+  width: 200px;
+  text-align: center;
 }
 
 .color-picker label {
@@ -302,7 +311,7 @@ input[type="color"]:hover {
   background-color: #cccccc;
   /* Changement de couleur au survol pour un feedback visuel */
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  /* Ombre portée pour un effet de profondeur */
+  /* Ombre portÃ©e pour un effet de profondeur */
 }
 
 input[type="color"]:hover,
@@ -318,7 +327,7 @@ input[type="color"]:focus {
 input[type="color"]::-webkit-color-swatch-wrapper {
   padding: 0;
   width: 85%;
-  /* Taille de la vue de couleur adaptée */
+  /* Taille de la vue de couleur adaptÃ©e */
   height: 100%;
 }
 
@@ -390,36 +399,95 @@ h2 {
 
 /* Style pour les boutons principaux dans les formulaires */
 button {
-  background-color: #000000; /* Fond noir */
-  color: #FFFFFF; /* Texte blanc */
-  padding: 10px 15px; /* Espacement interne pour rendre le bouton plus grand */
-  border: none; /* Aucune bordure */
-  border-radius: 5px; /* Coins arrondis pour un look moderne */
-  cursor: pointer; /* Curseur de pointeur pour indiquer qu'il s'agit d'un bouton cliquable */
-  transition: background-color 0.3s; /* Transition pour les effets de survol */
+  background-color: #000000;
+  /* Fond noir */
+  color: #FFFFFF;
+  /* Texte blanc */
+  padding: 10px 15px;
+  /* Espacement interne pour rendre le bouton plus grand */
+  border: none;
+  /* Aucune bordure */
+  border-radius: 5px;
+  /* Coins arrondis pour un look moderne */
+  cursor: pointer;
+  /* Curseur de pointeur pour indiquer qu'il s'agit d'un bouton cliquable */
+  transition: background-color 0.3s;
+  /* Transition pour les effets de survol */
 }
 
 button:hover {
-  background-color: #333333; /* Changement de couleur au survol pour un feedback visuel */
+  background-color: #333333;
+  /* Changement de couleur au survol pour un feedback visuel */
 }
 
 .file-button {
   display: inline-block;
-  padding: 8px 13px;
-  background-color: #000000; /* Fond noir */
-  color: #FFFFFF; /* Texte blanc */
+  padding: 6px 16px;
+  /* Ajustez le rembourrage si nÃ©cessaire */
+  background-color: #000000;
+  color: #FFFFFF;
   text-align: center;
-  border-radius: 5px; /* Coins arrondis */
-  cursor: pointer; /* Style de curseur pour indiquer qu'il s'agit d'un bouton */
-  transition: background-color 0.3s; /* Transition pour effet de survol */
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 14px;
 }
 
 .file-button:hover {
-  background-color: #333333; /* Foncer le bouton au survol */
+  background-color: #333333;
 }
 
-.file-button, .edit-profile-btn {
-  display: block;
-  margin: 5px auto;  /* Centrer les boutons et ajouter un petit espace entre eux */
-  width: auto;  /* Largeur auto pour s'adapter au contenu */
+.button-container {
+  /* width: 130px; */
+  /* MÃªme largeur pour les deux boutons */
+  /* height: 30px; */
+  /* MÃªme hauteur pour les deux boutons */
+}
+
+.form-label {
+  display: inline-block;
+  /* Utiliser inline-block pour la mise en forme */
+  width: 140px;
+  /* DÃ©finir une largeur fixe pour toutes les Ã©tiquettes */
+  margin-right: 10px;
+  /* Espace entre l'Ã©tiquette et le champ de saisie */
+  text-align: right;
+  /* Aligner le texte Ã  droite pour que le texte soit prÃ¨s du champ de saisie */
+  vertical-align: top;
+  /* Aligner les Ã©tiquettes avec le haut des champs de saisie */
+}
+
+.form-input {
+  display: inline-block;
+  /* Assurer que l'input est alignÃ© avec l'Ã©tiquette */
+  width: calc(100% - 150px);
+  /* Prendre en compte la largeur de l'Ã©tiquette et de l'espace */
+}
+
+/* Appliquer le flexbox pour les Ã©lÃ©ments du formulaire */
+.form-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  /* Espacement entre les lignes de formulaire */
+}
+
+.form-button {
+  width: 200px;
+  /* Ajustez cette largeur comme nÃ©cessaire */
+  padding: 10px 15px;
+  background-color: #000000;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  /* Exemple de taille, ajustez selon votre design */
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-left: 12px;
+  /* DÃ©cale le bouton de 20px vers la droite */
+}
+
+.form-button:hover {
+  background-color: #333333;
 }
