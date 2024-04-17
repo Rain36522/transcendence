@@ -1,7 +1,5 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from rest_framework.response import Response
-from rest_framework.renderers import JSONRenderer  # Import JSONRenderer
 from rest_framework import status
 from django.http import JsonResponse, HttpResponse
 from .models import Game, GameUser
@@ -9,13 +7,14 @@ from rest_framework.views import APIView
 from .serializers import GameSettingsSerializer
 from asgiref.sync import async_to_sync
 import sys
-import asyncio
 from channels.layers import get_channel_layer
 import json
 from .consumer import launchGame
 from chat.models import Chat, Message
 from django.utils import timezone
 from django.db.models import Count
+from django.http import Http404
+
 
 
 def send_message_to_chat_group(chat, message, inviter, user, hostname):
@@ -112,6 +111,8 @@ class newGame(APIView):
 
 
 def gamePage(request, id):
+    if not Game.objects.filter(pk=id).exists():
+        raise Http404("Game does not exist")
     game = Game.objects.get(pk=id)
     solo = False
     if game.gamemode == 3:

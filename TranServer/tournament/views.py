@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 
 from rest_framework.renderers import JSONRenderer  # Import JSONRenderer
-from django.http import  HttpResponse
+from django.http import  HttpResponse, JsonResponse
 from rest_framework.views import APIView
 import sys
 from django.shortcuts import redirect
@@ -15,6 +15,7 @@ from game.serializers import GameSettingsSerializer
 from game.consumer import launchGame
 from random import choice
 from .consumer import getUpdate
+from django.http import Http404
 
 """Tournament settings management
 
@@ -180,9 +181,10 @@ class TournamentView(APIView):
 
     def get(self, request, id):
         self.id = id
+        if not Tournament.objects.filter(pk=id).exists():
+            raise Http404("Tournament does not exist")
         self.tournament = Tournament.objects.get(pk=self.id)
         self.request = request
-        id = self.newUserConnection()
         tournamentSize = self.getGameByLevel()
         return render(request, 'html/bracket.html', {'tournamentSize': tournamentSize, 'username':request.user.username})
 
@@ -196,6 +198,11 @@ class TournamentView(APIView):
                 gameliste.append(value)
             i += 1
         return gameliste
+    
+    def handle_exception(self, exc):
+        if isinstance(exc, Http404):
+            raise exc
+        return super().handle_exception(exc)
 
 
         
@@ -203,6 +210,8 @@ class TournamentJoin(APIView):
     renderer_classes = [JSONRenderer]
     def get(self, request, id):
         self.id = id
+        if not Tournament.objects.filter(pk=id).exists():
+            raise Http404("Tournament does not exist")
         self.request = request
         id = self.newUserConnection()
 
@@ -215,6 +224,11 @@ class TournamentJoin(APIView):
             if putUserInGame(self.tournament, self.request.user):
                 launchTournament(self.tournament)
         return 0
+
+    def handle_exception(self, exc):
+        if isinstance(exc, Http404):
+            raise exc
+        return super().handle_exception(exc)
 
 def putUserInGame(tournament, user):
     games = tournament.game_set.filter(gameLevel=0)
