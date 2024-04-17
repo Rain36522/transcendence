@@ -8,7 +8,7 @@
 		<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
 		<link rel="stylesheet" href="{% static 'bracket.css' %}">
 	</head>
-	<body data-myUser="{{ myUser }}" data-tournamentSize="{{ tournamentSize}}">
+	<body data-tournamentSize="{{ tournamentSize|safe }}">
 		<div class="theme theme-dark">
 			<div class="bracket" id="tournamentBracket"></div>
 		</div>

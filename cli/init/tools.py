@@ -11,23 +11,24 @@ from os import system
 from color import *
 
 STYLE = Style.from_dict({
-    'dialog':             'bg:#202020',
-    'dialog frame.label': 'bg:#353535 #cccccc',
-    'dialog.body':        'bg:#303030 #bbbbbb',
-    'dialog shadow':      'bg:#202020',
+    'dialog':             'bg:#101010',
+    'dialog frame.label': 'bg:#222222 #ffcc10',
+    'dialog.body':        'bg:#252525 #858585',
+    'dialog shadow':      'bg:#101010',
 })
 
+
 STYLERROR = Style.from_dict({
-    'dialog':             'bg:#202020',
-    'dialog frame.label': 'bg:#353535 #cccccc',
-    'dialog.body':        'bg:#303030 #ff0000',
-    'dialog shadow':      'bg:#202020',
+    'dialog':             'bg:#101010',
+    'dialog frame.label': 'bg:#222222 #ffcc10',
+    'dialog.body':        'bg:#252525 #aa0000',
+    'dialog shadow':      'bg:#101010',
 })
 STYLSUCCESS = Style.from_dict({
-    'dialog':             'bg:#202020',
-    'dialog frame.label': 'bg:#353535 #cccccc',
-    'dialog.body':        'bg:#303030 #00ff00',
-    'dialog shadow':      'bg:#202020',
+    'dialog':             'bg:#101010',
+    'dialog frame.label': 'bg:#222222 #ffcc10',
+    'dialog.body':        'bg:#252525 #00aa00',
+    'dialog shadow':      'bg:#101010',
 })
 
 def Information(title, text, style=STYLE):

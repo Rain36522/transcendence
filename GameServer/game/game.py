@@ -4,8 +4,9 @@ from gameLogic import gameLogic
 import json
 import asyncio
 from sys import stderr
-from time import sleep
+from time import sleep, time
 from sys import stderr
+from random import choice
 
 RESET = "\033[0m"
 RED = "\033[31m"
@@ -66,44 +67,65 @@ def listUser(data):
                 liste.append(value)
     return liste
 
+
 async def WaitUntilPlayers(ws, data):
-    userlist = listUser(data)
-    liste = []
-    i = 0
-    while len(liste) < data["playeramount"]:
+    lockedPlayers = listUser(data) #list user locked
+    logedPlayers = []
+    startTime = time()
+    print("RECIEVED DATA :", data, file=stderr)
+    print(ORANGE, "NECESSARY PLAYERS :", data["playeramount"], lockedPlayers, RESET, file=stderr)
+    while len(logedPlayers) < data["playeramount"] and time() - startTime < 20:
         msgs = ws.getMsg()
         if msgs:
             for msg in msgs:
                 if msg.endswith("login"):
-                    msg = msg[:-5]
-                    print(MAGENTA, "New user connected to game instance", RESET, msg, file=stderr)
-                    if userlist:
-                        playerFree = data["playeramount"] - len(userlist)
-                    else:
-                        playerFree = data["playeramount"]
-                    print(MAGENTA, "PlayerFree :", playerFree, RESET, file=stderr)
-                    if userlist and msg in userlist:
-                        print(MAGENTA, "User add in liste know", RESET, file=stderr)
-                        liste.append(msg)
-                        i += 1
-                    elif liste and len(liste) <= playerFree and msg not in liste:
-                        print(MAGENTA, "User add in liste", RESET, file=stderr)
-                        liste.append(msg)
-                    elif not liste and playerFree:
-                        print(MAGENTA, "User add in liste", RESET, file=stderr)
-                        liste.append(msg)
+                    logedPlayers = await addPlayers(msg[:-5], lockedPlayers, logedPlayers, data["playeramount"])
                 elif msg.endswith("logout"):
-                    msg = msg[:-6]
-                    if msg in liste:
-                        print(YELLOW, msg, "disconnected", RESET, file=stderr)
-                        liste.remove(msg)
-                        if msg in userlist:
-                            i -= 1
+                    logedPlayers = await removePlayer(msg[:-6], logedPlayers)
+        await asyncio.sleep(0.5)
+    if len(logedPlayers) == data["playeramount"]:
+        print(GREEN + "SEND AUTORISED USERS :", logedPlayers, RESET, file=stderr)
+        await ws.sendUserJoin(logedPlayers)
+    else:
+        print(ORANGE + "MISSING USERS :", logedPlayers, RESET, file=stderr)
+    return logedPlayers
 
-        await asyncio.sleep(0.1)
-    await asyncio.sleep(1)
-    await ws.sendUserJoin(liste)
-    return liste
+async def removePlayer(rmPlayer, logedPlayers):
+    if rmPlayer in logedPlayers:
+        logedPlayers.remove(rmPlayer)
+    return logedPlayers
+
+async def addPlayers(newUser, lockedPlayers, logedPlayers, playeramount):
+    if newUser in lockedPlayers and newUser not in logedPlayers:
+        logedPlayers.append(newUser)
+    elif newUser not in logedPlayers:
+        logedPlayersLen = len(lockedPlayers)
+        for players in logedPlayers:
+            if players not in lockedPlayers:
+                logedPlayersLen += 1
+        if logedPlayersLen < playeramount:
+            logedPlayers.append(newUser)
+    return logedPlayers
+
+
+async def playerInGame(logedPlayers, wsCli, data):
+    dico = {}
+    dico["gameid"] = data["gameid"]
+    if len(logedPlayers) == data["playeramount"]:
+        return True
+    lockedPlayers = listUser(data)
+    if len(logedPlayers):
+        winner = choice(logedPlayers)
+        dico["user1"] = [winner, 1]
+    elif len(lockedPlayers):
+        winner = choice(lockedPlayers)
+        dico["user1"] = [winner, 1]
+    print(MAGENTA + "ENDGAME MISSING MSG :", dico, RESET, file=stderr)
+    await wsCli.sendEndGame(dico, gameError=True)
+    return False
+    
+
+
 
 def updateUser(userliste, data):
     if data["gamemode"] == 0:

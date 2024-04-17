@@ -26,7 +26,7 @@ export class Match {
 		this.players = [];
 		this.scores = [];
 	
-		for (let i = 1; i <= 4; i++) {
+		for (let i = 0; i <= 3; i++) {
 			const playerKey = `player${i}Id`;
 			if (data[playerKey] !== undefined) {
 				this.players.push(data[playerKey]);
@@ -58,8 +58,8 @@ export class Match {
 		// Crée un élément <a> ou <div> comme conteneur principal selon le statut du match
 		if (this.isRunning == true && this.gameLink) {
 			matchElement = document.createElement('a');
-    		matchElement.href = `/game/${this.gameLink}/`;
-    		matchElement.classList.add('match-link');
+			matchElement.href = `/game/${this.gameLink}/`;
+			matchElement.classList.add('match-link');
 		} else {
 			matchElement = document.createElement('div');
 		}

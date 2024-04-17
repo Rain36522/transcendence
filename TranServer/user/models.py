@@ -34,6 +34,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     total_games = models.PositiveIntegerField(
         default=0, verbose_name="Total number of games"
     )
+    tournaments_wins = models.PositiveIntegerField(default=0, verbose_name="Number of tournaments wins")
+    total_tournaments = models.PositiveIntegerField(default=0, verbose_name="Total number of tournaments")
     friends = models.ManyToManyField("self", symmetrical=True)
     blocked = models.ManyToManyField(
         "self", symmetrical=False, related_name="blocked_by"
