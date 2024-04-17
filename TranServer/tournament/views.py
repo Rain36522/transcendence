@@ -197,8 +197,8 @@ class TournamentView(APIView):
         self.id = id
         self.request = request
         id = self.newUserConnection()
-        if id:
-            return redirect("/game/" + str(id) + "/")
+        # if id:
+            # return redirect("/game/" + str(id) + "/")
         tournamentSize = self.getGameByLevel()
         return render(request, 'html/bracket.html', {'tournamentSize': tournamentSize})
 

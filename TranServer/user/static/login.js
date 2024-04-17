@@ -26,3 +26,4 @@ document.getElementById('login-form').addEventListener('submit', function (event
 			console.error('Error:', error);
 		});
 });
+	

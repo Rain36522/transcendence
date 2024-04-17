@@ -20,14 +20,6 @@ body::before {
   z-index: -1;
 }
 
-.join-button{
-  display: flex;
-  justify-content: center;
-  margin: 50px;
-  font-size
-  border-width: 4px solid #ff00bb;
-}
-
 a {
   color: white;
   text-decoration: none;
@@ -189,4 +181,29 @@ a {
 .theme, .bracket, #content-container-replace {
   position: relative;
   z-index: 1; /* Plus élevé que le background-filter */
+}
+
+.join-button{
+  display: flex;
+  justify-content: center; /* Centre le contenu horizontalement */
+  align-items: center; /* Centre le contenu verticalement */
+  padding: 20px 40px; /* Ajustez le padding selon vos besoins */
+  font-size: 64px;
+  background-color: #FFFF99;
+  color: rgb(0, 0, 0);
+  border: 4px solid #cacacaa8;
+  border-radius: 10px;
+  width: fit-content; /* La largeur s'adapte au contenu plus le padding */
+  margin: 50px auto; /* Marges verticales et centrage horizontal */
+  transition: transform 10s; /* Transition douce pour le transform sur 1 seconde */
+}
+
+.join-button:hover {
+  transform: scale(1.5) rotate(1000deg) skewX(1350deg) skewY(450deg) translateY(30px); /* Augmente la taille du bouton de 5% et le tourne de 10 degrés */
+
+}
+
+
+.join-button-a{
+  color: rgb(0, 0, 0);
 }

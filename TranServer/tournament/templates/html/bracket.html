@@ -13,10 +13,11 @@
 <body>
 	<div class="background-filter"></div> <!-- Div pour le filtre de l'image de fond -->
 	<div class="join-button">
-		<a href="#" class="game-button">REJOINS LE TOURNOIS GROSSE SALOPE</a>
+		<a href="" id="join-button" class="join-button-a">JOIN TOURNAMENT</a>
 	</div>
 	<div id="content-container-replace">
 		<div data-tournamentSize="{{ tournamentSize|safe }}" id="tour_size"> </div>
+		<div data-myUser="{{ myUser|safe}}" id="myUser"></div>
 		<div class="theme theme-dark">
 			<div class="bracket" id="tournamentBracket"></div>
 		</div>

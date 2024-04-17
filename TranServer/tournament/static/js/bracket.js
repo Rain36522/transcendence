@@ -110,7 +110,9 @@ class Match {
 }
 
 
-const myUser = "JDjdjDJRDjrJREJYEJytfruryGEUYREUfytrdkuydrkURYGU%EJTYUE%K&UDI655d4htrfyWYT$KU&k58d65i67";
+var myUser = document.getElementById("myUser").getAttribute('data-tournamentSize');
+myUser = JSON.parse(myUser);
+console.log("my user is: " + myUser);
 const tournamentSizeString = document.getElementById("tour_size").getAttribute('data-tournamentSize');
 const tournamentSize = JSON.parse(tournamentSizeString);
 const matchesMap = {}; // Store all matches by unique key (level-pos)
@@ -156,7 +158,7 @@ function initializeTournament(tournamentSize) {
 
 
 function updateTournament(updatedMatches) {
-	if (updatedMatches["isFull"])
+	console.log("hello");
 
 	for (const key in updatedMatches) {
 		const matchData = updatedMatches[key];  // Utilise matchData ici
@@ -169,9 +171,13 @@ function updateTournament(updatedMatches) {
 			if (matchElement) {
 				matchElement.replaceWith(existingMatch.generateHTML());
 			}
+
 			if (matchData.isRunning == true) {
-				for (let i = 1; i <= 4; i++) {
+				for (let i = 0; i <= 3; i++) {
 					const playerIdKey = `player${i}Id`;
+					console.log(playerIdKey);
+					console.log("matchData[playerIdKey]:", matchData[playerIdKey]);
+					console.log("myUser:", myUser);
 					if (matchData[playerIdKey] && matchData[playerIdKey] === myUser) {
 						
 						console.log('Redirecting to:', `/game/${matchData.gameId}/`);
@@ -187,6 +193,13 @@ function updateTournament(updatedMatches) {
 }
 
 
+document.getElementById('join-button').addEventListener('click', function() {
+	const baseUrl = window.location.href; // Récupère l'URL de la page actuelle
+	const joinUrl = `${baseUrl}join/`; // Construit l'URL cible pour la requête GET
+	console.log('Joining tournament:', joinUrl);
+	// Effectue la requête GET avec fetch
+	fetch(joinUrl, { method: 'GET' });
+});
 
 
 // WebSocket setup
