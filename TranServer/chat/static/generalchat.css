@@ -114,10 +114,11 @@ body::before {
 }
 
 .user-list {
+	position: relative;
+	/* Ajouté pour positionner absolument le bouton newChatButton à l'intérieur */
 	flex: 1;
-	/* Donne au user-list la capacité de grandir et remplir l'espace disponible */
-	background-color: transparent;
-	/* Rend le fond transparent */
+	background-color: #eee;
+	/* Changez la couleur de fond en gris comme vous l'avez décrit */
 	overflow-y: auto;
 	border-top-left-radius: 20px;
 	border-bottom-left-radius: 20px;
@@ -265,8 +266,14 @@ header {
 }
 
 #newChatButton {
+	position: absolute;
+	bottom: 20px;
+	/* Positionnez le bouton à 20px du bas du conteneur */
+	left: 50%;
+	transform: translateX(-50%);
+	/* Centrer le bouton horizontalement */
 	padding: 12px 24px;
-	background-color: #FFFF99;
+	background-color: #ffff7a;
 	color: rgb(0, 0, 0);
 	border: none;
 	border-radius: 25px;
@@ -274,11 +281,6 @@ header {
 	cursor: pointer;
 	transition: background-color 0.3s ease;
 	font-weight: bold;
-	position: absolute;
-	bottom: 20px;
-	/* Ajustez en fonction de l'espace désiré du bas */
-	left: 20px;
-	/* Ajustez pour aligner comme désiré */
 }
 
 #newChatButton:hover {
