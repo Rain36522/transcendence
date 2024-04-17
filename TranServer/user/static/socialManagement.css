@@ -482,9 +482,13 @@ header .header-btn {
   font-weight: bold;
 }
 
+/* POUR FELEXIBILITE DE LA PAGE SUR DIVERS ECRANS*/
+
 .sections-container {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+  display: flex;
   /* Changez de 'column' à 'row' pour alignement horizontal */
   align-items: flex-start;
   /* Aligner les éléments en haut */
@@ -507,7 +511,22 @@ header .header-btn {
   /* Ajoute une barre de défilement verticale si nécessaire */
   max-height: 400px;
   /* Définit une hauteur maximale pour les sections */
+  min-width: 250px;
 }
+
+/* Media Query pour gérer les écrans plus petits */
+@media (max-width: 800px) {
+  .sections-container {
+    flex-direction: column; /* Les sections s'alignent verticalement sur de petits écrans */
+  }
+
+  .sections-container > section {
+    margin: 10px 0; /* Marges adaptées pour l'alignement vertical */
+    width: 100%; /* Chaque section prend la pleine largeur */
+  }
+}
+
+/* Fin flex section-container */
 
 /* Styles de base pour tous les boutons */
 .button {
@@ -682,4 +701,13 @@ header .header-btn {
 
 .game-button:hover {
   background-color: #444;
+}
+
+#error_message {
+  color: red;          
+  font-style: italic;    
+  font-size: 14px;        
+  margin-top: 10px;       
+  text-align: center;    
+  width: 100%;           
 }

@@ -72,39 +72,84 @@ function update_search_box() {
 }
 
 document.getElementById("invite_btn").addEventListener("click", function () {
-  if (searchBox.value == "") return;
+  if (searchBox.value == "") {
+      displayError("Please, enter a username");
+      return;
+  }
   fetch("/api/exist/" + searchBox.value + "/")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      console.log(data);
-      if (data) {
-        addFriend(searchBox.value);
-        refresh_view();
-      } else console.log("user does not exist");
-    });
+      .then(response => response.json())
+      .then(data => {
+          if (data.exists) {
+              addFriend(searchBox.value);
+              refresh_view();
+              clearError(); // Effacer les messages d'erreur précédents si tout va bien
+          } else {
+              throw new Error("User does not exist");
+          }
+      })
+      .catch(error => {
+          displayError(error.message || "Error during the user invitation."); // Utilise le message d'erreur de l'API si disponible
+      });
 });
 
 document.getElementById("block_btn").addEventListener("click", function () {
-  if (searchBox.value == "") return;
+  if (searchBox.value == "") {
+      displayError("Please, enter a username");
+      return;
+  }
   fetch("/api/exist/" + searchBox.value + "/")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      if (data) {
-        blockUser(searchBox.value);
-        refresh_view();
-      } else console.log("user does not exist");
-    });
+      .then(response => response.json())
+      .then(data => {
+          if (data.exists) {
+              blockUser(searchBox.value);
+              refresh_view();
+              clearError(); // Effacer les messages d'erreur précédents si tout va bien
+          } else {
+              throw new Error("User does not exist");
+          }
+      })
+      .catch(error => {
+          displayError(error.message || "Error during the user invitation."); // Utilise le message d'erreur de l'API si disponible
+      });
 });
+
+function blockUser(username) {
+  doRequest("blocked", "POST", username);
+}
+
+function doRequest(path, method, username) {
+  console.log("Request to API:", path, method, username);
+  fetch("/api/" + path + "/" + username + "/", {
+    method: method,
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCookie("csrftoken"),
+    },
+    body: JSON.stringify({ username: username }) // Assurez-vous d'envoyer les données nécessaires si l'API le requiert
+  }).then(response => {
+    if (!response.ok) {
+      throw new Error('Failed to execute request');
+    }
+    return response.json();
+  }).then(data => {
+    console.log("Response from API:", data);
+    refresh_view();
+  }).catch(error => {
+    console.error("Error during API request:", error);
+    displayError(error.message || "Erreur lors de la requête API.");
+  });
+}
+
+function displayError(message) {
+  const errorMessage = document.getElementById('error_message');
+  errorMessage.textContent = message;
+  errorMessage.style.display = 'block'; // Rend le message visible
+}
+
+function clearError() {
+  const errorMessage = document.getElementById('error_message');
+  errorMessage.style.display = 'none'; // Cache le message d'erreur
+}
 
 searchBox.addEventListener("input", function () {
   update_search_box();
