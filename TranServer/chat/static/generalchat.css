@@ -268,19 +268,20 @@ header {
 #newChatButton {
 	position: absolute;
 	bottom: 20px;
-	/* Positionnez le bouton à 20px du bas du conteneur */
-	left: 50%;
-	transform: translateX(-50%);
-	/* Centrer le bouton horizontalement */
-	padding: 12px 24px;
-	background-color: #ffff7a;
-	color: rgb(0, 0, 0);
-	border: none;
-	border-radius: 25px;
-	font-size: 16px;
+	background-color: #ffff87;
+	/* Fond noir */
+	color: #000000;
+	/* Texte en blanc pour contraster avec le fond noir */
+	padding: 10px;
+	margin: 5px;
 	cursor: pointer;
-	transition: background-color 0.3s ease;
-	font-weight: bold;
+	border: none;
+	border-radius: 5px;
+	font: bold 16px 'Poppins', sans-serif;
+	transition: background-color 0.3s;
+	font-family: 'Poppins', sans-serif;
+	/* Utilisation de la police Poppins */
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 
 #newChatButton:hover {
@@ -704,4 +705,31 @@ button:focus {
 
 #startChatPrompt {
 	font-family: 'Poppins', sans-serif !important;
+}
+
+.user {
+	background-color: black;
+	color: #ffff87;
+	padding: 6px 10px;
+	/* Padding ajusté pour la hauteur */
+	margin: 5px;
+	margin-top: 20px;
+	/* Ajout d'un espace supplémentaire au-dessus du bouton */
+	cursor: pointer;
+	border: none;
+	border-radius: 5px;
+	transition: background-color 0.3s;
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+	font-family: 'Poppins', sans-serif;
+	font-size: 20px;
+}
+
+.user:hover {
+	background-color: #3f3f3f;
+	/* Légère variation du noir au survol */
+}
+
+.game-invitation {
+	background-color: #000000;
+	color: #ffff87;
 }
