@@ -70,7 +70,7 @@ class User:
             value = self.Django.createUser(user, mail, pwd)
         if value == 500:
                 doexit(1, "Error: Serveur not accessible.")
-        Information("SIGNUP", "User creation succes.", style=STYLSUCCESS)
+        Information("SIGNUP", "User creation succes." + str(value), style=STYLSUCCESS)
         return True
 
     def registration(self):

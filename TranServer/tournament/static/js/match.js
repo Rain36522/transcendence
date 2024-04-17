@@ -1,4 +1,4 @@
-export class Match {
+ class Match {
 	constructor(level, pos, ...players) {
 		this.level = level;
 		this.pos = pos;
@@ -33,7 +33,7 @@ export class Match {
 				const scoreKey = `score${i}`;
 				this.scores.push(data[scoreKey] !== undefined ? data[scoreKey] : 0);
 			}
-			else if (i == 1){
+			else if (i == 0){
 				this.players.push("waiting for players");
 				this.scores.push(0);
 			}
