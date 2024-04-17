@@ -40,10 +40,8 @@ class tournamentSettings(APIView):
         return render(request, 'gamesettingspage.html')
     
     def post(self, request):
-        print("REQUEST TOURNAMENT POST", file=sys.stderr)
         self.data = request.data.copy()
         self.tournament = Tournament.objects.create(playerNumber=self.data["playerNumber"])
-        print("Tournament DB ID", self.tournament.id)
         self.data["tournament"] = self.tournament.id
         if self.data["gamesettings"] == "0":
             self.GenerateMixTree(int(self.data["playerNumber"]))
@@ -52,7 +50,6 @@ class tournamentSettings(APIView):
         else:
             self.generateStandardTree(int(self.data["playerNumber"]), 4)
         if not self.createGamesDb():
-            print("DB not created!")
             return HttpResponse("Error 500", status=500) # TODO rediriger vers error page
         putUserInGame(self.tournament, request.user)
         return redirect('/tournament/' + str(self.tournament.id)) 
@@ -129,7 +126,6 @@ class tournamentSettings(APIView):
                     for element in oldListe:
                         if element[0]:
                             nextGameId = element[1]
-                            print("ELELEMENT :", element, file=sys.stderr)
                             element[0] -= 1
                             break
                 id = self.putGamesDb(i, j, gamePlayer, nextGameId, firstGameDb)
@@ -193,7 +189,6 @@ class TournamentView(APIView):
     renderer_classes = [JSONRenderer]
 
     def get(self, request, id):
-        print("USER ACCESS TO TOURNAMENT VIEW")
         self.id = id
         self.request = request
         id = self.newUserConnection()
@@ -211,7 +206,6 @@ class TournamentView(APIView):
             if value:
                 gameliste.append(value)
             i += 1
-        print("RESULT LISTE", gameliste)
         return gameliste
 
 
@@ -220,22 +214,16 @@ class TournamentView(APIView):
         self.tournament = Tournament.objects.get(pk=self.id)
         user_ids = self.tournament.game_set.all().values_list('gameuser__user', flat=True)
         usernames = User.objects.filter(id__in=user_ids).values_list('username', flat=True)
-        print("CHECKING USERS", usernames)
         if str(self.request.user) in usernames:
-            print("USER ALREADY IN GAME")
             return self.checkUserState()
         elif user_ids.count() <= self.tournament.playerNumber:
-            print("USER NOT IN GAME")
             if putUserInGame(self.tournament, self.request.user):
                 launchTournament(self.tournament)
-        else:
-            print("USER IS A VISITOR")
         return 0
     
     def checkUserState(self):
         # Filtre les jeux de ce tournoi où gameuser est cette instance et gameRunning est True
         game = self.tournament.game_set.filter(gameRunning=True, gameuser__user=self.request.user)
-        print("USER WAITED ON GAME :", game)
         if game:
             return game[0].id
 

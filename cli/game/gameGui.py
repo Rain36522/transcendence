@@ -37,7 +37,6 @@ import sys
 
 class GameGui2p:
     def __init__(self, settings, wsCli, asciiData):
-        print("START", settings)
         self.asciiData = asciiData
         self.term = Terminal()
         self.wsCli = wsCli
@@ -62,7 +61,6 @@ class GameGui2p:
             await asyncio.sleep(0.04)
             msg = self.wsCli.getMessage()
             if str(msg).isdigit():
-                print("INT MSG EXITING", file=sys.stderr)
                 return msg
             elif msg:
                 self.updateScore(msg)

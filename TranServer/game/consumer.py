@@ -2,6 +2,7 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from tournament.consumer import getUpdate
 from .models import Game, GameUser
+from tournament.consumer import TournamentConsumer
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync, sync_to_async
 from django.middleware.csrf import get_token
@@ -30,7 +31,6 @@ class GameServerConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data=None, bytes_data=None):
         # Here you should handle incoming messages, but for now, let's just send a response back
-        print("TEXT DATA : ", text_data, file=stderr)
         data = json.loads(text_data)
         game_id = data["gameid"]
         game = await sync_to_async(Game.objects.get)(pk=game_id)
@@ -45,47 +45,55 @@ class GameServerConsumer(AsyncWebsocketConsumer):
     def tournamentEndGame(self, game, winner):
         if game.tournament and winner:
             tournamentId = game.tournament.id
-            print("NEXT GAME : ", game.nextGame)
             if game.nextGame:
-                print("NEXT GAME : ", game.nextGame)
                 nextGame = game.nextGame
                 GameUser.objects.create(user=winner.user, game=nextGame)
                 if nextGame.gameuser_set.count() == nextGame.gamemode * 2:
-                    print("LAUNCHING NEXT TOURNAMENT GAME", nextGame.gameuser_set.count(), nextGame.gamemode * 2)
                     launchGame(nextGame)
-        self.sendUpdateTournamentview(tournamentId)
+            if tournamentId:
+                async_to_sync(self.sendUpdateTournamentview)(tournamentId)
                 
     @sync_to_async
     def putGameResultDb(self, game, data): #return winner
-        point = 0
-        print("60", file=stderr)
-        winner = None 
-        game.gameRunning = False
-        gameusers = game.gameuser_set.all()
-        for gameuser in gameusers:
+        if game.gamemode > 0:
+            maxPoint = 0
+            winner = None
+            GameFinish = False
+            game.gameRunning = False
+            gameusers = game.gameuser_set.all()
             for cle, value in data.items():
-                if cle.startswith("user") and value[0] == gameuser.user.username:
-                    gameuser.points = value[1]
-                    gameuser.user.total_games += 1
-                    if point < value[1]:
-                        point = value[1]
-                        winner = gameuser
-                    break
-        if winner:
-            winner.user.wins += 1
-        for gameuser in gameusers:
-            gameuser.user.save()
-            gameuser.save()
+                if cle.startswith("user") and value[1] > maxPoint:
+                    maxPoint = value[1]
+            for gameuser in gameusers:
+                for cle, value in data.items():
+                    if cle.startswith("user") and value[0] == gameuser.user.username:
+                        if game.tournament and game.levelPos == 0 and maxPoint > 1:
+                            gameuser.user.total_tournaments += 1
+                        gameuser.points = value[1]
+                        if maxPoint > 1:
+                            gameuser.user.total_games += 1
+                        if maxPoint == value[1]:
+                            winner = gameuser
+                        break
+            if winner and winner.points > 1:
+                winner.user.wins += 1
+                if game.tournament and not game.nextGame:
+                    winner.user.tournaments_wins += 1
+            for gameuser in gameusers:
+                gameuser.user.save()
+                gameuser.save()
 
-        game.save()
-        return winner
+            game.save()
+            return winner
+        return None
 
     async def sendUpdateTournamentview(self, tournamentId):
-        async_to_sync(self.channel_layer.group_send)(
+        data = await getUpdate(tournamentId)
+        await self.channel_layer.group_send(
             'tournament_' + str(tournamentId),
             {
-                'type': 'end_game',
-                'message': getUpdate(tournamentId.id),
+                'type': 'send_update',
+                'data': data,
             }
             )
         
@@ -113,6 +121,10 @@ class launchGame:
         dico["Speed"] = game.Speed
         dico["winpoint"] = game.winpoint
         dico["gamemode"] = game.gamemode
+        if game.tournament:
+            dico["tournamentid"] = game.tournament.id
+        else:
+            dico["tournamentid"] = 0
         return dico
     
     def generateGame(self, game, dico):
@@ -126,6 +138,7 @@ class launchGame:
         i = 0
         for user in users:
             dico["user{}".format(i)] = user
+            i += 1
         return dico
     
     def sendData(self, data):

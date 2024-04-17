@@ -81,7 +81,6 @@ class DataTransmission:
         while True:
             try:
                 async for self.message in self.wsCli:
-                    print("RECIEVED MSG", self.message, file=stderr)
                     if str(self.message).isdigit():
                         self.errormsg = self.message
                         return self.errormsg
@@ -94,7 +93,6 @@ class DataTransmission:
             except:
                 while not self.isConnected:
                     if self.exit:
-                        print("MSG EXITED", file=stderr)
                         return "500"
                     await asyncio.sleep(0.1)
     

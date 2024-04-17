@@ -48,13 +48,10 @@ class newGame(APIView):
         return render(request, "html/gameSettings.html")
 
     def post(self, request):
-        print("POST FROM USER !", file=sys.stderr)
         data = self.changeData(request.data.copy())
         if data:
-            print("Data", file=sys.stderr)
             serializer = GameSettingsSerializer(data=data)
             if serializer.is_valid():
-                print("Seriallizer")
                 instance = serializer.save()
                 # Enregistre les données et récupère l'objet sauvegardé
                 self.addPlayer(instance, request.user)
@@ -79,8 +76,8 @@ class newGame(APIView):
                     {"gameLink": "/game/" + str(instance.id)}, status=200
                 )
             else:
-                print(serializer.errors, file=sys.stderr)
-        print("no data", file=sys.stderr)
+                print("New game,", serializer.errors, file=sys.stderr)
+        print("no data for newGame", file=sys.stderr)
         return HttpResponse("Error 400", status=400)
 
     def changeData(self, data):
@@ -100,7 +97,6 @@ class newGame(APIView):
         return None
 
     def sendNewGame(self, data):
-        print("sending new msg")
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
             "gameServer",
@@ -109,10 +105,8 @@ class newGame(APIView):
                 "data": json.dumps(data),
             },
         )
-        print("message send")
 
     def addPlayer(self, game, user):
-        print(user)
         game_user = GameUser.objects.create(user=user, game=game)
         game.gameuser_set.add(game_user)
 
@@ -141,8 +135,6 @@ def gamePage(request, id):
         "user": request.user.username,
         "gameid": id,
     }
-    print("USER : ", contexte["user"])
-    print("gameid : ", contexte["gameid"])
     contexte_json = json.dumps(contexte)
     return render(request, "monapp/pong.html", {"contexte_json": contexte_json})
 
