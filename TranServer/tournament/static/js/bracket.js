@@ -83,12 +83,19 @@ class Match {
 			playerElement.classList.add('team');
 			// Appliquer la classe 'winner' au gagnant, 'loser' aux autres si le match est terminé
 			if (this.status === "finished") {
-				if (index === winnerIndex) {
+				if (index === winnerIndex)
 					playerElement.classList.add('winner');
-				} else {
+				else
 					playerElement.classList.add('loser');
-				}
 			}
+			
+			// Ajouter la classe 'match-top' au premier élément et 'match-bottom' au dernier élément
+			if (index === 0 && index === this.players.length - 1)
+				playerElement.classList.add('match-unique');
+			else if (index === 0)
+				playerElement.classList.add('match-top');
+			else if (index === this.players.length - 1)
+				playerElement.classList.add('match-bottom');
 	
 			playerElement.innerHTML = `
 				<span class="name">${player}</span>
@@ -149,7 +156,8 @@ function initializeTournament(tournamentSize) {
 
 
 function updateTournament(updatedMatches) {
-	console.log(updatedMatches);
+	if (updatedMatches["isFull"])
+
 	for (const key in updatedMatches) {
 		const matchData = updatedMatches[key];  // Utilise matchData ici
 		const matchKey = `${matchData.level}-${matchData.pos}`;
@@ -167,9 +175,8 @@ function updateTournament(updatedMatches) {
 					if (matchData[playerIdKey] && matchData[playerIdKey] === myUser) {
 						
 						console.log('Redirecting to:', `/game/${matchData.gameId}/`);
-						window.history.pushState(null, null, '/${window.location.origin}/game/${matchData.gameId}/');
-						fetchPage('/${window.location.origin}/game/${matchData.gameId}/')
-                        // window.location.href = `${window.location.origin}/game/${matchData.gameId}/`;
+						window.history.pushState(null, null, '/game/${matchData.gameId}/');
+						fetchPage('/game/${matchData.gameId}/')
 						break;
 					}
 				}
@@ -185,16 +192,13 @@ function updateTournament(updatedMatches) {
 // WebSocket setup
 function setupWebSocket() {
 	const pathElements = window.location.pathname.split('/');
-	console.log(pathElements[2]);
 	const socket = new WebSocket('wss://' + window.location.host + '/ws/tournament/' + pathElements[2] + '/');
 
 	socket.onopen = function(event) {
 		console.log('WebSocket connection established');
 	};
 	socket.onmessage = function(event) {
-		console.log("caca raw data: " + event.data);
 		const dataPouet = JSON.parse(event.data);
-		console.log("parsed data is: "+ dataPouet)
 		updateTournament(dataPouet);
 	};
 	socket.onerror = function(event) {
@@ -208,5 +212,3 @@ function setupWebSocket() {
 
 initializeTournament(tournamentSize); // Initialize the tournament bracket
 setupWebSocket(); // Setup the WebSocket connection
-
-console.log("caca");
