@@ -190,12 +190,11 @@ class TournamentView(APIView):
 
     def get(self, request, id):
         self.id = id
+        self.tournament = Tournament.objects.get(pk=self.id)
         self.request = request
         id = self.newUserConnection()
-        if id:
-            return redirect("/game/" + str(id) + "/")
         tournamentSize = self.getGameByLevel()
-        return render(request, 'html/bracket.html', {'tournamentSize': tournamentSize})
+        return render(request, 'html/bracket.html', {'tournamentSize': tournamentSize, 'username':request.user.username})
 
     def getGameByLevel(self):
         i = 0
@@ -209,23 +208,23 @@ class TournamentView(APIView):
         return gameliste
 
 
-    # if user as to play: return gameid
+        
+class TournamentJoin:
+    renderer_classes = [JSONRenderer]
+    def get(self, request, id):
+        self.id = id
+        self.request = request
+        id = self.newUserConnection()
+
+     # if user as to play: return gameid
     def newUserConnection(self):
         self.tournament = Tournament.objects.get(pk=self.id)
         user_ids = self.tournament.game_set.all().values_list('gameuser__user', flat=True)
         usernames = User.objects.filter(id__in=user_ids).values_list('username', flat=True)
-        if str(self.request.user) in usernames:
-            return self.checkUserState()
-        elif user_ids.count() <= self.tournament.playerNumber:
+        if not str(self.request.user) in usernames and user_ids.count() <= self.tournament.playerNumber:
             if putUserInGame(self.tournament, self.request.user):
                 launchTournament(self.tournament)
         return 0
-    
-    def checkUserState(self):
-        # Filtre les jeux de ce tournoi où gameuser est cette instance et gameRunning est True
-        game = self.tournament.game_set.filter(gameRunning=True, gameuser__user=self.request.user)
-        if game:
-            return game[0].id
 
 def putUserInGame(tournament, user):
     games = tournament.game_set.filter(gameLevel=0)

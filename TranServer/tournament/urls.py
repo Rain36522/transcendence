@@ -10,5 +10,6 @@ urlpatterns = [
         # path ('bracket/', bracket, name='bracket'),
         path ('tournament/Settings/', tournamentSettings.as_view(), name='tournamentSettings'),
         path('tournament/<int:id>/', TournamentView.as_view(), name='TournamentView'),
+        path('tournament/<int:id>/join/', TournamentJoin.as_view(), name='TournamentJoin'),
         # path('tournament/adduser/<int:id>/', TournamentAddUser, name='TournamentAddUser'),
 ]
