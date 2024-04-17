@@ -2,7 +2,7 @@ export class Settings
 {
 	constructor(rawSettings){
 		const data = JSON.parse(rawSettings);
-
+		console.log("raw settings: ", data);
 		this.nbPlayers = data.nbPlayers || 2; // number of players in the game
 		this.playersNames = data.users && data.users.length > 0 ? data.users : Array.from({ length: this.nbPlayers }, (_, index) => `User${index + 1}`);
 		this.isSolo = data.isSolo; // if no other players on other screens
@@ -14,10 +14,14 @@ export class Settings
 		if (this.nbPlayers != 4)
 			this.gameHeight /= 2; // field is square if 4 players, else it's a rectangle so we divide the height by 2
 
-		this.paddleColor = data.paddleColor || "white"; // color of the paddles
-		this.ballColor = data.ballColor || "white"; // color of the ball
-		this.fieldColor = data.fieldColor || "#000"; // color of the field
-		this.borderColor = data.borderColor || "white"; // color of the border
+		fetch('/api/colors/')
+			.then(response => response.json())
+			.then(data => {
+				this.paddleColor = data.paddleColor || "white"; // color of the paddles
+				this.ballColor = data.ballColor || "white"; // color of the ball
+				this.fieldColor = data.fieldColor || "#000"; // color of the field
+				this.borderColor = data.borderColor || "white"; // color of the border
+			});
 
 		this.paddleWidth = data.paddleWidth || 0.02; // width of the paddles
 		this.paddleLength = data.paddleLength || 0.2; // length of the paddles
@@ -36,5 +40,8 @@ export class Settings
 		else
 			this.userID = 1;
 		this.gameID = data.gameid;
+
+		if (this.userID == 0)
+			this.userID = 1;
 	}
-}
+}	

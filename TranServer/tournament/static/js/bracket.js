@@ -40,7 +40,6 @@ class Match {
 				this.scores.push(0);
 			}
 		}
-	
 		this.isRunning = data.isRunning;
 		this.gameLink = data.gameId;
 	}
@@ -62,9 +61,8 @@ class Match {
 			matchElement = document.createElement('a');
 			matchElement.href = `/game/${this.gameLink}/`;
 			matchElement.classList.add('match-link');
-		} else {
+		} else
 			matchElement = document.createElement('div');
-		}
 	
 		const statusClass = this.status.replace(/\s+/g, '-').toLowerCase();
 		matchElement.classList.add('match', statusClass);
@@ -77,7 +75,6 @@ class Match {
 			const winnerScore = Math.max(...this.scores);
 			winnerIndex = this.scores.indexOf(winnerScore);
 		}
-	
 		this.players.forEach((player, index) => {
 			const playerElement = document.createElement('div');
 			playerElement.classList.add('team');
@@ -88,7 +85,6 @@ class Match {
 				else
 					playerElement.classList.add('loser');
 			}
-			
 			// Ajouter la classe 'match-top' au premier élément et 'match-bottom' au dernier élément
 			if (index === 0 && index === this.players.length - 1)
 				playerElement.classList.add('match-unique');
@@ -103,21 +99,16 @@ class Match {
 			`;
 			matchElement.appendChild(playerElement);
 		});
-
-	
 		return matchElement;
 	}		
 }
 
 
-var myUser = document.getElementById("myUser").getAttribute('data-tournamentSize');
-myUser = JSON.parse(myUser);
-console.log("my user is: " + myUser);
+var myUser = document.getElementById("myUser").getAttribute('data-myUser');
 var isFull = false;
 const tournamentSizeString = document.getElementById("tour_size").getAttribute('data-tournamentSize');
 const tournamentSize = JSON.parse(tournamentSizeString);
 const matchesMap = {}; // Store all matches by unique key (level-pos)
-
 
 
 const dataTemplate ={
@@ -158,13 +149,12 @@ function initializeTournament(tournamentSize) {
 }
 
 
-function updateTournament(updatedMatches) {
-	if (data["tournamentFull"] == true) {
+function updateTournament(data) {
+	if (data.tournamentFull == true)
 		isFull = true;
-	}
-	if (isFull == true) {
+	if (isFull == true)
 		document.getElementById('join-button').style.display = 'none';
-	}
+	var updatedMatches = data.games;
 
 	for (const key in updatedMatches) {
 		const matchData = updatedMatches[key];  // Utilise matchData ici
@@ -174,27 +164,26 @@ function updateTournament(updatedMatches) {
 			existingMatch.updateFromData(matchData);
 			// Replace the existing match HTML with the updated one
 			const matchElement = document.querySelector(`.match[data-id="${matchData.pos}"][data-level="${matchData.level}"]`);
-			if (matchElement) {
+			if (matchElement)
 				matchElement.replaceWith(existingMatch.generateHTML());
+
+			if (isFull == false){
+				for (let i = 0; i <= 3; i++) {
+					const playerIdKey = `player${i}Id`;
+					if (matchData[playerIdKey] && matchData[playerIdKey] === myUser)
+						document.getElementById('join-button').style.display = 'none';
 			}
 
 			if (matchData.isRunning == true) {
 				for (let i = 0; i <= 3; i++) {
 					const playerIdKey = `player${i}Id`;
-					console.log(playerIdKey);
-					console.log("matchData[playerIdKey]:", matchData[playerIdKey]);
-					console.log("myUser:", myUser);
 					if (matchData[playerIdKey] && matchData[playerIdKey] === myUser) {
-						
-						console.log('Redirecting to:', `/game/${matchData.gameId}/`);
-						window.history.pushState(null, null, '/game/${matchData.gameId}/');
-						fetchPage('/game/${matchData.gameId}/')
+						var pageToFetch = "/game/" + matchData.gameId + "/";
+						window.history.pushState(null, null, pageToFetch);
+						fetchPage(pageToFetch);
 						break;
-					}
-				}
-			}
-		}
 	}
+}}}}}
 	console.log('Tournament updated', updatedMatches);
 }
 
@@ -202,7 +191,6 @@ function updateTournament(updatedMatches) {
 document.getElementById('join-button').addEventListener('click', function() {
 	const baseUrl = window.location.href; // Récupère l'URL de la page actuelle
 	const joinUrl = `${baseUrl}join/`; // Construit l'URL cible pour la requête GET
-	console.log('Joining tournament:', joinUrl);
 	// Effectue la requête GET avec fetch
 	fetch(joinUrl, { method: 'GET' });
 });
@@ -211,6 +199,7 @@ document.getElementById('join-button').addEventListener('click', function() {
 // WebSocket setup
 function setupWebSocket() {
 	const pathElements = window.location.pathname.split('/');
+	console.log('wss://' + window.location.host + '/ws/tournament/' + pathElements[2] + '/');
 	const socket = new WebSocket('wss://' + window.location.host + '/ws/tournament/' + pathElements[2] + '/');
 
 	socket.onopen = function(event) {
