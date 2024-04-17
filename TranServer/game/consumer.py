@@ -58,7 +58,6 @@ class GameServerConsumer(AsyncWebsocketConsumer):
         if game.gamemode > 0:
             maxPoint = 0
             winner = None
-            GameFinish = False
             game.gameRunning = False
             gameusers = game.gameuser_set.all()
             for cle, value in data.items():
