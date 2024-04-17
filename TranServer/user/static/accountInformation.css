@@ -82,7 +82,7 @@ header {
 
 .frame {
   position: fixed;
-  top: 15%;
+  top: 20%;
   /* AjustÃ© pour centrer verticalement */
   left: 15%;
   width: 70%;
@@ -276,10 +276,9 @@ hr {
 }
 
 .color-picker {
-  /* display: flex; */
   flex-direction: column;
   align-items: flex-start;
-  width: 200px;
+  width: calc(100vw / 9);
   text-align: center;
 }
 
@@ -430,31 +429,17 @@ button:hover {
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .file-button:hover {
   background-color: #333333;
 }
 
-.button-container {
-  /* width: 130px; */
-  /* MÃªme largeur pour les deux boutons */
-  /* height: 30px; */
-  /* MÃªme hauteur pour les deux boutons */
-}
-
 .form-label {
-  display: inline-block;
-  /* Utiliser inline-block pour la mise en forme */
-  width: 140px;
-  /* DÃ©finir une largeur fixe pour toutes les Ã©tiquettes */
+  flex: 0 0 140px; /* Flex basis à 140px mais peut rétrécir si nécessaire */
   margin-right: 10px;
-  /* Espace entre l'Ã©tiquette et le champ de saisie */
   text-align: right;
-  /* Aligner le texte Ã  droite pour que le texte soit prÃ¨s du champ de saisie */
-  vertical-align: top;
-  /* Aligner les Ã©tiquettes avec le haut des champs de saisie */
 }
 
 .form-input {
@@ -464,30 +449,50 @@ button:hover {
   /* Prendre en compte la largeur de l'Ã©tiquette et de l'espace */
 }
 
-/* Appliquer le flexbox pour les Ã©lÃ©ments du formulaire */
 .form-row {
   display: flex;
+  flex-wrap: wrap; /* Permet aux éléments de passer à la ligne suivante si nécessaire */
   align-items: center;
   margin-bottom: 10px;
-  /* Espacement entre les lignes de formulaire */
 }
 
 .form-button {
-  width: 200px;
-  /* Ajustez cette largeur comme nÃ©cessaire */
   padding: 10px 15px;
+  width: auto; /* Laissez la largeur s'adapter au contenu */
+  cursor: pointer;
+  transition: background-color 0.3s;
   background-color: #000000;
   color: #FFFFFF;
   border: none;
   border-radius: 5px;
   font-size: 16px;
-  /* Exemple de taille, ajustez selon votre design */
-  cursor: pointer;
-  transition: background-color 0.3s;
   margin-left: 12px;
-  /* DÃ©cale le bouton de 20px vers la droite */
+}
+
+@media (max-width: 600px) {
+  .form-button {
+      width: 100%; /* Bouton plein largeur sur petits écrans */
+  }
 }
 
 .form-button:hover {
   background-color: #333333;
+}
+
+.form-input, .form-button {
+  flex: 1; /* Prend l'espace restant */
+  min-width: 50%; /* Assure une largeur minimale pour la lisibilité */
+}
+
+/* s'adapter a differentes formes d'ecran */
+@media (max-width: 600px) {
+  .form-label {
+      flex: 1 1 100%; /* Prend toute la largeur sur les petits écrans */
+      text-align: left; /* Aligner le texte à gauche pour une meilleure lecture */
+  }
+
+  .form-input, .form-button {
+      flex: 1 1 100%; /* Prend toute la largeur sur les petits écrans */
+      min-width: 100%; /* Élargit l'input pour remplir l'espace */
+  }
 }
