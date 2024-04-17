@@ -11,6 +11,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@300;400;600&family=Poppins:wght@400;600&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap">
     <link rel="stylesheet" href="{% static 'home.css' %}">
     <link rel="stylesheet" href="{% static 'generalchat.css' %}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -37,7 +38,7 @@
                 <button id="newChatButton">New Chat</button>
             </div>
             <div class="chat-window">
-                <div class="selected-user">Select a user or group to start chatting</div>
+                <div class="selected-user" id="startChatPrompt">Select a user or group to start chatting</div>
                 <div id="messages"></div>
                 <div class="message-input">
                     <textarea id="messageText" placeholder="Type your message here..."></textarea>
@@ -51,7 +52,7 @@
         <div id="popup" class="popup">
             <div class="popup-content">
                 <span class="close-btn" onclick="closePopup()">&times;</span>
-                <h3>Invite players to the game !</h3>
+                <h3>Create a new chat !</h3>
                 <div class="search-container">
                     <input type="text" id="searchInput" placeholder="Search...">
                     <button type="button">Search</button>
@@ -60,48 +61,34 @@
                 <div id="searchResult" class="search-result" style="display: none;">
                     <!-- Le résultat de la recherche sera injecté ici -->
                 </div>
+
                 <div class="users-and-invited-container"> <!-- Conteneur parent pour Flexbox -->
-                    <div class="user-list-container"> <!-- Ajoutez l'identifiant ici -->
-                        <div class="user-list" id="user-list">
+                    <div class="user-container">
+                        <h4 class="title-outside">User list</h4>
+                        <div class="user-list-container" id="user-list">
                             <div class="user-item">
-                                <img src="https://media1.tenor.com/m/xK38NWayRnoAAAAC/dog-eyes.gif"
-                                    alt="Nom d'utilisateur" class="user-image">
+                                <img src="https://media1.tenor.com/m/xK38NWayRnoAAAAC/dog-eyes.gif" alt="Famacito"
+                                    class="user-image">
                                 <span class="user-name">Famacito</span>
                                 <button class="invite-button">Invite</button>
                             </div>
                             <div class="user-item">
                                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb2KRrG26uJLRrL55aWnKPGezf8V5ZkiHPHg&s"
-                                    alt="Nom d'utilisateur" class="user-image">
+                                    alt="Dark_Sasuke" class="user-image">
                                 <span class="user-name">Dark_Sasuke</span>
-                                <button class="invite-button">Invite</button>
-                            </div>
-                            <div class="user-item">
-                                <img src="data:image/jpeg;base64,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"
-                                    alt="Nom d'utilisateur" class="user-image">
-                                <span class="user-name">Bebou🍑</span>
-                                <button class="invite-button">Invite</button>
-                            </div>
-                            <div class="user-item">
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbkxMv-c0E43vDxqPuuJ9-BDdHTu01PECQkg&s"
-                                    alt="Nom d'utilisateur" class="user-image">
-                                <span class="user-name">Beverly_du_ghetto</span>
-                                <button class="invite-button">Invite</button>
-                            </div>
-                            <div class="user-item">
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqiUJf2G0-bMDEnHRE4XIBLP_FKfACo2geiWaypHs8dVT8_GOaj-qjO3Pp59E6Y8hYM80&usqp=CAU"
-                                    alt="Nom d'utilisateur" class="user-image">
-                                <span class="user-name">Julien.</span>
                                 <button class="invite-button">Invite</button>
                             </div>
                             <!-- Ajoutez plus d'utilisateurs ici -->
                         </div>
                     </div>
-                    <div class="user-list-container" id="invitedUsers">
-                        <h3>Invited Players</h3>
-                        <!-- Les utilisateurs invités seront affichés ici -->
+                    <div class="invited-container">
+                        <h4 class="title-outside">Invited Users</h4>
+                        <div class="user-list-container" id="invitedUsers">
+                            <!-- Les utilisateurs invités seront affichés ici -->
+                        </div>
                     </div>
                 </div>
-                <button class="start-button">Start</button>
+                <button class="start-button">Create Chat</button>
             </div>
         </div>
         <script src={% static 'utils.js' %}></script>

@@ -25,13 +25,27 @@ export class Player
 				message = this.PlayerID + "d-" + (value == true ? "on" : "off");
 			}
 		} else {
-			if (event.key == "w" && this.keysPressed["up"] != value) {
-				this.keysPressed["up"] = value;
-				message = this.PlayerID + "u-" + (value == true ? "on" : "off");
+			if (this.PlayerID % 2 == 1 || (this.gameParams.isSolo && this.gameParams.nbPlayers == 2))
+			{
+				if (event.key == "w" && this.keysPressed["up"] != value) {
+					this.keysPressed["up"] = value;
+					message = this.PlayerID + "u-" + (value == true ? "on" : "off");
+				}
+				else if (event.key == "s" && this.keysPressed["down"] != value) {
+					this.keysPressed["down"] = value;
+					message = this.PlayerID + "d-" + (value == true ? "on" : "off");
+				}
 			}
-			else if (event.key == "s" && this.keysPressed["down"] != value) {
-				this.keysPressed["down"] = value;
-				message = this.PlayerID + "d-" + (value == true ? "on" : "off");
+			else
+			{
+				if (event.key == "w" && this.keysPressed["up"] != value) {
+					this.keysPressed["up"] = value;
+					message = this.PlayerID + "d-" + (value == true ? "on" : "off");
+				}
+				else if (event.key == "s" && this.keysPressed["down"] != value) {
+					this.keysPressed["down"] = value;
+					message = this.PlayerID + "u-" + (value == true ? "on" : "off");
+				}
 			}
 		}
 		if (message != "")

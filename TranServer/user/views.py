@@ -27,6 +27,8 @@ from .serializers import (
     UserSerializer_Username,
     PersonalUserSerializer,
     OtherUserSerializer,
+    ColorsUserSerializer,
+    ColorUpdateSerializer,
 )
 
 import mimetypes
@@ -275,6 +277,37 @@ class BlockedListView(APIView):
             return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
+class ColorView(APIView):
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer]
+
+    def get(self, request):
+        try:
+            return Response(
+                ColorsUserSerializer(request.user).data,
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    def post(self, request):
+        try:
+            user = request.user
+            serializer = ColorUpdateSerializer(
+                instance=user, data=request.data, partial=True
+            )
+            if serializer.is_valid():
+                serializer.save()
+                return Response(
+                    {"message": "Colors updated successfully"},
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
 @api_view(["GET"])
 @renderer_classes([JSONRenderer])
 def user_exist_api(request, username=None):
@@ -309,9 +342,12 @@ def user_login_api(request):
 @api_view(["GET"])
 @renderer_classes([JSONRenderer])
 @login_required
-def user_profile_pic_api(request, username):
-    user = get_object_or_404(User, username=username)
+def user_profile_pic_api(request, username=None):
     try:
+        if username:
+            user = get_object_or_404(User, username=username)
+        else:
+            user = request.user
         if user.profile_picture:
             path = user.profile_picture.path
             content_type, _ = mimetypes.guess_type(path)
@@ -338,7 +374,7 @@ def upload_profile_pic_api(request):
 
             # File type validation
             if profile_picture.content_type not in ALLOWED_FILE_TYPES:
-                return JsonResponse({"error": "Invalid file type"}, status=400)
+                return JsonResponse({"error¬": "Invalid file type"}, status=400)
 
             # File size limit
             if profile_picture.size > MAX_FILE_SIZE:
@@ -349,21 +385,21 @@ def upload_profile_pic_api(request):
             user = request.user
 
             # Check if the user already has a profile picture
-            if user.profile_picture:
-                try:
-                    # Delete the old profile picture file from the storage
-                    if os.path.isfile(user.profile_picture.path):
-                        os.remove(user.profile_picture.path)
-                except:
-                    pass
+            # if user.profile_picture:
+            #     try:
+            #         # Delete the old profile picture file from the storage
+            #         if os.path.isfile(user.profile_picture.path):
+            #             os.remove(user.profile_picture.path)
+            #     except:
+            #         pass
 
             # Save the new profile picture
             user.profile_picture = profile_picture
             user.save()
-            return HttpResponse(
+            return JsonResponse(
                 {"message": "Upload successful"}, status=status.HTTP_201_CREATED
             )
-        return HttpResponse(
+        return JsonResponse(
             {"message": "No file found"}, status=status.HTTP_400_BAD_REQUEST
         )
     except ValidationError:
@@ -391,19 +427,26 @@ def test_upload(request):
     return render(request, "html/test_upload.html")
 
 
+def profile_user(request, username=None):
+    return render(request, "html/profile_user.html")
+
+
 @login_required
-def user_dashboard(request):
+def user_dashboard(request, username=None):
+    user = request.user
+    if username:
+        user = User.objects.get(username=username)
     ratio_w = 0
     ratio_l = 0
-    losses = request.user.total_games - request.user.wins
-    if request.user.total_games != 0:
-        ratio_w = request.user.wins / request.user.total_games
-        ratio_l = losses / request.user.total_games
+    losses = user.total_games - user.wins
+    if user.total_games != 0:
+        ratio_w = user.wins / user.total_games
+        ratio_l = losses / user.total_games
     return render(
         request,
         "html/dashboard.html",
         {
-            "user": request.user,
+            "user": user,
             "losses": losses,
             "ratio_w": ratio_w,
             "ratio_l": ratio_l,

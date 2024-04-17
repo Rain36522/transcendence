@@ -125,19 +125,21 @@ async function fetchMessages(chatId) {
 function load_chats() {
   fetchChats().then((chats) => {
     const userList = document.getElementById("userList");
-    userList.innerHTML = ""; // Clear existing content
+    userList.innerHTML = ""; // Effacer le contenu existant
     console.log(chats);
     for (const chat of chats) {
       let usernames = chat.participants
         .map((participant) => participant.username)
         .join(", ");
-      if (chat.is_personal) usernames = "Game Invitations";
+      if (chat.is_personal) usernames = "Game Invitations"; // Nom spécial pour les chats personnels
+
       const userDiv = document.createElement("div");
       userDiv.classList.add("user");
+      if (chat.is_personal) {
+        userDiv.classList.add("game-invitation"); // Ajouter une classe spécifique pour les invitations de jeu
+      }
       userDiv.textContent = usernames;
-      userDiv.addEventListener("click", () =>
-        selectChat(usernames, chat.id, chat.is_personal)
-      );
+      userDiv.addEventListener("click", () => selectChat(usernames, chat.id, chat.is_personal));
       userList.appendChild(userDiv);
     }
   });

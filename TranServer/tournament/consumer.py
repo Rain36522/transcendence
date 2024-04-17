@@ -50,6 +50,8 @@ def getUpdate(id):
     tournament = Tournament.objects.get(pk=id)
     data = []
     games = tournament.game_set.all()
+    gamesUser = tournament.game_set.filter(gameLevel=0).gameuser.count()
+    data["tournamentFull"] = gamesUser == tournament.playerNumber
     for game in games:
         data.append(putGameInDict(game))
     return data

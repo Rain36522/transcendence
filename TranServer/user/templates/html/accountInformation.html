@@ -6,6 +6,8 @@
 <link
     href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@300;400;600&family=Poppins:wght@400;600&display=swap"
     rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css" />
 <link rel="stylesheet" href="{% static 'home.css' %}">
 <link rel="stylesheet" href="{% static 'accountInformation.css' %}">
 
@@ -15,23 +17,92 @@
 </div>
 <div class="frame">
     <div class="tab-container">
-        <a href="{% url 'account_information' %}" class="tab account-info-btn">Account Informations</a>
+        <a href="{% url 'account_information' %}" class="tab account-info-btn">Account Information</a>
         <a href="{% url 'user_dashboard' %}" class="tab active">Dashboard</a>
         <a href="{% url 'social_management' %}" class="tab">Social Management</a>
     </div>
     <div class="content-area">
         <div class="profile-section">
-            <img src="" alt="Photo de profil" class="profile-pic">
-            <button class="edit-profile-btn">Edit profile picture</button>
+            <img alt="Photo de profil" class="profile-pic" id="profile-pic">
+            <form id="uploadForm" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" id="profilePicture" name="profile_picture" accept="image/*" style="display: none;">
+                <label for="profilePicture" class="file-button">Choose a File</label>
+                <button class="edit-profile-btn" type="submit">Upload Profile Picture</button>
+            </form>
+            <a href="#" class="edit-link">Edit</a>
         </div>
+
         <div class="user-info">
-            <div><label>Username:</label><input type="text" value="Shrekito"></div>
-            <div><label>Mail:</label><input type="email" value="shrek@swamp.far"></div>
-            <div><label>Pronouns:</label><input type="text" value="They, them, it, whom"></div>
-            <div><label>Password:</label><input type="password" value="password"></div>
+            <form id="updateInfoForm">
+                {% csrf_token %}
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" value={{ user.username }} required><br><br>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value={{ user.email }} required><br><br>
+                <label for="first_name">First Name:</label>
+                <input type="text" id="first_name" name="first_name" value={{ user.first_name }} required><br><br>
+                <label for="last_name">Last Name:</label>
+                <input type="text" id="last_name" name="last_name" value={{ user.last_name }} required><br><br>
+                
+                <button type="submit">Update Profile</button>
+            </form>
+            <form id="passwordChangeForm">
+                {% csrf_token %}
+                <label for="oldPassword">Old Password:</label>
+                <input type="password" id="oldPassword" name="old_password" required><br><br>
+                <label for="newPassword">New Password:</label>
+                <input type="password" id="newPassword" name="new_password" required><br><br>
+                <button type="submit">Change Password</button>
+            </form>
+            <p id="passwordError" style="color: red; font-style: italic; display: none; font-size: 14px;">Incorrect
+                current password</p>
+
+            <hr> <!-- Barre horizontale -->
+
+            <div class="color-settings">
+                <div class="game-settings-title">
+                    <h2>Game customisation</h2>
+                </div>
+                <div class="color-picker-columns">
+                    <div class="color-picker">
+                        <label for="BallColor">Ball Color:</label>
+                        <button class="button-8" id="BallColor" onclick="openColorPicker('BallColor')">
+                            <i class="fa fa-paint-brush"></i> Select Ball Color
+                        </button>
+                    </div>
+                    <div class="color-picker">
+                        <label for="EnemyPaddleColor">Enemy Paddle Color:</label>
+                        <button class="button-8" id="EnemyPaddleColor" onclick="openColorPicker('EnemyPaddleColor')">
+                            <i class="fa fa-paint-brush"></i> Select Enemy Paddle Color
+                        </button>
+                    </div>
+                    <div class="color-picker">
+                        <label for="CadreColor">Frame Color:</label>
+                        <button class="button-8" id="CadreColor" onclick="openColorPicker('CadreColor')">
+                            <i class="fa fa-paint-brush"></i> Select Frame Color
+                        </button>
+                    </div>
+                    <div class="color-picker">
+                        <label for="MyPaddleColor">My Paddle Color:</label>
+                        <button class="button-8" id="MyPaddleColor" onclick="openColorPicker('MyPaddleColor')">
+                            <i class="fa fa-paint-brush"></i> Select My Paddle Color
+                        </button>
+                    </div>
+                    <div class="color-picker">
+                        <label for="BgColor">Background Color:</label>
+                        <button class="button-8" id="BgColor" onclick="openColorPicker('BgColor')">
+                            <i class="fa fa-paint-brush"></i> Select Background Color
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
         </div>
-        <a href="#" class="edit-link">Edit</a>
+
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
     <script src={% static 'utils.js' %}></script>
     <script src={% static 'accountInformation.js' %}></script>
 </div>

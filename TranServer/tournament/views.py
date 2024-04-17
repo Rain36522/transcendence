@@ -1,30 +1,21 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.middleware.csrf import get_token
-from django.http import HttpResponse, HttpResponseRedirect
-from django.template import loader
-from django.db.models import F
-from rest_framework.response import Response
+from django.http import HttpResponse
+
 from rest_framework.renderers import JSONRenderer  # Import JSONRenderer
-from rest_framework import status
-from django.http import JsonResponse, HttpResponse
+from django.http import  HttpResponse, JsonResponse
 from rest_framework.views import APIView
-from asgiref.sync import async_to_sync
 import sys
-from time import time
-import asyncio
-from channels.layers import get_channel_layer
 from django.shortcuts import redirect
 from random import randint
 from .models import Tournament
 from user.models import User
-from game.models import Game, GameUser
+from game.models import GameUser
 from game.serializers import GameSettingsSerializer
 from game.consumer import launchGame
-import json
 from random import choice
 from .consumer import getUpdate
-from game.views import newGame
+from django.http import Http404
 
 """Tournament settings management
 
@@ -43,7 +34,6 @@ class tournamentSettings(APIView):
         print("REQUEST TOURNAMENT POST", file=sys.stderr)
         self.data = request.data.copy()
         self.tournament = Tournament.objects.create(playerNumber=self.data["playerNumber"])
-        print("Tournament DB ID", self.tournament.id)
         self.data["tournament"] = self.tournament.id
         if self.data["gamesettings"] == "0":
             self.GenerateMixTree(int(self.data["playerNumber"]))
@@ -52,7 +42,6 @@ class tournamentSettings(APIView):
         else:
             self.generateStandardTree(int(self.data["playerNumber"]), 4)
         if not self.createGamesDb():
-            print("DB not created!")
             return HttpResponse("Error 500", status=500) # TODO rediriger vers error page
         putUserInGame(self.tournament, request.user)
         return redirect('/tournament/' + str(self.tournament.id)) 
@@ -195,12 +184,12 @@ class TournamentView(APIView):
     def get(self, request, id):
         print("USER ACCESS TO TOURNAMENT VIEW")
         self.id = id
+        if not Tournament.objects.filter(pk=id).exists():
+            raise Http404("Tournament does not exist")
+        self.tournament = Tournament.objects.get(pk=self.id)
         self.request = request
-        id = self.newUserConnection()
-        # if id:
-            # return redirect("/game/" + str(id) + "/")
         tournamentSize = self.getGameByLevel()
-        return render(request, 'html/bracket.html', {'tournamentSize': tournamentSize})
+        return render(request, 'html/bracket.html', {'tournamentSize': tournamentSize, 'username':request.user.username})
 
     def getGameByLevel(self):
         i = 0
@@ -211,33 +200,40 @@ class TournamentView(APIView):
             if value:
                 gameliste.append(value)
             i += 1
-        print("RESULT LISTE", gameliste)
         return gameliste
+    
+    def handle_exception(self, exc):
+        if isinstance(exc, Http404):
+            raise exc
+        return super().handle_exception(exc)
 
 
-    # if user as to play: return gameid
+        
+class TournamentJoin(APIView):
+    renderer_classes = [JSONRenderer]
+    def get(self, request, id):
+        self.id = id
+        if not Tournament.objects.filter(pk=id).exists():
+            raise Http404("Tournament does not exist")
+        self.request = request
+        id = self.newUserConnection()
+
+     # if user as to play: return gameid
     def newUserConnection(self):
         self.tournament = Tournament.objects.get(pk=self.id)
         user_ids = self.tournament.game_set.all().values_list('gameuser__user', flat=True)
         usernames = User.objects.filter(id__in=user_ids).values_list('username', flat=True)
-        print("CHECKING USERS", usernames)
-        if str(self.request.user) in usernames:
-            print("USER ALREADY IN GAME")
-            return self.checkUserState()
-        elif user_ids.count() <= self.tournament.playerNumber:
-            print("USER NOT IN GAME")
+        if not str(self.request.user) in usernames and user_ids.count() <= self.tournament.playerNumber:
             if putUserInGame(self.tournament, self.request.user):
                 launchTournament(self.tournament)
         else:
             print("USER IS A VISITOR")
         return 0
-    
-    def checkUserState(self):
-        # Filtre les jeux de ce tournoi où gameuser est cette instance et gameRunning est True
-        game = self.tournament.game_set.filter(gameRunning=True, gameuser__user=self.request.user)
-        print("USER WAITED ON GAME :", game)
-        if game:
-            return game[0].id
+
+    def handle_exception(self, exc):
+        if isinstance(exc, Http404):
+            raise exc
+        return super().handle_exception(exc)
 
 def putUserInGame(tournament, user):
     games = tournament.game_set.filter(gameLevel=0)

@@ -1,4 +1,3 @@
-
 document.getElementById('login-form').addEventListener('submit', function (event) {
 	event.preventDefault();
 
@@ -18,11 +17,16 @@ document.getElementById('login-form').addEventListener('submit', function (event
 			} else {
 				// Display error message if login fails
 				response.json().then(data => {
-					alert(data.error);  // Assuming the error message is provided in the 'error' field of the JSON response
+					const errorMessageElement = document.getElementById('error-message');
+					errorMessageElement.textContent = data.error || 'An unexpected error occurred'; // Assume 'data.error' is the error message
+					errorMessageElement.style.display = 'block'; // Make the error message visible
 				});
 			}
 		})
 		.catch(error => {
+			const errorMessageElement = document.getElementById('error-message');
+			errorMessageElement.textContent = 'Failed to connect. Please try again.';
+			errorMessageElement.style.display = 'block';
 			console.error('Error:', error);
 		});
 });

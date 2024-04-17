@@ -23,13 +23,17 @@ from .views import (
     undo_invite_api,
     user_exist_api,
     is_blocked_api,
+    profile_user,
+    ColorView,
 )
 from django.views.generic.base import RedirectView
 
 
 urlpatterns = [
+    path("profile_user/", profile_user, name="profile_user"),
     path("accountInformation/", account_information, name="account_information"),
     path("dashboard/", user_dashboard, name="user_dashboard"),
+    path("dashboard/<str:username>/", user_dashboard, name="user_dashboard_other"),
     path("login/", user_login, name="user_login"),
     path("register/", user_register, name="user_register"),
     path("socialManagement/", social_management, name="social_management"),
@@ -37,6 +41,11 @@ urlpatterns = [
     path("api/login/", user_login_api, name="login_api"),
     path(
         "api/profile_pic/<str:username>/",
+        user_profile_pic_api,
+        name="user_profile_pic_api_other",
+    ),
+    path(
+        "api/profile_pic/",
         user_profile_pic_api,
         name="user_profile_pic_api",
     ),
@@ -80,4 +89,5 @@ urlpatterns = [
     path("api/undo_invite/<str:username>/", undo_invite_api, name="undo_invite_api"),
     path("api/exist/<str:username>/", user_exist_api, name="user_exist_api"),
     path("api/is_blocked/<str:username>/", is_blocked_api, name="is_blocked_api"),
+    path("api/colors/", ColorView.as_view(), name="color_api"),
 ]
