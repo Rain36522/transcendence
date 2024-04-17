@@ -83,11 +83,9 @@ header {
 .frame {
   position: fixed;
   top: 20%;
-  /* AjustÃ© pour centrer verticalement */
   left: 15%;
   width: 70%;
   height: 70%;
-  /* Hauteur augmentÃ©e */
   background-color: rgba(255, 255, 255, 0.95);
   border-radius: 10px;
   display: flex;
@@ -117,15 +115,12 @@ header {
   transition: background-color 0.3s, transform 0.2s;
   border-radius: 5px;
   color: #333;
-  /* Texte foncÃ© par dÃ©faut */
   background-color: #ddd;
-  /* Fond gris clair par dÃ©faut */
   font-weight: 700;
   border-bottom: 1px solid #ccc;
   text-decoration: none;
 }
 
-/* Styles pour les boutons non actifs spÃ©cifiques */
 .tab {
   background-color: #ddd;
   /* Gris clair pour non actif */
@@ -140,7 +135,6 @@ header {
   /* Texte blanc pour 'Account Information' */
 }
 
-/* Styles pour le bouton actif - spÃ©cifique pour 'Dashboard' et 'Social Management' */
 .tab[href*="user_dashboard"].active,
 .tab[href*="social_management"].active {
   background-color: #ddd;
@@ -152,7 +146,6 @@ header {
 /* Hover sur les onglets */
 .tab:hover {
   background-color: #f0f0f0;
-  /* LÃ©ger gris pour hover */
   transform: translateY(-2px);
 }
 
@@ -171,7 +164,6 @@ header {
   display: flex;
   flex-direction: column;
   width: 60%;
-  /* DÃ©jÃ  dÃ©fini, assurez-vous que cela correspond Ã  votre layout */
   margin-top: 40px;
   padding-left: 40px;
   padding-bottom: 20px;
@@ -181,28 +173,18 @@ header {
 
 .edit-link {
   margin: 100px 100px;
-  /* position: absolute; */
-  /* bottom: 10px; */
-  /* AjustÃ© pour placer le bouton Ã  10px du bas */
-  /* left: 62%; */
-  /* DÃ©caler Ã  50% du dÃ©but de .user-info */
-  /* transform: translateX(-50%); */
-  /* Centrer le bouton exactement */
   padding: 8px 24px;
   background-color: #000000;
   color: #FFFFFF;
   font-size: 16px;
   text-decoration: none;
   border-radius: 5px;
-  /* transition: background-color 0.3s, color 0.3s; */
   bottom: 120px;
-  /* margin-left: -110px; */
   align-self: center;
 }
 
 .edit-link:hover {
   background-color: #333333;
-  /* Foncer lÃ©gÃ¨rement au survol */
   color: #fff;
 }
 
@@ -210,7 +192,6 @@ header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* Centrage horizontal des Ã©lÃ©ments */
   margin-top: 20px;
   /* Espace en dessus des boutons */
 }
@@ -223,7 +204,6 @@ header {
   border-radius: 50%;
   /* rend l'image ronde */
   border: 3px solid #000000;
-  /* bordure */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   margin-bottom: 20px;
   /* Espace entre la photo et les boutons */
@@ -247,7 +227,6 @@ hr {
   display: flex;
   justify-content: start;
   gap: 20px;
-  /* Espace entre les sÃ©lecteurs de couleur */
 }
 
 .color-picker-columns {
@@ -255,24 +234,17 @@ hr {
   flex-wrap: nowrap;
   overflow-x: auto;
   gap: 30px;
-  /* Vous pouvez ajuster cette valeur comme souhaitÃ© */
   align-items: center;
-  /* justify-content: space-evenly; */
-  /* Assure une distribution uniforme de l'espace */
   width: 100%;
-  /* Assure que le conteneur prend toute la largeur disponible */
   margin: 30px 10px;
 }
 
 .color-column {
   flex: 1;
-  /* Assure que chaque colonne prend une part Ã©gale de l'espace */
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* Centre les Ã©lÃ©ments verticalement */
   min-width: 150px;
-  /* DÃ©finissez une largeur minimum pour chaque colonne */
 }
 
 .color-picker {
@@ -296,10 +268,8 @@ input[type="color"] {
   border: 2px solid #aaa;
   /* Added border for better visibility */
   border-radius: 8px;
-  /* Rounded borders for a modern look */
   cursor: pointer;
   background-color: #fff;
-  /* Light background to enhance color visibility */
   outline: none;
   -webkit-appearance: none;
   /* Remove default styling for WebKit browsers */
@@ -366,8 +336,6 @@ input[type="color"]::-webkit-color-swatch {
 
 .game-settings-title {
   padding: 0px 20px;
-  /* Augmenter cette marge si vous voulez plus d'espace */
-  /* Bordure solide pour le cadre */
   /* Coins arrondis pour le cadre */
   text-align: center;
   /* Couleur de fond claire pour contraster avec le texte */
@@ -393,7 +361,6 @@ h2 {
 
 #updatePasswordBtn {
   margin-bottom: 20px;
-  /* Augmentez cette valeur selon le besoin */
 }
 
 /* Style pour les boutons principaux dans les formulaires */
@@ -444,9 +411,7 @@ button:hover {
 
 .form-input {
   display: inline-block;
-  /* Assurer que l'input est alignÃ© avec l'Ã©tiquette */
   width: calc(100% - 150px);
-  /* Prendre en compte la largeur de l'Ã©tiquette et de l'espace */
 }
 
 .form-row {
@@ -495,4 +460,14 @@ button:hover {
       flex: 1 1 100%; /* Prend toute la largeur sur les petits écrans */
       min-width: 100%; /* Élargit l'input pour remplir l'espace */
   }
+}
+
+#passwordError {
+  color: rgb(255, 0, 0);
+  font-style: italic;
+  font-size: 16px;
+  text-align: center;
+  width: 100%;
+  margin-top: 10px; /* Espacement pour le distinguer du bouton */
+  margin-bottom: -10px;
 }
