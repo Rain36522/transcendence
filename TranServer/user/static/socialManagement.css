@@ -275,7 +275,16 @@ header a:hover {
 }
 
 .tab a {
+  display: block;
+  /* Rend l'élément cliquable sur toute la zone */
+  width: 100%;
+  /* Utilise toute la largeur disponible */
+  height: 100%;
+  /* Utilise toute la hauteur disponible */
+  text-align: center;
+  /* Centre le texte */
   text-decoration: none;
+  /* Supprime le soulignement */
 }
 
 .content-area {
