@@ -164,38 +164,38 @@ header {
 }
 
 .user-info {
+  position: relative; /* Important pour le positionnement absolu de .edit-link */
   display: flex;
   flex-direction: column;
-  width: 60%;
+  width: 60%; /* Déjà défini, assurez-vous que cela correspond à votre layout */
   margin-top: 40px;
-  /* Ajoutez une marge en haut pour baisser les éléments */
   padding-left: 40px;
-  /* Ajoutez du padding à gauche pour décaler vers la droite */
+  padding-bottom: 20px; /* Ajouter un padding en bas pour éviter que le bouton ne touche le bord lors du scrolling */
 }
 
 .edit-link {
-  align-self: center;
-  margin-top: auto;
+  position: absolute;
+  bottom: 10px; /* Ajusté pour placer le bouton à 10px du bas */
+  left: 62%; /* Décaler à 50% du début de .user-info */
+  transform: translateX(-50%); /* Centrer le bouton exactement */
   padding: 8px 24px;
   background-color: #000000;
-  color: #ffffff;
+  color: #FFFFFF;
   text-decoration: none;
   border-radius: 5px;
   transition: background-color 0.3s, color 0.3s;
 }
 
 .edit-link:hover {
-  background-color: #000000;
+  background-color: #333333; /* Foncer légèrement au survol */
   color: #fff;
 }
 
 .profile-section {
   display: flex;
   flex-direction: column;
-  /* Alignement vertical */
-  align-items: center;
-  /* Centrage horizontal */
-  margin-top: 20px;
+  align-items: center;  /* Centrage horizontal des éléments */
+  margin-top: 20px;  /* Espace en dessus des boutons */
 }
 
 .profile-pic {
@@ -208,24 +208,22 @@ header {
   border: 3px solid #000000;
   /* bordure */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  /* ombre */
+  margin-bottom: 20px;  /* Espace entre la photo et les boutons */
 }
 
 .edit-profile-btn {
-  padding: 8px 16px;
-  background-color: #000000;
-  /* couleur du bouton */
-  color: #ffffff;
-  /* couleur du texte */
+  background-color: #000000;  /* Couleur de fond noir */
+  color: #FFFFFF;  /* Texte blanc */
+  padding: 10px 20px;  /* Padding approprié */
   border: none;
   border-radius: 5px;
-  margin-top: 10px;
-  /* espace entre l'image et le bouton */
   cursor: pointer;
-  /* style de curseur */
+  transition: background-color 0.3s;
 }
 
-/* NOUVEAUX PARAMETRES */
+.edit-profile-btn:hover {
+    background-color: #333333;  /* Foncer le bouton au survol */
+}
 
 hr {
   border: none;
@@ -388,4 +386,40 @@ h2 {
 #updatePasswordBtn {
   margin-bottom: 20px;
   /* Augmentez cette valeur selon le besoin */
+}
+
+/* Style pour les boutons principaux dans les formulaires */
+button {
+  background-color: #000000; /* Fond noir */
+  color: #FFFFFF; /* Texte blanc */
+  padding: 10px 15px; /* Espacement interne pour rendre le bouton plus grand */
+  border: none; /* Aucune bordure */
+  border-radius: 5px; /* Coins arrondis pour un look moderne */
+  cursor: pointer; /* Curseur de pointeur pour indiquer qu'il s'agit d'un bouton cliquable */
+  transition: background-color 0.3s; /* Transition pour les effets de survol */
+}
+
+button:hover {
+  background-color: #333333; /* Changement de couleur au survol pour un feedback visuel */
+}
+
+.file-button {
+  display: inline-block;
+  padding: 8px 13px;
+  background-color: #000000; /* Fond noir */
+  color: #FFFFFF; /* Texte blanc */
+  text-align: center;
+  border-radius: 5px; /* Coins arrondis */
+  cursor: pointer; /* Style de curseur pour indiquer qu'il s'agit d'un bouton */
+  transition: background-color 0.3s; /* Transition pour effet de survol */
+}
+
+.file-button:hover {
+  background-color: #333333; /* Foncer le bouton au survol */
+}
+
+.file-button, .edit-profile-btn {
+  display: block;
+  margin: 5px auto;  /* Centrer les boutons et ajouter un petit espace entre eux */
+  width: auto;  /* Largeur auto pour s'adapter au contenu */
 }

@@ -17,7 +17,7 @@
 </div>
 <div class="frame">
     <div class="tab-container">
-        <a href="{% url 'account_information' %}" class="tab account-info-btn">Account Informations</a>
+        <a href="{% url 'account_information' %}" class="tab account-info-btn">Account Information</a>
         <a href="{% url 'user_dashboard' %}" class="tab active">Dashboard</a>
         <a href="{% url 'social_management' %}" class="tab">Social Management</a>
     </div>
@@ -26,9 +26,11 @@
             <img alt="Photo de profil" class="profile-pic" id="profile-pic">
             <form id="uploadForm" enctype="multipart/form-data">
                 {% csrf_token %}
-                <input type="file" id="profilePicture" name="profile_picture" accept="image/*">
+                <input type="file" id="profilePicture" name="profile_picture" accept="image/*" style="display: none;">
+                <label for="profilePicture" class="file-button">Choose a File</label>
                 <button class="edit-profile-btn" type="submit">Upload Profile Picture</button>
-              </form>
+            </form>
+            <a href="#" class="edit-link">Edit</a>
         </div>
 
         <div class="user-info">
@@ -99,7 +101,6 @@
 
         </div>
 
-        <a href="#" class="edit-link">Edit</a>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
     <script src={% static 'utils.js' %}></script>
