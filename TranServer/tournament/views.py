@@ -1,30 +1,20 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.middleware.csrf import get_token
-from django.http import HttpResponse, HttpResponseRedirect
-from django.template import loader
-from django.db.models import F
-from rest_framework.response import Response
+from django.http import HttpResponse
+
 from rest_framework.renderers import JSONRenderer  # Import JSONRenderer
-from rest_framework import status
-from django.http import JsonResponse, HttpResponse
+from django.http import  HttpResponse
 from rest_framework.views import APIView
-from asgiref.sync import async_to_sync
 import sys
-from time import time
-import asyncio
-from channels.layers import get_channel_layer
 from django.shortcuts import redirect
 from random import randint
 from .models import Tournament
 from user.models import User
-from game.models import Game, GameUser
+from game.models import GameUser
 from game.serializers import GameSettingsSerializer
 from game.consumer import launchGame
-import json
 from random import choice
 from .consumer import getUpdate
-from game.views import newGame
 
 """Tournament settings management
 
