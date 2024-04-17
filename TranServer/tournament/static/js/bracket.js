@@ -113,6 +113,7 @@ class Match {
 var myUser = document.getElementById("myUser").getAttribute('data-tournamentSize');
 myUser = JSON.parse(myUser);
 console.log("my user is: " + myUser);
+var isFull = false;
 const tournamentSizeString = document.getElementById("tour_size").getAttribute('data-tournamentSize');
 const tournamentSize = JSON.parse(tournamentSizeString);
 const matchesMap = {}; // Store all matches by unique key (level-pos)
@@ -158,7 +159,12 @@ function initializeTournament(tournamentSize) {
 
 
 function updateTournament(updatedMatches) {
-	console.log("hello");
+	if (data["tournamentFull"] == true) {
+		isFull = true;
+	}
+	if (isFull == true) {
+		document.getElementById('join-button').style.display = 'none';
+	}
 
 	for (const key in updatedMatches) {
 		const matchData = updatedMatches[key];  // Utilise matchData ici
