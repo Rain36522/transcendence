@@ -6,6 +6,7 @@ from ascii import Ascii
 from blessed import Terminal
 from time import sleep
 import asyncio
+import sys
 
 
 
@@ -61,6 +62,7 @@ class GameGui2p:
             await asyncio.sleep(0.04)
             msg = self.wsCli.getMessage()
             if str(msg).isdigit():
+                print("INT MSG EXITING", file=sys.stderr)
                 return msg
             elif msg:
                 self.updateScore(msg)
@@ -87,14 +89,20 @@ class GameGui2p:
                 self.updateBall(msg["ballx"], msg["bally"])
     
     def updateScore(self, msg):
-        if int(msg["score1"]) != self.pointP1:
-            self.pointP1 == int(msg["score1"])
-            string = msg["users"][0] + " : " + str(msg["score1"])
+        if self.userpose == 1:
+            score1 = int(msg["score1"])
+            score2 = msg["score2"]
+        else:
+            score1 = int(msg["score2"])
+            score2 = int(msg["score1"])
+        if score1 != self.pointP1:
+            self.pointP1 == score1
+            string = msg["users"][0] + " : " + score1
             posx = self.start + self.width // 2 - len(string) // 2
             print(BYELLOW + self.term.move_xy(posx, 0) + string, RESET)
-        if int(msg["score2"]) != self.pointP2:
-            self.pointP2 == int(msg["score2"])
-            string = msg["users"][1] + " : " + str(msg["score2"])
+        if score2 != self.pointP2:
+            self.pointP2 == score2
+            string = msg["users"][1] + " : " + score2
             posx = self.start + self.width // 2 - len(string) // 2
             print(BWHITE + self.term.move_xy(posx, 1) + string, RESET)
 

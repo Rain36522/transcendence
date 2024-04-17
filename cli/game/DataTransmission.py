@@ -2,7 +2,7 @@ import websockets
 from pynput.keyboard import Listener, Key
 import pynput
 import asyncio
-from json import loads
+from json import loads, dumps
 from color import *
 import ascii
 from sys import stderr
@@ -36,15 +36,15 @@ class DataTransmission:
         ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
         ssl_context.check_hostname = False
         ssl_context.verify_mode = ssl.CERT_NONE
-        
+        isDisconnected = 0
         while not self.wsCli:
             try:
+                isDisconnected = 0
                 self.wsCli = await websockets.connect(self.url, ssl=ssl_context)
                 self.isConnected = True
                 while not self.runKeyBinding and not self.errormsg and not self.exit:
                     await asyncio.sleep(0.05)
                 if not self.errormsg and not self.exit:
-                    print("LAUNCH KEY BINDING", file=stderr)
                     if self.is2player:
                         KeyQueue = self.transmitKeys2P()
                     elif self.playerpos == 1:
@@ -64,9 +64,16 @@ class DataTransmission:
                         await self.wsCli.send(key)
                 return self.errormsg
             except Exception as e:
+                isDisconnected += 1
                 print(RED, "ws Server connection failed,", self.url)
+                await asyncio.sleep(1)
                 self.wsCli = None
                 self.isConnected = False
+                if isDisconnected >= 20:
+                    print("WS EXITED", file=stderr)
+                    self.message = dumps("500")
+                    self.exit = True
+                    return "500"
 
     async def receive_messages(self):
         while not self.wsCli:
@@ -74,6 +81,7 @@ class DataTransmission:
         while True:
             try:
                 async for self.message in self.wsCli:
+                    print("RECIEVED MSG", self.message, file=stderr)
                     if str(self.message).isdigit():
                         self.errormsg = self.message
                         return self.errormsg
@@ -84,8 +92,10 @@ class DataTransmission:
                         return None
                     self.runKeyBinding = True
             except:
-                # print(RED, "Reading msg error connection.s", RESET)
                 while not self.isConnected:
+                    if self.exit:
+                        print("MSG EXITED", file=stderr)
+                        return "500"
                     await asyncio.sleep(0.1)
     
     def getUserPos(self):

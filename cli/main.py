@@ -72,6 +72,6 @@ if __name__ == "__main__":
             results = asyncio.run(runGame(dataTransmission, gameGui))
             if str(results[0]).isdigit():
                 os.system("clear")
-                Information("ERROR", "Is the game ready to play?", style=STYLERROR)
+                Information("ERROR" + str(results[0]), "Is the game ready to play?", style=STYLERROR)
             else:
                 Information("END GAME", str(asWin(results[2], gameSettings["user"])) + " wins this game.")
