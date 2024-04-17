@@ -209,7 +209,7 @@ class TournamentView(APIView):
 
 
         
-class TournamentJoin:
+class TournamentJoin(APIView):
     renderer_classes = [JSONRenderer]
     def get(self, request, id):
         self.id = id
