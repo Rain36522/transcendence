@@ -6,6 +6,7 @@ from ascii import Ascii
 from blessed import Terminal
 from time import sleep
 import asyncio
+import sys
 
 
 
@@ -36,7 +37,6 @@ import asyncio
 
 class GameGui2p:
     def __init__(self, settings, wsCli, asciiData):
-        print("START", settings)
         self.asciiData = asciiData
         self.term = Terminal()
         self.wsCli = wsCli
@@ -66,7 +66,7 @@ class GameGui2p:
                 self.updateScore(msg)
                 if str(msg["state"]) == "game_over":
                     await asyncio.sleep(1)
-                    system("clear")
+                    # system("clear")
                     print(self.asciiData.putString("Press Q", beginstr=GREEN, endstr=RESET))
                     print("")
                     print(self.asciiData.putString("For EXIT!", beginstr=GREEN, endstr=RESET))
@@ -87,14 +87,20 @@ class GameGui2p:
                 self.updateBall(msg["ballx"], msg["bally"])
     
     def updateScore(self, msg):
-        if int(msg["score1"]) != self.pointP1:
-            self.pointP1 == int(msg["score1"])
-            string = msg["users"][0] + " : " + str(msg["score1"])
+        if self.userpose == 1:
+            score1 = int(msg["score1"])
+            score2 = msg["score2"]
+        else:
+            score1 = int(msg["score2"])
+            score2 = int(msg["score1"])
+        if score1 != self.pointP1:
+            self.pointP1 == score1
+            string = msg["users"][0] + " : " + str(score1)
             posx = self.start + self.width // 2 - len(string) // 2
             print(BYELLOW + self.term.move_xy(posx, 0) + string, RESET)
-        if int(msg["score2"]) != self.pointP2:
-            self.pointP2 == int(msg["score2"])
-            string = msg["users"][1] + " : " + str(msg["score2"])
+        if score2 != self.pointP2:
+            self.pointP2 == score2
+            string = msg["users"][1] + " : " + str(score2)
             posx = self.start + self.width // 2 - len(string) // 2
             print(BWHITE + self.term.move_xy(posx, 1) + string, RESET)
 
@@ -166,7 +172,7 @@ class GameGui2p:
     def updatePaddelL(self, newPos):
         print(self.term.move_xy(0, 0), BYELLOW)
         start, stop = self.calculateNewPaddelPos(newPos)
-        while start < self.padelLu and self.padelLu > 0:
+        while start < self.padelLu and self.padelLu >= 0:
             self.putCharInMap(1, self.padelLu, "█")
             self.padelLu -= 1
         while start > self.padelLu:
@@ -182,7 +188,7 @@ class GameGui2p:
     
     def updatePaddelR(self, newPos):
         start, stop = self.calculateNewPaddelPos(newPos)
-        while start < self.padelRu and self.padelRu > 0:
+        while start < self.padelRu and self.padelRu >= 0:
             self.putCharInMap(self.width, self.padelRu, "█")
             self.padelRu -= 1
         while start > self.padelRu:

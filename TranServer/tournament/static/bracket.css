@@ -1,7 +1,26 @@
-body {
-  color: white;
-  background-color: rgb(45, 45, 45);
+.bracket-container {
+  margin: 0;
+  padding: 0;
+  padding-top: 5%;
+  font-family: 'Poppins', sans-serif;
+  position: relative;
+  min-width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
 }
+
+.bracket-container::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg') center / cover no-repeat;
+  filter: grayscale(100%);
+  z-index: -1;
+}
+
 
 a {
   color: white;
@@ -37,19 +56,23 @@ a {
   margin: 12px 24px 12px 0;
 }
 .match .match-top {
-  border-radius: 2px 2px 0 0;
+  border-radius: 10px 10px 0 0;
+}
+.match .match-unique {
+  border-radius: 10px 10px 10px 10px;
 }
 .match .match-bottom {
-  border-radius: 0 0 2px 2px;
+  border-radius: 0 0 10px 10px;
 }
 .match .team {
   display: flex;
   align-items: center;
   width: 100%;
   height: 100%;
-  border: 2px solid rgb(255, 255, 255);
+  border: 4px solid #cacacaa8;
   position: relative;
-  background-color: rgb(0, 129, 109);
+  background-color: rgb(83, 83, 83);
+  color: white;
 }
 .match .team span {
   padding-left: 8px;
@@ -133,13 +156,52 @@ a {
   margin-bottom: 0px;
 }
 
-/* Maintien des styles pour les états winner et loser */
 .match .team.winner {
-  background-color: #ffff00;
-  color: rgb(58, 0, 109);
+  background-color: #FFFF99;
+  color: rgb(0, 0, 0);
 }
 
 .match .team.loser {
-  background-color: rgb(58, 0, 109);
-  color: #ffff00;
+  background-color: rgb(0, 0, 0);
+  color: #ffffff;
+}
+
+.background-filter {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg');
+  background-size: cover;
+  filter: grayscale(100%);
+  z-index: -1;
+}
+
+.theme, .bracket, #content-container-replace {
+  position: relative;
+  z-index: 1;
+}
+
+.join-button{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 40px;
+  font-size: 64px;
+  background-color: #FFFF99;
+  color: rgb(0, 0, 0);
+  border: 4px solid #cacacaa8;
+  border-radius: 10px;
+  width: fit-content;
+  margin: 50px auto;
+  transition: transform 10s;
+}
+
+.join-button:hover {
+  transform: scale(1.5) rotate(1000deg) skewX(1350deg) skewY(450deg) translateY(30px);
+}
+
+.join-button-a{
+  color: rgb(0, 0, 0);
 }

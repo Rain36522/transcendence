@@ -34,10 +34,30 @@ class WebSocketClient:
 
     async def sendMsg(self, msg):
         await self.websocket.send(dumps(msg))
-        if msg["state"] == "game_over":
-            await self.websocket.close()
-            exit(0)
 
     async def sendUserJoin(self, msg):
         await self.websocket.send("autorisedusers" + dumps(msg))
+
+    async def sendEndGame(self, msg, gameError=False):
+        if gameError:
+            game = {
+                "ballx" : 0, # -0.5 -> 0.5
+                "bally" : 0, # -0.5 -> 0.5
+                "p1" : 0, # -0.5 -> 0.5
+                "p2" : 0, # -0.5 -> 0.5
+                "p3" : 0, # -0.5 -> 0.5
+                "p4" : 0, # -0.5 -> 0.5
+                "state" : "game_over",
+                "score1" : 0,
+                "score2" : 0,
+                "score3" : 0,
+                "score4" : 0,
+                "users" : ["", "", "", ""]
+            }
+            await self.sendMsg(game)
+        await self.websocket.send("finish" + dumps(msg))
+        await self.websocket.close()
+        return 0
+
+
 
