@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Game - launching</title>
+    <title>Game - launching</title>
     <link rel="stylesheet" href="{% static 'home.css' %}">
     <link rel="stylesheet" href="{% static 'onlineGame.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
@@ -22,18 +22,17 @@
             <h1><a href="{% url 'home_page' %}" class="logo">Transcendance</a></h1>
             <nav class="additional-links">
                 <ul>
-                    <li><a href="{% url 'home_page' %}" class="game-button">GAME</a></li>
-                    <li><a href="{% url 'user_login' %}" class="logout">Logout</a></li>
-                    <li><a href="{% url 'general_chat' %}" class="chat">Chat</a></li>
-                    <li><a href="{% url 'user_dashboard' %}" class="profile">Profile</a></li>
+                    <a href="{% url 'home_page' %}" class="game-button">GAME</a>
+                    <a href="{% url 'general_chat' %}" class="header-btn">Chat</a>
+                    <a href="{% url 'user_logout' %}" class="header-btn">Logout</a>
+                    <a href="{% url 'user_dashboard' %}" class="header-btn profile-btn">Profile</a>
                 </ul>
             </nav>
         </header>
 
         <div class="content">
             <div class="title-container">
-                <h2>Online Game</h2>
-                <h2>Settings</h2>
+                <h1>Game Settings</h1>
             </div>
             <div class="separator-line"></div>
             <div class="select-group">
@@ -69,14 +68,15 @@
                 <div class="select-text">
                     <strong>Game Mode:</strong>
                     <select id="game-mode">
-                        <option value="0">Offline</option>
-                        <option value="1">2 Players</option>
-                        <option value="2">4 Players</option>
+                        <option value="0">Solo Game</option>
+                        <option value="1">Offline 1vs1</option>
+                        <option value="2">2 Players</option>
+                        <option value="3">4 Players</option>
                     </select>
                 </div>
             </div>
             <a href="#" id="create-link" class="create-link">Create</a>
-            <a href="{% url 'home_page' %}" class="exit-link">Exit</a>
+            <a href="{% url 'home_page' %}" class="exit-link">exit</a>
         </div>
 
         <div id="popup" class="popup">
@@ -97,12 +97,14 @@
                         <h4 class="title-outside">User list</h4>
                         <div class="user-list-container" id="user-list">
                             <div class="user-item">
-                                <img src="https://media1.tenor.com/m/xK38NWayRnoAAAAC/dog-eyes.gif" alt="Famacito" class="user-image">
+                                <img src="https://media1.tenor.com/m/xK38NWayRnoAAAAC/dog-eyes.gif" alt="Famacito"
+                                    class="user-image">
                                 <span class="user-name">Famacito</span>
                                 <button class="invite-button">Invite</button>
                             </div>
                             <div class="user-item">
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb2KRrG26uJLRrL55aWnKPGezf8V5ZkiHPHg&s" alt="Dark_Sasuke" class="user-image">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb2KRrG26uJLRrL55aWnKPGezf8V5ZkiHPHg&s"
+                                    alt="Dark_Sasuke" class="user-image">
                                 <span class="user-name">Dark_Sasuke</span>
                                 <button class="invite-button">Invite</button>
                             </div>
@@ -116,7 +118,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <button class="start-button">Start</button>
             </div>
         </div>
