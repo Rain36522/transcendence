@@ -29,12 +29,16 @@ from .views import (
     email_sent,
     EmailValidation,
     PasswordForgot,
+    change_password,
+    PasswordReset,
+    sendPasswordReset,
 )
 from django.views.generic.base import RedirectView
 
 urlpatterns = [
+    path("change_password/", change_password, name="change_password"),
     path("email_sent/", email_sent, name="email_sent"),
-    path("forgot_password/", forgot_password, name="forgot_password"),
+    path("forgot_password/", sendPasswordReset.as_view(), name="forgot_password"),
     path("profile_user/", profile_user, name="profile_user"),
     path("accountInformation/", account_information, name="account_information"),
     path("dashboard/", user_dashboard, name="user_dashboard"),
@@ -91,5 +95,6 @@ urlpatterns = [
     path("api/is_blocked/<str:username>/", is_blocked_api, name="is_blocked_api"),
     path("api/colors/", ColorView.as_view(), name="color_api"),
     path('api/mail/<str:username>/<str:token>/', EmailValidation, name='EmailValidation'),
-    path('api/reset_password/<str:username>/<str:token>/', PasswordForgot.as_view(), name='EmailValidation'),
+    path('api/reset_password/<str:username>/<str:token>/', PasswordForgot, name='password forgot page'),
+    path('api/reset_password/change/<str:username>/<str:token>/change/', PasswordReset, name='password reset'),
 ]

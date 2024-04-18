@@ -12,7 +12,7 @@ sendButton.onclick = function (event) {
 };
 
 function sendRequest(email) {
-	fetch('URL_DE_L_API', { // Remplacez 'URL_DE_L_API' par l'URL réelle de l'API
+	fetch('', { // Remplacez 'URL_DE_L_API' par l'URL réelle de l'API
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
