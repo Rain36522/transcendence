@@ -23,7 +23,7 @@ async function update_all() {
 
 function update_user(data, type) {
   for (var user in data) {
-    console.log(data[user]); // Log the actual user object
+    console.log(data[user]);
     users.push({ username: data[user].username, status: type });
   }
 }
@@ -50,17 +50,13 @@ function update_search_box() {
   }
   fetchFrom("/api/search/" + searchText + "/")
     .then((data) => {
-      // Clear previous dropdown items
       dropdownMenu.innerHTML = "";
-      // Loop through fetched data and create dropdown items
       data.usernames.forEach((item) => {
         const autocompleteItem = document.createElement("div");
         autocompleteItem.classList.add("autocomplete-item");
         autocompleteItem.textContent = item;
         autocompleteItem.addEventListener("click", function () {
-          // Set search bar value to the selected item
           searchBox.value = item;
-          // Clear autocomplete dropdown
           dropdownMenu.innerHTML = "";
         });
         dropdownMenu.appendChild(autocompleteItem);
@@ -72,39 +68,87 @@ function update_search_box() {
 }
 
 document.getElementById("invite_btn").addEventListener("click", function () {
-  if (searchBox.value == "") return;
+  if (searchBox.value == "") {
+    displayError("Please, enter a username");
+    return;
+  }
   fetch("/api/exist/" + searchBox.value + "/")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      console.log(data);
+    .then(response => response.json())
+    .then(data => {
+      console.log("API response:", data);
       if (data) {
         addFriend(searchBox.value);
         refresh_view();
-      } else console.log("user does not exist");
+        clearError();
+      } else {
+        throw new Error("User does not exist");
+      }
+    })
+    .catch(error => {
+      displayError(error.message || "Error during the user invitation.");
     });
 });
 
 document.getElementById("block_btn").addEventListener("click", function () {
-  if (searchBox.value == "") return;
+  if (searchBox.value == "") {
+    displayError("Please, enter a username");
+    return;
+  }
   fetch("/api/exist/" + searchBox.value + "/")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      if (data) {
+    .then(response => response.json())
+    .then(data => {
+      if (data) { // ici aussi, ajustez en utilisant simplement 'data'
         blockUser(searchBox.value);
         refresh_view();
-      } else console.log("user does not exist");
+        clearError();
+      } else {
+        throw new Error("User does not exist");
+      }
+    })
+    .catch(error => {
+      displayError(error.message || "Error during the user blocking.");
     });
 });
+
+function blockUser(username) {
+  doRequest("blocked", "POST", username);
+}
+
+function doRequest(path, method, username) {
+  if (username === getCurrentUser()) {
+    displayError("You cannot add or block yourself.");
+    return Promise.reject(new Error("Attempt to add or block self"));
+  }
+
+  console.log("Request to API:", path, method, username);
+  return fetch("/api/" + path + "/" + username + "/", {
+    method: method,
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCookie("csrftoken"),
+    },
+  }).then(response => {
+    if (!response.ok) {
+      throw new Error('Failed to execute request');
+    }
+    return response.json();
+  }).catch(error => {
+    console.error("Error in doRequest:", error);
+    displayError(error.message || "Error during the API request.");
+    throw error;
+  });
+}
+
+function displayError(message) {
+  const errorMessage = document.getElementById('error_message');
+  errorMessage.textContent = message;
+  errorMessage.style.display = 'block';
+}
+
+function clearError() {
+  const errorMessage = document.getElementById('error_message');
+  errorMessage.style.display = 'none';
+}
 
 searchBox.addEventListener("input", function () {
   update_search_box();
@@ -114,14 +158,10 @@ searchBox.addEventListener("click", function () {
 });
 
 function updateExistingUserElement(li, user) {
-  //   li.querySelector(
-  //     ".user-photo"
-  //   ).style.backgroundImage = `url('${user.imageUrl}')`;
   li.querySelector(".username").textContent = user.username;
   const actionButtons = getActionButtons(user);
   const buttonContainer = li.querySelector(".action-buttons");
   if (!buttonContainer) {
-    // Si l'élément des boutons n'existe pas, on le crée.
     li.innerHTML += `<div class="action-buttons">${actionButtons}</div>`;
   } else {
     buttonContainer.innerHTML = actionButtons;
@@ -133,10 +173,8 @@ function displayUsers(users) {
   users.forEach(function (user) {
     let li = document.querySelector(`li[data-username='${user.username}']`); // Recherche d'un élément existant
     if (!li) {
-      // Si l'élément n'existe pas, créez un nouveau
       li = createUserElement(user);
     } else {
-      // Mise à jour de l'élément existant
       updateExistingUserElement(li, user);
     }
     switch (user.status) {
@@ -169,7 +207,6 @@ function createUserElement(user) {
   fetch("/api/profile_pic/" + user.username + "/")
     .then((response) => response.blob())
     .then((blob) => {
-      // Convert the blob to a base64 encoded string
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onloadend = () => resolve(reader.result);
@@ -184,11 +221,6 @@ function createUserElement(user) {
         ');"></div>' +
         li.innerHTML;
     });
-  /*
-<div class="user-photo" style="background-image: url('${
-          user.imageUrl
-        }');"></div>
-  */
   li.innerHTML = `
         
         <span class="username">${user.username}</span>
@@ -226,10 +258,6 @@ function declineUser(username) {
   doRequest("invite", "DELETE", username);
 }
 
-function addFriend(username) {
-  doRequest("invite", "POST", username);
-}
-
 function doRequest(path, method, username) {
   console.log("THIS RUNS");
   fetch("/api/" + path + "/" + username + "/", {
@@ -243,8 +271,24 @@ function doRequest(path, method, username) {
   });
 }
 
-function blockUser(username) {
-  doRequest("blocked", "POST", username);
+async function addFriend(username) {
+  try {
+    await doRequest("invite", "POST", username);
+    // Supprimez l'affichage de succès ici
+  } catch (error) {
+    console.error("Error during API request:", error);
+    displayError(error.message || "Error during the user invitation.");
+  }
+}
+
+async function blockUser(username) {
+  try {
+    await doRequest("blocked", "POST", username);
+    // Supprimez l'affichage de succès ici
+  } catch (error) {
+    console.error("Error during API request:", error);
+    displayError(error.message || "Error during the user blocking.");
+  }
 }
 
 function cancelRequest(username) {
@@ -257,4 +301,12 @@ function removeFriend(username) {
 
 function unblockUser(username) {
   doRequest("blocked", "DELETE", username);
+}
+
+function displaySuccess(message) {
+  const successMessage = document.getElementById('success_message');
+  successMessage.textContent = message;
+  successMessage.style.display = 'block';
+  successMessage.style.fontStyle = 'italic';
+  successMessage.style.color = 'green';
 }

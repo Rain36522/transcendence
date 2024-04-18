@@ -428,9 +428,22 @@ header {
   /* Taille de police uniforme */
 }
 
+/* Assurez-vous que la classe spécifique pour le lien GAME est correctement stylisée */
+.game-button {
+  text-decoration: none;
+  color: white;
+  font-size: 24px;
+  /* Assurez-vous que la taille de la police est la même que les autres liens */
+  font-weight: bold;
+}
+
+/* POUR FELEXIBILITE DE LA PAGE SUR DIVERS ECRANS*/
+
 .sections-container {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+  display: flex;
   /* Changez de 'column' à 'row' pour alignement horizontal */
   align-items: flex-start;
   /* Aligner les éléments en haut */
@@ -453,7 +466,25 @@ header {
   /* Ajoute une barre de défilement verticale si nécessaire */
   max-height: 400px;
   /* Définit une hauteur maximale pour les sections */
+  min-width: 250px;
 }
+
+/* Media Query pour gérer les écrans plus petits */
+@media (max-width: 800px) {
+  .sections-container {
+    flex-direction: column;
+    /* Les sections s'alignent verticalement sur de petits écrans */
+  }
+
+  .sections-container>section {
+    margin: 10px 0;
+    /* Marges adaptées pour l'alignement vertical */
+    width: 100%;
+    /* Chaque section prend la pleine largeur */
+  }
+}
+
+/* Fin flex section-container */
 
 /* Styles de base pour tous les boutons */
 .button {
@@ -610,11 +641,51 @@ header {
 }
 
 .game-button:hover {
-  background-color: #444 !important;
-  /* Ajout de !important pour forcer l'application du style */
+  background-color: #444;
 }
 
-header a.header-btn:hover {
-  background-color: #444 !important;
-  color: white !important;
+#error_message {
+  color: red;
+  font-style: italic;
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: center;
+  width: 100%;
+}
+
+/* CSS pour les écrans de taille moyenne */
+@media (max-width: 768px) {
+  header div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  header a.header-btn,
+  header a.game-button {
+    font-size: 18px;
+    /* Réduction de la taille de la police */
+    padding: 8px 10px;
+    /* Réduction du padding */
+    margin: 2px;
+    /* Ajout de marges pour éviter le chevauchement */
+  }
+}
+
+/* CSS pour les écrans de petite taille */
+@media (max-width: 480px) {
+  header div {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  header a.header-btn,
+  header a.game-button {
+    width: 100%;
+    /* Utilise toute la largeur disponible */
+    text-align: center;
+    /* Centre le texte dans le bouton */
+    margin-bottom: 5px;
+    /* Espacement entre les boutons */
+  }
 }
