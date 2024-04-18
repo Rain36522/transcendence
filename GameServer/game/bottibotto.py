@@ -27,7 +27,7 @@ class BottiBotto:
 		time_start = time.perf_counter()
 		time_stop = time.perf_counter()
 		while True:
-			print("time between game state fetches : ", round(time_stop - time_start, 3), file=stderr)
+			#print("time between game state fetches : ", round(time_stop - time_start, 3), file=stderr)
 			time_stop = time.perf_counter()
 			game_state = await self.game_logic.get_game_state()
 			time_start = time.perf_counter()
