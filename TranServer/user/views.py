@@ -43,18 +43,30 @@ from datetime import timedelta
 @api_view(["POST"])
 @renderer_classes([JSONRenderer])
 def api_signup(request):
-    serializer = UserSerializer(data=request.data)
-    if serializer.is_valid():
-        user = serializer.save()
-        chat = Chat.objects.create()
-        chat.participants.add(user)
-        chat.is_personal = True
-        chat.save()
-        sendMail(user, user.email, isMail=True)
-        # login(request, user)
+    try:
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
 
-        return Response({"message": "A verification email has been sent"}, status=201)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            if sendMail(user, user.email, isMail=True):
+                chat = Chat.objects.create()
+                chat.participants.add(user)
+                chat.is_personal = True
+                chat.save()
+                return Response(
+                    {"message": "A verification email has been sent"},
+                    status=status.HTTP_201_CREATED,
+                )
+            else:
+                user.delete()
+                return Response(
+                    {"error": "Invalid email"}, status=status.HTTP_400_BAD_REQUEST
+                )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response(
+            {"error": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 @api_view(["GET"])
@@ -336,13 +348,24 @@ def user_login_api(request):
         username = request.POST["username"]
         password = request.POST["password"]
         user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect("user_dashboard")
+        if user is None:
+            return JsonResponse(
+                {"error": "Invalid username or password"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        elif not user.mailValidate:
+            return JsonResponse(
+                {"error": "Email not validated"}, status=status.HTTP_400_BAD_REQUEST
+            )
         else:
-            return JsonResponse({"error": "Invalid username or password"}, status=400)
+            login(request, user)
+            return JsonResponse(
+                {"message": "User created"}, status=status.HTTP_201_CREATED
+            )
     except:
-        return JsonResponse({"error": "Invalid request"}, status=400)
+        return JsonResponse(
+            {"error": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 @api_view(["GET"])
@@ -652,6 +675,7 @@ def MessageContentPwd(user):
     """
     return subject, mailContent
 
+
 def MessageContentMail(user):
     subject = "Mail Validation"
     GenerateUserToken(user, mail=True)
@@ -665,28 +689,33 @@ def MessageContentMail(user):
     """
     return subject, mailContent
 
+
 def sendMail(user, mail, isMail=False):
-    smtp_server = 'mail.infomaniak.com'
+    smtp_server = "mail.infomaniak.com"
     smtp_port = 587
     smtp_user = os.environ.get("MAIL_USER")
     smtp_password = os.environ.get("MAIL_PWD")
     print("MAIL LOGIN :", smtp_user)
     print("MAIL_PWD :", smtp_password)
-    
+
     subject, content = MessageContentMail(user) if mail else MessageContentPwd(user)
 
-    msg = MIMEMultipart('alternative')
-    msg.attach(MIMEText(content, 'html'))
-    msg['Subject'] = subject
-    msg['From'] = smtp_user
-    msg['To'] = mail
-    msg.attach(MIMEText(content, 'html'))
+    msg = MIMEMultipart("alternative")
+    msg.attach(MIMEText(content, "html"))
+    msg["Subject"] = subject
+    msg["From"] = smtp_user
+    msg["To"] = mail
+    msg.attach(MIMEText(content, "html"))
     server = smtplib.SMTP(smtp_server, smtp_port)
     server.starttls()
     server.login(smtp_user, smtp_password)
-
-    server.sendmail(smtp_user, mail, msg.as_string())
-    server.quit()
+    try:
+        server.sendmail(smtp_user, mail, msg.as_string())
+        server.quit()
+        return True
+    except:
+        server.quit()
+        return False
 
 
 def GenerateUserToken(user, mail=False):
@@ -695,7 +724,7 @@ def GenerateUserToken(user, mail=False):
     from random import choice, randint
 
     characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcefghijklmnopqrstuvwxyz1234567890-_"
-    tokenListe = User.objects.values_list('token', flat=True)
+    tokenListe = User.objects.values_list("token", flat=True)
     while True:
         token = "M" if mail else "P"
         for i in range(22):
@@ -704,6 +733,7 @@ def GenerateUserToken(user, mail=False):
             break
     user.token = token
     user.save()
+
 
 def EmailValidation(request, username, token):
     users = User.objects.filter(username=username)
@@ -721,7 +751,6 @@ def EmailValidation(request, username, token):
 
 
 class PasswordForgot(APIView):
-
     def get(request, username, token):
         return HttpResponse("PASSWORD CHANGE PAGE")
 
@@ -734,9 +763,7 @@ class PasswordForgot(APIView):
         if not token or user.token != token:
             raise Http404("Invalide link")
         else:
-            #TODO CHANGE PASSWORD
+            # TODO CHANGE PASSWORD
             user.token = ""
             user.save()
             return Response("Password reset", status=status.HTTP_200_OK)
-
-
