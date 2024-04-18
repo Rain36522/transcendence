@@ -12,6 +12,7 @@
         href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@300;400;600&family=Poppins:wght@400;600&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'home.css' %}">
     <link rel="stylesheet" href="{% static 'generalchat.css' %}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -30,7 +31,7 @@
                 <a href="{% url 'user_dashboard' %}" class="header-btn profile-btn">Profile</a>
             </div>
         </header>
-        <div class="background-container"></div> <!-- Ajout du conteneur pour l'image de fond -->
+        <div class="background-container"></div>
         <div class="chat-container">
             <div class="user-list">
                 <div id="userList">
@@ -57,12 +58,10 @@
                     <input type="text" id="searchInput" placeholder="Search...">
                     <button type="button">Search</button>
                 </div>
-                <!-- Nouvelle section pour afficher le résultat de la recherche -->
                 <div id="searchResult" class="search-result" style="display: none;">
-                    <!-- Le résultat de la recherche sera injecté ici -->
                 </div>
 
-                <div class="users-and-invited-container"> <!-- Conteneur parent pour Flexbox -->
+                <div class="users-and-invited-container">
                     <div class="user-container">
                         <h4 class="title-outside">User list</h4>
                         <div class="user-list-container" id="user-list">
@@ -78,13 +77,11 @@
                                 <span class="user-name">Dark_Sasuke</span>
                                 <button class="invite-button">Invite</button>
                             </div>
-                            <!-- Ajoutez plus d'utilisateurs ici -->
                         </div>
                     </div>
                     <div class="invited-container">
                         <h4 class="title-outside">Invited Users</h4>
                         <div class="user-list-container" id="invitedUsers">
-                            <!-- Les utilisateurs invités seront affichés ici -->
                         </div>
                     </div>
                 </div>

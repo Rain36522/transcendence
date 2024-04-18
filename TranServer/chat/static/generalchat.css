@@ -116,13 +116,14 @@ body::before {
 }
 
 .message-box {
-	padding: 10px;
-	margin: 5px 0;
-	background-color: #BDE0FE;
-	border-radius: 10px;
-	word-wrap: break-word;
-	overflow-wrap: break-word;
-	max-width: 80%;
+    font-family: 'Poppins', sans-serif;
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #BDE0FE;
+    border-radius: 10px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 80%;
 }
 
 .message-input input {
@@ -571,8 +572,9 @@ button:focus {
 }
 
 .game-invitation {
-	background-color: #000000;
-	color: #ffff87;
+    font-family: 'Poppins', sans-serif !important;
+    background-color: #000000;
+    color: #ffff87;
 }
 
 /* CSS pour les écrans de taille moyenne */
@@ -591,7 +593,6 @@ button:focus {
 	}
 }
 
-/* CSS pour les écrans de petite taille */
 @media (max-width: 480px) {
 	header div {
 		flex-direction: column;
@@ -604,4 +605,31 @@ button:focus {
 		text-align: center;
 		margin-bottom: 5px;
 	}
+}
+
+button {
+    padding: 8px 16px;
+    color: white;
+	font-family: 'Montserrat', sans-serif;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+.join-game-button {
+    margin-left: 20px; /* Ajuster selon le besoin */
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.join-game-button:hover {
+    background-color: #45a049;
 }
