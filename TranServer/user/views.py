@@ -39,6 +39,8 @@ import smtplib
 import os
 from datetime import timedelta
 
+MAIL = False
+
 
 @api_view(["POST"])
 @renderer_classes([JSONRenderer])
