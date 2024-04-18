@@ -6,7 +6,8 @@ from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
 from rest_framework.permissions import IsAuthenticated
 
-from django.http import HttpResponse, JsonResponse
+
+from django.http import HttpResponse, JsonResponse, Http404
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import (
@@ -31,9 +32,14 @@ from .serializers import (
     ColorUpdateSerializer,
 )
 
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 import mimetypes
+import smtplib
 import os
 from datetime import timedelta
+
+MAIL = False
 
 
 @api_view(["POST"])
@@ -46,8 +52,14 @@ def api_signup(request):
         chat.participants.add(user)
         chat.is_personal = True
         chat.save()
-        login(request, user)
-        return Response({"message": "User created successfully"}, status=201)
+        if MAIL:
+            sendMail(user, user.email, isMail=True)
+        else:
+            user.mailValidate = True
+            user.save()
+            login(request, user)
+
+        return Response({"message": "A verification email has been sent"}, status=201)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -631,3 +643,106 @@ def change_password_api(request):
 @login_required
 def test_password_change_view(request):
     return render(request, "test_password_change.html")
+
+
+def MessageContentPwd(user):
+    subject = "Reset password"
+    GenerateUserToken(user, mail=False)
+    ResetLink = "https://127.0.0.1/api/pwd/" + user.username + "/" + user.token
+    mailContent = f"""
+    <h1>Hi {user.username}!</h1>
+    <p>To reset your password, simply click this link :
+    <a href="{ResetLink}">Reset Password</a></p>
+
+    DO NOT REPLY.
+    """
+    return subject, mailContent
+
+
+def MessageContentMail(user):
+    subject = "Mail Validation"
+    GenerateUserToken(user, mail=True)
+    ValidateLink = "https://127.0.0.1/api/mail/" + user.username + "/" + user.token
+    mailContent = f"""
+    <h1>Welcome to transcendance {user.username}!</h1>
+    <p>To validate your email, simply click this link :
+    <a href="{ValidateLink}">Mail validation</a></p>
+
+    DO NOT REPLY.
+    """
+    return subject, mailContent
+
+
+def sendMail(user, mail, isMail=False):
+    smtp_server = "mail.infomaniak.com"
+    smtp_port = 587
+    smtp_user = os.environ.get("MAIL_USER")
+    smtp_password = os.environ.get("MAIL_PWD")
+    print("MAIL LOGIN :", smtp_user)
+    print("MAIL_PWD :", smtp_password)
+
+    subject, content = MessageContentMail(user) if mail else MessageContentPwd(user)
+
+    msg = MIMEMultipart("alternative")
+    msg.attach(MIMEText(content, "html"))
+    msg["Subject"] = subject
+    msg["From"] = smtp_user
+    msg["To"] = mail
+    msg.attach(MIMEText(content, "html"))
+    server = smtplib.SMTP(smtp_server, smtp_port)
+    server.starttls()
+    server.login(smtp_user, smtp_password)
+
+    server.sendmail(smtp_user, mail, msg.as_string())
+    server.quit()
+
+
+def GenerateUserToken(user, mail=False):
+    import secrets
+    import string
+    from random import choice, randint
+
+    characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcefghijklmnopqrstuvwxyz1234567890-_"
+    tokenListe = User.objects.values_list("token", flat=True)
+    while True:
+        token = "M" if mail else "P"
+        for i in range(22):
+            token += choice(characters)
+        if token not in tokenListe:
+            break
+    user.token = token
+    user.save()
+
+
+def EmailValidation(request, username, token):
+    users = User.objects.filter(username=username)
+    if users.exists():
+        user = users.first()
+    else:
+        raise Http404("Invalid link")
+    if not token or user.token != token:
+        raise Http404("Invalid link")
+    else:
+        user.mailValidate = True
+        user.token = ""
+        user.save()
+        return HttpResponse("EMAIL VALIDATE")
+
+
+class PasswordForgot(APIView):
+    def get(request, username, token):
+        return HttpResponse("PASSWORD CHANGE PAGE")
+
+    def post(request, username, token):
+        users = User.objects.filter(username=username)
+        if users.exists():
+            user = users.first()
+        else:
+            raise Http404("Invalide link")
+        if not token or user.token != token:
+            raise Http404("Invalide link")
+        else:
+            # TODO CHANGE PASSWORD
+            user.token = ""
+            user.save()
+            return Response("Password reset", status=status.HTTP_200_OK)

@@ -1,7 +1,5 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from rest_framework.response import Response
-from rest_framework.renderers import JSONRenderer  # Import JSONRenderer
 from rest_framework import status
 from django.http import JsonResponse, HttpResponse
 from .models import Game, GameUser
@@ -9,13 +7,14 @@ from rest_framework.views import APIView
 from .serializers import GameSettingsSerializer
 from asgiref.sync import async_to_sync
 import sys
-import asyncio
 from channels.layers import get_channel_layer
 import json
 from .consumer import launchGame
 from chat.models import Chat, Message
 from django.utils import timezone
 from django.db.models import Count
+from django.http import Http404
+
 
 
 def send_message_to_chat_group(chat, message, inviter, user, hostname):
@@ -48,13 +47,10 @@ class newGame(APIView):
         return render(request, "html/gameSettings.html")
 
     def post(self, request):
-        print("POST FROM USER !", file=sys.stderr)
         data = self.changeData(request.data.copy())
         if data:
-            print("Data", file=sys.stderr)
             serializer = GameSettingsSerializer(data=data)
             if serializer.is_valid():
-                print("Seriallizer")
                 instance = serializer.save()
                 # Enregistre les données et récupère l'objet sauvegardé
                 self.addPlayer(instance, request.user)
@@ -79,8 +75,8 @@ class newGame(APIView):
                     {"gameLink": "/game/" + str(instance.id)}, status=200
                 )
             else:
-                print(serializer.errors, file=sys.stderr)
-        print("no data", file=sys.stderr)
+                print("New game,", serializer.errors, file=sys.stderr)
+        print("no data for newGame", file=sys.stderr)
         return HttpResponse("Error 400", status=400)
 
     def changeData(self, data):
@@ -100,7 +96,6 @@ class newGame(APIView):
         return None
 
     def sendNewGame(self, data):
-        print("sending new msg")
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
             "gameServer",
@@ -109,15 +104,15 @@ class newGame(APIView):
                 "data": json.dumps(data),
             },
         )
-        print("message send")
 
     def addPlayer(self, game, user):
-        print(user)
         game_user = GameUser.objects.create(user=user, game=game)
         game.gameuser_set.add(game_user)
 
 
 def gamePage(request, id):
+    if not isGameFinish(id):
+        raise Http404("Game does not exist")
     game = Game.objects.get(pk=id)
     solo = False
     if game.gamemode == 3:
@@ -130,6 +125,10 @@ def gamePage(request, id):
         player = 2
     else:
         player = 4
+    if game.tournament:
+        tournamentid = game.tournament.id
+    else:
+        tournamentid = 0
     contexte = {
         "nbPlayers": player,
         "paddleWidth": 0.02,
@@ -140,16 +139,26 @@ def gamePage(request, id):
         "status": "waiting",
         "user": request.user.username,
         "gameid": id,
+        "tournamentid": tournamentid
     }
-    print("USER : ", contexte["user"])
-    print("gameid : ", contexte["gameid"])
     contexte_json = json.dumps(contexte)
     return render(request, "monapp/pong.html", {"contexte_json": contexte_json})
+
+def isGameFinish(id):
+    if not Game.objects.filter(pk=id).exists():
+        return False
+    game = Game.objects.get(pk=id)
+    if game.gameRunning:
+        return True
+    gameusers = game.gameuser_set.all()
+    for gameuser in gameusers:
+        print(gameuser.points)
+        if gameuser.points:
+            return False
+    return True
 
 
 def home_page(request):
     return render(request, "html/home.html")
 
 
-def online_game(request):
-    return render(request, "html/gameSettings.html")

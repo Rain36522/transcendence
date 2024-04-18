@@ -35,7 +35,7 @@ class User:
                 doexit(1, "User exit.")
         if value == 500:
                 doexit(1, "Error: Serveur not accessible.")
-        Information("LOGIN", "User connection succes.", style=STYLSUCCESS)
+        Information("LOGIN", "User connection success.", style=STYLSUCCESS)
         return True
         
 
@@ -70,12 +70,12 @@ class User:
             value = self.Django.createUser(user, mail, pwd)
         if value == 500:
                 doexit(1, "Error: Serveur not accessible.")
-        Information("SIGNUP", "User creation succes.", style=STYLSUCCESS)
+        Information("SIGNUP", "User creation succes." + str(value), style=STYLSUCCESS)
         return True
 
     def registration(self):
 
-        user = inputText("REGISTRATION", "Username :")
+        user = inputText("REGISTRATION", "Username :", defaultValue="a")
         if user == None:
             return None, None, None
         while not user:
@@ -90,7 +90,7 @@ class User:
     def getMail(self, error=False):
         mailPattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         inputmsg = "E-mail :"
-        mail = inputText("REGISTRATION", inputmsg)
+        mail = inputText("REGISTRATION", inputmsg, defaultValue="a@a.aa")
         while mail and not match(mailPattern, mail):
             inputmsg = "Wrong mail, Try again :"
             mail = inputText("SIGNUP", inputmsg, False, STYLERROR)
@@ -99,10 +99,10 @@ class User:
     def getPwd(self):
         text1 = "Type password :"
         text2 = "Confirm password :"
-        pwd1 = inputText("SIGNUP", text1, True)
+        pwd1 = inputText("SIGNUP", text1, True, defaultValue="a")
         if pwd1 == None:
             return None
-        pwd2 = inputText("SIGNUP", text2, True)
+        pwd2 = inputText("SIGNUP", text2, True, defaultValue="a")
         if pwd2 == None:
             return None
         while not pwd1 or pwd1 != pwd2:

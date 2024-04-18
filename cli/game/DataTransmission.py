@@ -2,9 +2,10 @@ import websockets
 from pynput.keyboard import Listener, Key
 import pynput
 import asyncio
-from json import loads
+from json import loads, dumps
 from color import *
 import ascii
+from sys import stderr
 import ssl
 
 class DataTransmission:
@@ -35,14 +36,15 @@ class DataTransmission:
         ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
         ssl_context.check_hostname = False
         ssl_context.verify_mode = ssl.CERT_NONE
-        
+        isDisconnected = 0
         while not self.wsCli:
             try:
+                isDisconnected = 0
                 self.wsCli = await websockets.connect(self.url, ssl=ssl_context)
                 self.isConnected = True
-                while not self.runKeyBinding and not self.errormsg:
+                while not self.runKeyBinding and not self.errormsg and not self.exit:
                     await asyncio.sleep(0.05)
-                if not self.errormsg:
+                if not self.errormsg and not self.exit:
                     if self.is2player:
                         KeyQueue = self.transmitKeys2P()
                     elif self.playerpos == 1:
@@ -50,19 +52,27 @@ class DataTransmission:
                     else:
                         KeyQueue = self.transmitKeysP2()
                 i = 0
-                while not self.errormsg and self.runKeyBinding:
+
+                while not self.errormsg:
                     if self.exit:
                         await self.disconnect()
                         return None
-                    key = await KeyQueue.get()
-                    if key == "EXIT":
-                        return self.errormsg
-                    await self.wsCli.send(key)
+                    elif self.runKeyBinding:
+                        key = await KeyQueue.get()
+                        if key == "EXIT":
+                            return self.errormsg
+                        await self.wsCli.send(key)
                 return self.errormsg
             except Exception as e:
+                isDisconnected += 1
                 print(RED, "ws Server connection failed,", self.url)
+                await asyncio.sleep(1)
                 self.wsCli = None
                 self.isConnected = False
+                if isDisconnected >= 20:
+                    self.message = dumps("500")
+                    self.exit = True
+                    return "500"
 
     async def receive_messages(self):
         while not self.wsCli:
@@ -75,13 +85,14 @@ class DataTransmission:
                         return self.errormsg
                     if not self.playerpos:
                         self.getUserPos()
-                    if self.runKeyBinding and loads(self.message)["state"] == "game_over":
+                    if "\"state\": \"game_over\"" in self.message:
                         self.exit = True
                         return None
                     self.runKeyBinding = True
             except:
-                print(RED, "Reading msg error connection.s", RESET)
                 while not self.isConnected:
+                    if self.exit:
+                        return "500"
                     await asyncio.sleep(0.1)
     
     def getUserPos(self):
