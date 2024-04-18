@@ -665,9 +665,6 @@ def MessageContentMail(user):
     """
     return subject, mailContent
 
-
-
-
 def sendMail(user, mail, isMail=False):
     smtp_server = 'mail.infomaniak.com'
     smtp_port = 587
@@ -690,10 +687,6 @@ def sendMail(user, mail, isMail=False):
 
     server.sendmail(smtp_user, mail, msg.as_string())
     server.quit()
-
-
-
-
 
 
 def GenerateUserToken(user, mail=False):
