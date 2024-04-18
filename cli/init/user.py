@@ -57,10 +57,8 @@ class User:
         if pwd == None:
             return False
         value = self.Django.createUser(user, mail, pwd)
-        if value >=400:
-            Information(str(value), "Error " + str(value))
         while value >=400 and value != 500:
-            result = Question3Value("REGISTRATION", "User or email already existing.", "signup", "login", "exit", style=STYLERROR)
+            result = Question3Value("ERROR" + str(value), "User or email already exists or email is invalid.", "signup", "login", "exit", style=STYLERROR)
             if result == 0:
                 self.doLogin()
                 return
@@ -70,7 +68,8 @@ class User:
             value = self.Django.createUser(user, mail, pwd)
         if value == 500:
                 doexit(1, "Error: Serveur not accessible.")
-        Information("SIGNUP", "User creation succes." + str(value), style=STYLSUCCESS)
+        Information("SIGNUP", "User creation success.\nPlease validate your email before proceeding.", style=STYLSUCCESS)
+        doexit(0, "Exit due to email validation required.")
         return True
 
     def registration(self):
