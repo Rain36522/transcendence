@@ -1,9 +1,114 @@
-import { Match } from './match.js';
+// import { Match } from './match.js';
 
-const myUser = document.body.getAttribute('data-myUser');
-const tournamentSize = document.body.getAttribute('data-tournamentSize');
+class Match {
+	constructor(level, pos, ...players) {
+		this.level = level;
+		this.pos = pos;
+		this.players = players;
+		this.scores = new Array(players.length).fill(0);
+		this.isRunning = false; // "live", "finished", "to be played"
+		this.gameLink = "";
+	}
+
+	updateScores(...scores) {
+		this.scores = scores;
+	}
+
+	setFinished() {
+		this.isRunning = false;
+	}
+
+	setLive(gameLink) {
+		this.isRunning = true;
+		this.gameLink = gameLink;
+	}
+
+	updateFromData(data) {
+		// Réinitialiser les joueurs et les scores basés sur les données reçues
+		this.players = [];
+		this.scores = [];
+	
+		for (let i = 0; i <= 3; i++) {
+			const playerKey = `player${i}Id`;
+			if (data[playerKey] !== undefined) {
+				this.players.push(data[playerKey]);
+				const scoreKey = `score${i}`;
+				this.scores.push(data[scoreKey] !== undefined ? data[scoreKey] : 0);
+			}
+			else if (i == 0){
+				this.players.push("waiting for players");
+				this.scores.push(0);
+			}
+		}
+		this.isRunning = data.isRunning;
+		this.gameLink = data.gameId;
+	}
+	
+	
+
+	generateHTML() {
+		let matchElement;
+
+		if (this.isRunning)
+			this.status = "playing";
+		else if (this.scores.some(score => score !== 0))
+			this.status = "finished";
+		else
+			this.status = "waiting";
+	
+		// Crée un élément <a> ou <div> comme conteneur principal selon le statut du match
+		if (this.isRunning == true && this.gameLink) {
+			matchElement = document.createElement('a');
+			matchElement.href = `/game/${this.gameLink}/`;
+			matchElement.classList.add('match-link');
+		} else
+			matchElement = document.createElement('div');
+	
+		const statusClass = this.status.replace(/\s+/g, '-').toLowerCase();
+		matchElement.classList.add('match', statusClass);
+		matchElement.setAttribute('data-id', this.pos);
+		matchElement.setAttribute('data-level', this.level);
+	
+		// Déterminer l'index du gagnant et traiter tous les autres comme perdants si le match est terminé
+		let winnerIndex = -1;
+		if (this.status === "finished") {
+			const winnerScore = Math.max(...this.scores);
+			winnerIndex = this.scores.indexOf(winnerScore);
+		}
+		this.players.forEach((player, index) => {
+			const playerElement = document.createElement('div');
+			playerElement.classList.add('team');
+			// Appliquer la classe 'winner' au gagnant, 'loser' aux autres si le match est terminé
+			if (this.status === "finished") {
+				if (index === winnerIndex)
+					playerElement.classList.add('winner');
+				else
+					playerElement.classList.add('loser');
+			}
+			// Ajouter la classe 'match-top' au premier élément et 'match-bottom' au dernier élément
+			if (index === 0 && index === this.players.length - 1)
+				playerElement.classList.add('match-unique');
+			else if (index === 0)
+				playerElement.classList.add('match-top');
+			else if (index === this.players.length - 1)
+				playerElement.classList.add('match-bottom');
+	
+			playerElement.innerHTML = `
+				<span class="name">${player}</span>
+				<span class="score">${this.scores[index]}</span>
+			`;
+			matchElement.appendChild(playerElement);
+		});
+		return matchElement;
+	}		
+}
+
+
+var myUser = document.getElementById("myUser").getAttribute('data-myUser');
+var isFull = false;
+const tournamentSizeString = document.getElementById("tour_size").getAttribute('data-tournamentSize');
+const tournamentSize = JSON.parse(tournamentSizeString);
 const matchesMap = {}; // Store all matches by unique key (level-pos)
-
 
 
 const dataTemplate ={
@@ -44,8 +149,13 @@ function initializeTournament(tournamentSize) {
 }
 
 
-function updateTournament(updatedMatches) {
-	console.log(updatedMatches);
+function updateTournament(data) {
+	if (data.tournamentFull == true)
+		isFull = true;
+	if (isFull == true)
+		document.getElementById('join-button').style.display = 'none';
+	var updatedMatches = data.games;
+
 	for (const key in updatedMatches) {
 		const matchData = updatedMatches[key];  // Utilise matchData ici
 		const matchKey = `${matchData.level}-${matchData.pos}`;
@@ -54,40 +164,49 @@ function updateTournament(updatedMatches) {
 			existingMatch.updateFromData(matchData);
 			// Replace the existing match HTML with the updated one
 			const matchElement = document.querySelector(`.match[data-id="${matchData.pos}"][data-level="${matchData.level}"]`);
-			if (matchElement) {
+			if (matchElement)
 				matchElement.replaceWith(existingMatch.generateHTML());
+
+			if (isFull == false){
+				for (let i = 0; i <= 3; i++) {
+					const playerIdKey = `player${i}Id`;
+					if (matchData[playerIdKey] && matchData[playerIdKey] === myUser)
+						document.getElementById('join-button').style.display = 'none';
 			}
+
 			if (matchData.isRunning == true) {
-				for (let i = 1; i <= 4; i++) {
+				for (let i = 0; i <= 3; i++) {
 					const playerIdKey = `player${i}Id`;
 					if (matchData[playerIdKey] && matchData[playerIdKey] === myUser) {
-						console.log('Redirecting to:', `/game/${matchData.gameId}/`);
-                        window.location.href = `${window.location.origin}/game/${matchData.gameId}/`;
+						var pageToFetch = "/game/" + matchData.gameId + "/";
+						window.history.pushState(null, null, pageToFetch);
+						fetchPage(pageToFetch);
 						break;
-					}
-				}
-			}
-		}
 	}
+}}}}}
 	console.log('Tournament updated', updatedMatches);
 }
 
 
+document.getElementById('join-button').addEventListener('click', function() {
+	const baseUrl = window.location.href; // Récupère l'URL de la page actuelle
+	const joinUrl = `${baseUrl}join/`; // Construit l'URL cible pour la requête GET
+	// Effectue la requête GET avec fetch
+	fetch(joinUrl, { method: 'GET' });
+});
 
 
 // WebSocket setup
 function setupWebSocket() {
 	const pathElements = window.location.pathname.split('/');
-	console.log(pathElements[2]);
+	console.log('wss://' + window.location.host + '/ws/tournament/' + pathElements[2] + '/');
 	const socket = new WebSocket('wss://' + window.location.host + '/ws/tournament/' + pathElements[2] + '/');
 
 	socket.onopen = function(event) {
 		console.log('WebSocket connection established');
 	};
 	socket.onmessage = function(event) {
-		console.log("caca raw data: " + event.data);
 		const dataPouet = JSON.parse(event.data);
-		console.log("parsed data is: "+ dataPouet)
 		updateTournament(dataPouet);
 	};
 	socket.onerror = function(event) {
@@ -99,7 +218,5 @@ function setupWebSocket() {
 }
 
 
-document.addEventListener('DOMContentLoaded', () => {
-	initializeTournament(tournamentSize); // Initialize the tournament bracket
-	setupWebSocket(); // Setup the WebSocket connection
-});
+initializeTournament(tournamentSize); // Initialize the tournament bracket
+setupWebSocket(); // Setup the WebSocket connection

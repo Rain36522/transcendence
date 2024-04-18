@@ -1,201 +1,374 @@
-import { Settings } from './Settings.js';
-import { Player } from './Player.js';
+/*##################################################################*|
+#                                                                    #
+#    <---------------------------------------------------------->    #
+#    |                        Player Code                       |    #
+#    <---------------------------------------------------------->    #
+#                                                                    #
+\*##################################################################*/
 
-var gameSettings;
+class Player
+{
+	constructor(PlayerID, PlayerName, gameParams){
+		this.PlayerID = PlayerID || 1; // 1, 2, 3 our 4
+		this.PlayerName = PlayerName || "bob"; // eg "BarnabéEnculeurDeMouches"
+		this.Points = 0; // Points scored by the player
+		this.Position = 0; // from -0.5 to 0.5, represents pos on the paddle slider
+		this.keysPressed = {}; // stores keys status (pressed/released) for up and down
+		this.gameParams = gameParams; // game settings	
+	}
+
+	// store current keys status (pressed/released)
+	updateKeysPressed(event, value, ws){
+		if (event.key != "w" && event.key != "s" && event.key != "ArrowUp" && event.key != "ArrowDown")
+			return;
+		var message = "";
+		if ((event.key == "ArrowUp" || event.key == "ArrowDown") && this.gameParams.isSolo && this.gameParams.nbPlayers == 2 && this.PlayerID == 2)
+		{
+			if (event.key == "ArrowUp" && this.keysPressed["up"] != value) {
+				this.keysPressed["up"] = value;
+				message = this.PlayerID + "u-" + (value == true ? "on" : "off");
+			}
+			else if (event.key == "ArrowDown" && this.keysPressed["down"] != value) {
+				this.keysPressed["down"] = value;
+				message = this.PlayerID + "d-" + (value == true ? "on" : "off");
+			}
+		} else {
+			if (this.PlayerID % 2 == 1 || (this.gameParams.isSolo && this.gameParams.nbPlayers == 2))
+			{
+				if (event.key == "w" && this.keysPressed["up"] != value) {
+					this.keysPressed["up"] = value;
+					message = this.PlayerID + "u-" + (value == true ? "on" : "off");
+				}
+				else if (event.key == "s" && this.keysPressed["down"] != value) {
+					this.keysPressed["down"] = value;
+					message = this.PlayerID + "d-" + (value == true ? "on" : "off");
+				}
+			}
+			else
+			{
+				if (event.key == "w" && this.keysPressed["up"] != value) {
+					this.keysPressed["up"] = value;
+					message = this.PlayerID + "d-" + (value == true ? "on" : "off");
+				}
+				else if (event.key == "s" && this.keysPressed["down"] != value) {
+					this.keysPressed["down"] = value;
+					message = this.PlayerID + "u-" + (value == true ? "on" : "off");
+				}
+			}
+		}
+		if (ws && ws.readyState === WebSocket.OPEN && message != "")
+			ws.send(message);
+	}
+
+	// rotate if needed to put player on the left side of the screen
+	applyRotation(canvasContext){
+		if (this.PlayerID == 1)
+			return;
+		canvasContext.save(); // Save the current state
+		canvasContext.translate(this.gameParams.gameWidth / 2, this.gameParams.gameHeight / 2); // Move to the center of the canvas
+		if (this.PlayerID == 2)
+			canvasContext.rotate(Math.PI); // Rotate 180 degrees
+		else if (this.PlayerID == 3)
+			canvasContext.rotate(-Math.PI / 2); // Rotate 90 degrees
+		else if (this.PlayerID == 4)
+			canvasContext.rotate(Math.PI / 2); // Rotate -90 degrees
+		canvasContext.translate(-this.gameParams.gameWidth / 2, -this.gameParams.gameHeight / 2); // Move back to the original position
+	}
+
+	// draw the player's paddle with updated data
+	updateStatus(newPosition, newPoints){
+		this.Position = newPosition;
+		this.Points = newPoints;
+	}
+
+	// draw the player's paddle
+	draw(canvasContext){
+		// Calculate the real position of the paddle
+		const realPaddlePos = (this.gameParams.gameHeight * (this.Position * -1 + 0.5)) - (this.gameParams.paddleLength / 2);
+		canvasContext.fillStyle = this.gameParams.paddleColor;
+		if (this.PlayerID != settings.userID)
+			canvasContext.fillStyle = this.gameParams.ennemiColor;
+
+		var x, y, width, height;
+
+		if (this.PlayerID < 3) {
+			width = this.gameParams.paddleWidth * this.gameParams.gameHeight;
+			height = this.gameParams.paddleLength * this.gameParams.gameHeight;
+		} else {
+			width = this.gameParams.paddleLength * this.gameParams.gameHeight;
+			height = this.gameParams.paddleWidth * this.gameParams.gameHeight;
+		}
+
+		// Calculate the position and size based on PlayerID
+		if (this.PlayerID === 1) {
+			x = this.gameParams.paddleOffset * this.gameParams.gameHeight;
+			y = realPaddlePos - this.gameParams.paddleLength * this.gameParams.gameHeight / 2;
+		} else if (this.PlayerID === 2) {
+			x = this.gameParams.gameWidth - this.gameParams.paddleWidth * this.gameParams.gameHeight - this.gameParams.paddleOffset * this.gameParams.gameHeight;
+			y = realPaddlePos - this.gameParams.paddleLength * this.gameParams.gameHeight / 2;
+		} else if (this.PlayerID === 3) {
+			x = realPaddlePos - this.gameParams.paddleLength * this.gameParams.gameHeight / 2;
+			y = this.gameParams.paddleOffset * this.gameParams.gameHeight;
+		} else if (this.PlayerID === 4) {
+			x = realPaddlePos - this.gameParams.paddleLength * this.gameParams.gameHeight / 2;
+			y = this.gameParams.gameHeight - this.gameParams.paddleWidth * this.gameParams.gameHeight - this.gameParams.paddleOffset * this.gameParams.gameHeight;
+		}
+	
+		// Draw the paddle with the calculated dimensions
+		canvasContext.fillRect(x, y, width, height);
+	}
+
+}
+
+
+/*##################################################################*|
+#                                                                    #
+#    <---------------------------------------------------------->    #
+#    |                      Settings Code                       |    #
+#    <---------------------------------------------------------->    #
+#                                                                    #
+\*##################################################################*/
+
+class Settings
+{
+	constructor(rawSettings){
+		const data = JSON.parse(rawSettings);
+		console.log("raw settings: ", data);
+		this.nbPlayers = data.nbPlayers || 2; // number of players in the game
+		this.playersNames = data.users && data.users.length > 0 ? data.users : Array.from({ length: this.nbPlayers }, (_, index) => `User${index + 1}`);
+		this.isSolo = data.isSolo; // if no other players on other screens
+		this.status = data.status || "waiting"; // if the game is running
+		this.winPoints = data.winPoints || 10;
+
+		this.gameWidth = data.gameWidth || 1200; // width of the field
+		this.gameHeight = this.gameWidth; // height of the field
+		if (this.nbPlayers != 4)
+			this.gameHeight /= 2; // field is square if 4 players, else it's a rectangle so we divide the height by 2
+
+		fetch('/api/colors/')
+			.then(response => response.json())
+			.then(data => {
+				this.paddleColor = data.paddle_color || "white"; // color of the paddles
+				this.ennemiColor = data.enemy_paddle_color || "red"; // color of the ennemies
+				this.ballColor = data.ball_color || "white"; // color of the ball
+				this.fieldColor = data.background_color || "#000"; // color of the field
+				this.borderColor = data.frame_color || "white"; // color of the border
+			});
+
+		this.paddleWidth = data.paddleWidth || 0.02; // width of the paddles
+		this.paddleLength = data.paddleLength || 0.2; // length of the paddles
+		this.paddleOffset = data.paddleOffset || 0.02; // offset of the paddles from the border
+	
+		this.ballSize = data.ballSize || 0.03; // size of the ball
+		this.ballPosition = { x: 0, y: 0 }; // position of the ball
+		this.userName = data.user;
+		if (this.isSolo && this.nbPlayers === 2)
+			this.userID = 1;
+		else if (data.users)
+		{
+			console.log("et merde");
+			this.userID = this.playersNames.indexOf(this.userName) + 1;
+		}
+		else
+			this.userID = 1;
+		this.gameID = data.gameid;
+
+		if (this.userID == 0)
+			this.userID = 1;
+	}
+}
+
+
+/*##################################################################*|
+#                                                                    #
+#    <---------------------------------------------------------->    #
+#    |                      Main Pong Code                      |    #
+#    <---------------------------------------------------------->    #
+#                                                                    #
+\*##################################################################*/
+
+var settings;
 var players;
-var canvas, CanvasContext, scoreBoard;
-var isImage, fieldImage, backgroundImage, ballImage;
+var canvas, CanvasContext;
+var scoreBoard;
 var nbPaddles = 2;
 
 function setGameSize() {
 	if (window.innerHeight < window.innerWidth)
-		gameSettings.gameWidth = window.innerHeight * 0.8;
+		settings.gameWidth = window.innerHeight * 0.8;
 	else
-		gameSettings.gameWidth = window.innerWidth * 0.8;
-	gameSettings.gameHeight = gameSettings.gameWidth;
-	if (gameSettings.nbPlayers !== 4)
-		gameSettings.gameHeight /= 2;
-}
+		settings.gameWidth = window.innerWidth * 0.8;
+	settings.gameHeight = settings.gameWidth;
+	if (settings.nbPlayers !== 4)
+		settings.gameHeight /= 2;
+}	
+
 
 /*‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾*\
 ||===========================[game drawing]=========================||
 \*__________________________________________________________________*/
 function drawGame() {
 	// Adjust canvas size
-	canvas.width = gameSettings.gameWidth;
-	canvas.height = gameSettings.gameHeight;
-
+	canvas.width = settings.gameWidth;
+	canvas.height = settings.gameHeight;
 	// If playerID is 'j2', rotate the canvas for the player's perspective
-	players[gameSettings.userID - 1].applyRotation(CanvasContext);
+
+	players[settings.userID - 1].applyRotation(CanvasContext);
 
 	// Draw field
-	if (isImage)
-		CanvasContext.drawImage(fieldImage, 0, 0, gameSettings.gameWidth, gameSettings.gameHeight);
-	else {
-		CanvasContext.fillStyle = gameSettings.fieldColor;
-		CanvasContext.fillRect(0, 0, gameSettings.gameWidth, gameSettings.gameHeight);
-	}
+	CanvasContext.fillStyle = settings.fieldColor;
+	CanvasContext.fillRect(0, 0, settings.gameWidth, settings.gameHeight);
 	// Add field border
-	CanvasContext.strokeStyle = gameSettings.borderColor;
-	CanvasContext.lineWidth = gameSettings.gameWidth / 75;
-	CanvasContext.strokeRect(0, 0, gameSettings.gameWidth, gameSettings.gameHeight);
-
+	CanvasContext.strokeStyle = settings.borderColor;
+	CanvasContext.lineWidth = settings.gameWidth / 75;
+	CanvasContext.strokeRect(0, 0, settings.gameWidth, settings.gameHeight);
 	//draw paddles
 	for (var i = 0; i < nbPaddles; i++)
 		players[i].draw(CanvasContext);
-
 	// Draw ball
-	
-
-	CanvasContext.fillStyle = gameSettings.ballColor;
+	CanvasContext.fillStyle = settings.ballColor;
 	CanvasContext.beginPath();
-	CanvasContext.arc(gameSettings.gameWidth * (gameSettings.ballPosition.x + 0.5),  gameSettings.gameHeight * (gameSettings.ballPosition.y + 0.5), gameSettings.ballSize * gameSettings.gameHeight / 2, 0, Math.PI * 2);
-	if (isImage) {
-		CanvasContext.closePath();
-		CanvasContext.clip(); // Clips a circular area to draw the ball image in
-		CanvasContext.drawImage(ballImage, gameSettings.gameWidth * (gameSettings.ballPosition.x + 0.5) - gameSettings.ballSize / 2,  gameSettings.gameHeight * (gameSettings.ballPosition.y + 0.5) - gameSettings.ballSize / 2, gameSettings.ballSize, gameSettings.ballSize);
-	} else
-		CanvasContext.fill();
+	CanvasContext.arc(settings.gameWidth * (settings.ballPosition.x + 0.5),  settings.gameHeight * (settings.ballPosition.y + 0.5), settings.ballSize * settings.gameHeight / 2, 0, Math.PI * 2);
+	CanvasContext.fill();
 
 	// Restore the original state if the canvas was rotated for player 2
-	if (isImage || gameSettings.userID === '2' || gameSettings.userID === '3' || gameSettings.userID === '4')
+	if (settings.userID === '2' || settings.userID === '3' || settings.userID === '4')
 		CanvasContext.restore();
-
-	// Calculs ajustés pour chaque position
+	// relative positions of players repending on the playerID (if player 1, we use positions[0(playerID - 1)])
 	var positions = [ [1, 2, 3], [0, 3, 2], [3, 1, 0], [2, 0, 1]];
-	// Sélectionner les positions relatives basées sur playerID
-	var [pRight, pTop, pBottom] = positions[gameSettings.userID - 1];
+	// Select the right positions for the player
+	var [pRight, pTop, pBottom] = positions[settings.userID - 1];
 
-	// Affichage pour 2 joueurs : joueur actuel et à droite uniquement
+	// Display the score for 2 players
 	if (nbPaddles === 2)
-		scoreBoard.innerHTML = `${gameSettings.playersNames[gameSettings.userID - 1]}: ${players[gameSettings.userID - 1].Points} - ${gameSettings.playersNames[pRight]}: ${players[pRight].Points}`;
-	else { // Affichage pour 4 joueurs avec toutes positions
-		scoreBoard.innerHTML = `${gameSettings.playersNames[pTop]}: ${players[pTop].Points}<br>`;
-		scoreBoard.innerHTML += `${gameSettings.playersNames[gameSettings.userID - 1]}: ${players[gameSettings.userID - 1].Points} - ${gameSettings.playersNames[pRight]}: ${players[pRight].Points}<br>`;
-		scoreBoard.innerHTML += `${gameSettings.playersNames[pBottom]}: ${players[pBottom].Points}`;
+		scoreBoard.innerHTML = `${settings.playersNames[settings.userID - 1]}: ${players[settings.userID - 1].Points} - ${settings.playersNames[pRight]}: ${players[pRight].Points}`;
+	else { // Display the score for 4 players
+		scoreBoard.innerHTML = `${settings.playersNames[pTop]}: ${players[pTop].Points}<br>`;
+		scoreBoard.innerHTML += `${settings.playersNames[settings.userID - 1]}: ${players[settings.userID - 1].Points} - ${settings.playersNames[pRight]}: ${players[pRight].Points}<br>`;
+		scoreBoard.innerHTML += `${settings.playersNames[pBottom]}: ${players[pBottom].Points}`;
 	}
+
 	// Make sure to hide waiting screen and end game screen
 	document.getElementById('waitingScreen').style.display = 'none';
 	document.getElementById('endGameScreen').style.display = 'none';
-
-	if (gameSettings.status == "waiting")
+	// Display waiting screen or end game screen depending on the game status
+	if (settings.status == "waiting")
 		document.getElementById('waitingScreen').style.display = 'block';
-	if (gameSettings.status == "game_over")
+	if (settings.status == "game_over")
 	{
 		var winner = 'le Prince de LU';
+		var highestScore = 0;
 		for (var i = 0; i < nbPaddles; i++)
-			if (players[i].Points == gameSettings.winPoints)
-				winner = gameSettings.playersNames[i];
+		{
+			if (players[i].Points > highestScore)
+			{
+				winner = settings.playersNames[i];
+				highestScore = players[i].Points;
+			}
+		}
 		document.getElementById('winnerText').textContent = 'Winner: ' + winner;
 		var score = '';
 		for (var i = 0; i < nbPaddles; i++)
-			score += gameSettings.playersNames[i] + ': ' + players[i].Points + " <br> ";
+			score += settings.playersNames[i] + ': ' + players[i].Points + " <br> ";
   		document.getElementById('scoreText').innerHTML = score;
 		document.getElementById('endGameScreen').style.display = 'block';	
-	}
+}}
+
+
+/*‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾*\
+||=====================[Context initialisation]=====================||
+\*__________________________________________________________________*/
+var container = document.createElement('div');
+// Container for canvas and scoreboard
+document.body.appendChild(container); 
+container.style.display = 'flex'; container.style.flexDirection = 'column'; container.style.alignItems = 'center';
+canvas = document.getElementById('pongCanvas');
+// Add the canvas to the container
+container.appendChild(canvas); 
+CanvasContext = canvas.getContext('2d');
+// Creating a separate scoreboard
+scoreBoard = document.createElement('div');
+// Insert scoreboard above canvas in the container
+container.insertBefore(scoreBoard, canvas); 
+// Styling the scoreboard
+scoreBoard.style.textAlign = 'center'; scoreBoard.style.fontSize = '20px'; scoreBoard.style.color = 'white'; scoreBoard.style.marginBottom = '10px';
+
+
+/*‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾*\
+||====================[variables initialisation]====================||
+\*__________________________________________________________________*/
+// Initialize game settings and players
+if (window.contexteJson)
+	settings = new Settings(window.contexteJson);
+if (settings.nbPlayers > 2)
+	nbPaddles = 4;
+players = [nbPaddles];
+for (var i = 0; i < nbPaddles; i++)
+		players[i] = new Player(i + 1, settings.playersNames[i], settings);
+setGameSize()
+
+
+/*‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾*\
+||====================[websocket communication]=====================||
+\*__________________________________________________________________*/
+// WebSocket setup
+var ws;
+
+function connectWebSocket() {
+	var url = 'wss://' + window.location.host + '/wsGame/' + settings.gameID + '/' + settings.userName + '/';
+	ws = new WebSocket(url);
+
+	ws.onopen = () =>
+		{console.log("WebSocket connection established.");};
+	ws.onmessage = (event) => {
+		// parsing
+		var data = JSON.parse(event.data);
+		if (data.users)
+		{
+			settings.playersNames = data.users;
+			if (settings.isSolo && settings.nbPlayers == 2)
+				settings.userID = 1;
+			else
+				settings.userID = settings.playersNames.indexOf(settings.userName) + 1;
+		}
+		settings.status = data.state;
+		// ball update
+		settings.ballPosition = { x: data.ballx, y: -1 * data.bally };
+		// update players
+		for (var i = 0; i < nbPaddles; i++)
+			players[i].updateStatus(data[`p${i + 1}`], data[`score${i + 1}`]);
+		drawGame();
+	};
+	ws.onclose = () =>
+		{console.log("WebSocket connection closed.");};
+	ws.onerror = (error) =>
+		{console.log("WebSocket error: ", error);};
 }
+// Establish WebSocket connection
+connectWebSocket();
 
 
-
-document.addEventListener('DOMContentLoaded', () => {
-	/*‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾*\
-	||=====================[Context initialisation]=====================||
-	\*__________________________________________________________________*/
-	var canvasContainer = document.createElement('div');
-	document.body.appendChild(canvasContainer); // Container for canvas and scoreboard
-	canvasContainer.style.display = 'flex'; canvasContainer.style.flexDirection = 'column'; canvasContainer.style.alignItems = 'center';
-	canvas = document.getElementById('pongCanvas');
-	canvasContainer.appendChild(canvas); // Add the canvas to the container
-	CanvasContext = canvas.getContext('2d');
-	scoreBoard = document.createElement('div'); // Creating a separate scoreboard
-	canvasContainer.insertBefore(scoreBoard, canvas); // Insert scoreboard above canvas in the container
-
-	// Styling the scoreboard
-	scoreBoard.style.textAlign = 'center'; scoreBoard.style.fontSize = '20px'; scoreBoard.style.color = 'white'; scoreBoard.style.marginBottom = '10px';
-
-	/*‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾*\
-	||====================[variables initialisation]====================||
-	\*__________________________________________________________________*/
-
-	
-	// Initialize game settings and players
-	if (window.contexteJson)
-		gameSettings = new Settings(window.contexteJson);
-	if (gameSettings.nbPlayers > 2)
-		nbPaddles = 4;
-	players = [nbPaddles];
-	for (var i = 0; i < nbPaddles; i++)
-		players[i] = new Player(i + 1, gameSettings.playersNames[i], gameSettings);
-	setGameSize()
-
-	// pictures for ball and field
-	isImage = false;
-	if (isImage){
-		fieldImage = new Image();
-		ballImage = new Image();
-		fieldImage.src = 'https://i.ibb.co/2KnGYRK/4playerspong.png'; // Adjust path
-		ballImage.src = 'https://i1.sndcdn.com/avatars-000894638827-qr5jsd-t240x240.jpg'; // Adjust path
-	}
-
-	// WebSocket setup
-	var ws;
-
-	/*‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾*\
-	||====================[websocket communication]=====================||
-	\*__________________________________________________________________*/
-	function connectWebSocket() {
-		var url = 'wss://' + window.location.host + '/wsGame/' + gameSettings.gameID + '/' + gameSettings.userName + '/';
-		ws = new WebSocket(url);
-
-		ws.onopen = () =>
-			{console.log("WebSocket connection established.");};
-		ws.onmessage = (event) => {
-			// parsing
-			console.log(event.data);
-			var data = JSON.parse(event.data);
-			if (data.users)
-			{
-				gameSettings.playersNames = data.users;
-				gameSettings.userID = gameSettings.playersNames.indexOf(gameSettings.userName) + 1;
-			}
-			gameSettings.status = data.state;
-			// ball update
-			gameSettings.ballPosition = { x: data.ballx, y: -1 * data.bally };
-			// update players
-			for (var i = 0; i < nbPaddles; i++)
-				players[i].updateStatus(data[`p${i + 1}`], data[`score${i + 1}`]);
-			drawGame();
-		};
-		ws.onclose = () =>
-			{console.log("WebSocket connection closed.");};
-		ws.onerror = (error) =>
-			{console.log("WebSocket error: ", error);};
-	}
-	// Establish WebSocket connection
-	connectWebSocket();
-
-	/*‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾*\
-	||=========================[input managment]========================||
-	\*__________________________________________________________________*/
-	// Event listeners for key presses
-	document.addEventListener('keydown', (event) => {
-		if (gameSettings.status !== "playing")
-			return;
-		players[gameSettings.userID - 1].updateKeysPressed(event, true, ws);
-		if (gameSettings.isSolo == true && gameSettings.nbPlayers == 2 && event.key == "ArrowUp" || event.key == "ArrowDown")
-			players[1].updateKeysPressed(event, true, ws);
-	});
-	// Event listeners for key releases
-	document.addEventListener('keyup', (event) => {
-		players[gameSettings.userID - 1].updateKeysPressed(event, false, ws); // Update keysPressed for the player
-		if (gameSettings.isSolo && gameSettings.nbPlayers == 2)
-			players[1].updateKeysPressed(event, false, ws); // Update keysPressed for the other player if in 1v1 singlescreen
-	});
-
-	drawGame();
+/*‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾*\
+||=========================[input managment]========================||
+\*__________________________________________________________________*/
+// Event listeners for key presses
+document.addEventListener('keydown', (event) => {
+	if (settings.status !== "playing")
+		return;
+	players[settings.userID - 1].updateKeysPressed(event, true, ws);
+	if (settings.isSolo == true && settings.nbPlayers == 2 && event.key == "ArrowUp" || event.key == "ArrowDown")
+		players[1].updateKeysPressed(event, true, ws);
 });
+// Event listeners for key releases
+document.addEventListener('keyup', (event) => {
+	players[settings.userID - 1].updateKeysPressed(event, false, ws); // Update keysPressed for the player
+	if (settings.isSolo && settings.nbPlayers == 2)
+		players[1].updateKeysPressed(event, false, ws); // Update keysPressed for the other player if in 1v1 singlescreen
+});
+drawGame();
+
 // Adjust canvas size on window resize
 window.addEventListener('resize', () => {
-	setGameSize()
+	setGameSize();
 	drawGame();
 });

@@ -72,8 +72,6 @@ async def WaitUntilPlayers(ws, data):
     lockedPlayers = listUser(data) #list user locked
     logedPlayers = []
     startTime = time()
-    print("RECIEVED DATA :", data, file=stderr)
-    print(ORANGE, "NECESSARY PLAYERS :", data["playeramount"], lockedPlayers, RESET, file=stderr)
     while len(logedPlayers) < data["playeramount"] and time() - startTime < 20:
         msgs = ws.getMsg()
         if msgs:

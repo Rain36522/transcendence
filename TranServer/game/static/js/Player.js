@@ -48,8 +48,6 @@ export class Player
 				}
 			}
 		}
-		if (message != "")
-			console.log(`message: ${message}`);
 		if (ws && ws.readyState === WebSocket.OPEN && message != "")
 			ws.send(message);
 	}
