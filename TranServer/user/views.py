@@ -456,6 +456,14 @@ def upload_profile_pic_api(request):
         )
 
 
+def email_sent(request):
+    return render(request, "html/email_sent.html")
+
+
+def forgot_password(request):
+    return render(request, "html/forgot_password.html")
+
+
 @login_required
 def account_information(request):
     return render(request, "html/accountInformation.html")
