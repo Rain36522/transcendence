@@ -29,12 +29,14 @@ from .views import (
     email_sent,
     EmailValidation,
     PasswordForgot,
+    change_password,
     PasswordReset,
     sendPasswordReset,
 )
 from django.views.generic.base import RedirectView
 
 urlpatterns = [
+    path("change_password/", change_password, name="change_password"),
     path("email_sent/", email_sent, name="email_sent"),
     path("forgot_password/", sendPasswordReset.as_view(), name="forgot_password"),
     path("profile_user/", profile_user, name="profile_user"),
