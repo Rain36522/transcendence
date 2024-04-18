@@ -53,7 +53,7 @@ def api_signup(request):
         sendMail(user, user.email, isMail=True)
         # login(request, user)
 
-        return Response({"message": "A mail verification as been send"}, status=201)
+        return Response({"message": "A verification email has been sent"}, status=201)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -640,12 +640,12 @@ def test_password_change_view(request):
 
 
 def MessageContentPwd(user):
-    subject = "Forgot password"
+    subject = "Reset password"
     GenerateUserToken(user, mail=False)
     ResetLink = "https://127.0.0.1/api/pwd/" + user.username + "/" + user.token
     mailContent = f"""
     <h1>Hi {user.username}!</h1>
-    <p>There is the link for reset your password :
+    <p>Here is the link to reset your password :
     <a href="{ResetLink}">Reset Password</a></p>
 
     DO NOT REPLY.
@@ -657,8 +657,8 @@ def MessageContentMail(user):
     GenerateUserToken(user, mail=True)
     ValidateLink = "https://127.0.0.1/api/mail/" + user.username + "/" + user.token
     mailContent = f"""
-    <h1>Welcome to transcendence {user.username}!</h1>
-    <p>There is the link for validate the mail :
+    <h1>Welcome to transcendance {user.username}!</h1>
+    <p>Here is the link to validate your email :
     <a href="{ValidateLink}">Mail validation</a></p>
 
     DO NOT REPLY.
@@ -676,10 +676,7 @@ def sendMail(user, mail, isMail=False):
     print("MAIL LOGIN :", smtp_user)
     print("MAIL_PWD :", smtp_password)
     
-    if isMail:
-        subject, content = MessageContentMail(user)
-    else:
-        subject, content = MessageContentPwd(user)
+    subject, content = MessageContentMail(user) if mail else MessageContentPwd(user)
 
     msg = MIMEMultipart('alternative')
     msg.attach(MIMEText(content, 'html'))
@@ -708,12 +705,13 @@ def GenerateUserToken(user, mail=False):
     tokenListe = User.objects.values_list('token', flat=True)
     while True:
         token = ""
-        tokenLength = randint(22, 30)
+
         if mail:
             token = "M"
         else:
             token = "P"
-        for i in range(tokenLength):
+        token = "M" if mail else "P"
+        for i in range(22):
             token += choice(characters)
         if token not in tokenListe:
             break
@@ -725,10 +723,9 @@ def EmailValidation(request, username, token):
     if users.exists():
         user = users.first()
     else:
-        raise Http404("Invalide link")
+        raise Http404("Invalid link")
     if not token or user.token != token:
-        print("TOKEN NOT VALIDE")
-        raise Http404("Invalide link")
+        raise Http404("Invalid link")
     else:
         user.mailValidate = True
         user.token = ""
@@ -736,7 +733,7 @@ def EmailValidation(request, username, token):
         return HttpResponse("EMAIL VALIDATE")
 
 
-class PassWordForgot(APIView):
+class PasswordForgot(APIView):
 
     def get(request, username, token):
         return HttpResponse("PASSWORD CHANGE PAGE")
