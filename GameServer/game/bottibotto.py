@@ -13,88 +13,48 @@ class BottiBotto:
 		self.game_logic = game_logic
 		self.game_settings = game_settings
 
-		self.ball = ball(
-			self.game_settings["ball_diameter"],
-			self.game_settings["ball_speed"],
-			self.game_settings["ball_acceleration"],
-		)
+		self.ball = ball(self.game_settings["ball_diameter"], self.game_settings["ball_speed"], self.game_settings["ball_acceleration"])
 		self.ball.dir = self.game_settings["ball_dir"]
-		self.paddle = paddle(
-			self.game_settings["paddle_length"], self.game_settings["paddle_speed"]
-		)
+		self.paddle = paddle(self.game_settings["paddle_length"], self.game_settings["paddle_speed"])
 		self.up = False
 		self.down = False
-
 	# bottibotto_vit_sa_vie
 
 
 	# main bot routine
 	async def bottibotto_vit_sa_vie(self):
 		time_to_hit = 0
+		time_start = time.perf_counter()
+		time_stop = time.perf_counter()
 		while True:
+			print("time between game state fetches : ", round(time_stop - time_start, 3), file=stderr)
+			time_stop = time.perf_counter()
 			game_state = await self.game_logic.get_game_state()
+			time_start = time.perf_counter()
 			if game_state["game_over"]:  # terminate bot routine, game over
 				break
 			self.ball.pos = game_state["ball_pos"]
 			self.ball.dir = game_state["ball_dir"]
 			self.ball.speed = game_state["ball_speed"]
 			self.paddle.pos.y = game_state["paddle_pos"].y
-			# print(
-			# 	f"""
-			# O[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]O
-			# H
-		 	# H							GAME UPDATE
-			# H		BALL:
-			# H				position: [{round(self.ball.pos.x, 3)}, {round(self.ball.pos.y, 3)}]
-			# H				direction: [{round(self.ball.dir.x, 3)}, {round(self.ball.dir.y, 3)}]
-			# H				speed: {round(self.ball.speed, 3)}
-			# H   
-			# H		PADDLE: 
-			# H				pos: [{round(self.paddle.pos.x, 3)}, {round(self.paddle.pos.y, 3)}]
-			# H
-			# O[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]O
-			# """,
-			# 	file=stderr,
-			# )
-			time_to_hit = await self.calculate_next_y_extremum_hit(
-				self.ball, self.paddle
-			)
-			# print(
-			# 	f"""
-			# /~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\
-		 	# L
-		 	# L	sleep time: {round(time_to_hit if time_to_hit >= 1 else 1, 3)}
-			# """,
-			# 	file=stderr,
-			# )
-			timestamp = time.perf_counter()
-			if time_to_hit < 1:
-				time_to_hit = 1
-			await asyncio.sleep(
-				time_to_hit
-			)  # wait for the next hit + delay to make sure the ball already bounced
-			# print(
-			# 	f"""
-			# L	real time slept: {round(time.perf_counter() - timestamp, 3)}
-			# L
-			# \\~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/
-			# """,
-			# 	file=stderr,
-			# )
-
+			time_to_hit = await self.see_future_and_preshot(self.ball, self.paddle)
+			
+			await asyncio.sleep(time_to_hit)
+			time_start = time.perf_counter()
 	# bottibotto_vit_sa_vie end
 
 
 	# this functions returns time to next hit (cumulates every hit until y=0.5 or y=-0.5) and the x position of the next hit
-	async def calculate_next_y_extremum_hit(self, ball, paddle):
+	async def see_future_and_preshot(self, ball, paddle):
 		cumulated_time = 0
 		max_loop_repeat = 30
-		# bounced_right = False
+		bounced_right = False
+		time_to_bounce_right = 0
 		delay_start = time.perf_counter()
 
 		while max_loop_repeat:
 			max_loop_repeat -= 1
-	
+
 			new_pos = find_collision_pos(ball.pos, ball.dir, ball.diameter)
 
 			time_to_hit = time_to_travel(ball.pos, new_pos, ball.speed)
@@ -107,9 +67,8 @@ class BottiBotto:
 			if ball.speed > 1.8:
 				ball.speed = 1.8
 
-			# collisoin_side = "LEFT" if new_pos.x == -0.49 + ball.diameter / 4 else ("RIGHT" if new_pos.x == 0.49 - ball.diameter / 4 else ("UP" if new_pos.y == -0.5 + ball.diameter / 2 else ("DOWN" if new_pos.y == 0.5 - ball.diameter / 2 else "NONE")))
-			
 			if new_pos.x == 0.49 - ball.diameter / 4: # Collision right
+				bounced_right = True
 				ball.dir.x = -abs(ball.dir.x)
 		
 				paddle.next_pos.y = random.uniform(ball.pos.y + paddle.length / 2, ball.pos.y - paddle.length / 2)
@@ -122,71 +81,29 @@ class BottiBotto:
 				else:
 					paddle_travel_time = time_to_travel(paddle.pos, paddle.next_pos, paddle.speed)
 
-				ball.dir = paddle.collide(ball)  # Collision à droite
-				# print(
-				# 	f"""
-				# /--------------------------------------------------------------------\\
-				# |
-				# |   moving paddle from [{round(paddle.pos.x, 3)}, {round(paddle.pos.y, 3)}] to [{round(paddle.next_pos.x, 3)}, {round(paddle.next_pos.y, 3)}]
-				# |	operation set to take {round(paddle_travel_time, 3)} seconds
-				# |
-				# |   remaining time to hit after operation: {round(cumulated_time - (time.perf_counter() - delay_start) - paddle_travel_time, 3)} seconds
-				# |
-				# \\--------------------------------------------------------------------/
-				# """,
-				# 	file=stderr,
-				# )
+				ball.dir = paddle.collide(ball)
 				await self.move_paddle_to_pos(copy.deepcopy(paddle.pos), copy.deepcopy(paddle.next_pos),  copy.deepcopy(paddle.speed), copy.deepcopy(paddle_travel_time))
 				paddle.pos.y = paddle.next_pos.y
+				time_to_bounce_right = cumulated_time
 
 			if new_pos.y == -0.5 + ball.diameter / 2 or new_pos.y == 0.5 - ball.diameter / 2:
 				ball.dir.y = -ball.dir.y  # Collision down
-			# print(
-			# 	f"""
-			# O--------------------------------------------------------------------O
-			# |
-			# |   COLLISION: {collisoin_side}
-			# |
-			# |   from [{round(old_pos.x, 3)}, {round(old_pos.y, 3)}] to [{round(new_pos.x, 3)},{round(new_pos.y, 3)}]
-			# |
-			# |   estimated travel time: {round(time_to_hit, 3)} seconds to travel distance {round(find_distance(old_pos, new_pos), 3)}
-			# |
-			# |   cumulated time: {round(cumulated_time, 3)} seconds
-			# |
-			# O--------------------------------------------------------------------O
-			# """,
-			# 	file=stderr,
-			# )
-			if new_pos.x <= -0.49 + ball.diameter / 4: #ball went fully 
+			if new_pos.x <= -0.49 + ball.diameter / 4: #ball went left
 				break
 		#loop end
-		# paddle.next_pos.y = 0
-		# center_move_time =  time.perf_counter() - delay_start
-		# if center_move_time > time_to_travel(paddle.pos, paddle.next_pos, paddle.speed):
-		# 	center_move_time = time_to_travel(paddle.pos, paddle.next_pos, paddle.speed)
-		# 	if paddle.next_pos.y - paddle.pos.y > 0:
-		# 		paddle.next_pos.y -= center_move_time * paddle.speed
-		# 	else:
-		# 		paddle.next_pos.y += center_move_time * paddle.speed
-		# print(
-		# 	f"""
-		# /--------------------------------------------------------------------\\
-		# |
-		# |   moving paddle from [{round(paddle.pos.x, 3)}, {round(paddle.pos.y, 3)}] to [{round(paddle.next_pos.x, 3)}, {round(paddle.next_pos.y, 3)}]
-		# |	operation set to take {round(center_move_time, 3)} seconds
-		# |
-		# |   remaining time to hit after operation: {round(cumulated_time - (time.perf_counter() - delay_start) - center_move_time, 3)} seconds
-		# |
-		# \\--------------------------------------------------------------------/
-		# """,
-		# 	file=stderr,
-		# )
-		# await self.move_paddle_to_pos(copy.deepcopy(paddle.pos), copy.deepcopy(paddle.next_pos),  copy.deepcopy(paddle.speed), center_move_time)
 
-		if cumulated_time - (time.perf_counter() - delay_start) >= 1:
-			return cumulated_time - (time.perf_counter() - delay_start) + 0.05
+		total_delay = time.perf_counter() - delay_start
+		if bounced_right and cumulated_time - time_to_bounce_right >= 1.3:
+			if time_to_bounce_right >= 1:
+				return time_to_bounce_right - total_delay + 0.05
+			else:
+				return 1 - total_delay + 0.05
+		if cumulated_time >= 2.5 and not bounced_right:
+			return 1 - total_delay
+		elif cumulated_time >= 1:
+			return cumulated_time - total_delay + 0.05
 		else:
-			return 1 - (time.perf_counter() - delay_start) + 0.05
+			return 1 - total_delay + 0.05
 	# calculate_next_y_extremum_hit end
 
 
@@ -307,7 +224,5 @@ class Vec2:
 		self.y /= mag
 		return self
 # Vec2 end
-
-
 
 # et voila on l'a bien baisé le noob d'adversaire
