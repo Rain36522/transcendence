@@ -26,12 +26,12 @@ from .views import (
     profile_user,
     ColorView,
     forgot_password,
-    success_email_recup,
+    email_sent,
 )
 from django.views.generic.base import RedirectView
 
 urlpatterns = [
-    path("success_email_recup/", success_email_recup, name="success_email_recup"),
+    path("email_sent/", email_sent, name="email_sent"),
     path("forgot_password/", forgot_password, name="forgot_password"),
     path("profile_user/", profile_user, name="profile_user"),
     path("accountInformation/", account_information, name="account_information"),

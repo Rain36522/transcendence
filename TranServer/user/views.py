@@ -411,11 +411,14 @@ def upload_profile_pic_api(request):
             {"error": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST
         )
 
-def success_email_recup(request):
-    return render(request, "html/success_email_recup.html")
+
+def email_sent(request):
+    return render(request, "html/email_sent.html")
+
 
 def forgot_password(request):
     return render(request, "html/forgot_password.html")
+
 
 @login_required
 def account_information(request):
