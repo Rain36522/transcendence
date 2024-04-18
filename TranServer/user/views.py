@@ -40,6 +40,8 @@ import os
 from datetime import timedelta
 
 
+MAIL = False
+
 @api_view(["POST"])
 @renderer_classes([JSONRenderer])
 def api_signup(request):
@@ -47,8 +49,19 @@ def api_signup(request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-
-            if sendMail(user, user.email, isMail=True):
+            if not MAIL:
+                chat = Chat.objects.create()
+                chat.participants.add(user)
+                chat.is_personal = True
+                chat.save()
+                user.mailValidate = True
+                user.save()
+                login(request, user)
+                return Response(
+                    {"message": "You have been logged in"},
+                    status=status.HTTP_200_OK,
+                )  
+            if MAIL or sendMail(user, user.email, isMail=True):
                 chat = Chat.objects.create()
                 chat.participants.add(user)
                 chat.is_personal = True
