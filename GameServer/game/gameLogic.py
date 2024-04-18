@@ -6,6 +6,7 @@ import math
 import time
 from bottibotto import BottiBotto 
 import copy
+import random
 
 RESET = "\033[0m"
 RED = "\033[31m"
@@ -43,15 +44,10 @@ class gameLogic:
 			for user in userlist:
 				self.players.append(Player(user, user, gameSet["planksize"], i))
 				i += 1
-		if len(self.players) == 4:
-			self.ball = Ball(
-				float(gameSet["ballwidth"]), float(gameSet["ballwidth"]), 0.25, gameSet["acceleration"], gameSet["playeramount"] == 1
-			)
-
-		elif len(self.players) == 2:
-			self.ball = Ball(
-				float(gameSet["ballwidth"]), float(gameSet["ballwidth"]) / 2, 0.25, gameSet["acceleration"], gameSet["playeramount"] == 1
-			)
+		ballWidthX = float(gameSet["ballwidth"])
+		if len(self.players) == 2:
+			ballWidthX = float(gameSet["ballwidth"]) / 2
+		self.ball = Ball(float(gameSet["ballwidth"]), ballWidthX, float(gameSet["Speed"]), float(gameSet["acceleration"]), float(gameSet["playeramount"]) == 1)
 
 		self.print("Game logic set")
 	#__init__ end
@@ -254,7 +250,7 @@ class Ball:
 		self.speed = speed
 		self.size_w = size_w
 		self.init_speed = speed
-		self.dir = Vec2(1.0, 0.0)
+		self.dir = random_vector_in_angle_range()
 		self.collision_angle = 70
 		self.last_touch = ""
 		self.temp_last_touch = ""
@@ -264,6 +260,7 @@ class Ball:
 	# reset the ball
 	def reset(self):
 		self.pos = Vec2(0.0, 0.0)
+		self.dir = random_vector_in_angle_range()
 		self.temp_last_touch = ""
 		self.last_touch = ""
 		self.speed = self.init_speed
@@ -451,3 +448,16 @@ def seg_collide(pos_seg1, len_seg1, pos_seg2, len_seg2):
 		return pos_seg1 - (len_seg1 / 2) < pos_seg2 + (len_seg2 / 2)
 	return pos_seg2 - (len_seg2 / 2) < pos_seg1 + (len_seg1 / 2)
 #seg_collide end
+
+# generates a random number excluding 0
+def random_vector_in_angle_range():
+    # random choice of side
+    if random.choice([True, False]):
+        # (1, -1) to (1, 1)
+        angle = random.uniform(-math.pi / 4, math.pi / 4)
+    else:
+        # (-1, -1) to (-1, 1)
+        angle = random.uniform(3 * math.pi / 4, 5 * math.pi / 4)
+    return Vec2(math.cos(angle), math.sin(angle)).normalize()
+#non_zero_uniform end
+	
