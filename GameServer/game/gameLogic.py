@@ -37,20 +37,20 @@ class gameLogic:
 		self.players = []
 		i = 1
 		if gameSet["playeramount"] == 1:
-			self.players.append(Player("1", "1", 0.2, 1))
-			self.players.append(Player("2", "2", 0.2, 2))
+			self.players.append(Player("1", "1", gameSet["planksize"], 1))
+			self.players.append(Player("2", "2", gameSet["planksize"], 2))
 		else:
 			for user in userlist:
 				self.players.append(Player(user, user, gameSet["planksize"], i))
 				i += 1
 		if len(self.players) == 4:
 			self.ball = Ball(
-				float(gameSet["ballwidth"]), float(gameSet["ballwidth"]), 0.25
+				float(gameSet["ballwidth"]), float(gameSet["ballwidth"]), 0.25, gameSet["acceleration"], gameSet["playeramount"] == 1
 			)
 
 		elif len(self.players) == 2:
 			self.ball = Ball(
-				float(gameSet["ballwidth"]), float(gameSet["ballwidth"]) / 2, 0.25
+				float(gameSet["ballwidth"]), float(gameSet["ballwidth"]) / 2, 0.25, gameSet["acceleration"], gameSet["playeramount"] == 1
 			)
 
 		self.print("Game logic set")
@@ -58,9 +58,10 @@ class gameLogic:
  
 	# start the game
 	async def start_game(self):
-		game_settings = await self.get_game_settings()
-		self.bottiBotto = BottiBotto(self, game_settings)
-		asyncio.create_task(self.bottiBotto.bottibotto_vit_sa_vie())
+		if self.gameSet["playeramount"] == 1:
+			game_settings = await self.get_game_settings()
+			self.bottiBotto = BottiBotto(self, game_settings)
+			asyncio.create_task(self.bottiBotto.bottibotto_vit_sa_vie())
 		await self.gameInput()
  
 	# get game settings for bottibotto
@@ -68,7 +69,7 @@ class gameLogic:
 		return {
 			"ball_diameter": self.ball.size,
 			"ball_speed": self.ball.speed,
-			"ball_acceleration": 1,
+			"ball_acceleration": self.gameSet["acceleration"],
 			"ball_dir": self.ball.dir.normalize(),
 			"ball_pos": self.ball.pos,
 			"paddle_length": self.players[1].plankLength,
@@ -81,7 +82,7 @@ class gameLogic:
 		self.game_state = {
 			"ball_diameter": self.ball.size,
 			"ball_speed": self.ball.speed,
-			"ball_acceleration": 1,
+			"ball_acceleration": self.gameSet["acceleration"],
 			"ball_dir": self.ball.dir.normalize(),
 			"ball_pos": self.ball.pos,
 			"paddle_length": self.players[1].plankLength,
@@ -125,30 +126,28 @@ class gameLogic:
 					self.players[player_i - 1].up = msg[4] == "n"
 				if msg[1] == "d":
 					self.players[player_i - 1].down = msg[4] == "n"
-		# for message in messages:
-		#     if message.endswith("login") and len(self.players) < self.gameSet["playeramount"]:
-		#         player = self.getPlayer(message[:-5])
-		#         if not player:
-		#             continue
-		#         player.connected = True
-		#     else:
-		#         commands.append({
-		#             "token": message[:-1],
-		#             "move":message[len(message) - 1:]})
 		return commands
 	#getMsgs end
 
 	# routine for the game
 	async def gameInput(self):
+		print(f"""
+			Ball speed = {self.ball.speed}
+			Ball acceleration = {self.ball.acceleration}
+		""",
+		file=stderr,
+		)
 		last_time = time.perf_counter()
 		try:
 			while True:
-				await self.update_state()
-				await self.set_bottibotto_paddle()
+				if self.gameSet["playeramount"] == 1:
+					await self.update_state()
+					await self.set_bottibotto_paddle()
 				current_time = time.perf_counter()
 				global delta_time
 				delta_time = current_time - last_time
 				last_time = current_time
+
 				commands = self.getMsgs()
 				for command in commands:
 					player = self.getPlayer(command["token"])
@@ -163,6 +162,7 @@ class gameLogic:
 				self.ball.collide(self.players)
 				self.game["ballx"] = self.ball.pos.x
 				self.game["bally"] = self.ball.pos.y
+				#point scored
 				if self.ball.game_over():
 					player = self.getPlayer(self.ball.last_touch)
 					if player:
@@ -247,8 +247,9 @@ class Player:
 # Ball class
 class Ball:
 	# constructor
-	def __init__(self, size: float, size_w: float, speed: float):
+	def __init__(self, size: float, size_w: float, speed: float, acceleration: float, is_ai: bool = False):
 		self.size = size
+		self.acceleration = acceleration
 		self.pos = Vec2(0.0, 0.0)
 		self.speed = speed
 		self.size_w = size_w
@@ -257,6 +258,7 @@ class Ball:
 		self.collision_angle = 70
 		self.last_touch = ""
 		self.temp_last_touch = ""
+		self.is_ai = is_ai
 	#__init__ end
 
 	# reset the ball
@@ -282,25 +284,18 @@ class Ball:
 				paddle_y += self.size / 2
 			collision_pos = project_line(self.pos.y, self.pos.x, self.dir.y, self.dir.x, paddle_y)
 			collision_point = Vec2(collision_pos, paddle_y)  # collision position
-			# print("cur pos ", paddle_x, "proj pos", collision_pos, "dir", self.dir, file=stderr)
 			if not seg_collide(collision_pos, self.size, paddle_x, paddle_len):
 				return -1, 0, 0
-			# print("found y soon", file=stderr)
 			# down, y dir positive
 			max_col = paddle_len / 2 + self.size / 2
 			new_dir = angle_to_Vec2(-self.collision_angle * (paddle_x - collision_pos) / max_col + 90)
-			# print("angle:", self.collision_angle * (paddle_x - collision_pos) / max_col + 90, file=stderr)
-			# print("offset:", self.collision_angle * (paddle_x - collision_pos) / max_col, file=stderr)
 			# up, y dir negative
 			if self.dir.y > 0:
 				new_dir = angle_to_Vec2(-self.collision_angle * (collision_pos - paddle_x) / max_col + 270)
-				# print("angle:", self.collision_angle * (paddle_x - collision_pos) / max_col + 270, file=stderr)
-
 			if is_wall:
 				new_dir = Vec2(self.dir.x, -self.dir.y)
 			dist = find_dist(collision_pos, paddle_y, self.pos.x, self.pos.y)
 			return dist, new_dir, collision_point
-	
 		if paddle_x > 0:
 			paddle_x -= self.size_w / 2
 		else:
@@ -308,10 +303,8 @@ class Ball:
 		# paddle is like this: |
 		collision_pos = project_line(self.pos.x, self.pos.y, self.dir.x, self.dir.y, paddle_x)  # find the y coordinate of the intersection point
 		collision_point = Vec2(paddle_x, collision_pos)
-		# print("collide is ", seg_collide(collision_pos, self.size, py, s), " as collide point is ", collision_pos, "yet plank point is ", py, file=stderr)
 		if not seg_collide(collision_pos, self.size, paddle_y, paddle_len):  # verify that the y coordinate is on the paddle
 			return -1, 0, 0
-
 		# right, x dir positive
 		# offset (80) * (paddle_center - contact_point) / paddle_size)
 		max_col = paddle_len / 2 + self.size_w / 2
@@ -344,7 +337,6 @@ class Ball:
 		self.temp_last_touch = ""
 		while remaining_dist > 0:
 			self.collision = [math.inf, {}, {}]
-			# print("Players", len(players), file=stderr)
 			if (self.dir.x > 0 and len(players) > 1):  # moving right, can hit right player (2)
 				self.set_if_smaller(
 					self.collide_paddle(
@@ -401,17 +393,18 @@ class Ball:
 
 			# there is a collision. There can be a new collision
 			if self.collision[0] >= 0 and self.collision[0] < remaining_dist:
-				# print("Collided!", self.dir, file=stderr)
-
 				self.dir = self.collision[1]
 				self.pos = self.collision[2]
 				remaining_dist -= self.collision[0]
-				# print("COLLIDE FOUND", file=stderr)
-				# print("dist remaining", remaining_dist, file=stderr)
 				if self.temp_last_touch != "":
 					self.last_touch = self.temp_last_touch
-				if self.speed < 1.75:
-					self.speed += 0.05
+				max_speed = 4
+				if self.is_ai:
+					max_speed = 1.8
+				if self.speed < max_speed:
+					self.speed += self.acceleration
+				if self.speed > max_speed:
+					self.speed = max_speed
 			else:
 				# there is no collision within range
 				self.pos.x += self.dir.x * remaining_dist

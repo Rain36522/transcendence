@@ -215,6 +215,35 @@ class TournamentJoin(APIView):
         self.id = id
         if not Tournament.objects.filter(pk=id).exists():
             raise Http404("Tournament does not exist")
+        self.tournament = Tournament.objects.get(pk=self.id)
+        self.request = request
+        tournamentSize = self.getGameByLevel()
+        return render(request, 'html/bracket.html', {'tournamentSize': tournamentSize, 'username':request.user.username})
+
+    def getGameByLevel(self):
+        i = 0
+        gameliste = []
+        value = 1
+        while value:
+            value = self.tournament.game_set.filter(gameLevel=i).count()
+            if value:
+                gameliste.append(value)
+            i += 1
+        return gameliste
+    
+    def handle_exception(self, exc):
+        if isinstance(exc, Http404):
+            raise exc
+        return super().handle_exception(exc)
+
+
+        
+class TournamentJoin(APIView):
+    renderer_classes = [JSONRenderer]
+    def get(self, request, id):
+        self.id = id
+        if not Tournament.objects.filter(pk=id).exists():
+            raise Http404("Tournament does not exist")
         self.request = request
         id = self.newUserConnection()
 

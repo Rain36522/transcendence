@@ -23,6 +23,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=255, unique=True)
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=150, blank=True)
+    token = models.CharField(max_length=255, blank=True)
+    mailValidate = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
     last_active = models.DateTimeField(default=timezone.now)
     wins = models.PositiveIntegerField(default=0, verbose_name="Number of wins")

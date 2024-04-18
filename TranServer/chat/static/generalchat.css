@@ -36,53 +36,19 @@ body::before {
 	z-index: -1;
 }
 
-.header-btn,
-.logout-link,
-.profile-link,
 .game-button {
 	background-color: transparent;
-	/* Enlève le fond pour tous */
 	color: white;
-	/* Texte blanc pour tous */
-	font-family: 'Roboto', sans-serif;
-	font-size: 20px;
-	text-transform: uppercase;
-	letter-spacing: 1px;
-	padding: 12px 20px;
-	cursor: pointer;
-	border: none;
-	border-radius: 5px;
-	text-decoration: none;
-	/* Enlever le soulignement pour tous */
+	transition: background-color 0.3s;
 }
 
-.header-btn:hover,
-.logout-link:hover,
-.profile-link:hover,
 .game-button:hover {
-	background-color: rgba(255, 255, 255, 0.2);
-	/* Légère interaction sur le survol pour tous */
-	color: #FFFF99;
-	/* Change la couleur du texte au survol */
+	background-color: #444 !important;
 }
-
-/* Vous pouvez supprimer ou ajuster ces styles si certains ne sont plus nécessaires */
-.game-button {
-	background-color: transparent;
-	/* Assure que le fond est transparent */
-	border: none;
-	/* Pas de bordure */
-	color: white;
-	/* Texte blanc */
-	text-decoration: none;
-	/* Pas de soulignement */
-}
-
 
 .chat-container {
 	position: fixed;
 	top: 55%;
-	/* Décalage vers le bas */
 	left: 50%;
 	transform: translate(-50%, -50%);
 	width: 70%;
@@ -96,29 +62,21 @@ body::before {
 
 .message-input textarea {
 	flex-grow: 1;
-	/* Assure que la zone de saisie prend tout l'espace horizontal disponible */
 	margin-right: 10px;
 	padding: 10px;
 	border-radius: 5px;
 	border: 1px solid #ccc;
 	resize: none;
-	/* Empêche le redimensionnement */
 	width: 100%;
-	/* S'étend sur toute la largeur disponible */
 	font-family: 'Roboto', sans-serif;
-	/* Utilise Roboto pour la police */
 	font-size: 16px;
-	/* Taille de la police appropriée */
 	color: #333;
-	/* Couleur du texte, choisie pour une bonne lisibilité */
 }
 
 .user-list {
 	position: relative;
-	/* Ajouté pour positionner absolument le bouton newChatButton à l'intérieur */
 	flex: 1;
 	background-color: #eee;
-	/* Changez la couleur de fond en gris comme vous l'avez décrit */
 	overflow-y: auto;
 	border-top-left-radius: 20px;
 	border-bottom-left-radius: 20px;
@@ -126,7 +84,6 @@ body::before {
 
 .chat-window {
 	flex: 2;
-	/* Permet au chat-window de prendre deux fois plus d'espace que le user-list */
 	padding: 20px;
 	overflow-y: auto;
 	background-color: #fff;
@@ -179,7 +136,6 @@ body::before {
 .message-input button {
 	padding: 10px 20px;
 	background-color: #FFFF99;
-	/* Bouton jaune pale fluo */
 	color: #000;
 	border: none;
 	cursor: pointer;
@@ -188,9 +144,7 @@ body::before {
 
 .message-input button#sendMessage {
 	background-color: #000;
-	/* Noir */
 	color: #fff;
-	/* Blanc */
 }
 
 header {
@@ -210,7 +164,6 @@ header {
 
 .header-btn {
 	background-color: #FFFF99;
-	/* Bouton jaune pale fluo */
 	color: #000;
 	font-family: 'Roboto', sans-serif;
 	font-size: 20px;
@@ -221,23 +174,17 @@ header {
 	border: none;
 	border-radius: 5px;
 	text-decoration: none;
-	/* Enlever le soulignement */
 }
 
-/* CSS pour ajuster uniquement les boutons "Logout" et "Profile" */
 .header-btn.logout-btn,
 .header-btn.profile-btn {
 	background-color: transparent;
-	/* Enlève le fond jaune */
 	color: #fff;
-	/* Change la couleur du texte en blanc */
 }
 
-/* Optionnel : Ajuster l'apparence au survol */
 .header-btn.logout-btn:hover,
 .header-btn.profile-btn:hover {
 	color: #fff;
-	/* Maintient la couleur de texte en blanc */
 }
 
 .logout-link,
@@ -254,9 +201,7 @@ header {
 
 .new-chat-button-container {
 	margin-top: auto;
-	/* Place le bouton en bas */
 	margin-left: 20px;
-	/* Décalage vers la gauche */
 }
 
 .new-chat-container {
@@ -269,9 +214,7 @@ header {
 	position: absolute;
 	bottom: 20px;
 	background-color: #ffff87;
-	/* Fond noir */
 	color: #000000;
-	/* Texte en blanc pour contraster avec le fond noir */
 	padding: 10px;
 	margin: 5px;
 	cursor: pointer;
@@ -280,7 +223,6 @@ header {
 	font: bold 16px 'Poppins', sans-serif;
 	transition: background-color 0.3s;
 	font-family: 'Poppins', sans-serif;
-	/* Utilisation de la police Poppins */
 	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -288,8 +230,6 @@ header {
 	background-color: #ffff4f;
 	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
 }
-
-/* ------------------------- AJOUT EN PLUS -------------------------- */
 
 .popup {
 	max-height: 85vh;
@@ -319,9 +259,7 @@ header {
 	min-height: 70vh;
 	max-height: 95vh;
 	font-family: 'Poppins', sans-serif;
-	/* Apply the Poppins font */
 	overflow-y: hidden;
-	/* Hide vertical scrollbar for content */
 }
 
 .popup-content h3 {
@@ -333,16 +271,12 @@ header {
 .close-btn {
 	position: absolute;
 	top: 10px;
-	/* Ajuster la position verticale de la croix pour qu'elle soit à 10px du bord supérieur de la popup */
 	right: 5px;
-	/* Ajustez selon le besoin pour déplacer la croix vers la gauche */
 	cursor: pointer;
 	font-size: 24px;
 	color: black;
-	/* Changer la couleur de la croix en noir */
 }
 
-/* Ajout de flou à l'arrière-plan lorsque la popup est ouverte */
 .popup-opened {
 	backdrop-filter: blur(5px);
 }
@@ -356,8 +290,6 @@ header {
 	backdrop-filter: blur(5px);
 	z-index: 9998;
 	background-color: rgba(0, 0, 0, 0.5);
-	/* Noir avec 50% d'opacité */
-	/* Assure que la div est affichée en dessous de la popup */
 	display: none;
 }
 
@@ -367,13 +299,9 @@ header {
 	justify-content: space-between;
 	margin-bottom: 20px;
 	background-color: rgba(255, 255, 255, 0.2);
-	/* Couleur de fond de la barre de recherche */
 	border-radius: 5px;
-	/* Coins arrondis */
 	border: 2px solid #2196F3;
-	/* Ajouter un contour solide noir autour de la barre de recherche */
 	padding: 5px 10px;
-	/* Ajouter un espacement intérieur */
 }
 
 .search-container input[type="text"] {
@@ -382,9 +310,7 @@ header {
 	border: none;
 	border-radius: 5px;
 	background-color: transparent;
-	/* Fond transparent pour le champ de recherche */
 	color: rgb(0, 0, 0);
-	/* Couleur du texte */
 }
 
 .search-container button {
@@ -392,91 +318,60 @@ header {
 	background-color: #2196F3;
 	color: rgb(255, 255, 255);
 	border: 2px solid #2196F3;
-	/* Ajout d'une bordure solide de la même couleur que l'arrière-plan */
 	border-radius: 5px;
 	cursor: pointer;
 	transition: background-color 0.3s, border-color 0.3s;
-	/* Ajout d'une transition pour une meilleure expérience utilisateur */
 }
 
 .search-container button:hover {
 	background-color: #0b7dda;
 	border-color: #0b7dda;
-	/* Changement de la couleur de la bordure au survol */
 }
 
 .start-button {
 	display: block;
-	/* Assurer que le bouton soit bloqué et non en ligne */
 	margin: 30px auto;
-	/* Augmenter la marge pour plus d'espace autour */
 	padding: 20px 40px;
-	/* Augmenter le padding pour un bouton plus grand */
 	background-color: #2196F3;
-	/* Couleur de fond */
 	color: white;
-	/* Couleur du texte */
 	font-size: 32px;
-	/* Augmenter la taille du texte pour un bouton plus visible */
 	border: none;
-	/* Aucune bordure */
 	border-radius: 10px;
-	/* Bords plus arrondis */
 	cursor: pointer;
-	/* Curseur pointeur */
 	transition: background-color 0.3s ease;
-	/* Transition pour l'interaction */
 	box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
-	/* Ajouter une ombre pour un effet de profondeur */
 	font-family: 'Poppins', sans-serif;
 	font-weight: bold;
 }
 
 .start-button:hover {
 	background-color: #0b7dda;
-	/* Changement de couleur de fond au survol */
 	box-shadow: 0px 5px 12px rgba(0, 0, 0, 0.3);
-	/* Ombre plus prononcée pour l'effet au survol */
 }
 
-/* CSS pour la mise en forme de la liste des utilisateurs */
 .user-list {
 	display: flex;
 	flex-direction: column;
-	/* Pour empiler les éléments les uns sur les autres */
 	align-items: center;
-	/* Pour aligner les éléments horizontalement au centre */
 }
 
 .user-list-container h4 {
 	color: #333;
-	/* Couleur du texte */
 	font-size: 20px;
-	/* Taille du texte */
 	font-weight: bold;
-	/* Gras pour le titre */
 	padding: 10px 0;
-	/* Espacement au-dessus et en dessous du titre */
 	text-align: center;
-	/* Centrer le titre */
 	background-color: #f9f9f9;
-	/* Couleur de fond légère pour distinguer le titre */
 	border-radius: 8px 8px 0 0;
-	/* Arrondit les coins supérieurs */
 	margin-bottom: 10px;
-	/* Espace entre le titre et la liste */
 }
 
-/* Style du slider */
 .slider {
 	width: 100%;
-	/* Largeur du slider */
 }
 
-/* Style des slides (à adapter en fonction de la librairie de slider utilisée) */
 .slick-slide {
 	margin: 0 5px;
-	/* Espacement entre chaque slide */
 }
 
 .user-item {
@@ -484,66 +379,45 @@ header {
 	margin-right: auto;
 	display: flex;
 	justify-content: space-between;
-	/* Pour aligner les éléments de chaque utilisateur sur la largeur */
 	align-items: center;
-	/* Pour aligner les éléments verticalement au centre */
 	width: 80%;
-	/* Largeur de l'utilisateur pour éviter qu'il ne soit trop large */
 	margin-bottom: 20px;
-	/* Espacement entre chaque utilisateur */
 }
 
 .user-image {
 	width: 50px;
-	/* Taille de la photo de profil */
 	height: 50px;
 	border-radius: 50%;
-	/* Pour arrondir l'image de profil */
 	margin-right: 10px;
-	/* Espacement à droite de l'image de profil */
 }
 
 .user-name {
 	flex-grow: 1;
-	/* Pour que le nom d'utilisateur occupe tout l'espace restant */
 	margin-right: 10px;
-	/* Espacement à droite du nom d'utilisateur */
 }
 
 .invite-button {
 	padding: 10px 15px;
-	/* Ajustez le rembourrage au besoin */
 	background-color: #4CAF50;
-	/* Couleur de fond initiale */
 	color: white;
-	/* Couleur du texte */
 	border: none;
-	/* Supprimer la bordure par défaut */
 	cursor: pointer;
-	/* Change le curseur pour indiquer qu'il s'agit d'un élément cliquable */
 	border-radius: 5px;
-	/* Arrondit les coins */
 	transition: background-color 0.3s, transform 0.3s;
-	/* Ajoute une transition pour le survol */
 }
 
 .invite-button:hover {
 	background-color: #45a049;
-	/* Couleur de fond au survol */
 	transform: scale(1.05);
-	/* Légère augmentation de la taille au survol */
 }
 
 .invite-button.deselected {
 	background-color: red;
-	/* Couleur de fond pour le mode désélectionné */
 	color: white;
-	/* Couleur du texte */
 }
 
 .invite-button.deselected::after {
 	content: "✖";
-	/* Symbole de la croix */
 	color: white;
 }
 
@@ -552,8 +426,6 @@ input[type="search"],
 select,
 button {
 	outline: none;
-	/* Supprime l'outline */
-	/* Ajoutez d'autres propriétés de style au besoin pour le focus */
 }
 
 input[type="text"]:focus,
@@ -561,8 +433,6 @@ input[type="search"]:focus,
 select:focus,
 button:focus {
 	border: 2px solid #cccccc00;
-	/* Exemple de changement de bordure au focus */
-	/* Vous pouvez ajuster la couleur et le style de la bordure au focus selon votre design */
 }
 
 .container {
@@ -574,14 +444,11 @@ button:focus {
 .user-list-frame {
 	position: relative;
 	width: 80%;
-	/* Ajustez selon la largeur désirée */
 	background-color: #fff;
-	/* Couleur de fond */
 	padding: 15px;
 	border-radius: 10px;
 	box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 	margin-top: 20px;
-	/* Espacement au-dessus de la liste des utilisateurs */
 }
 
 #nonInvitedUsers {
@@ -594,35 +461,27 @@ button:focus {
 	padding: 10px;
 	border: 2px solid #ccc;
 	background-color: #f0f0f0;
-	/* Fond pour les utilisateurs non invités */
 }
 
 #invitedUsers {
 	margin-top: 10px;
-	/* Espace au-dessus du cadre des utilisateurs invités */
 	margin-bottom: 10px;
-	/* Espace en dessous avant le bouton Start */
 }
 
 .users-container {
 	display: flex;
 	justify-content: space-between;
 	gap: 20px;
-	/* Ajoute un peu d'espace entre les deux colonnes */
 }
 
 .user-list-container,
 .invited-users {
 	flex: 1;
-	/* Fait en sorte que les deux conteneurs prennent la même largeur */
 	display: flex;
 	flex-direction: column;
 	max-height: 300px;
-	/* Ajustez selon vos besoins */
 	overflow-y: auto;
-	/* Permet le défilement vertical si nécessaire */
 	width: 48%;
-	/* Assigne une largeur pour éviter qu'ils s'étendent trop */
 }
 
 .user-and-invited-container {
@@ -648,51 +507,37 @@ button:focus {
 #user-list,
 #invitedUsers {
 	flex: 1;
-	/* Ensures they take equal width */
 }
-
-/**/
 
 .users-and-invited-container {
 	display: flex;
 	justify-content: space-around;
-	/* Distribue l'espace uniformément autour des éléments */
 	width: 100%;
-	/* Prendre toute la largeur de la popup */
 	padding: 20px;
-	/* Ajouter un peu d'espace autour des conteneurs */
 }
 
 .user-container,
 .invited-container {
 	flex: 1;
-	/* Chaque conteneur prend une largeur égale */
 	display: flex;
 	flex-direction: column;
-	/* Organise les éléments en colonne */
 	align-items: center;
-	/* Centre les éléments verticalement */
 }
 
 .user-list-container {
 	width: 90%;
-	/* Ajuster la largeur pour s'adapter dans le conteneur parent */
 	margin: 10px;
-	/* Ajouter un peu d'espace autour du conteneur */
 	padding: 10px;
 	border: 2px solid #ccc;
 	background-color: #f0f0f0;
 	overflow-y: auto;
 	min-height: 300px;
-	/* Hauteur minimale pour une visibilité adéquate */
 	box-sizing: border-box;
 }
 
 .title-outside {
 	width: 90%;
-	/* Ajuster la largeur à celle du conteneur de liste */
 	margin-bottom: 10px;
-	/* Espacement avant la liste */
 	padding: 10px;
 	background-color: #333;
 	border-radius: 8px;
@@ -700,7 +545,6 @@ button:focus {
 	font-size: 20px;
 	font-weight: bold;
 	color: #fff;
-	/* Couleur du texte en blanc pour contraster avec le fond sombre */
 }
 
 #startChatPrompt {
@@ -711,10 +555,8 @@ button:focus {
 	background-color: black;
 	color: #ffff87;
 	padding: 6px 10px;
-	/* Padding ajusté pour la hauteur */
 	margin: 5px;
 	margin-top: 20px;
-	/* Ajout d'un espace supplémentaire au-dessus du bouton */
 	cursor: pointer;
 	border: none;
 	border-radius: 5px;
@@ -726,10 +568,40 @@ button:focus {
 
 .user:hover {
 	background-color: #3f3f3f;
-	/* Légère variation du noir au survol */
 }
 
 .game-invitation {
 	background-color: #000000;
 	color: #ffff87;
+}
+
+/* CSS pour les écrans de taille moyenne */
+@media (max-width: 768px) {
+	header div {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+
+	header a.header-btn,
+	header a.game-button {
+		font-size: 18px;
+		padding: 8px 10px;
+		margin: 2px;
+	}
+}
+
+/* CSS pour les écrans de petite taille */
+@media (max-width: 480px) {
+	header div {
+		flex-direction: column;
+		align-items: center;
+	}
+
+	header a.header-btn,
+	header a.game-button {
+		width: 100%;
+		text-align: center;
+		margin-bottom: 5px;
+	}
 }

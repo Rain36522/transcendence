@@ -56,6 +56,7 @@ def getUpdate(id):
     return dico
 
 
+
 def putGameInDict(game):
     dico = {}
     gameusers = game.gameuser_set.all()

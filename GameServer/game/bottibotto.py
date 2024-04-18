@@ -102,8 +102,10 @@ class BottiBotto:
 			# old_pos = ball.pos
 			ball.pos = new_pos
 
-			if ball.speed < 1.75:
-				ball.speed += 0.05
+			if ball.speed < 1.8:
+				ball.speed += ball.acceleration
+			if ball.speed > 1.8:
+				ball.speed = 1.8
 
 			# collisoin_side = "LEFT" if new_pos.x == -0.49 + ball.diameter / 4 else ("RIGHT" if new_pos.x == 0.49 - ball.diameter / 4 else ("UP" if new_pos.y == -0.5 + ball.diameter / 2 else ("DOWN" if new_pos.y == 0.5 - ball.diameter / 2 else "NONE")))
 			

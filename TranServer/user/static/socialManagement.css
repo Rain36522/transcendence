@@ -38,54 +38,11 @@ header {
   align-items: center;
 }
 
-header a:not(.logo) {
-  font-family: "Poppins", sans-serif;
-  /* Applique Poppins aux liens, sauf au logo */
-  font-size: 24px;
-  font-weight: 600;
-  text-decoration: none;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 4px;
-  transition: background-color 0.3s, transform 0.2s;
-}
-
 header .logo {
   font-family: "Roboto", sans-serif;
   /* Garde Roboto pour le logo */
   color: #ffff99;
   font-size: 47px;
-}
-
-header a:hover {
-  background-color: #444;
-  color: #fff;
-  transform: translateY(-2px);
-}
-
-header .button,
-header a {
-  text-decoration: none;
-  color: white;
-  font-size: 24px;
-  /* Taille de police agrandie */
-  font-weight: bold;
-  padding: 10px 20px;
-  /* Padding ajouté pour donner de l'espace autour du texte */
-  border-radius: 4px;
-  /* Bords arrondis pour les boutons */
-  transition: background-color 0.3s, transform 0.2s;
-  /* Transition pour les interactions hover */
-}
-
-/* Ajouter des styles spécifiques pour le hover si nécessaire */
-header .button:hover,
-header a:hover {
-  background-color: #444;
-  /* Changement de couleur au survol */
-  color: #fff;
-  transform: translateY(-2px);
-  /* Petit effet de levage au survol */
 }
 
 .logo {
@@ -462,12 +419,10 @@ body::before {
   background-color: #367c39;
 }
 
-header .header-btn {
+header {
   text-decoration: none;
   /* Supprime le soulignement */
   color: white;
-  /* Définit la couleur du texte */
-  font-weight: bold;
   /* Assure que le texte est en gras */
   font-size: 24px;
   /* Taille de police uniforme */
@@ -594,26 +549,6 @@ header .header-btn {
   /* Ajoute un espace entre le nom d'utilisateur et le bouton */
 }
 
-/* Styles généraux pour tous les liens du header */
-.header-btn {
-  text-decoration: none;
-  color: white;
-  font-size: 24px;
-  /* Taille de police uniforme pour tous les boutons du header */
-  font-weight: bold;
-  padding: 10px 20px;
-  border-radius: 4px;
-  transition: background-color 0.3s, transform 0.2s;
-}
-
-.header-btn:hover {
-  background-color: #444;
-  /* Changement de couleur au survol */
-  color: #fff;
-  transform: translateY(-2px);
-  /* Petit effet de levage au survol */
-}
-
 /* Styles spécifiques pour le bouton Profile */
 .profile-btn {
   background-color: #ffff99;
@@ -700,6 +635,9 @@ header .header-btn {
 
 .game-button {
   background-color: transparent;
+  color: white;
+  transition: background-color 0.3s;
+  /* Assurez-vous que la transition est définie pour l'effet de survol */
 }
 
 .game-button:hover {

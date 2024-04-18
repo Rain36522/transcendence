@@ -111,7 +111,7 @@ class newGame(APIView):
 
 
 def gamePage(request, id):
-    if not Game.objects.filter(pk=id).exists():
+    if not isGameFinish(id):
         raise Http404("Game does not exist")
     game = Game.objects.get(pk=id)
     solo = False
@@ -125,6 +125,10 @@ def gamePage(request, id):
         player = 2
     else:
         player = 4
+    if game.tournament:
+        tournamentid = game.tournament.id
+    else:
+        tournamentid = 0
     contexte = {
         "nbPlayers": player,
         "paddleWidth": 0.02,
@@ -135,14 +139,26 @@ def gamePage(request, id):
         "status": "waiting",
         "user": request.user.username,
         "gameid": id,
+        "tournamentid": tournamentid
     }
     contexte_json = json.dumps(contexte)
     return render(request, "monapp/pong.html", {"contexte_json": contexte_json})
+
+def isGameFinish(id):
+    if not Game.objects.filter(pk=id).exists():
+        return False
+    game = Game.objects.get(pk=id)
+    if game.gameRunning:
+        return True
+    gameusers = game.gameuser_set.all()
+    for gameuser in gameusers:
+        print(gameuser.points)
+        if gameuser.points:
+            return False
+    return True
 
 
 def home_page(request):
     return render(request, "html/home.html")
 
 
-def online_game(request):
-    return render(request, "html/gameSettings.html")

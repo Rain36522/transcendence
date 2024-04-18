@@ -167,8 +167,8 @@ async def main():
     gameSettings = {
         "ballwidth" : 0.03, #max size plank size calculation
         "planksize" : 0.3, #max size 50%
-        "Speed" : 0.002,
-        "acceleration" : 0.01, #increase speed each bounce
+        "Speed" : 0.5,
+        "acceleration" : 0.05, #increase speed each bounce
         "playeramount" : 2,
         "winpoint" : 10,
         "user1" : "",
