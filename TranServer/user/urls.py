@@ -25,11 +25,14 @@ from .views import (
     is_blocked_api,
     profile_user,
     ColorView,
+    forgot_password,
+    success_email_recup,
 )
 from django.views.generic.base import RedirectView
 
-
 urlpatterns = [
+    path("success_email_recup/", success_email_recup, name="success_email_recup"),
+    path("forgot_password/", forgot_password, name="forgot_password"),
     path("profile_user/", profile_user, name="profile_user"),
     path("accountInformation/", account_information, name="account_information"),
     path("dashboard/", user_dashboard, name="user_dashboard"),

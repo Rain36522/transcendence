@@ -1,0 +1,15 @@
+{% extends 'html/header.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'success_email_recup.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+<div class="forgot-password-frame">
+	<h2>We've just sent you an email!</h2>
+	<label for="email">Please check your mail box.</label>
+	<img src="https://media.tenor.com/0cvxil96K7YAAAAi/check.gif" alt="Loading..." class="password-reset-gif">
+	<script src="{% static 'utils.js' %}"></script>
+	<script src="{% static 'success_email_recup.js' %}"></script>
+</div>
+{% endblock %}
