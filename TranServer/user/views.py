@@ -704,12 +704,6 @@ def GenerateUserToken(user, mail=False):
     characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcefghijklmnopqrstuvwxyz1234567890-_"
     tokenListe = User.objects.values_list('token', flat=True)
     while True:
-        token = ""
-
-        if mail:
-            token = "M"
-        else:
-            token = "P"
         token = "M" if mail else "P"
         for i in range(22):
             token += choice(characters)
