@@ -261,6 +261,13 @@ nav ul li a {
   /* Supprime le soulignement */
 }
 
+header a.header-btn:hover {
+  background-color: #444 !important;
+  color: white !important;
+  border-radius: 5px;
+}
+
+
 .game-button {
   display: inline-block;
   /* Pour permettre l'ajustement de padding et autres styles de bloc */
@@ -286,13 +293,6 @@ nav ul li a {
   /* Transition pour hover */
 }
 
-.game-button:hover {
-  background-color: #ffff0c;
-  /* Jaune plus vif au survol */
-  color: #FFFFFF;
-  /* Texte blanc au survol */
-}
-
 /* CSS pour les écrans de taille moyenne */
 @media (max-width: 768px) {
   header div {
@@ -301,10 +301,14 @@ nav ul li a {
     justify-content: center;
   }
 
-  header a.header-btn, header a.game-button {
-    font-size: 18px; /* Réduction de la taille de la police */
-    padding: 8px 10px; /* Réduction du padding */
-    margin: 2px; /* Ajout de marges pour éviter le chevauchement */
+  header a.header-btn,
+  header a.game-button {
+    font-size: 18px;
+    /* Réduction de la taille de la police */
+    padding: 8px 10px;
+    /* Réduction du padding */
+    margin: 2px;
+    /* Ajout de marges pour éviter le chevauchement */
   }
 }
 
@@ -315,9 +319,13 @@ nav ul li a {
     align-items: center;
   }
 
-  header a.header-btn, header a.game-button {
-    width: 100%; /* Utilise toute la largeur disponible */
-    text-align: center; /* Centre le texte dans le bouton */
-    margin-bottom: 5px; /* Espacement entre les boutons */
+  header a.header-btn,
+  header a.game-button {
+    width: 100%;
+    /* Utilise toute la largeur disponible */
+    text-align: center;
+    /* Centre le texte dans le bouton */
+    margin-bottom: 5px;
+    /* Espacement entre les boutons */
   }
 }

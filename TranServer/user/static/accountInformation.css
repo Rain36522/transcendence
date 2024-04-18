@@ -45,35 +45,6 @@ header {
   align-items: center;
 }
 
-.header-btn {
-  background: none;
-  border: none;
-  color: #ffffe0;
-  font-family: "Poppins", sans-serif;
-  font-size: 20px;
-  cursor: pointer;
-  padding: 12px 20px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  text-decoration: none;
-}
-
-.header-btn,
-.game-button {
-  background: none;
-  border: none;
-  color: #ffffe0;
-  /* Assurez que la couleur correspond aux autres liens */
-  font-family: "Poppins", sans-serif;
-  font-size: 20px;
-  cursor: pointer;
-  padding: 12px 20px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  text-decoration: none;
-  /* Supprime le soulignement */
-}
-
 .profile-btn {
   background-color: #ffff99;
   border-radius: 5px;
@@ -164,20 +135,26 @@ header {
 }
 
 .user-info {
-  position: relative; /* Important pour le positionnement absolu de .edit-link */
+  position: relative;
+  /* Important pour le positionnement absolu de .edit-link */
   display: flex;
   flex-direction: column;
-  width: 60%; /* Déjà défini, assurez-vous que cela correspond à votre layout */
+  width: 60%;
+  /* Déjà défini, assurez-vous que cela correspond à votre layout */
   margin-top: 40px;
   padding-left: 40px;
-  padding-bottom: 20px; /* Ajouter un padding en bas pour éviter que le bouton ne touche le bord lors du scrolling */
+  padding-bottom: 20px;
+  /* Ajouter un padding en bas pour éviter que le bouton ne touche le bord lors du scrolling */
 }
 
 .edit-link {
   position: absolute;
-  bottom: 10px; /* Ajusté pour placer le bouton à 10px du bas */
-  left: 62%; /* Décaler à 50% du début de .user-info */
-  transform: translateX(-50%); /* Centrer le bouton exactement */
+  bottom: 10px;
+  /* Ajusté pour placer le bouton à 10px du bas */
+  left: 62%;
+  /* Décaler à 50% du début de .user-info */
+  transform: translateX(-50%);
+  /* Centrer le bouton exactement */
   padding: 8px 24px;
   background-color: #000000;
   color: #FFFFFF;
@@ -187,15 +164,18 @@ header {
 }
 
 .edit-link:hover {
-  background-color: #333333; /* Foncer légèrement au survol */
+  background-color: #333333;
+  /* Foncer légèrement au survol */
   color: #fff;
 }
 
 .profile-section {
   display: flex;
   flex-direction: column;
-  align-items: center;  /* Centrage horizontal des éléments */
-  margin-top: 20px;  /* Espace en dessus des boutons */
+  align-items: center;
+  /* Centrage horizontal des éléments */
+  margin-top: 20px;
+  /* Espace en dessus des boutons */
 }
 
 .profile-pic {
@@ -208,13 +188,17 @@ header {
   border: 3px solid #000000;
   /* bordure */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  margin-bottom: 20px;  /* Espace entre la photo et les boutons */
+  margin-bottom: 20px;
+  /* Espace entre la photo et les boutons */
 }
 
 .edit-profile-btn {
-  background-color: #000000;  /* Couleur de fond noir */
-  color: #FFFFFF;  /* Texte blanc */
-  padding: 10px 20px;  /* Padding approprié */
+  background-color: #000000;
+  /* Couleur de fond noir */
+  color: #FFFFFF;
+  /* Texte blanc */
+  padding: 10px 20px;
+  /* Padding approprié */
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -222,7 +206,8 @@ header {
 }
 
 .edit-profile-btn:hover {
-    background-color: #333333;  /* Foncer le bouton au survol */
+  background-color: #333333;
+  /* Foncer le bouton au survol */
 }
 
 hr {
@@ -390,36 +375,65 @@ h2 {
 
 /* Style pour les boutons principaux dans les formulaires */
 button {
-  background-color: #000000; /* Fond noir */
-  color: #FFFFFF; /* Texte blanc */
-  padding: 10px 15px; /* Espacement interne pour rendre le bouton plus grand */
-  border: none; /* Aucune bordure */
-  border-radius: 5px; /* Coins arrondis pour un look moderne */
-  cursor: pointer; /* Curseur de pointeur pour indiquer qu'il s'agit d'un bouton cliquable */
-  transition: background-color 0.3s; /* Transition pour les effets de survol */
+  background-color: #000000;
+  /* Fond noir */
+  color: #FFFFFF;
+  /* Texte blanc */
+  padding: 10px 15px;
+  /* Espacement interne pour rendre le bouton plus grand */
+  border: none;
+  /* Aucune bordure */
+  border-radius: 5px;
+  /* Coins arrondis pour un look moderne */
+  cursor: pointer;
+  /* Curseur de pointeur pour indiquer qu'il s'agit d'un bouton cliquable */
+  transition: background-color 0.3s;
+  /* Transition pour les effets de survol */
 }
 
 button:hover {
-  background-color: #333333; /* Changement de couleur au survol pour un feedback visuel */
+  background-color: #333333;
+  /* Changement de couleur au survol pour un feedback visuel */
 }
 
 .file-button {
   display: inline-block;
   padding: 8px 13px;
-  background-color: #000000; /* Fond noir */
-  color: #FFFFFF; /* Texte blanc */
+  background-color: #000000;
+  /* Fond noir */
+  color: #FFFFFF;
+  /* Texte blanc */
   text-align: center;
-  border-radius: 5px; /* Coins arrondis */
-  cursor: pointer; /* Style de curseur pour indiquer qu'il s'agit d'un bouton */
-  transition: background-color 0.3s; /* Transition pour effet de survol */
+  border-radius: 5px;
+  /* Coins arrondis */
+  cursor: pointer;
+  /* Style de curseur pour indiquer qu'il s'agit d'un bouton */
+  transition: background-color 0.3s;
+  /* Transition pour effet de survol */
 }
 
 .file-button:hover {
-  background-color: #333333; /* Foncer le bouton au survol */
+  background-color: #333333;
+  /* Foncer le bouton au survol */
 }
 
-.file-button, .edit-profile-btn {
+.file-button,
+.edit-profile-btn {
   display: block;
-  margin: 5px auto;  /* Centrer les boutons et ajouter un petit espace entre eux */
-  width: auto;  /* Largeur auto pour s'adapter au contenu */
+  margin: 5px auto;
+  /* Centrer les boutons et ajouter un petit espace entre eux */
+  width: auto;
+  /* Largeur auto pour s'adapter au contenu */
+}
+
+.game-button {
+  background-color: transparent;
+  color: white;
+  transition: background-color 0.3s;
+  /* Assurez-vous que la transition est définie pour l'effet de survol */
+}
+
+.game-button:hover {
+  background-color: #444 !important;
+  /* Ajout de !important pour forcer l'application du style */
 }
