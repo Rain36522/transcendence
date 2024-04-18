@@ -24,37 +24,62 @@
     <div class="content-area">
         <div class="profile-section">
             <img alt="Photo de profil" class="profile-pic" id="profile-pic">
-            <form id="uploadForm" enctype="multipart/form-data">
-                {% csrf_token %}
-                <input type="file" id="profilePicture" name="profile_picture" accept="image/*" style="display: none;">
-                <label for="profilePicture" class="file-button">Choose a File</label>
-                <button class="edit-profile-btn" type="submit">Upload Profile Picture</button>
-            </form>
-            <a href="#" class="edit-link">Edit</a>
+            <div class="button-container">
+                <form id="uploadForm" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="file" id="profilePicture" name="profile_picture" accept="image/*"
+                        style="display: none;">
+                    <label for="profilePicture" class="file-button">Choose a File</label>
+                </form>
+            </div>
         </div>
 
         <div class="user-info">
             <form id="updateInfoForm">
                 {% csrf_token %}
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" value={{ user.username }} required><br><br>
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" value={{ user.email }} required><br><br>
-                <label for="first_name">First Name:</label>
-                <input type="text" id="first_name" name="first_name" value={{ user.first_name }} required><br><br>
-                <label for="last_name">Last Name:</label>
-                <input type="text" id="last_name" name="last_name" value={{ user.last_name }} required><br><br>
-                
-                <button type="submit">Update Profile</button>
+                <div class="form-row">
+                    <label for="username" class="form-label">Username:</label>
+                    <input type="text" id="username" name="username" value="{{ user.username }}" required
+                        class="form-input">
+                </div>
+                <div class="form-row">
+                    <label for="email" class="form-label">Email:</label>
+                    <input type="email" id="email" name="email" value="{{ user.email }}" required class="form-input">
+                </div>
+                <div class="form-row">
+                    <label for="first_name" class="form-label">First Name:</label>
+                    <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" required
+                        class="form-input">
+                </div>
+                <div class="form-row">
+                    <label for="last_name" class="form-label">Last Name:</label>
+                    <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" required
+                        class="form-input">
+                </div>
+                <div class="form-row">
+                    <div style="flex: 0 0 140px;"></div> <!-- This spacer div takes up the label width -->
+                    <button type="submit" class="form-button">Update Profile</button>
+                </div>
             </form>
+
             <form id="passwordChangeForm">
                 {% csrf_token %}
-                <label for="oldPassword">Old Password:</label>
-                <input type="password" id="oldPassword" name="old_password" required><br><br>
-                <label for="newPassword">New Password:</label>
-                <input type="password" id="newPassword" name="new_password" required><br><br>
-                <button type="submit">Change Password</button>
+                <div class="form-row">
+                    <label for="oldPassword" class="form-label">Old Password:</label>
+                    <input type="password" id="oldPassword" name="old_password" required class="form-input"><br><br>
+                </div>
+                <div class="form-row">
+                    <label for="newPassword" class="form-label">New Password:</label>
+                    <input type="password" id="newPassword" name="new_password" required class="form-input"><br><br>
+                </div>
+                <div class="form-row">
+                    <div style="flex: 0 0 140px;"></div> <!-- Spacer div for label width -->
+                    <button type="submit" class="form-button">Change Password</button>
+                </div>
+                <p id="passwordSuccess" style="display: none;"></p>
+                <p id="passwordError" style="display: none;"></p>
             </form>
+
             <p id="passwordError" style="color: red; font-style: italic; display: none; font-size: 14px;">Incorrect
                 current password</p>
 
@@ -62,39 +87,42 @@
 
             <div class="color-settings">
                 <div class="game-settings-title">
-                    <h2>Game customisation</h2>
+                    <h2>Game color customisation</h2>
                 </div>
                 <div class="color-picker-columns">
                     <div class="color-picker">
-                        <label for="BallColor">Ball Color:</label>
+                        <label for="BallColor">Ball:</label>
                         <button class="button-8" id="BallColor" onclick="openColorPicker('BallColor')">
                             <i class="fa fa-paint-brush"></i> Select Ball Color
                         </button>
                     </div>
                     <div class="color-picker">
-                        <label for="EnemyPaddleColor">Enemy Paddle Color:</label>
+                        <label for="EnemyPaddleColor">Enemy Paddle:</label>
                         <button class="button-8" id="EnemyPaddleColor" onclick="openColorPicker('EnemyPaddleColor')">
                             <i class="fa fa-paint-brush"></i> Select Enemy Paddle Color
                         </button>
                     </div>
                     <div class="color-picker">
-                        <label for="CadreColor">Frame Color:</label>
+                        <label for="CadreColor">Frame:</label>
                         <button class="button-8" id="CadreColor" onclick="openColorPicker('CadreColor')">
                             <i class="fa fa-paint-brush"></i> Select Frame Color
                         </button>
                     </div>
                     <div class="color-picker">
-                        <label for="MyPaddleColor">My Paddle Color:</label>
+                        <label for="MyPaddleColor">My Paddle:</label>
                         <button class="button-8" id="MyPaddleColor" onclick="openColorPicker('MyPaddleColor')">
                             <i class="fa fa-paint-brush"></i> Select My Paddle Color
                         </button>
                     </div>
                     <div class="color-picker">
-                        <label for="BgColor">Background Color:</label>
+                        <label for="BgColor">Background:</label>
                         <button class="button-8" id="BgColor" onclick="openColorPicker('BgColor')">
                             <i class="fa fa-paint-brush"></i> Select Background Color
                         </button>
                     </div>
+                </div>
+                <div class="button-container">
+                    <a href="#" class="edit-link">Edit Colors</a>
                 </div>
             </div>
 
