@@ -765,12 +765,34 @@ def EmailValidation(request, username, token):
         return HttpResponse("EMAIL VALIDATE")
 
 
+class sendPasswordReset(APIView):
+    def get(request):
+        return HttpResponse("CHANGE PASSWORD PAGE")
+    
+    def post(request):
+        mail = request.data.get("mail")
+        if not mail:
+            return Response({"error": "No mail"}, status=status.HTTP_400_BAD_REQUEST)
+        elif not User.objects.filter(email=mail).exists():
+            return Response({"error": "Invalide mail"}, status=status.HTTP_400_BAD_REQUEST)
+        user = User.objects.filter(email=mail).first()
+        if not sendMail(user, mail, isMail=False):
+            return Response({"error": "Invalid mail"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"messahe": "reset password email sent"}, status=200)
+        
+        
+
+
+
 class PasswordForgot(APIView):
     def get(request, username, token):
         return HttpResponse("PASSWORD CHANGE PAGE")
 
     def post(request, username, token):
         users = User.objects.filter(username=username)
+        new_password = request.data.get("password")
+        if not new_password:
+            return Response({"error": "No password"}, status=status.HTTP_400_BAD_REQUEST)
         if users.exists():
             user = users.first()
         else:
@@ -778,7 +800,14 @@ class PasswordForgot(APIView):
         if not token or user.token != token:
             raise Http404("Invalide link")
         else:
-            # TODO CHANGE PASSWORD
+            try:
+                password_validation.validate_password(new_password, user=user)
+            except ValidationError as e:
+                return JsonResponse(
+                    {"error": e.messages}, status=status.HTTP_400_BAD_REQUEST
+                )
+            user.set_password(new_password)
             user.token = ""
             user.save()
             return Response("Password reset", status=status.HTTP_200_OK)
+
