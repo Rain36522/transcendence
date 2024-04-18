@@ -460,9 +460,11 @@ def email_sent(request):
     return render(request, "html/email_sent.html")
 
 
+def change_password(request):
+    return render(request, "html/change_password.html")
+
 def forgot_password(request):
     return render(request, "html/forgot_password.html")
-
 
 @login_required
 def account_information(request):
