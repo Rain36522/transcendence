@@ -56,10 +56,10 @@ class GameServerConsumer(AsyncWebsocketConsumer):
                 
     @sync_to_async
     def putGameResultDb(self, game, data): #return winner
+        game.gameRunning = False
         if game.gamemode > 0:
             maxPoint = 0
             winner = None
-            game.gameRunning = False
             gameusers = game.gameuser_set.all()
             for cle, value in data.items():
                 if cle.startswith("user") and value[1] > maxPoint:
@@ -85,6 +85,10 @@ class GameServerConsumer(AsyncWebsocketConsumer):
 
             game.save()
             return winner
+        gameuser = game.gameuser_set.first()
+        gameuser.points = 1
+        gameuser.save()
+        game.save()
         return None
 
     async def sendUpdateTournamentview(self, tournamentId):

@@ -1,4 +1,4 @@
-// import { Match } from './match.js';
+document.title = "Tournament";
 
 class Match {
 	constructor(level, pos, ...players) {
@@ -24,7 +24,7 @@ class Match {
 	}
 
 	updateFromData(data) {
-		// Réinitialiser les joueurs et les scores basés sur les données reçues
+		// Update the match data from the server
 		this.players = [];
 		this.scores = [];
 	
@@ -56,7 +56,7 @@ class Match {
 		else
 			this.status = "waiting";
 	
-		// Crée un élément <a> ou <div> comme conteneur principal selon le statut du match
+		// Create a link to the game if the match is running
 		if (this.isRunning == true && this.gameLink) {
 			matchElement = document.createElement('a');
 			matchElement.href = `/game/${this.gameLink}/`;
@@ -69,7 +69,7 @@ class Match {
 		matchElement.setAttribute('data-id', this.pos);
 		matchElement.setAttribute('data-level', this.level);
 	
-		// Déterminer l'index du gagnant et traiter tous les autres comme perdants si le match est terminé
+		// Find the winner index if the match is finished
 		let winnerIndex = -1;
 		if (this.status === "finished") {
 			const winnerScore = Math.max(...this.scores);
@@ -78,14 +78,14 @@ class Match {
 		this.players.forEach((player, index) => {
 			const playerElement = document.createElement('div');
 			playerElement.classList.add('team');
-			// Appliquer la classe 'winner' au gagnant, 'loser' aux autres si le match est terminé
+			// Add the 'winner' or 'loser' class to the player element to change its style
 			if (this.status === "finished") {
 				if (index === winnerIndex)
 					playerElement.classList.add('winner');
 				else
 					playerElement.classList.add('loser');
 			}
-			// Ajouter la classe 'match-top' au premier élément et 'match-bottom' au dernier élément
+			// Add the 'match-top' or 'match-bottom' class to the player element to have appropriate border radius
 			if (index === 0 && index === this.players.length - 1)
 				playerElement.classList.add('match-unique');
 			else if (index === 0)
@@ -112,20 +112,19 @@ const matchesMap = {}; // Store all matches by unique key (level-pos)
 
 
 const dataTemplate ={
-	pos: 1, // position dans le round (premier match du round x, deuxieme match du round x, etc)
-	level: 0, // round du tournoi (..., huitieme, quart, demi, finale)
-	player1Id: "J7", // nom du joueur
+	pos: 1, // position in the round (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+	level: 0, // tournament round (..., quarterfinals, semifinals, finals)
+	player1Id: "J7", // player display name
 	player2Id: "J8",
 	player3Id: "J9",
 	player4Id: "J10",
-	score1: 6, // score du joueur
+	score1: 6, // player score
 	score2: 9,
 	score3: 6,
 	score4: 9,
-	isRunning: true, // si la partie est en cours
-	gameId: "" // pour faire le path avec https://sitename/game/gameId/
+	isRunning: true, // match status (true, false)
+	gameId: "" // to build game path https://sitename/game/gameId/
 };
-//pour playerxID et scorex, il suffit d'en mettre 4 si il y en a 4, 2 si il y en a 2, la div s'adapte
 
 
 // tournament initialization
@@ -157,7 +156,7 @@ function updateTournament(data) {
 	var updatedMatches = data.games;
 
 	for (const key in updatedMatches) {
-		const matchData = updatedMatches[key];  // Utilise matchData ici
+		const matchData = updatedMatches[key];
 		const matchKey = `${matchData.level}-${matchData.pos}`;
 		const existingMatch = matchesMap[matchKey];
 		if (existingMatch) {
@@ -189,9 +188,8 @@ function updateTournament(data) {
 
 
 document.getElementById('join-button').addEventListener('click', function() {
-	const baseUrl = window.location.href; // Récupère l'URL de la page actuelle
-	const joinUrl = `${baseUrl}join/`; // Construit l'URL cible pour la requête GET
-	// Effectue la requête GET avec fetch
+	const baseUrl = window.location.href; 
+	const joinUrl = `${baseUrl}join/`;
 	fetch(joinUrl, { method: 'GET' });
 });
 

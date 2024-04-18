@@ -1,14 +1,15 @@
-body {
+.bracket-container {
   margin: 0;
   padding: 0;
-  font-family: 'Poppins';
+  padding-top: 5%;
+  font-family: 'Poppins', sans-serif;
   position: relative;
-  width: 100%;
-  height: 100vh; /* Couvre toute la hauteur de la fenêtre du navigateur */
-  overflow: hidden; /* Empêche tout débordement de contenu */
+  min-width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
 }
 
-body::before {
+.bracket-container::before {
   content: "";
   position: fixed;
   top: 0;
@@ -19,6 +20,7 @@ body::before {
   filter: grayscale(100%);
   z-index: -1;
 }
+
 
 a {
   color: white;
@@ -154,7 +156,6 @@ a {
   margin-bottom: 0px;
 }
 
-/* Maintien des styles pour les états winner et loser */
 .match .team.winner {
   background-color: #FFFF99;
   color: rgb(0, 0, 0);
@@ -174,35 +175,32 @@ a {
   background-image: url('https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg');
   background-size: cover;
   filter: grayscale(100%);
-  z-index: -1; /* Assurez-vous qu'il est en arrière-plan */
+  z-index: -1;
 }
 
-/* Assurez-vous que les autres éléments ne sont pas affectés par le z-index du background-filter */
 .theme, .bracket, #content-container-replace {
   position: relative;
-  z-index: 1; /* Plus élevé que le background-filter */
+  z-index: 1;
 }
 
 .join-button{
   display: flex;
-  justify-content: center; /* Centre le contenu horizontalement */
-  align-items: center; /* Centre le contenu verticalement */
-  padding: 20px 40px; /* Ajustez le padding selon vos besoins */
+  justify-content: center;
+  align-items: center;
+  padding: 20px 40px;
   font-size: 64px;
   background-color: #FFFF99;
   color: rgb(0, 0, 0);
   border: 4px solid #cacacaa8;
   border-radius: 10px;
-  width: fit-content; /* La largeur s'adapte au contenu plus le padding */
-  margin: 50px auto; /* Marges verticales et centrage horizontal */
-  transition: transform 10s; /* Transition douce pour le transform sur 1 seconde */
+  width: fit-content;
+  margin: 50px auto;
+  transition: transform 10s;
 }
 
 .join-button:hover {
-  transform: scale(1.5) rotate(1000deg) skewX(1350deg) skewY(450deg) translateY(30px); /* Augmente la taille du bouton de 5% et le tourne de 10 degrés */
-
+  transform: scale(1.5) rotate(1000deg) skewX(1350deg) skewY(450deg) translateY(30px);
 }
-
 
 .join-button-a{
   color: rgb(0, 0, 0);
