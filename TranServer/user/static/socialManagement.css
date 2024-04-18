@@ -517,12 +517,15 @@ header .header-btn {
 /* Media Query pour gérer les écrans plus petits */
 @media (max-width: 800px) {
   .sections-container {
-    flex-direction: column; /* Les sections s'alignent verticalement sur de petits écrans */
+    flex-direction: column;
+    /* Les sections s'alignent verticalement sur de petits écrans */
   }
 
-  .sections-container > section {
-    margin: 10px 0; /* Marges adaptées pour l'alignement vertical */
-    width: 100%; /* Chaque section prend la pleine largeur */
+  .sections-container>section {
+    margin: 10px 0;
+    /* Marges adaptées pour l'alignement vertical */
+    width: 100%;
+    /* Chaque section prend la pleine largeur */
   }
 }
 
@@ -704,12 +707,12 @@ header .header-btn {
 }
 
 #error_message {
-  color: red;          
-  font-style: italic;    
-  font-size: 14px;        
-  margin-top: 10px;       
-  text-align: center;    
-  width: 100%;           
+  color: red;
+  font-style: italic;
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: center;
+  width: 100%;
 }
 
 /* CSS pour les écrans de taille moyenne */
@@ -720,10 +723,14 @@ header .header-btn {
     justify-content: center;
   }
 
-  header a.header-btn, header a.game-button {
-    font-size: 18px; /* Réduction de la taille de la police */
-    padding: 8px 10px; /* Réduction du padding */
-    margin: 2px; /* Ajout de marges pour éviter le chevauchement */
+  header a.header-btn,
+  header a.game-button {
+    font-size: 18px;
+    /* Réduction de la taille de la police */
+    padding: 8px 10px;
+    /* Réduction du padding */
+    margin: 2px;
+    /* Ajout de marges pour éviter le chevauchement */
   }
 }
 
@@ -734,9 +741,13 @@ header .header-btn {
     align-items: center;
   }
 
-  header a.header-btn, header a.game-button {
-    width: 100%; /* Utilise toute la largeur disponible */
-    text-align: center; /* Centre le texte dans le bouton */
-    margin-bottom: 5px; /* Espacement entre les boutons */
+  header a.header-btn,
+  header a.game-button {
+    width: 100%;
+    /* Utilise toute la largeur disponible */
+    text-align: center;
+    /* Centre le texte dans le bouton */
+    margin-bottom: 5px;
+    /* Espacement entre les boutons */
   }
 }
