@@ -1,13 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Poppins:wght@400;600&display=swap");
 
-/* Styles communs */
 body,
 html {
   margin: 0;
   padding: 0;
   height: 100%;
   font-family: "Roboto", sans-serif;
-  /* Définit Roboto comme police par défaut */
 }
 
 body::before {
@@ -151,7 +149,6 @@ header .logo {
   font-size: 20px;
 }
 
-/* Styles de la vignette */
 .vignette {
   position: fixed;
   top: 0;
@@ -161,7 +158,6 @@ header .logo {
   box-shadow: 0 0 200px rgba(0, 0, 0, 0.9) inset;
 }
 
-/* Styles de la vidéo */
 .video-container {
   position: absolute;
   top: 0;
@@ -180,9 +176,7 @@ header .logo {
   position: fixed;
   top: 15%;
   left: 1%;
-  /* réduit pour que le cadre soit plus proche du bord gauche */
   width: 98%;
-  /* augmenté pour que le cadre soit plus proche du bord droit */
   height: 80%;
   background-color: rgba(255, 255, 255, 0.95);
   border-radius: 10px;
@@ -233,15 +227,16 @@ header .logo {
 
 .tab a {
   display: block;
-  /* Rend l'élément cliquable sur toute la zone */
   width: 100%;
-  /* Utilise toute la largeur disponible */
   height: 100%;
-  /* Utilise toute la hauteur disponible */
   text-align: center;
-  /* Centre le texte */
   text-decoration: none;
-  /* Supprime le soulignement */
+}
+
+.tab:hover,
+.tab.active,
+.tab:focus {
+  transform: translateY(-2px);
 }
 
 .content-area {
@@ -258,12 +253,10 @@ header .logo {
   justify-content: space-between;
   padding: 20px 10px;
   margin-bottom: 20px;
-  /* Ajout d'un espace en dessous */
 }
 
 .search-selection {
   width: 100%;
-  /* Ajout d'un espace en dessous */
 }
 
 .search-box {
@@ -280,7 +273,6 @@ header .logo {
   width: 100%;
   padding: 0;
   justify-content: flex-start;
-  /* Modifier cette ligne */
   margin-top: 10px;
 }
 
@@ -288,7 +280,6 @@ header .logo {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  /* Modifier de space-between à flex-start */
   padding: 10px 0;
 }
 
@@ -622,13 +613,11 @@ header {
   border-top: none;
 }
 
-/* Style for each dropdown item */
 .autocomplete-item {
   padding: 10px;
   cursor: pointer;
 }
 
-/* Style for the selected item in the dropdown */
 .autocomplete-item:hover {
   background-color: #ddd;
 }
@@ -637,7 +626,6 @@ header {
   background-color: transparent;
   color: white;
   transition: background-color 0.3s;
-  /* Assurez-vous que la transition est définie pour l'effet de survol */
 }
 
 .game-button:hover {
@@ -653,7 +641,6 @@ header {
   width: 100%;
 }
 
-/* CSS pour les écrans de taille moyenne */
 @media (max-width: 768px) {
   header div {
     display: flex;
@@ -664,15 +651,11 @@ header {
   header a.header-btn,
   header a.game-button {
     font-size: 18px;
-    /* Réduction de la taille de la police */
     padding: 8px 10px;
-    /* Réduction du padding */
     margin: 2px;
-    /* Ajout de marges pour éviter le chevauchement */
   }
 }
 
-/* CSS pour les écrans de petite taille */
 @media (max-width: 480px) {
   header div {
     flex-direction: column;
@@ -682,10 +665,7 @@ header {
   header a.header-btn,
   header a.game-button {
     width: 100%;
-    /* Utilise toute la largeur disponible */
     text-align: center;
-    /* Centre le texte dans le bouton */
     margin-bottom: 5px;
-    /* Espacement entre les boutons */
   }
 }
