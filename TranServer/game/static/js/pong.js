@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 document.title = "Pong Game";
 
 /*##################################################################*|
@@ -64,6 +65,16 @@ class Settings
 #                                                                    #
 \*##################################################################*/
 
+=======
+/*##################################################################*|
+#                                                                    #
+#    <---------------------------------------------------------->    #
+#    |                        Player Code                       |    #
+#    <---------------------------------------------------------->    #
+#                                                                    #
+\*##################################################################*/
+
+>>>>>>> master
 class Player
 {
 	constructor(PlayerID, PlayerName, gameParams){
@@ -77,8 +88,12 @@ class Player
 
 	// store current keys status (pressed/released)
 	updateKeysPressed(event, value, ws){
+<<<<<<< HEAD
 
 		if (event.key != "w" && event.key != "s" && event.key != "W" && event.key != "S" &&event.key != "ArrowUp" && event.key != "ArrowDown")
+=======
+		if (event.key != "w" && event.key != "s" && event.key != "ArrowUp" && event.key != "ArrowDown")
+>>>>>>> master
 			return;
 		var message = "";
 		if ((event.key == "ArrowUp" || event.key == "ArrowDown") && this.gameParams.isSolo && this.gameParams.nbPlayers == 2 && this.PlayerID == 2)
@@ -94,22 +109,38 @@ class Player
 		} else {
 			if (this.PlayerID % 2 == 1 || (this.gameParams.isSolo && this.gameParams.nbPlayers == 2))
 			{
+<<<<<<< HEAD
 				if ((event.key == "w" || event.key == "W") && this.keysPressed["up"] != value) {
 					this.keysPressed["up"] = value;
 					message = this.PlayerID + "u-" + (value == true ? "on" : "off");
 				}
 				else if ((event.key == "s" || event.key == "S") && this.keysPressed["down"] != value) {
+=======
+				if (event.key == "w" && this.keysPressed["up"] != value) {
+					this.keysPressed["up"] = value;
+					message = this.PlayerID + "u-" + (value == true ? "on" : "off");
+				}
+				else if (event.key == "s" && this.keysPressed["down"] != value) {
+>>>>>>> master
 					this.keysPressed["down"] = value;
 					message = this.PlayerID + "d-" + (value == true ? "on" : "off");
 				}
 			}
 			else
 			{
+<<<<<<< HEAD
 				if ((event.key == "w" || event.key == "W") && this.keysPressed["up"] != value) {
 					this.keysPressed["up"] = value;
 					message = this.PlayerID + "d-" + (value == true ? "on" : "off");
 				}
 				else if ((event.key == "s" || event.key == "S") && this.keysPressed["down"] != value) {
+=======
+				if (event.key == "w" && this.keysPressed["up"] != value) {
+					this.keysPressed["up"] = value;
+					message = this.PlayerID + "d-" + (value == true ? "on" : "off");
+				}
+				else if (event.key == "s" && this.keysPressed["down"] != value) {
+>>>>>>> master
 					this.keysPressed["down"] = value;
 					message = this.PlayerID + "u-" + (value == true ? "on" : "off");
 				}
@@ -183,6 +214,67 @@ class Player
 /*##################################################################*|
 #                                                                    #
 #    <---------------------------------------------------------->    #
+<<<<<<< HEAD
+=======
+#    |                      Settings Code                       |    #
+#    <---------------------------------------------------------->    #
+#                                                                    #
+\*##################################################################*/
+
+class Settings
+{
+	constructor(rawSettings){
+		const data = JSON.parse(rawSettings);
+		console.log("raw settings: ", data);
+		this.nbPlayers = data.nbPlayers || 2; // number of players in the game
+		this.playersNames = data.users && data.users.length > 0 ? data.users : Array.from({ length: this.nbPlayers }, (_, index) => `User${index + 1}`);
+		this.isSolo = data.isSolo; // if no other players on other screens
+		this.status = data.status || "waiting"; // if the game is running
+		this.winPoints = data.winPoints || 10;
+
+		this.gameWidth = data.gameWidth || 1200; // width of the field
+		this.gameHeight = this.gameWidth; // height of the field
+		if (this.nbPlayers != 4)
+			this.gameHeight /= 2; // field is square if 4 players, else it's a rectangle so we divide the height by 2
+
+		fetch('/api/colors/')
+			.then(response => response.json())
+			.then(data => {
+				this.paddleColor = data.paddle_color || "white"; // color of the paddles
+				this.ennemiColor = data.enemy_paddle_color || "red"; // color of the ennemies
+				this.ballColor = data.ball_color || "white"; // color of the ball
+				this.fieldColor = data.background_color || "#000"; // color of the field
+				this.borderColor = data.frame_color || "white"; // color of the border
+			});
+
+		this.paddleWidth = data.paddleWidth || 0.02; // width of the paddles
+		this.paddleLength = data.paddleLength || 0.2; // length of the paddles
+		this.paddleOffset = data.paddleOffset || 0.02; // offset of the paddles from the border
+	
+		this.ballSize = data.ballSize || 0.03; // size of the ball
+		this.ballPosition = { x: 0, y: 0 }; // position of the ball
+		this.userName = data.user;
+		if (this.isSolo && this.nbPlayers === 2)
+			this.userID = 1;
+		else if (data.users)
+		{
+			console.log("et merde");
+			this.userID = this.playersNames.indexOf(this.userName) + 1;
+		}
+		else
+			this.userID = 1;
+		this.gameID = data.gameid;
+
+		if (this.userID == 0)
+			this.userID = 1;
+	}
+}
+
+
+/*##################################################################*|
+#                                                                    #
+#    <---------------------------------------------------------->    #
+>>>>>>> master
 #    |                      Main Pong Code                      |    #
 #    <---------------------------------------------------------->    #
 #                                                                    #
@@ -196,17 +288,26 @@ var nbPaddles = 2;
 
 function setGameSize() {
 	if (window.innerHeight < window.innerWidth)
+<<<<<<< HEAD
 		settings.gameWidth = window.innerHeight * 0.9;
 	else
 		settings.gameWidth = window.innerWidth * 0.9;
+=======
+		settings.gameWidth = window.innerHeight * 0.8;
+	else
+		settings.gameWidth = window.innerWidth * 0.8;
+>>>>>>> master
 	settings.gameHeight = settings.gameWidth;
 	if (settings.nbPlayers !== 4)
 		settings.gameHeight /= 2;
 }	
 
+<<<<<<< HEAD
 function sleep(milliseconds) {
     return new Promise(resolve => setTimeout(resolve, milliseconds));
 }
+=======
+>>>>>>> master
 
 
 /*‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾*\
