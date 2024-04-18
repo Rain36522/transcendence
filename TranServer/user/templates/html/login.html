@@ -30,7 +30,7 @@
             </form>
             <a href="{% url 'user_register' %}" id="register-link">Register</a>
             <p id="error-message" style="color: #FFFF99; font-style: italic; display: none;"></p>
-            <!-- Element pour l'affichage des erreurs -->
+            <a href="{% url 'forgot_password' %}" id="forgot-password-link">Forgot password?</a>
         </div>
         <script src={% static 'utils.js' %}></script>
         <script src={% static 'login.js' %}></script>
