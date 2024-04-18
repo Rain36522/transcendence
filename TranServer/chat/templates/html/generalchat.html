@@ -1,101 +1,85 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="fr">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Dashboard</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@300;400;600&family=Poppins:wght@400;600&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap">
-    <link rel="stylesheet" href="{% static 'home.css' %}">
-    <link rel="stylesheet" href="{% static 'generalchat.css' %}">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-
-<body>
-    <div id="content-container-replace">
-        <div class="vignette"></div>
-        <div class="blur-background"></div>
-        <header>
-            <h1><a href="{% url 'home_page' %}" class="logo">Transcendance</a></h1>
-            <div>
-                <a href="{% url 'home_page' %}" class="game-button">GAME</a>
-                <a href="{% url 'general_chat' %}" class="header-btn">Chat</a>
-                <a href="{% url 'user_logout' %}" class="header-btn logout-btn">Logout</a>
-                <a href="{% url 'user_dashboard' %}" class="header-btn profile-btn">Profile</a>
-            </div>
-        </header>
-        <div class="background-container"></div> <!-- Ajout du conteneur pour l'image de fond -->
-        <div class="chat-container">
-            <div class="user-list">
-                <div id="userList">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Dashboard</title>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@300;400;600&family=Poppins:wght@400;600&display=swap"
+              rel="stylesheet">
+        <link rel="stylesheet"
+              href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap">
+        <link rel="stylesheet" href="{% static 'home.css' %}">
+        <link rel="stylesheet" href="{% static 'generalchat.css' %}">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+    <body>
+        <div id="content-container-replace">
+            <div class="vignette"></div>
+            <div class="blur-background"></div>
+            <header>
+                <h1>
+                    <a href="{% url 'home_page' %}" class="logo">Transcendance</a>
+                </h1>
+                <div>
+                    <a href="{% url 'home_page' %}" class="game-button">GAME</a>
+                    <a href="{% url 'general_chat' %}" class="header-btn">Chat</a>
+                    <a href="{% url 'user_logout' %}" class="header-btn logout-btn">Logout</a>
+                    <a href="{% url 'user_dashboard' %}" class="header-btn profile-btn">Profile</a>
                 </div>
-                <button id="newChatButton">New Chat</button>
-            </div>
-            <div class="chat-window">
-                <div class="selected-user" id="startChatPrompt">Select a user or group to start chatting</div>
-                <div id="messages"></div>
-                <div class="message-input">
-                    <textarea id="messageText" placeholder="Type your message here..."></textarea>
-                    <input type="hidden" id="imageData" />
-                    <div id="imagePreview"></div>
-                    <button id="sendMessage">Send</button>
+            </header>
+            <div class="background-container"></div>
+            <!-- Ajout du conteneur pour l'image de fond -->
+            <div class="chat-container">
+                <div class="user-list">
+                    <div id="userList"></div>
+                    <button id="newChatButton">New Chat</button>
                 </div>
-            </div>
-        </div>
-
-        <div id="popup" class="popup">
-            <div class="popup-content">
-                <span class="close-btn" onclick="closePopup()">&times;</span>
-                <h3>Create a new chat !</h3>
-                <div class="search-container">
-                    <input type="text" id="searchInput" placeholder="Search...">
-                    <button type="button">Search</button>
-                </div>
-                <!-- Nouvelle section pour afficher le résultat de la recherche -->
-                <div id="searchResult" class="search-result" style="display: none;">
-                    <!-- Le résultat de la recherche sera injecté ici -->
-                </div>
-
-                <div class="users-and-invited-container"> <!-- Conteneur parent pour Flexbox -->
-                    <div class="user-container">
-                        <h4 class="title-outside">User list</h4>
-                        <div class="user-list-container" id="user-list">
-                            <div class="user-item">
-                                <img src="https://media1.tenor.com/m/xK38NWayRnoAAAAC/dog-eyes.gif" alt="Famacito"
-                                    class="user-image">
-                                <span class="user-name">Famacito</span>
-                                <button class="invite-button">Invite</button>
-                            </div>
-                            <div class="user-item">
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb2KRrG26uJLRrL55aWnKPGezf8V5ZkiHPHg&s"
-                                    alt="Dark_Sasuke" class="user-image">
-                                <span class="user-name">Dark_Sasuke</span>
-                                <button class="invite-button">Invite</button>
-                            </div>
-                            <!-- Ajoutez plus d'utilisateurs ici -->
-                        </div>
-                    </div>
-                    <div class="invited-container">
-                        <h4 class="title-outside">Invited Users</h4>
-                        <div class="user-list-container" id="invitedUsers">
-                            <!-- Les utilisateurs invités seront affichés ici -->
-                        </div>
+                <div class="chat-window">
+                    <div class="selected-user" id="startChatPrompt">Select a user or group to start chatting</div>
+                    <div id="messages"></div>
+                    <div class="message-input">
+                        <textarea id="messageText" placeholder="Type your message here..."></textarea>
+                        <input type="hidden" id="imageData" />
+                        <div id="imagePreview"></div>
+                        <button id="sendMessage">Send</button>
                     </div>
                 </div>
-                <button class="start-button">Create Chat</button>
             </div>
+            <div id="popup" class="popup">
+                <div class="popup-content">
+                    <span class="close-btn" onclick="closePopup()">&times;</span>
+                    <h3>Create a new chat !</h3>
+                    <div class="search-container">
+                        <input type="text" id="searchInput" placeholder="Search...">
+                        <button type="button" id="searchBtn">Search</button>
+                    </div>
+                    <!-- Nouvelle section pour afficher le résultat de la recherche -->
+                    <div id="searchResult" class="search-result" style="display: none;">
+                        <!-- Le résultat de la recherche sera injecté ici -->
+                    </div>
+                    <div class="users-and-invited-container">
+                        <!-- Conteneur parent pour Flexbox -->
+                        <div class="user-container">
+                            <h4 class="title-outside">User list</h4>
+                            <div class="user-list-container" id="user-list">
+                                <!-- Ajoutez plus d'utilisateurs ici -->
+                            </div>
+                        </div>
+                        <div class="invited-container">
+                            <h4 class="title-outside">Invited Users</h4>
+                            <div class="user-list-container" id="invitedUsers">
+                                <!-- Les utilisateurs invités seront affichés ici -->
+                            </div>
+                        </div>
+                    </div>
+                    <button class="start-button">Create Chat</button>
+                </div>
+            </div>
+            <script src={% static 'utils.js' %}></script>
+            <script src={% static 'generalchat.js' %}></script>
+            <script src={% static 'generalchat2.js' %}></script>
         </div>
-        <script src={% static 'utils.js' %}></script>
-        <script src={% static 'generalchat.js' %}></script>
-        <script src={% static 'generalchat2.js' %}></script>
-    </div>
-
-</body>
-
+    </body>
 </html>
