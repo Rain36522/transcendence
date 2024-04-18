@@ -645,7 +645,7 @@ def MessageContentPwd(user):
     ResetLink = "https://127.0.0.1/api/pwd/" + user.username + "/" + user.token
     mailContent = f"""
     <h1>Hi {user.username}!</h1>
-    <p>Here is the link to reset your password :
+    <p>To reset your password, simply click this link :
     <a href="{ResetLink}">Reset Password</a></p>
 
     DO NOT REPLY.
@@ -658,7 +658,7 @@ def MessageContentMail(user):
     ValidateLink = "https://127.0.0.1/api/mail/" + user.username + "/" + user.token
     mailContent = f"""
     <h1>Welcome to transcendance {user.username}!</h1>
-    <p>Here is the link to validate your email :
+    <p>To validate your email, simply click this link :
     <a href="{ValidateLink}">Mail validation</a></p>
 
     DO NOT REPLY.
