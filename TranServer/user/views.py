@@ -42,25 +42,46 @@ from datetime import timedelta
 MAIL = False
 
 
+MAIL = False
+
 @api_view(["POST"])
 @renderer_classes([JSONRenderer])
 def api_signup(request):
-    serializer = UserSerializer(data=request.data)
-    if serializer.is_valid():
-        user = serializer.save()
-        chat = Chat.objects.create()
-        chat.participants.add(user)
-        chat.is_personal = True
-        chat.save()
-        if MAIL:
-            sendMail(user, user.email, isMail=True)
-        else:
-            user.mailValidate = True
-            user.save()
-            login(request, user)
-
-        return Response({"message": "A verification email has been sent"}, status=201)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            if not MAIL:
+                chat = Chat.objects.create()
+                chat.participants.add(user)
+                chat.is_personal = True
+                chat.save()
+                user.mailValidate = True
+                user.save()
+                login(request, user)
+                return Response(
+                    {"message": "You have been logged in"},
+                    status=status.HTTP_200_OK,
+                )  
+            if MAIL or sendMail(user, user.email, isMail=True):
+                chat = Chat.objects.create()
+                chat.participants.add(user)
+                chat.is_personal = True
+                chat.save()
+                return Response(
+                    {"message": "A verification email has been sent"},
+                    status=status.HTTP_201_CREATED,
+                )
+            else:
+                user.delete()
+                return Response(
+                    {"error": "Invalid email"}, status=status.HTTP_400_BAD_REQUEST
+                )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response(
+            {"error": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 @api_view(["GET"])
@@ -342,13 +363,24 @@ def user_login_api(request):
         username = request.POST["username"]
         password = request.POST["password"]
         user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect("user_dashboard")
+        if user is None:
+            return JsonResponse(
+                {"error": "Invalid username or password"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        elif not user.mailValidate:
+            return JsonResponse(
+                {"error": "Email not validated"}, status=status.HTTP_400_BAD_REQUEST
+            )
         else:
-            return JsonResponse({"error": "Invalid username or password"}, status=400)
+            login(request, user)
+            return JsonResponse(
+                {"message": "User created"}, status=status.HTTP_201_CREATED
+            )
     except:
-        return JsonResponse({"error": "Invalid request"}, status=400)
+        return JsonResponse(
+            {"error": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 @api_view(["GET"])
@@ -692,9 +724,13 @@ def sendMail(user, mail, isMail=False):
     server = smtplib.SMTP(smtp_server, smtp_port)
     server.starttls()
     server.login(smtp_user, smtp_password)
-
-    server.sendmail(smtp_user, mail, msg.as_string())
-    server.quit()
+    try:
+        server.sendmail(smtp_user, mail, msg.as_string())
+        server.quit()
+        return True
+    except:
+        server.quit()
+        return False
 
 
 def GenerateUserToken(user, mail=False):
