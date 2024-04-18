@@ -631,3 +631,89 @@ def change_password_api(request):
 @login_required
 def test_password_change_view(request):
     return render(request, "test_password_change.html")
+
+
+def MessageContentPwd(user):
+    subject = "Forgot password"
+    GenerateUserToken(user, mail=False)
+    ResetLink = "https://127.0.0.1/api/pwd/" + user.username + "/" + user.token
+    mailContent = f"""
+    Hi {user.username}!
+    There is the link for reset your password :
+    <a href="{ResetLink}">Reset Password</a>
+
+    DO NOT REPLY.
+    """
+    return subject, mailContent
+
+def MessageContentMail(user):
+    subject = "Mail Validation"
+    GenerateUserToken(user, mail=True)
+    ValidateLink = "https://127.0.0.1/api/mail/" + user.username + "/" + user.token
+    mailContent = f"""
+    Welcome to transcendence {user.username}!
+    There is the link for validate the mail :
+    <a href="{ValidateLink}">Mail validation</a>
+
+    DO NOT REPLY.
+    """
+    return subject, mailContent
+
+
+
+
+def sendMail(mail, isMail=False):
+    smtp_server = 'mail.infomaniak.com'
+    smtp_port = 587
+    smtp_user = 'info@udrytech.ch'
+    smtp_password = 'PQCG*fZJ6VjE&5z$uZv4'
+    
+    if isMail:
+        subject, content = MessageContentMail
+    else:
+        subject, content = MessageContentPwd
+
+    msg = MIMEText(content)
+    msg['Subject'] = subject
+    msg['From'] = smtp_user
+    msg['To'] = mail
+    server = smtplib.SMTP(smtp_server, smtp_port)
+    server.starttls()
+    server.login(smtp_user, smtp_password)
+
+    server.sendmail(smtp_user, mail, msg.as_string())
+    server.quit()
+
+
+
+def EmailValidation(request, username, token):
+    users = User.objects.filter(username=username)
+    if users.exists():
+        user = users.first()
+    else:
+        raise Http404("Invalide link")
+    if not token or user.token != token:
+        raise Http404("Invalide link")
+    else:
+        user.mailValidate = True
+        user.token = ""
+        user.save()
+
+
+
+def GenerateUserToken(user, mail=False):
+    import secrets
+    import string
+    from random import randint
+
+    characters = string.ascii_letters + string.digits
+    tokenListe = User.objects.values_list('token', flat=True)
+    while True:
+        tokenLength = randint(22, 30)
+        if mail:
+            token = 'E'.join(secrets.choice(characters) for i in range(tokenLength))
+        else:
+            token = 'P'.join(secrets.choice(characters) for i in range(tokenLength))
+        if token not in tokenListe:
+            break
+    user.token = token

@@ -25,6 +25,7 @@ from .views import (
     is_blocked_api,
     profile_user,
     ColorView,
+    EmailValidation,
 )
 from django.views.generic.base import RedirectView
 
@@ -90,4 +91,5 @@ urlpatterns = [
     path("api/exist/<str:username>/", user_exist_api, name="user_exist_api"),
     path("api/is_blocked/<str:username>/", is_blocked_api, name="is_blocked_api"),
     path("api/colors/", ColorView.as_view(), name="color_api"),
+    path('api/mail/<str:username>/<str:token>/', EmailValidation, name='EmailValidation')
 ]
