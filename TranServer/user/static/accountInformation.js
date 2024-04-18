@@ -110,25 +110,28 @@ document.getElementById('passwordChangeForm').addEventListener('submit', functio
   var formData = new FormData(this);
 
   fetch('/api/change_password/', {
-      method: 'POST',
-      body: formData
+    method: 'POST',
+    body: formData
   })
-  .then(response => response.json())
-  .then(data => {
+    .then(response => response.json())
+    .then(data => {
       if (data.error) {
-          var passwordError = document.getElementById('passwordError');
-          passwordError.textContent = data.error; // Affiche le message d'erreur
-          passwordError.style.display = 'block'; // Rend le message visible
+        var passwordError = document.getElementById('passwordError');
+        passwordError.textContent = data.error;
+        passwordError.style.display = 'block';
       } else {
-          window.location.reload(); // Recharge la page ou redirige l'utilisateur si nécessaire
+        var passwordSuccess = document.getElementById('passwordSuccess');
+        passwordSuccess.textContent = 'Your password has been successfully changed.';
+        passwordSuccess.style.display = 'block';
       }
-  })
-  .catch(error => {
+    })
+
+    .catch(error => {
       console.error('Error:', error);
       var passwordError = document.getElementById('passwordError');
       passwordError.textContent = 'An unexpected error occurred. Please try again later.';
       passwordError.style.display = 'block';
-  });
+    });
 });
 
 document
