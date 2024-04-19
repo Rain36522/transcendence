@@ -796,7 +796,8 @@ def PasswordForgot(request, username=None, token=None):
     if not token or token != user.token:
         print("INVALIDE TOKEN :", user.token)
         raise Http404("Invalide link")
-    return HttpResponse("PASSWORD CHANGE PAGE", status=status.HTTP_200_OK)
+    return render(request, 'html/TODO.html', {'token': token, 'username': username})
+
 
 def PasswordReset(request, username, token):
     users = User.objects.filter(username=username)
@@ -819,5 +820,5 @@ def PasswordReset(request, username, token):
         user.set_password(new_password)
         user.token = ""
         user.save()
-        return Response("Password reset", status=status.HTTP_200_OK)
+        return Response("Password reset", status=status.HTTP_200_OK) #TODO Redirection
 
