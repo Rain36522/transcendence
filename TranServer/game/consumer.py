@@ -2,6 +2,7 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from tournament.consumer import getUpdate
 from .models import Game, GameUser
+from user.models import User
 from tournament.consumer import TournamentConsumer
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync, sync_to_async
@@ -43,44 +44,40 @@ class GameServerConsumer(AsyncWebsocketConsumer):
 
     @sync_to_async    
     def tournamentEndGame(self, game, winner):
-        if game.tournament and winner:
+        if game.tournament:
             tournamentId = game.tournament.id
-            if game.nextGame:
+            if winner and game.nextGame:
                 nextGame = game.nextGame
                 GameUser.objects.create(user=winner.user, game=nextGame)
                 if nextGame.gameuser_set.count() == nextGame.gamemode * 2:
                     launchGame(nextGame)
-            if tournamentId:
-                async_to_sync(self.sendUpdateTournamentview)(tournamentId)
+        if tournamentId:
+            async_to_sync(self.sendUpdateTournamentview)(tournamentId)
                 
     @sync_to_async
     def putGameResultDb(self, game, data): #return winner
         game.gameRunning = False
-        if game.gamemode > 0:
+        if game.gamemode > 0 and game.gamemode < 3:
             maxPoint = 0
             winner = None
-            gameusers = game.gameuser_set.all()
             for cle, value in data.items():
                 if cle.startswith("user") and value[1] > maxPoint:
                     maxPoint = value[1]
-            for gameuser in gameusers:
-                for cle, value in data.items():
-                    if cle.startswith("user") and value[0] == gameuser.user.username:
-                        if game.tournament and game.levelPos == 0 and maxPoint > 1:
-                            gameuser.user.total_tournaments += 1
+            for cle, value in data.items():
+                if cle.startswith("user") and value[0]:
+                    user = User.objects.get(username=value[0])
+                    if GameUser.objects.filter(user=user).exists():
+                        gameuser = GameUser.objects.filter(user=user).first()
                         gameuser.points = value[1]
-                        if maxPoint > 1:
-                            gameuser.user.total_games += 1
-                        if maxPoint == value[1]:
+                    else:
+                        gameuser = GameUser.objects.create(user=user, game=game, points=value[1])
+                    if maxPoint > 1:
+                        user.total_games += 1
+                        if value[1] == maxPoint:
+                            user.wins += 1
                             winner = gameuser
-                        break
-            if winner and winner.points > 1:
-                winner.user.wins += 1
-                if game.tournament and not game.nextGame:
-                    winner.user.tournaments_wins += 1
-            for gameuser in gameusers:
-                gameuser.user.save()
-                gameuser.save()
+                    gameuser.save()
+                    user.save()
 
             game.save()
             return winner

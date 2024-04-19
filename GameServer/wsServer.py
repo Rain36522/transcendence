@@ -54,23 +54,29 @@ class WebSocketServer:
         self.print("New game connection")
         gameid = path[6:]
         self.clients[1][gameid] = websocket
-        self.clients[1]["user" + gameid] = None
+        if not self.clients[1].get("user" + gameid):
+            self.clients[1]["user" + gameid] = None
+        else:
+            print("Available user :", self.clients[1]["user" + gameid], file=stderr)
         try:
             async for message in websocket:
                 await self.execGameMsg(message, gameid)
         finally:
-            self.print("Game client is disconnected " + str(gameid))
             del self.clients[1][gameid]
 
     async def execGameMsg(self, message, gameid):
         if message.startswith("autorisedusers"):
-            print(GREEN, "User autorisation added")
+            print(GREEN, "User autorisation added", message[14:], file=stderr)
             self.clients[1]["user" + gameid] = dumps(message[14:])
         elif message.startswith("finish"):
+            del self.clients[1]["user" + gameid]
             self.finishGames.append(message[6:])
         elif gameid in self.clients[2]:
-            for cli in self.clients[2][gameid]:
-                await cli[1].send(message)
+            try:
+                for cli in self.clients[2][gameid]:
+                        await cli[1].send(message)
+            except:
+                pass
 
         """User msg
         Communication between server and client.
@@ -92,14 +98,15 @@ class WebSocketServer:
             return
         if self.addUser(websocket, gameid, user):
             return
-        await self.clients[1][gameid].send((user + "login"))
+        if not self.clients[1]["user" + gameid]:
+            await self.clients[1][gameid].send((user + "login"))
         try:
             async for message in websocket:
                 await self.execUserMsg(message, gameid, user)
         finally:
             #send to game instance user disconnected.
             self.print("user disconnected")
-            if gameid in self.clients[1]:
+            if gameid in self.clients[1] and not self.clients[1]["user" + gameid]:
                 await self.clients[1][gameid].send((user + "logout"))
             self.rmUser(websocket, gameid)
 
@@ -129,7 +136,10 @@ class WebSocketServer:
 
     async def execUserMsg(self, message, gameid, user):
         if gameid in self.clients[1] and (not self.clients[1]["user" + gameid] or user in self.clients[1]["user" + gameid]):
-            await self.clients[1][gameid].send((message))
+            try:
+                await self.clients[1][gameid].send((message))
+            except:
+                pass
 
 async def main():
     # os.system("python3 game/game.py &") # launch game instance. detached mode

@@ -22,14 +22,14 @@ ORANGE = "\033[38;2;255;165;0m"
 # gameSettings = loads(os.environ.get("newGame"))
 
 #dictionary communication bitween serveur and client.
-game = {
+GAME = {
 	"ballx" : 0, # -0.5 -> 0.5
 	"bally" : 0, # -0.5 -> 0.5
 	"p1" : 0, # -0.5 -> 0.5
 	"p2" : 0, # -0.5 -> 0.5
 	"p3" : 0, # -0.5 -> 0.5
 	"p4" : 0, # -0.5 -> 0.5
-	"state" : "playing",
+	"state" : "game_over",
 	"score1" : 0,
 	"score2" : 0,
 	"score3" : 0,
@@ -72,7 +72,7 @@ async def WaitUntilPlayers(ws, data):
     lockedPlayers = listUser(data) #list user locked
     logedPlayers = []
     startTime = time()
-    while len(logedPlayers) < data["playeramount"] and time() - startTime < 20:
+    while len(logedPlayers) < data["playeramount"] and time() - startTime < 45:
         msgs = ws.getMsg()
         if msgs:
             for msg in msgs:
@@ -82,10 +82,10 @@ async def WaitUntilPlayers(ws, data):
                     logedPlayers = await removePlayer(msg[:-6], logedPlayers)
         await asyncio.sleep(0.5)
     if len(logedPlayers) == data["playeramount"]:
-        print(GREEN + "SEND AUTORISED USERS :", logedPlayers, RESET, file=stderr)
         await ws.sendUserJoin(logedPlayers)
     else:
-        print(ORANGE + "MISSING USERS :", logedPlayers, RESET, file=stderr)
+        await playerInGame(logedPlayers, ws, data)
+        return None
     return logedPlayers
 
 async def removePlayer(rmPlayer, logedPlayers):
@@ -109,8 +109,6 @@ async def addPlayers(newUser, lockedPlayers, logedPlayers, playeramount):
 async def playerInGame(logedPlayers, wsCli, data):
     dico = {}
     dico["gameid"] = data["gameid"]
-    if len(logedPlayers) == data["playeramount"]:
-        return True
     lockedPlayers = listUser(data)
     if len(logedPlayers):
         winner = choice(logedPlayers)
@@ -119,8 +117,8 @@ async def playerInGame(logedPlayers, wsCli, data):
         winner = choice(lockedPlayers)
         dico["user1"] = [winner, 1]
     print(MAGENTA + "ENDGAME MISSING MSG :", dico, RESET, file=stderr)
+    await wsCli.sendMsg(GAME)
     await wsCli.sendEndGame(dico, gameError=True)
-    return False
     
 
 
@@ -143,25 +141,6 @@ def putDatagameSettings(data, settings):
             settings[i] = data[i]
     return settings
 
-# # Exemple d'utilisation du client WebSocket avec asyncio
-# if __name__ == "__main__":
-#     DjangoData = json.loads(os.environ.get("newGame"))["message"]
-#     print("Django data : ", DjangoData)
-#     gameSettings = putDatagameSettings(DjangoData, gameSettings)
-#     #connection with websocket server
-#     wsServ = "ws://localhost:8001/game/" + str(gameSettings["gameid"])
-#     client = WebSocketClient(wsServ)
-#     # Lancement du client WebSocket en parallèle
-#     asyncio.get_event_loop().run_until_complete(client.connect())
-#     asyncio.get_event_loop().create_task(client.receive_messages())
-#     print(MAGENTA, "RECIEVED USER", RESET, file=stderr)
-#     userliste = asyncio.get_event_loop().run_until_complete(WaitUntilPlayers(client, DjangoData))
-#     userliste = updateUser(userliste, DjangoData)
-#     gameLogicInstance = gameLogic(client, gameSettings, game, userliste)
-#     asyncio.get_event_loop().create_task(gameLogicInstance.start_game())
-
-#     # Lancement de la boucle d'événements asyncio
-#     asyncio.get_event_loop().run_forever()
 
 async def main():
     gameSettings = {
@@ -201,9 +180,12 @@ async def main():
     client = WebSocketClient(wsServ)
     await client.connect()
     asyncio.create_task(client.receive_messages())
-    print(MAGENTA, "RECIEVED USER", RESET, file=stderr)
+    
 
     userliste = await WaitUntilPlayers(client, DjangoData)
+    if userliste == None:
+        print(MAGENTA, "Game end for missing players", RESET, file=stderr)
+        exit(0)
     userliste = updateUser(userliste, DjangoData)
 
     print("|[---Userlist---]|", userliste)

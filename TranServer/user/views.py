@@ -494,8 +494,8 @@ def user_dashboard(request, username=None):
     ratio_l = 0
     losses = user.total_games - user.wins
     if user.total_games != 0:
-        ratio_w = user.wins / user.total_games
-        ratio_l = losses / user.total_games
+        ratio_w = round(user.wins / user.total_games * 100)
+        ratio_l = round(losses / user.total_games * 100)
     return render(
         request,
         "html/dashboard.html",

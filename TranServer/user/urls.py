@@ -29,6 +29,7 @@ from .views import (
     email_sent,
     EmailValidation,
     PasswordForgot,
+    change_password,
     PasswordReset,
     sendPasswordReset,
 )
@@ -94,6 +95,6 @@ urlpatterns = [
     path("api/is_blocked/<str:username>/", is_blocked_api, name="is_blocked_api"),
     path("api/colors/", ColorView.as_view(), name="color_api"),
     path('api/mail/<str:username>/<str:token>/', EmailValidation, name='EmailValidation'),
-    path('/reset_password/<str:username>/<str:token>/', PasswordForgot, name='password forgot page'),
-    path('/reset_password/change/', PasswordReset, name='password reset'),
+    path('api/reset_password/<str:username>/<str:token>/', PasswordForgot, name='password forgot page'),
+    path('api/reset_password/change/', PasswordReset, name='password reset'),
 ]
