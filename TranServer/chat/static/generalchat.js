@@ -50,8 +50,12 @@ function linkify(inputText) {
   var replacePattern1;
 
   replacePattern1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
-  var replacedText = inputText.replace(replacePattern1, function(url) {
-      return '<button class="join-game-button" onclick="window.location.href=\'' + url + '\';">Join the Game</button>';
+  var replacedText = inputText.replace(replacePattern1, function (url) {
+    return (
+      '<button class="join-game-button" onclick="window.location.href=\'' +
+      url +
+      "';\">Join the Game</button>"
+    );
   });
 
   return replacedText;
@@ -65,29 +69,29 @@ async function renderMessage(message) {
   var usernameElement = document.createElement("span");
   usernameElement.textContent = message.username + ": ";
   usernameElement.style.fontWeight = "bold";
-  usernameElement.style.fontFamily = "'Poppins', sans-serif";  
+  usernameElement.style.fontFamily = "'Poppins', sans-serif";
   usernameElement.style.marginRight = "5px";
   messageBox.appendChild(usernameElement);
 
   if (message.message) {
-      const messageElement = document.createElement("div");
-      messageElement.innerHTML = linkify(message.message); // Convert text urls to clickable links
-      messageBox.appendChild(messageElement);
-      for (user in blocked) {
-          if (blocked[user].username == message.username)
-              messageElement.innerHTML = "BLOCKED";
-      }
-      if (await fetchBlockStatus(message.username))
-          messageElement.innerHTML = "BLOCKED";
-      messageElement.classList.add("message-box");
-      messageBox.appendChild(messageElement);
+    const messageElement = document.createElement("div");
+    messageElement.innerHTML = linkify(message.message); // Convert text urls to clickable links
+    messageBox.appendChild(messageElement);
+    for (user in blocked) {
+      if (blocked[user].username == message.username)
+        messageElement.innerHTML = "BLOCKED";
+    }
+    if (await fetchBlockStatus(message.username))
+      messageElement.innerHTML = "BLOCKED";
+    messageElement.classList.add("message-box");
+    messageBox.appendChild(messageElement);
   }
   if (message.image) {
-      const img = document.createElement("img");
-      img.src = message.image;
-      img.classList.add("image");
-      img.classList.add("message-box");
-      messageBox.appendChild(img);
+    const img = document.createElement("img");
+    img.src = message.image;
+    img.classList.add("image");
+    img.classList.add("message-box");
+    messageBox.appendChild(img);
   }
   document.getElementById("messages").appendChild(messageBox);
   scrollToBottom();
@@ -203,7 +207,6 @@ fetchBlocked().then((data) => {
   load_chats();
 });
 
-
 // Pour les tests
 
 /*simulateGameInvitation();
@@ -218,3 +221,46 @@ function simulateGameInvitation() {
   // Appeler renderMessage pour afficher le message dans le chat
   renderMessage(fakeMessage);
 }*/
+
+document
+  .getElementById("messageText")
+  .addEventListener("keypress", function (event) {
+    scrollToBottom();
+    if (event.key === "Enter") {
+      event.preventDefault();
+      sendMessage();
+    }
+  });
+
+document
+  .getElementById("messageText")
+  .addEventListener("paste", function (event) {
+    const clipboardData = event.clipboardData || window.clipboardData;
+
+    for (const item of clipboardData.items) {
+      if (item.type.indexOf("image") !== -1) {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          const imageData = event.target.result;
+          const imagePreview = document.getElementById("imagePreview");
+          const img = document.createElement("img");
+          img.src = imageData;
+          imagePreview.innerHTML = "";
+          imagePreview.appendChild(img);
+          document.getElementById("imageData").value = imageData;
+        };
+        reader.readAsDataURL(item.getAsFile());
+      }
+    }
+  });
+
+document
+  .getElementById("messageText")
+  .addEventListener("keypress", function (event) {
+    console.log("UGHGGG");
+    scrollToBottom();
+    if (event.key === "Enter") {
+      event.preventDefault();
+      sendMessage();
+    }
+  });
