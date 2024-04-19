@@ -19,8 +19,13 @@ resetButton.addEventListener('click', function () {
 		errorMessage.textContent = 'Two different passwords.';
 		errorMessage.style.display = 'block';
 	} else {
+		console.log(JSON.stringify({
+			username: username,
+			token: token,
+			new_password: newPassword
+		}))
 		// Envoyer la requête POST
-		fetch('/reset_password/change/', {
+		fetch('/api/reset_password/change/', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -33,11 +38,14 @@ resetButton.addEventListener('click', function () {
 			})
 		})
 			.then(response => {
-				if (response.ok) {
-					return response.json();
+				if (response.success) {
+					window.history.pushState(null, null, '/login');
+					fetchPage('/login');
+					return;
 				}
-				throw new Error('Something went wrong on api server!');
-			})
+				else{
+					throw new Error('Something went wrong on api server!');
+			}})
 			.then(response => {
 				console.log('Success:', response);
 				resetButton.disabled = true;
