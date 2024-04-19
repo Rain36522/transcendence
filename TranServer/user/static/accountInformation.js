@@ -62,58 +62,59 @@ document.querySelectorAll(".button-8").forEach((button) => {
   });
 });
 
-document.getElementById('passwordChangeForm').addEventListener('submit', function (event) {
-  event.preventDefault();
-
-  var formData = new FormData(this);
-
-  fetch('/api/change_password/', {
-    method: 'POST',
-    body: formData
-  })
-    .then(response => response.json())
-    .then(data => {
-      if (data.error) {
-        var passwordError = document.getElementById('passwordError');
-        passwordError.textContent = data.error;
-        passwordError.style.display = 'block';
-      } else {
-        var passwordSuccess = document.getElementById('passwordSuccess');
-        passwordSuccess.textContent = 'Your password has been successfully changed.';
-        passwordSuccess.style.display = 'block';
-      }
-    })
-
-    .catch(error => {
-      console.error('Error:', error);
-      var passwordError = document.getElementById('passwordError');
-      passwordError.textContent = 'An unexpected error occurred. Please try again later.';
-      passwordError.style.display = 'block';
-    });
-});
-
 document
-  .getElementById("uploadForm")
+  .getElementById("passwordChangeForm")
   .addEventListener("submit", function (event) {
     event.preventDefault();
-    var formData = new FormData();
-    var fileInput = document.getElementById("profilePicture");
-    var file = fileInput.files[0];
-    formData.append("profile_picture", file);
 
-    fetch("/api/upload_profile/", {
+    var formData = new FormData(this);
+
+    fetch("/api/change_password/", {
       method: "POST",
       body: formData,
-      headers: { "X-CSRFToken": getCookie("csrftoken") },
     })
       .then((response) => response.json())
       .then((data) => {
-        refresh_image();
+        if (data.error) {
+          var passwordError = document.getElementById("passwordError");
+          passwordError.textContent = data.error;
+          passwordError.style.display = "block";
+        } else {
+          var passwordSuccess = document.getElementById("passwordSuccess");
+          passwordSuccess.textContent =
+            "Your password has been successfully changed.";
+          passwordSuccess.style.display = "block";
+        }
       })
+
       .catch((error) => {
         console.error("Error:", error);
+        var passwordError = document.getElementById("passwordError");
+        passwordError.textContent =
+          "An unexpected error occurred. Please try again later.";
+        passwordError.style.display = "block";
       });
   });
+
+function submitForm() {
+  var formData = new FormData();
+  var fileInput = document.getElementById("profilePicture");
+  var file = fileInput.files[0];
+  formData.append("profile_picture", file);
+
+  fetch("/api/upload_profile/", {
+    method: "POST",
+    body: formData,
+    headers: { "X-CSRFToken": getCookie("csrftoken") },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      refresh_image();
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
 
 function refresh_image() {
   fetch("/api/profile_pic/")
@@ -127,7 +128,6 @@ function refresh_image() {
       });
     })
     .then((data) => {
-      console.log(data);
       document.getElementById("profile-pic").src = data;
     });
 }
