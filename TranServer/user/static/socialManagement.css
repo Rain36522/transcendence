@@ -38,7 +38,6 @@ header {
 
 header .logo {
   font-family: "Roboto", sans-serif;
-  /* Garde Roboto pour le logo */
   color: #ffff99;
   font-size: 47px;
 }
@@ -46,9 +45,7 @@ header .logo {
 .logo {
   text-decoration: none;
   color: #ffff99;
-  /* Changement de couleur */
   font-size: 47px;
-  /* Taille de police agrandie */
 }
 
 .additional-links ul {
@@ -64,17 +61,13 @@ header .logo {
   text-decoration: none;
   color: white;
   font-size: 24px;
-  /* Taille de police agrandie */
   font-weight: bold;
-  /* Optionnel : rendre le texte en gras */
 }
 
 .additional-links ul li a.profile {
   color: #ffff99;
-  /* Changement de couleur pour PROFILE */
 }
 
-/* Contenu */
 .content {
   position: relative;
   padding: 50px;
@@ -293,7 +286,6 @@ header .logo {
   background-size: cover;
   background-position: center;
   position: relative;
-  /* Ajouté pour le positionnement de l'indicateur */
 }
 
 .user-photo::before {
@@ -304,7 +296,6 @@ header .logo {
   width: 100%;
   height: 100%;
   z-index: 1;
-  /* Au-dessus de l'image, mais en-dessous du contenu texte */
 }
 
 .user-info {
@@ -314,7 +305,6 @@ header .logo {
 
 .username {
   margin-left: 10px;
-  /* Ajustez cette valeur selon vos préférences */
 }
 
 .status-indicator {
@@ -322,15 +312,10 @@ header .logo {
   height: 10px;
   border-radius: 50%;
   position: absolute;
-  /* Position absolue par rapport à .user-photo */
   right: 5px;
-  /* Déplace l'indicateur vers la droite de la photo */
   bottom: 0;
-  /* Alignement au bas de la photo */
   background-color: red;
-  /* Rouge pour hors ligne, changez à vert pour en ligne */
   z-index: 2;
-  /* Au-dessus du filtre blanc */
 }
 
 .search-area button,
@@ -340,7 +325,6 @@ header .logo {
   background-color: #333;
   color: #ffffe0;
   margin-left: 40px;
-  /* Ajoutez un espace à gauche des boutons */
   border-radius: 5px;
   cursor: pointer;
 }
@@ -370,7 +354,6 @@ body {
   height: 100vh;
   overflow: hidden;
   z-index: -1;
-  /* Placer en-dessous de tout le reste */
 }
 
 body,
@@ -399,7 +382,6 @@ body::before {
 .block-button {
   padding: 5px 10px;
   background-color: #4caf50;
-  /* Vert pour actif */
   color: white;
   border: none;
   border-radius: 4px;
@@ -412,40 +394,21 @@ body::before {
 
 header {
   text-decoration: none;
-  /* Supprime le soulignement */
-  color: white;
-  /* Assure que le texte est en gras */
-  font-size: 24px;
-  /* Taille de police uniforme */
-}
-
-/* Assurez-vous que la classe spécifique pour le lien GAME est correctement stylisée */
-.game-button {
-  text-decoration: none;
   color: white;
   font-size: 24px;
-  /* Assurez-vous que la taille de la police est la même que les autres liens */
-  font-weight: bold;
 }
-
-/* POUR FELEXIBILITE DE LA PAGE SUR DIVERS ECRANS*/
 
 .sections-container {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   display: flex;
-  /* Changez de 'column' à 'row' pour alignement horizontal */
   align-items: flex-start;
-  /* Aligner les éléments en haut */
   justify-content: space-between;
-  /* Distribue un espace équitable entre les sections */
   width: 100%;
   margin-top: 20px;
-  /* Espace entre la barre de recherche et les sections */
 }
 
-/* Styles pour les listes dans les différentes sections */
 .sections-container>section {
   flex: 1;
   margin: 0 10px;
@@ -454,38 +417,26 @@ header {
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
-  /* Ajoute une barre de défilement verticale si nécessaire */
   max-height: 400px;
-  /* Définit une hauteur maximale pour les sections */
   min-width: 250px;
 }
 
-/* Media Query pour gérer les écrans plus petits */
 @media (max-width: 800px) {
   .sections-container {
     flex-direction: column;
-    /* Les sections s'alignent verticalement sur de petits écrans */
   }
 
   .sections-container>section {
     margin: 10px 0;
-    /* Marges adaptées pour l'alignement vertical */
     width: 100%;
-    /* Chaque section prend la pleine largeur */
   }
 }
 
-/* Fin flex section-container */
-
-/* Styles de base pour tous les boutons */
 .button {
   padding: 8px 15px;
-  /* Taille adaptée pour les boutons plus petits */
   font-size: 14px;
-  /* Taille de texte réduite pour correspondre à la nouvelle taille du bouton */
   color: white;
   background-color: #4caf50;
-  /* Une couleur de fond par défaut pour tous les boutons */
   border: none;
   border-radius: 4px;
   text-transform: uppercase;
@@ -495,90 +446,67 @@ header {
   font-family: "Montserrat", sans-serif;
   font-weight: bold;
   margin-left: 20px;
-  /* Espace ajouté à gauche pour séparer du texte utilisateur */
 }
 
-/* Styles spécifiques pour chaque type de bouton */
 .remove-button {
   background-color: #ff6347;
-  /* Rouge pour une action critique */
 }
 
 .remove-button:hover,
 .remove-button:focus {
   background-color: #e5533d;
-  /* Un rouge plus sombre pour le survol */
   transform: translateY(-2px);
 }
 
 .request-sent-button {
   background-color: #ffd700;
-  /* Jaune pour indiquer une attente */
 }
 
 .request-sent-button:hover,
 .request-sent-button:focus {
   background-color: #e6c300;
-  /* Jaune plus sombre pour le survol */
 }
 
 .unblock-button {
   background-color: #32cd32;
-  /* Vert pour une action positive */
 }
 
 .unblock-button:hover,
 .unblock-button:focus {
   background-color: #2ab82a;
-  /* Vert plus sombre pour le survol */
   transform: translateY(-2px);
 }
 
-/* Décalage des boutons à droite des usernames */
 .user-info .button {
   margin-left: 20px;
-  /* Ajoute un espace entre le nom d'utilisateur et le bouton */
 }
 
-/* Styles spécifiques pour le bouton Profile */
 .profile-btn {
   background-color: #ffff99;
-  /* Fond jaune */
   color: black !important;
-  /* Texte en noir pour un bon contraste, forcé avec !important */
   padding: 12px 24px;
-  /* Ajustement du padding pour un look plus bouton */
   border-radius: 4px;
-  /* Bords arrondis */
   transition: background-color 0.3s, color 0.3s;
-  /* Transition pour couleur et fond */
 }
 
 .profile-btn:hover {
   background-color: #e6c300;
-  /* Jaune plus foncé pour le survol */
   color: black !important;
-  /* Maintient la couleur du texte en noir même au survol, forcé avec !important */
   transform: scale(1.05);
-  /* Légère augmentation de taille au survol */
 }
 
 .button.user-button {
   background-color: #8a2be2;
-  /* Couleur violette */
   color: white;
-  /* Texte blanc pour le contraste */
 }
 
 .button.user-button:hover {
   background-color: #7b26d9;
-  /* Une teinte violette plus foncée au survol */
 }
 
 .waiting-approval-section .approve-button,
 .waiting-approval-section .decline-button {
   background-color: #007bff;
-  /* Bleu Bootstrap par défaut */
   color: white;
   border: none;
   border-radius: 4px;
@@ -592,18 +520,14 @@ header {
 .waiting-approval-section .approve-button:hover,
 .waiting-approval-section .decline-button:hover {
   background-color: #0056b3;
-  /* Bleu foncé au survol */
   transform: translateY(-2px);
 }
 
 .action-buttons {
   display: flex;
-  /* Utilise flexbox pour aligner les éléments horizontalement */
   gap: 10px;
-  /* Ajoute un peu d'espace entre les boutons */
 }
 
-/* Style for the dropdown */
 .autocomplete-dropdown {
   position: absolute;
   width: 100%;
@@ -622,16 +546,6 @@ header {
   background-color: #ddd;
 }
 
-.game-button {
-  background-color: transparent;
-  color: white;
-  transition: background-color 0.3s;
-}
-
-.game-button:hover {
-  background-color: #444;
-}
-
 #error_message {
   color: red;
   font-style: italic;
@@ -639,6 +553,16 @@ header {
   margin-top: 10px;
   text-align: center;
   width: 100%;
+}
+
+header .game-button {
+  background-color: transparent !important;
+  color: white !important;
+  transition: background-color 0.3s;
+}
+
+.game-button:hover {
+  background-color: #444;
 }
 
 @media (max-width: 768px) {
@@ -668,4 +592,8 @@ header {
     text-align: center;
     margin-bottom: 5px;
   }
+}
+
+#accountInfoLink {
+  color: black;
 }
