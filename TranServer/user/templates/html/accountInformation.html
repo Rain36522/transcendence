@@ -30,7 +30,7 @@
                 <form id="uploadForm" enctype="multipart/form-data">
                     {% csrf_token %}
                     <input type="file" id="profilePicture" name="profile_picture" accept="image/*"
-                        style="display: none;">
+                           style="display: none;" onchange="submitForm()">
                     <label for="profilePicture" class="file-button">Choose a File</label>
                 </form>
             </div>
