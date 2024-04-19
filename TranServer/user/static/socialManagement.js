@@ -23,7 +23,6 @@ async function update_all() {
 
 function update_user(data, type) {
   for (var user in data) {
-    console.log(data[user]);
     users.push({ username: data[user].username, status: type });
   }
 }
@@ -31,7 +30,6 @@ function update_user(data, type) {
 function refresh_view() {
   users = [];
   update_all().then((data) => {
-    console.log(users);
     displayUsers(users);
   });
 }
@@ -75,7 +73,6 @@ document.getElementById("invite_btn").addEventListener("click", function () {
   fetch("/api/exist/" + searchBox.value + "/")
     .then((response) => response.json())
     .then((data) => {
-      console.log("API response:", data);
       if (data) {
         addFriend(searchBox.value);
         refresh_view();
@@ -121,7 +118,6 @@ function doRequest(path, method, username) {
     return Promise.reject(new Error("Attempt to add or block self"));
   }
 
-  console.log("Request to API:", path, method, username);
   return fetch("/api/" + path + "/" + username + "/", {
     method: method,
     headers: {
@@ -201,6 +197,7 @@ function clearLists() {
   document.querySelector(".friends-list").innerHTML = "";
   document.querySelector(".pending-list").innerHTML = "";
   document.querySelector(".blocked-list").innerHTML = "";
+  document.querySelector(".waiting-approval-list").innerHTML = "";
 }
 
 function createUserElement(user) {
@@ -262,16 +259,26 @@ function declineUser(username) {
 }
 
 function doRequest(path, method, username) {
-  console.log("THIS RUNS");
   fetch("/api/" + path + "/" + username + "/", {
     method: method,
     headers: {
       "Content-Type": "application/json",
       "X-CSRFToken": getCookie("csrftoken"),
     },
-  }).then((data) => {
-    refresh_view();
-  });
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      // Process the data if needed
+      refresh_view();
+    })
+    .catch((error) => {
+      console.error("There was a problem with the fetch operation:", error);
+    });
 }
 
 async function addFriend(username) {
