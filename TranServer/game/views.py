@@ -152,7 +152,6 @@ def isGameFinish(id):
         return True
     gameusers = game.gameuser_set.all()
     for gameuser in gameusers:
-        print(gameuser.points)
         if gameuser.points:
             return False
     return True

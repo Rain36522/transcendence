@@ -31,7 +31,6 @@ class GameServerConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data=None, bytes_data=None):
         # Here you should handle incoming messages, but for now, let's just send a response back
-        print("TEXT DATA : ", text_data, file=stderr)
         data = json.loads(text_data)
         game_id = data["gameid"]
         game = await sync_to_async(Game.objects.get)(pk=game_id)

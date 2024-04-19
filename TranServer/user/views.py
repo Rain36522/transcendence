@@ -718,7 +718,6 @@ def sendMail(user, mail, isMail=False):
     smtp_port = 587
     smtp_user = os.environ.get("MAIL_USER")
     smtp_password = os.environ.get("MAIL_PWD")
-    print("DESTINATION mail :", mail)
 
     subject, content = MessageContentMail(user) if isMail else MessageContentPwd(user)
 
