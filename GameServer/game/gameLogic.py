@@ -304,7 +304,7 @@ class Ball:
 			return -1, 0, 0
 		# right, x dir positive
 		# offset (80) * (paddle_center - contact_point) / paddle_size)
-		max_col = paddle_len / 2 + self.size_w / 2
+		max_col = paddle_len / 2 + self.size / 2
 
 		new_dir = angle_to_Vec2(180 + (self.collision_angle * (paddle_y - collision_pos) / max_col))
 		# left, x dir negative

@@ -153,7 +153,9 @@ function load_chats() {
         userDiv.classList.add("game-invitation"); // Ajouter une classe spécifique pour les invitations de jeu
       }
       userDiv.textContent = usernames;
-      userDiv.addEventListener("click", () => selectChat(usernames, chat.id, chat.is_personal));
+      userDiv.addEventListener("click", () =>
+        selectChat(usernames, chat.id, chat.is_personal)
+      );
       userList.appendChild(userDiv);
     }
   });
@@ -181,6 +183,8 @@ function scrollToBottom() {
   const messagesContainer = document.getElementById("messages");
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
+
+document.getElementById("sendMessage").addEventListener("click", sendMessage);
 
 function sendMessage() {
   if (!socket) return;
