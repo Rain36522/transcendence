@@ -594,8 +594,6 @@ def update_profile_api(request):
 
         new_username = request.data.get("username")
         new_email = request.data.get("email")
-        first_name = request.data.get("first_name")
-        last_name = request.data.get("last_name")
 
         if not new_username and not new_email:
             return Response(
@@ -626,10 +624,6 @@ def update_profile_api(request):
             user.username = new_username
         if new_email:
             user.email = new_email
-        if first_name:
-            user.first_name = first_name
-        if last_name:
-            user.first_name = first_name
 
         user.save()
         return Response(
