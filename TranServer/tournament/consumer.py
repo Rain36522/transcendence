@@ -35,11 +35,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         data = event["data"]
         await self.send(text_data=json.dumps(data))
 
-    # async def receive(self, text_data=None, bytes_data=None):
-    #     # Here you should handle incoming messages, but for now, let's just send a response back
-    #     print(text_data)
-
-
 @sync_to_async
 def getUpdate(id):
     tournament = Tournament.objects.get(pk=id)
@@ -69,5 +64,4 @@ def putGameInDict(game):
     dico["isRunning"] = game.gameRunning
     dico["level"] = game.gameLevel
     dico["pos"] = game.levelPos + 1
-    print("DICO = ", dico)
     return dico
