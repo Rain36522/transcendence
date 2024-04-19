@@ -66,6 +66,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const target = event.target;
     if (target.tagName === "A" && target.getAttribute("href") !== "#") {
       event.preventDefault();
+      if (ws) {
+        ws.close();
+      }
       const url = target.getAttribute("href");
       fetchPage(url);
       history.pushState(null, null, url);
