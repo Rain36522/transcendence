@@ -114,31 +114,6 @@ function blockUser(username) {
   doRequest("blocked", "POST", username);
 }
 
-function doRequest(path, method, username) {
-  if (username === getCurrentUser()) {
-    displayError("You cannot add or block yourself.");
-    return Promise.reject(new Error("Attempt to add or block self"));
-  }
-
-  console.log("Request to API:", path, method, username);
-  return fetch("/api/" + path + "/" + username + "/", {
-    method: method,
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": getCookie("csrftoken"),
-    },
-  }).then(response => {
-    if (!response.ok) {
-      throw new Error('Failed to execute request');
-    }
-    return response.json();
-  }).catch(error => {
-    console.error("Error in doRequest:", error);
-    displayError(error.message || "Error during the API request.");
-    throw error;
-  });
-}
-
 function displayError(message) {
   const errorMessage = document.getElementById('error_message');
   errorMessage.textContent = message;
@@ -255,19 +230,54 @@ function approveUser(username) {
 }
 
 function declineUser(username) {
-  doRequest("invite", "DELETE", username);
+  doRequest("invite", "DELETE", username)
+    .then(() => {
+      // Appel immédiat pour retirer l'utilisateur de l'interface utilisateur
+      removeUserFromView(username);
+      displaySuccess("User declined successfully");
+    })
+    .catch(error => {
+      console.error("Error in declineUser:", error);
+      displayError("Failed to decline user");
+    });
+}
+
+function removeUserFromView(username) {
+  const userElement = document.querySelector(`li[data-username='${username}']`);
+  if (userElement) {
+    userElement.parentNode.removeChild(userElement);
+  }
 }
 
 function doRequest(path, method, username) {
-  console.log("THIS RUNS");
-  fetch("/api/" + path + "/" + username + "/", {
+  const url = `/api/${path}/${username}/`;
+  console.log("Sending request to API:", url, "with method:", method);
+
+  let headers = {
+    "Content-Type": "application/json",
+    "X-CSRFToken": getCookie("csrftoken")
+  };
+
+  let body = null;
+  if (method !== "GET" && method !== "DELETE") {
+    body = JSON.stringify({ username: username });
+  }
+
+  return fetch(url, {
     method: method,
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": getCookie("csrftoken"),
-    },
-  }).then((data) => {
-    refresh_view();
+    headers: headers,
+    body: body
+  }).then(response => {
+    console.log("Received response with status:", response.status);
+    if (!response.ok) {
+      console.error("Response not OK with status:", response.status);
+      return response.text().then(text => { throw new Error(`Failed to execute request: ${text}`); });
+    }
+    return response.json();
+  }).catch(error => {
+    console.error("Error in doRequest:", error);
+    displayError(`Error during the API request: ${error.message}`);
+    throw error;
   });
 }
 
@@ -305,8 +315,12 @@ function unblockUser(username) {
 
 function displaySuccess(message) {
   const successMessage = document.getElementById('success_message');
-  successMessage.textContent = message;
-  successMessage.style.display = 'block';
-  successMessage.style.fontStyle = 'italic';
-  successMessage.style.color = 'green';
+  if (successMessage) {
+    successMessage.textContent = message;
+    successMessage.style.display = 'block';
+    successMessage.style.fontStyle = 'italic';
+    successMessage.style.color = 'green';
+  } else {
+    console.error('Success message element not found');
+  }
 }
