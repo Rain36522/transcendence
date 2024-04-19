@@ -277,7 +277,6 @@ function doRequest(path, method, username) {
 async function addFriend(username) {
   try {
     await doRequest("invite", "POST", username);
-    // Supprimez l'affichage de succès ici
   } catch (error) {
     console.error("Error during API request:", error);
     displayError(error.message || "Error during the user invitation.");
@@ -287,7 +286,6 @@ async function addFriend(username) {
 async function blockUser(username) {
   try {
     await doRequest("blocked", "POST", username);
-    // Supprimez l'affichage de succès ici
   } catch (error) {
     console.error("Error during API request:", error);
     displayError(error.message || "Error during the user blocking.");
