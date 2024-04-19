@@ -24,7 +24,6 @@ function closePopup() {
 
 var createButton = document.querySelector(".create-link");
 
-// Ecouteur d'événements pour le bouton "Create"
 createButton.addEventListener("click", function (event) {
   event.preventDefault();
   openPopup();
@@ -34,22 +33,21 @@ function searchUsers() {
   var searchText = document.getElementById("searchInput").value.toLowerCase();
   var users = document.querySelectorAll(".user-item");
   var searchResultDiv = document.getElementById("searchResult");
-  searchResultDiv.innerHTML = ""; // Effacer les résultats précédents
-  searchResultDiv.style.display = "none"; // Masquer le div en attendant
+  searchResultDiv.innerHTML = "";
+  searchResultDiv.style.display = "none";
 
   for (let user of users) {
     var name = user.querySelector(".user-name").textContent.toLowerCase();
     if (searchText && name.includes(searchText)) {
-      var userClone = user.cloneNode(true); // Cloner l'élément trouvé
+      var userClone = user.cloneNode(true);
       userClone.addEventListener("click", handleInviteButtonClick);
-      searchResultDiv.appendChild(userClone); // Ajouter le clone au div de résultat
-      searchResultDiv.style.display = ""; // Afficher le div de résultat
-      break; // Sortir après avoir trouvé le premier utilisateur correspondant
+      searchResultDiv.appendChild(userClone);
+      searchResultDiv.style.display = "";
+      break;
     }
   }
 }
 
-// Modifier l'écouteur d'événements pour utiliser la fonction searchUsers lors de la saisie
 document.getElementById("searchInput").addEventListener("input", searchUsers);
 
 document
@@ -58,10 +56,9 @@ document
 
 function handleInviteButtonClick(event) {
   const userItem = event.target.closest(".user-item");
-  const userName = userItem.querySelector(".user-name").textContent; // Obtenir le nom d'utilisateur
+  const userName = userItem.querySelector(".user-name").textContent;
   const isInvited = event.target.textContent === "Invite";
 
-  // Mettre à jour le texte du bouton et la couleur
   event.target.textContent = isInvited ? "✖" : "Invite";
   event.target.style.backgroundColor = isInvited ? "red" : "#4CAF50";
 
@@ -70,21 +67,17 @@ function handleInviteButtonClick(event) {
   const sourceContainerId = isInvited ? "user-list" : "invitedUsers";
   const sourceContainer = document.getElementById(sourceContainerId);
 
-  // Si on invite l'utilisateur, chercher et supprimer l'original de la liste des utilisateurs
   const sourceUserItems = sourceContainer.querySelectorAll(".user-item");
   sourceUserItems.forEach(function (item) {
     const itemUserName = item.querySelector(".user-name").textContent;
     if (itemUserName === userName) {
-      item.remove(); // Enlever l'élément original du conteneur source
+      item.remove();
     }
   });
 
-  // Ajouter l'utilisateur invité au conteneur cible
   targetContainer.appendChild(userItem);
 
-  // Vider la barre de recherche
   document.getElementById("searchInput").value = "";
-  // Masquer les résultats de recherche si nécessaire
   document.getElementById("searchResult").style.display = "none";
   document.getElementById("searchResult").innerHTML = "";
 }
@@ -93,7 +86,41 @@ document.querySelectorAll(".invite-button").forEach((button) => {
   button.addEventListener("click", handleInviteButtonClick);
 });
 
-// Gestion du clic sur le fond flou pour fermer la popup
 blurBackground.addEventListener("click", function () {
   closePopup();
 });
+
+
+// To modify : user list created for testing!
+const usersData = [
+  {
+    name: "Famacito",
+    image: "https://media1.tenor.com/m/xK38NWayRnoAAAAC/dog-eyes.gif"
+  },
+  {
+    name: "Dark_Sasuke",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb2KRrG26uJLRrL55aWnKPGezf8V5ZkiHPHg&s"
+  }
+];
+
+function createUserItem(user) {
+  const userItem = document.createElement("div");
+  userItem.className = "user-item";
+  userItem.innerHTML = `
+    <img src="${user.image}" alt="${user.name}" class="user-image">
+    <span class="user-name">${user.name}</span>
+    <button class="invite-button">Invite</button>
+  `;
+  userItem.querySelector(".invite-button").addEventListener("click", handleInviteButtonClick);
+  return userItem;
+}
+
+function populateUserList() {
+  const userListContainer = document.getElementById("user-list");
+  userListContainer.innerHTML = ""; // Clear previous entries
+  usersData.forEach(user => {
+    userListContainer.appendChild(createUserItem(user));
+  });
+}
+
+document.addEventListener("DOMContentLoaded", populateUserList); // Populate users when the document is loaded
