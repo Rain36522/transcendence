@@ -26,7 +26,7 @@ LOGIN_URL = "/login/"
 SECRET_KEY = "django-insecure-prgklyodmac2%&f*_m10)rt@m27h1wq0sud#3a(i39%+dzvrm*"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -136,6 +136,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "static/"
+
+STATIC_ROOT = "static/"
+
+
+STATICFILES = {
+    "text/javascript": (".js",),
+    "text/css": (".css",),
+    # Add more MIME types as needed
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

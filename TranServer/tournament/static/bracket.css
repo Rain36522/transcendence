@@ -195,11 +195,11 @@ a {
   border-radius: 10px;
   width: fit-content;
   margin: 50px auto;
-  transition: transform 10s;
+  transition: transform 1s;
 }
 
 .join-button:hover {
-  transform: scale(1.5) rotate(1000deg) skewX(1350deg) skewY(450deg) translateY(30px);
+  transform: scale(1.5);
 }
 
 .join-button-a{

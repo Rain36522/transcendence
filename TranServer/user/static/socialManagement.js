@@ -23,7 +23,6 @@ async function update_all() {
 
 function update_user(data, type) {
   for (var user in data) {
-    console.log(data[user]);
     users.push({ username: data[user].username, status: type });
   }
 }
@@ -31,7 +30,6 @@ function update_user(data, type) {
 function refresh_view() {
   users = [];
   update_all().then((data) => {
-    console.log(users);
     displayUsers(users);
   });
 }
@@ -73,9 +71,8 @@ document.getElementById("invite_btn").addEventListener("click", function () {
     return;
   }
   fetch("/api/exist/" + searchBox.value + "/")
-    .then(response => response.json())
-    .then(data => {
-      console.log("API response:", data);
+    .then((response) => response.json())
+    .then((data) => {
       if (data) {
         addFriend(searchBox.value);
         refresh_view();
@@ -84,7 +81,7 @@ document.getElementById("invite_btn").addEventListener("click", function () {
         throw new Error("User does not exist");
       }
     })
-    .catch(error => {
+    .catch((error) => {
       displayError(error.message || "Error during the user invitation.");
     });
 });
@@ -95,9 +92,10 @@ document.getElementById("block_btn").addEventListener("click", function () {
     return;
   }
   fetch("/api/exist/" + searchBox.value + "/")
-    .then(response => response.json())
-    .then(data => {
-      if (data) { // ici aussi, ajustez en utilisant simplement 'data'
+    .then((response) => response.json())
+    .then((data) => {
+      if (data) {
+        // ici aussi, ajustez en utilisant simplement 'data'
         blockUser(searchBox.value);
         refresh_view();
         clearError();
@@ -105,7 +103,7 @@ document.getElementById("block_btn").addEventListener("click", function () {
         throw new Error("User does not exist");
       }
     })
-    .catch(error => {
+    .catch((error) => {
       displayError(error.message || "Error during the user blocking.");
     });
 });
@@ -120,34 +118,35 @@ function doRequest(path, method, username) {
     return Promise.reject(new Error("Attempt to add or block self"));
   }
 
-  console.log("Request to API:", path, method, username);
   return fetch("/api/" + path + "/" + username + "/", {
     method: method,
     headers: {
       "Content-Type": "application/json",
       "X-CSRFToken": getCookie("csrftoken"),
     },
-  }).then(response => {
-    if (!response.ok) {
-      throw new Error('Failed to execute request');
-    }
-    return response.json();
-  }).catch(error => {
-    console.error("Error in doRequest:", error);
-    displayError(error.message || "Error during the API request.");
-    throw error;
-  });
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to execute request");
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Error in doRequest:", error);
+      displayError(error.message || "Error during the API request.");
+      throw error;
+    });
 }
 
 function displayError(message) {
-  const errorMessage = document.getElementById('error_message');
+  const errorMessage = document.getElementById("error_message");
   errorMessage.textContent = message;
-  errorMessage.style.display = 'block';
+  errorMessage.style.display = "block";
 }
 
 function clearError() {
-  const errorMessage = document.getElementById('error_message');
-  errorMessage.style.display = 'none';
+  const errorMessage = document.getElementById("error_message");
+  errorMessage.style.display = "none";
 }
 
 searchBox.addEventListener("input", function () {
@@ -198,12 +197,17 @@ function clearLists() {
   document.querySelector(".friends-list").innerHTML = "";
   document.querySelector(".pending-list").innerHTML = "";
   document.querySelector(".blocked-list").innerHTML = "";
+  document.querySelector(".waiting-approval-list").innerHTML = "";
 }
 
 function createUserElement(user) {
   var li = document.createElement("li");
   li.className = "user-item";
   li.setAttribute("data-username", user.username);
+  li.innerHTML = `
+  <span class="username">${user.username}</span>
+  <div class="action-buttons">${getActionButtons(user)}</div>
+`;
   fetch("/api/profile_pic/" + user.username + "/")
     .then((response) => response.blob())
     .then((blob) => {
@@ -221,11 +225,7 @@ function createUserElement(user) {
         ');"></div>' +
         li.innerHTML;
     });
-  li.innerHTML = `
-        
-        <span class="username">${user.username}</span>
-        <div class="action-buttons">${getActionButtons(user)}</div>
-    `;
+
   return li;
 }
 
@@ -259,22 +259,31 @@ function declineUser(username) {
 }
 
 function doRequest(path, method, username) {
-  console.log("THIS RUNS");
   fetch("/api/" + path + "/" + username + "/", {
     method: method,
     headers: {
       "Content-Type": "application/json",
       "X-CSRFToken": getCookie("csrftoken"),
     },
-  }).then((data) => {
-    refresh_view();
-  });
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      // Process the data if needed
+      refresh_view();
+    })
+    .catch((error) => {
+      console.error("There was a problem with the fetch operation:", error);
+    });
 }
 
 async function addFriend(username) {
   try {
     await doRequest("invite", "POST", username);
-    // Supprimez l'affichage de succès ici
   } catch (error) {
     console.error("Error during API request:", error);
     displayError(error.message || "Error during the user invitation.");
@@ -284,7 +293,6 @@ async function addFriend(username) {
 async function blockUser(username) {
   try {
     await doRequest("blocked", "POST", username);
-    // Supprimez l'affichage de succès ici
   } catch (error) {
     console.error("Error during API request:", error);
     displayError(error.message || "Error during the user blocking.");
@@ -304,9 +312,9 @@ function unblockUser(username) {
 }
 
 function displaySuccess(message) {
-  const successMessage = document.getElementById('success_message');
+  const successMessage = document.getElementById("success_message");
   successMessage.textContent = message;
-  successMessage.style.display = 'block';
-  successMessage.style.fontStyle = 'italic';
-  successMessage.style.color = 'green';
+  successMessage.style.display = "block";
+  successMessage.style.fontStyle = "italic";
+  successMessage.style.color = "green";
 }

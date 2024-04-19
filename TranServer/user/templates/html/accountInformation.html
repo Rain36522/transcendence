@@ -10,6 +10,8 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css" />
 <link rel="stylesheet" href="{% static 'home.css' %}">
 <link rel="stylesheet" href="{% static 'accountInformation.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
+
 
 <div class="image-container">
     <img src="https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg"
@@ -73,7 +75,7 @@
                     <input type="password" id="newPassword" name="new_password" required class="form-input"><br><br>
                 </div>
                 <div class="form-row">
-                    <div style="flex: 0 0 140px;"></div> <!-- Spacer div for label width -->
+                    <div style="flex: 0 0 140px;"></div>
                     <button type="submit" class="form-button">Change Password</button>
                 </div>
                 <p id="passwordSuccess" style="display: none;"></p>
@@ -130,7 +132,6 @@
         </div>
 
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
     <script src={% static 'utils.js' %}></script>
     <script src={% static 'accountInformation.js' %}></script>
 </div>

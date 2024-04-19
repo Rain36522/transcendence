@@ -125,37 +125,25 @@
                     <input type="text" id="searchInput" placeholder="Search...">
                     <button type="button">Search</button>
                 </div>
-                <!-- Nouvelle section pour afficher le résultat de la recherche -->
                 <div id="searchResult" class="search-result" style="display: none;">
-                    <!-- Le résultat de la recherche sera injecté ici -->
                 </div>
 
-                <div class="users-and-invited-container"> <!-- Conteneur parent pour Flexbox -->
+                <div class="users-and-invited-container">
                     <div class="user-container">
                         <h4 class="title-outside">User list</h4>
                         <div class="user-list-container" id="user-list">
-                            <div class="user-item">
-                                <img src="https://media1.tenor.com/m/xK38NWayRnoAAAAC/dog-eyes.gif" alt="Famacito" class="user-image">
-                                <span class="user-name">Famacito</span>
-                                <button class="invite-button">Invite</button>
-                            </div>
-                            <div class="user-item">
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb2KRrG26uJLRrL55aWnKPGezf8V5ZkiHPHg&s" alt="Dark_Sasuke" class="user-image">
-                                <span class="user-name">Dark_Sasuke</span>
-                                <button class="invite-button">Invite</button>
-                            </div>
-                            <!-- Ajoutez plus d'utilisateurs ici -->
                         </div>
                     </div>
                     <div class="invited-container">
                         <h4 class="title-outside">Invited Users</h4>
                         <div class="user-list-container" id="invitedUsers">
-                            <!-- Les utilisateurs invités seront affichés ici -->
                         </div>
                     </div>
                 </div>
-                
-                <button class="start-button">Start</button>
+
+                <div class="start-button-container">
+                    <button class="start-button">Start</button>
+                </div>
             </div>
         </div>
         <script src="{% static 'utils.js' %}"></script>
