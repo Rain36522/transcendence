@@ -44,16 +44,16 @@ if (typeof window.Settings === "undefined") {
 			if (this.isSolo && this.nbPlayers === 2)
 				this.userID = 1;
 			else if (data.users)
-			{
-				console.log("et merde");
 				this.userID = this.playersNames.indexOf(this.userName) + 1;
-			}
 			else
 				this.userID = 1;
 			this.gameID = data.gameid;
+			this.tournamentid = data.tournamentid;
 
 			if (this.userID == 0)
 				this.userID = 1;
+			
+			console.log("Creating settings with " + this.nbPlayers + " players and user " + this.userName);
 		}
 	}
 }
@@ -76,6 +76,7 @@ if (typeof window.Player === "undefined") {
 			this.Position = 0; // from -0.5 to 0.5, represents pos on the paddle slider
 			this.keysPressed = {}; // stores keys status (pressed/released) for up and down
 			this.gameParams = gameParams; // game settings	
+			console.log("Creating player " + this.PlayerID + " with name " + this.PlayerName);
 		}
 
 		// store current keys status (pressed/released)
@@ -95,7 +96,7 @@ if (typeof window.Player === "undefined") {
 					message = this.PlayerID + "d-" + (value == true ? "on" : "off");
 				}
 			} else {
-				if (this.PlayerID % 2 == 1 || (this.gameParams.isSolo && this.gameParams.nbPlayers == 2))
+				if (this.PlayerID == 1  || this.PlayerID == 4 || (this.gameParams.isSolo && this.gameParams.nbPlayers == 2))
 				{
 					if ((event.key == "w" || event.key == "W") && this.keysPressed["up"] != value) {
 						this.keysPressed["up"] = value;
@@ -269,7 +270,7 @@ async function drawGame() {
 	}
 	if (settings.status == "game_over")
 	{
-		document.getElementById('endGameScreen').style.display = 'none';
+		document.getElementById('waitingScreen').style.display = 'none';
 		var winner = 'le Prince de LU';
 		var highestScore = 0;
 		for (var i = 0; i < nbPaddles; i++)
@@ -290,6 +291,8 @@ async function drawGame() {
 		var pageToFetch = "/dashboard/";
 		if (settings.tournamentid != undefined && settings.tournamentid != null && settings.tournamentid != 0)
 			pageToFetch = "/tournament/" + settings.tournamentid + "/";
+		console.log("tournament id is " + settings.tournamentid)
+		console.log("fetching page " + pageToFetch);
 		window.history.pushState(null, null, pageToFetch);
 		fetchPage(pageToFetch);
 }}
@@ -322,8 +325,12 @@ settings = new Settings(window.contexteJson);
 if (settings.nbPlayers > 2)
 	nbPaddles = 4;
 players = [nbPaddles];
+console.log("nbPaddles is " + nbPaddles + " and nbPlayers is " + settings.nbPlayers);
 for (var i = 0; i < nbPaddles; i++)
-		players[i] = new Player(i + 1, settings.playersNames[i], settings);
+{
+	console.log("user creation iteration " + i);
+	players[i] = new Player(i + 1, settings.playersNames[i], settings);
+}
 setGameSize()
 
 
@@ -332,10 +339,14 @@ setGameSize()
 \*__________________________________________________________________*/
 // WebSocket setup
 var ws;
+var attemptDuration = 10000;
+var attemptInterval = 500;
+var startTime = Date.now();
 
 function connectWebSocket() {
 	var url = 'wss://' + window.location.host + '/wsGame/' + settings.gameID + '/' + settings.userName + '/';
 	ws = new WebSocket(url);
+	
 
 	ws.onopen = () =>
 		{console.log("WebSocket connection established.");};
@@ -358,8 +369,18 @@ function connectWebSocket() {
 			players[i].updateStatus(data[`p${i + 1}`], data[`score${i + 1}`]);
 		drawGame();
 	};
-	ws.onclose = () =>
-		{console.log("WebSocket connection closed.");};
+	ws.onclose = (event) => {
+		if (!event.wasClean) {
+		  console.log(`WebSocket closed with event code ${event.code}, retrying...`);
+		  let currentTime = Date.now();
+		  let elapsedTime = currentTime - startTime;
+		  if (elapsedTime < attemptDuration) {
+			setTimeout(connectWebSocket, attemptInterval);
+		  } else {
+			console.log("Stopped attempting to reconnect WebSocket after 10 seconds.");
+		  }
+		}
+	};
 	ws.onerror = (error) =>
 		{console.log("WebSocket error: ", error);};
 }

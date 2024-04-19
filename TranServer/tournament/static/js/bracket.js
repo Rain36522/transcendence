@@ -1,5 +1,9 @@
 document.title = "Tournament";
 
+function sleep(milliseconds) {
+    return new Promise(resolve => setTimeout(resolve, milliseconds));
+}
+
 if (typeof window.Match === "undefined") {
     window.Match = class Match {
 		constructor(level, pos, ...players) {
@@ -150,7 +154,7 @@ function initializeTournament(tournamentSize) {
 }
 
 
-function updateTournament(data) {
+async function updateTournament(data) {
 	if (data.tournamentFull == true)
 		isFull = true;
 	if (isFull == true)
@@ -181,6 +185,7 @@ function updateTournament(data) {
 					if (matchData[playerIdKey] && matchData[playerIdKey] === myUser) {
 						var pageToFetch = "/game/" + matchData.gameId + "/";
 						window.history.pushState(null, null, pageToFetch);
+						await sleep(4000);
 						fetchPage(pageToFetch);
 						break;
 	}
