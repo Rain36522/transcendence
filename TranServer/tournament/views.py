@@ -31,7 +31,6 @@ class tournamentSettings(APIView):
         return render(request, 'gamesettingspage.html')
     
     def post(self, request):
-        print("REQUEST TOURNAMENT POST", file=sys.stderr)
         self.data = request.data.copy()
         self.tournament = Tournament.objects.create(playerNumber=self.data["playerNumber"])
         self.data["tournament"] = self.tournament.id
@@ -118,7 +117,6 @@ class tournamentSettings(APIView):
                     for element in oldListe:
                         if element[0]:
                             nextGameId = element[1]
-                            print("ELELEMENT :", element, file=sys.stderr)
                             element[0] -= 1
                             break
                 id = self.putGamesDb(i, j, gamePlayer, nextGameId, firstGameDb)
@@ -146,8 +144,7 @@ class tournamentSettings(APIView):
         if serializer.is_valid():
             return serializer.save().id
         else:
-            errors = serializer.errors
-            print("ERROR DB : ", errors, file=sys.stderr)
+            print("ERROR DB : ", serializer.errors, file=sys.stderr)
             return None
     
     def changeData(self, data):
@@ -182,7 +179,6 @@ class TournamentView(APIView):
     renderer_classes = [JSONRenderer]
 
     def get(self, request, id):
-        print("USER ACCESS TO TOURNAMENT VIEW")
         self.id = id
         if not Tournament.objects.filter(pk=id).exists():
             raise Http404("Tournament does not exist")
@@ -255,8 +251,6 @@ class TournamentJoin(APIView):
         if not str(self.request.user) in usernames and user_ids.count() <= self.tournament.playerNumber:
             if putUserInGame(self.tournament, self.request.user):
                 launchTournament(self.tournament)
-        else:
-            print("USER IS A VISITOR")
         return 0
 
     def handle_exception(self, exc):

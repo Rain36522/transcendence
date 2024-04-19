@@ -494,8 +494,8 @@ def user_dashboard(request, username=None):
     ratio_l = 0
     losses = user.total_games - user.wins
     if user.total_games != 0:
-        ratio_w = user.wins / user.total_games
-        ratio_l = losses / user.total_games
+        ratio_w = round(user.wins / user.total_games * 100)
+        ratio_l = round(losses / user.total_games * 100)
     return render(
         request,
         "html/dashboard.html",
@@ -720,7 +720,6 @@ def sendMail(user, mail, isMail=False):
     smtp_port = 587
     smtp_user = os.environ.get("MAIL_USER")
     smtp_password = os.environ.get("MAIL_PWD")
-    print("DESTINATION mail :", mail)
 
     subject, content = MessageContentMail(user) if isMail else MessageContentPwd(user)
 
@@ -798,7 +797,8 @@ def PasswordForgot(request, username=None, token=None):
     if not token or token != user.token:
         print("INVALIDE TOKEN :", user.token)
         raise Http404("Invalide link")
-    return HttpResponse("PASSWORD CHANGE PAGE", status=status.HTTP_200_OK)
+    return render(request, 'html/TODO.html', {'token': token, 'username': username})
+
 
 def PasswordReset(request, username, token):
     users = User.objects.filter(username=username)
@@ -821,5 +821,5 @@ def PasswordReset(request, username, token):
         user.set_password(new_password)
         user.token = ""
         user.save()
-        return Response("Password reset", status=status.HTTP_200_OK)
+        return Response("Password reset", status=status.HTTP_200_OK) #TODO Redirection
 
