@@ -5,3 +5,4 @@ pyvenv2
 .env
 __pycache__
 cli/clienv
+static

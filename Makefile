@@ -6,7 +6,7 @@
 #    By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/08 12:20:28 by pudry             #+#    #+#              #
-#    Updated: 2024/04/08 12:26:03 by dvandenb         ###   ########.fr        #
+#    Updated: 2024/04/18 19:35:10 by dvandenb         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,6 +32,7 @@ install:
 	./install_dep.zsh
 
 run:
+	python3 TranServer/manage.py collectstatic --noinput
 	docker compose -f  ${DOCKER_COMPOSE} -p ${NAME} up --build
 # --detach
 
@@ -44,7 +45,7 @@ delete:
 	-docker rmi -f $$(docker images -qa);
 	-docker volume rm $$(docker volume ls -q);
 	-docker network rm $$(docker network ls -q) 2>/dev/null
-
+	rm -rf static/*
 fclean: stop delete
 
 re: fclean all

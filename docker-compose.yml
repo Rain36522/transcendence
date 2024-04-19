@@ -67,6 +67,8 @@ services:
     container_name: nginx
     networks:
         - Transcendence
+    volumes:
+      - ./static:/static
     build: 
       context: .
       dockerfile: ./nginx/Dockerfile.nginx

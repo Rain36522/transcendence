@@ -1,3 +1,4 @@
+from sys import stderr
 from django.shortcuts import render
 from rest_framework.views import APIView
 from django.http import JsonResponse
@@ -68,9 +69,10 @@ class ChatListView(APIView):
         """
         try:
             chat_data = request.data
+            print(chat_data, file=stderr)
             if not chat_data:
                 return Response(
-                    "Request data is empty", status=status.HTTP_400_BAD_REQUEST
+                    "Request data is empty ", status=status.HTTP_400_BAD_REQUEST
                 )
 
             participants = chat_data["participants"]
@@ -81,8 +83,8 @@ class ChatListView(APIView):
                 )
 
             chat = Chat.objects.create()
-
-            participants.append(request.user.username)
+            if request.user.username not in participants:
+                participants.append(request.user.username)
 
             for username in participants:
                 user_exists = User.objects.filter(username=username).exists()
@@ -99,7 +101,10 @@ class ChatListView(APIView):
             chat.save()
             return Response("", status=status.HTTP_201_CREATED)
         except KeyError:
-            return Response("'participants' key is missing in request data", status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                "'participants' key is missing in request data",
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         except Exception as e:
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
