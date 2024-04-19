@@ -8,22 +8,23 @@ def validate_hex_color(value):
         raise serializers.ValidationError("Invalid hexadecimal color format")
 
 
-class ColorUpdateSerializer(serializers.Serializer):
-    ball_color = serializers.CharField(
-        max_length=7, required=False, validators=[validate_hex_color]
-    )
-    paddle_color = serializers.CharField(
-        max_length=7, required=False, validators=[validate_hex_color]
-    )
-    enemy_paddle_color = serializers.CharField(
-        max_length=7, required=False, validators=[validate_hex_color]
-    )
-    frame_color = serializers.CharField(
-        max_length=7, required=False, validators=[validate_hex_color]
-    )
-    background_color = serializers.CharField(
-        max_length=7, required=False, validators=[validate_hex_color]
-    )
+class ColorUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "ball_color",
+            "paddle_color",
+            "enemy_paddle_color",
+            "frame_color",
+            "background_color",
+        ]
+        extra_kwargs = {
+            "ball_color": {"validators": [validate_hex_color]},
+            "paddle_color": {"validators": [validate_hex_color]},
+            "enemy_paddle_color": {"validators": [validate_hex_color]},
+            "frame_color": {"validators": [validate_hex_color]},
+            "background_color": {"validators": [validate_hex_color]},
+        }
 
 
 class UserSerializer_Username(serializers.ModelSerializer):
