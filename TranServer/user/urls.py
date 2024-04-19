@@ -96,5 +96,5 @@ urlpatterns = [
     path("api/colors/", ColorView.as_view(), name="color_api"),
     path('api/mail/<str:username>/<str:token>/', EmailValidation, name='EmailValidation'),
     path('api/reset_password/<str:username>/<str:token>/', PasswordForgot, name='password forgot page'),
-    path('api/reset_password/change/<str:username>/<str:token>/change/', PasswordReset, name='password reset'),
+    path('api/reset_password/change/', PasswordReset, name='password reset'),
 ]

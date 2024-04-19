@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.renderers import JSONRenderer
+
 from django.http import JsonResponse, HttpResponse
 from .models import Game, GameUser
 from rest_framework.views import APIView
@@ -14,7 +17,6 @@ from chat.models import Chat, Message
 from django.utils import timezone
 from django.db.models import Count
 from django.http import Http404
-
 
 
 def send_message_to_chat_group(chat, message, inviter, user, hostname):
@@ -43,6 +45,9 @@ def send_message_to_chat_group(chat, message, inviter, user, hostname):
 
 # @login_required
 class newGame(APIView):
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [JSONRenderer]
+
     def get(self, request):
         return render(request, "html/gameSettings.html")
 
@@ -139,10 +144,11 @@ def gamePage(request, id):
         "status": "waiting",
         "user": request.user.username,
         "gameid": id,
-        "tournamentid": tournamentid
+        "tournamentid": tournamentid,
     }
     contexte_json = json.dumps(contexte)
     return render(request, "monapp/pong.html", {"contexte_json": contexte_json})
+
 
 def isGameFinish(id):
     if not Game.objects.filter(pk=id).exists():
@@ -152,7 +158,6 @@ def isGameFinish(id):
         return True
     gameusers = game.gameuser_set.all()
     for gameuser in gameusers:
-        print(gameuser.points)
         if gameuser.points:
             return False
     return True
@@ -160,5 +165,3 @@ def isGameFinish(id):
 
 def home_page(request):
     return render(request, "html/home.html")
-
-

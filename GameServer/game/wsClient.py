@@ -1,25 +1,29 @@
-import asyncio
 import websockets
 from sys import stderr
 from json import dumps
 
+RESET = "\033[0m"
+RED = "\033[31m"
 
 class WebSocketClient:
     def __init__(self, url):
         self.url = url
         self.messages = []
+        self.autorisedUsers = None
 
 
     async def connect(self):
         self.websocket = await websockets.connect(self.url)
+        if self.autorisedUsers:
+            await self.sendUserJoin(self.autorisedUsers)
         print("Game instance connected to", self.url, file=stderr)
 
     async def receive_messages(self):
         try:
             async for message in self.websocket:
                 self.messages.append(message)
-        finally:
-            print("Game instance disconnected to", self.url, file=stderr)
+        except:
+            pass
 
     """Client to game serv
     char 0 = player number
@@ -27,16 +31,24 @@ class WebSocketClient:
     """
     def getMsg(self):
         msg = []
-        for message in self.messages:
-            msg.append(message)
+        msg = self.messages.copy()
         self.messages.clear()
         return msg
 
     async def sendMsg(self, msg):
-        await self.websocket.send(dumps(msg))
+        while True:
+            try:
+                await self.websocket.send(dumps(msg))
+                break
+            except:
+                await self.connect()
 
     async def sendUserJoin(self, msg):
-        await self.websocket.send("autorisedusers" + dumps(msg))
+        try:
+            self.autorisedUsers = msg
+            await self.websocket.send("autorisedusers" + dumps(msg))
+        except:
+            pass
 
     async def sendEndGame(self, msg, gameError=False):
         if gameError:

@@ -12,6 +12,5 @@ fetch("/api/profile_pic/" + username + "/")
     });
   })
   .then((data) => {
-    console.log(data);
     document.getElementById("profile-pic").src = data;
   });

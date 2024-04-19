@@ -44,6 +44,7 @@ MAIL = False
 
 MAIL = False
 
+
 @api_view(["POST"])
 @renderer_classes([JSONRenderer])
 def api_signup(request):
@@ -62,7 +63,7 @@ def api_signup(request):
                 return Response(
                     {"message": "You have been logged in"},
                     status=status.HTTP_200_OK,
-                )  
+                )
             if MAIL or sendMail(user, user.email, isMail=True):
                 chat = Chat.objects.create()
                 chat.participants.add(user)
@@ -463,8 +464,10 @@ def email_sent(request):
 def change_password(request):
     return render(request, "html/change_password.html")
 
+
 def forgot_password(request):
     return render(request, "html/forgot_password.html")
+
 
 @login_required
 def account_information(request):
@@ -488,17 +491,20 @@ def profile_user(request, username=None):
 @login_required
 def user_dashboard(request, username=None):
     user = request.user
+    path = "html/dashboard.html"
     if username:
         user = User.objects.get(username=username)
+        path = "html/profile_user.html"
     ratio_w = 0
     ratio_l = 0
     losses = user.total_games - user.wins
     if user.total_games != 0:
-        ratio_w = user.wins / user.total_games
-        ratio_l = losses / user.total_games
+        ratio_w = round(user.wins / user.total_games * 100)
+        ratio_l = round(losses / user.total_games * 100)
+
     return render(
         request,
-        "html/dashboard.html",
+        path,
         {
             "user": user,
             "losses": losses,
@@ -594,8 +600,6 @@ def update_profile_api(request):
 
         new_username = request.data.get("username")
         new_email = request.data.get("email")
-        first_name = request.data.get("first_name")
-        last_name = request.data.get("last_name")
 
         if not new_username and not new_email:
             return Response(
@@ -626,10 +630,6 @@ def update_profile_api(request):
             user.username = new_username
         if new_email:
             user.email = new_email
-        if first_name:
-            user.first_name = first_name
-        if last_name:
-            user.first_name = first_name
 
         user.save()
         return Response(
@@ -690,7 +690,9 @@ def test_password_change_view(request):
 def MessageContentPwd(user):
     subject = "Reset password"
     GenerateUserToken(user, mail=False)
-    ResetLink = "https://127.0.0.1/api/reset_password/" + user.username + "/" + user.token
+    ResetLink = (
+        "https://127.0.0.1/api/reset_password/" + user.username + "/" + user.token
+    )
     mailContent = f"""
     <h1>Hi {user.username}!</h1>
     <p>To reset your password, simply click this link :
@@ -720,7 +722,6 @@ def sendMail(user, mail, isMail=False):
     smtp_port = 587
     smtp_user = os.environ.get("MAIL_USER")
     smtp_password = os.environ.get("MAIL_PWD")
-    print("DESTINATION mail :", mail)
 
     subject, content = MessageContentMail(user) if isMail else MessageContentPwd(user)
 
@@ -775,19 +776,22 @@ def EmailValidation(request, username, token):
 class sendPasswordReset(APIView):
     def get(self, request):
         return render(request, "html/forgot_password.html")
-    
+
     def post(self, request):
         mail = request.data.get("email")
         if not mail:
             return Response({"error": "No mail"}, status=status.HTTP_400_BAD_REQUEST)
         elif not User.objects.filter(email=mail).exists():
-            return Response({"error": "Invalide mail"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Invalide mail"}, status=status.HTTP_400_BAD_REQUEST
+            )
         user = User.objects.filter(email=mail).first()
         if not sendMail(user, mail, isMail=False):
-            return Response({"error": "Invalid mail"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Invalid mail"}, status=status.HTTP_400_BAD_REQUEST
+            )
         return Response({"message": "reset password email sent"}, status=200)
-        
-        
+
 
 def PasswordForgot(request, username=None, token=None):
     users = User.objects.filter(username=username)
@@ -798,7 +802,8 @@ def PasswordForgot(request, username=None, token=None):
     if not token or token != user.token:
         print("INVALIDE TOKEN :", user.token)
         raise Http404("Invalide link")
-    return HttpResponse("PASSWORD CHANGE PAGE", status=status.HTTP_200_OK)
+    return render(request, "html/TODO.html", {"token": token, "username": username})
+
 
 def PasswordReset(request, username, token):
     users = User.objects.filter(username=username)
@@ -821,5 +826,4 @@ def PasswordReset(request, username, token):
         user.set_password(new_password)
         user.token = ""
         user.save()
-        return Response("Password reset", status=status.HTTP_200_OK)
-
+        return Response("Password reset", status=status.HTTP_200_OK)  # TODO Redirection

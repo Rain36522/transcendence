@@ -30,7 +30,7 @@
                 <form id="uploadForm" enctype="multipart/form-data">
                     {% csrf_token %}
                     <input type="file" id="profilePicture" name="profile_picture" accept="image/*"
-                        style="display: none;">
+                           style="display: none;" onchange="submitForm()">
                     <label for="profilePicture" class="file-button">Choose a File</label>
                 </form>
             </div>
@@ -47,16 +47,6 @@
                 <div class="form-row">
                     <label for="email" class="form-label">Email:</label>
                     <input type="email" id="email" name="email" value="{{ user.email }}" required class="form-input">
-                </div>
-                <div class="form-row">
-                    <label for="first_name" class="form-label">First Name:</label>
-                    <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" required
-                        class="form-input">
-                </div>
-                <div class="form-row">
-                    <label for="last_name" class="form-label">Last Name:</label>
-                    <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" required
-                        class="form-input">
                 </div>
                 <div class="form-row">
                     <div style="flex: 0 0 140px;"></div> <!-- This spacer div takes up the label width -->
