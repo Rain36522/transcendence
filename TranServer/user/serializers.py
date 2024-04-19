@@ -53,8 +53,6 @@ class PersonalUserSerializer(serializers.ModelSerializer):
         fields = [
             "username",
             "email",
-            "first_name",
-            "last_name",
             "date_joined",
             "wins",
             "total_games",
