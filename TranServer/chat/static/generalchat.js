@@ -45,6 +45,18 @@ function selectChat(chatName, chatId, is_personal) {
   open_chat(chatId);
 }
 
+// Function that take the url and make it a button
+function linkify(inputText) {
+  var replacePattern1;
+
+  replacePattern1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
+  var replacedText = inputText.replace(replacePattern1, function(url) {
+      return '<button class="join-game-button" onclick="window.location.href=\'' + url + '\';">Join the Game</button>';
+  });
+
+  return replacedText;
+}
+
 async function renderMessage(message) {
   var messageBox = document.createElement("div");
   messageBox.style.display = "flex";
@@ -53,27 +65,29 @@ async function renderMessage(message) {
   var usernameElement = document.createElement("span");
   usernameElement.textContent = message.username + ": ";
   usernameElement.style.fontWeight = "bold";
+  usernameElement.style.fontFamily = "'Poppins', sans-serif";  
   usernameElement.style.marginRight = "5px";
   messageBox.appendChild(usernameElement);
 
   if (message.message) {
-    const messageElement = document.createElement("div");
-    messageElement.textContent = message.message;
-    for (user in blocked) {
-      if (blocked[user].username == message.username)
-        messageElement.textContent = "BLOCKED";
-    }
-    if (await fetchBlockStatus(message.username))
-      messageElement.textContent = "BLOCKED";
-    messageElement.classList.add("message-box");
-    messageBox.appendChild(messageElement);
+      const messageElement = document.createElement("div");
+      messageElement.innerHTML = linkify(message.message); // Convert text urls to clickable links
+      messageBox.appendChild(messageElement);
+      for (user in blocked) {
+          if (blocked[user].username == message.username)
+              messageElement.innerHTML = "BLOCKED";
+      }
+      if (await fetchBlockStatus(message.username))
+          messageElement.innerHTML = "BLOCKED";
+      messageElement.classList.add("message-box");
+      messageBox.appendChild(messageElement);
   }
   if (message.image) {
-    const img = document.createElement("img");
-    img.src = message.image;
-    img.classList.add("image");
-    img.classList.add("message-box");
-    messageBox.appendChild(img);
+      const img = document.createElement("img");
+      img.src = message.image;
+      img.classList.add("image");
+      img.classList.add("message-box");
+      messageBox.appendChild(img);
   }
   document.getElementById("messages").appendChild(messageBox);
   scrollToBottom();
@@ -184,3 +198,19 @@ fetchBlocked().then((data) => {
   blocked = data;
   load_chats();
 });
+
+
+// Pour les tests
+
+/*simulateGameInvitation();
+
+function simulateGameInvitation() {
+  // Créer un faux message d'invitation à un jeu
+  var fakeMessage = {
+      username: "System",
+      message: "Join the game now! https://youtube.com"
+  };
+
+  // Appeler renderMessage pour afficher le message dans le chat
+  renderMessage(fakeMessage);
+}*/
