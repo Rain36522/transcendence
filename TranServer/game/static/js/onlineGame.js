@@ -50,36 +50,59 @@ function searchUsers() {
 
 document.getElementById("searchInput").addEventListener("input", searchUsers);
 
-document
-  .querySelector(".search-container button")
-  .addEventListener("click", searchUsers);
+document.querySelector(".search-container button").addEventListener("click", searchUsers);
+
+// Function to send the list to the server.
+document.querySelector(".start-button").addEventListener("click", function() {
+  const invitedUsers = document.querySelectorAll("#invitedUsers .user-item");
+  const playerNames = Array.from(invitedUsers).map(user => user.querySelector(".user-name").textContent);
+
+  const data = {
+      players: playerNames
+  };
+
+  fetch('TODO: path-to-your-endpoint', {  
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+  })
+  .then(response => response.json())
+  .then(data => {
+      console.log('Success:', data);
+  })
+  .catch((error) => {
+      console.error('Error:', error);
+  });
+});
 
 function handleInviteButtonClick(event) {
-  const userItem = event.target.closest(".user-item");
-  const userName = userItem.querySelector(".user-name").textContent;
-  const isInvited = event.target.textContent === "Invite";
+    const userItem = event.target.closest(".user-item");
+    const userName = userItem.querySelector(".user-name").textContent;
+    const isInvited = event.target.textContent === "Invite";
 
-  event.target.textContent = isInvited ? "✖" : "Invite";
-  event.target.style.backgroundColor = isInvited ? "red" : "#4CAF50";
+    event.target.textContent = isInvited ? "✖" : "Invite";
+    event.target.style.backgroundColor = isInvited ? "red" : "#4CAF50";
 
-  const targetContainerId = isInvited ? "invitedUsers" : "user-list";
-  const targetContainer = document.getElementById(targetContainerId);
-  const sourceContainerId = isInvited ? "user-list" : "invitedUsers";
-  const sourceContainer = document.getElementById(sourceContainerId);
+    const targetContainerId = isInvited ? "invitedUsers" : "user-list";
+    const targetContainer = document.getElementById(targetContainerId);
+    const sourceContainerId = isInvited ? "user-list" : "invitedUsers";
+    const sourceContainer = document.getElementById(sourceContainerId);
 
-  const sourceUserItems = sourceContainer.querySelectorAll(".user-item");
-  sourceUserItems.forEach(function (item) {
-    const itemUserName = item.querySelector(".user-name").textContent;
-    if (itemUserName === userName) {
-      item.remove();
-    }
-  });
+    const sourceUserItems = sourceContainer.querySelectorAll(".user-item");
+    sourceUserItems.forEach(function (item) {
+        const itemUserName = item.querySelector(".user-name").textContent;
+        if (itemUserName === userName) {
+            item.remove();
+        }
+    });
 
-  targetContainer.appendChild(userItem);
+    targetContainer.appendChild(userItem);
 
-  document.getElementById("searchInput").value = "";
-  document.getElementById("searchResult").style.display = "none";
-  document.getElementById("searchResult").innerHTML = "";
+    document.getElementById("searchInput").value = "";
+    document.getElementById("searchResult").style.display = "none";
+    document.getElementById("searchResult").innerHTML = "";
 }
 
 document.querySelectorAll(".invite-button").forEach((button) => {
