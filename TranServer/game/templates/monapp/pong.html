@@ -67,6 +67,7 @@
     }
 </style>
 <div id="content-container-replace">
+    <div data-gameSettings="{{ contexte_json }}" id="gameSettings"></div>
     <div class="pong-page">
         <div id="gameContainer">
             <!-- Le scoreboard sera ajouté dynamiquement ici -->
@@ -83,8 +84,8 @@
                 <p id="scoreText"></p>
             </div>
         </div>
-        <script>window.contexteJson = '{{ contexte_json|safe }}';</script>
         <script src="{% static 'js/pong.js' %}"></script>
+        <script src="{% static 'utils.js' %}"></script>
     </div>
 </div>
 {% endblock %}

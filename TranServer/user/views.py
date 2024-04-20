@@ -517,6 +517,8 @@ def user_dashboard(request, username=None):
 def user_login(request):
     return render(request, "html/login.html")
 
+def email_validated(request):
+    return render(request, "html/email_validated.html")
 
 def user_register(request):
     return render(request, "html/register.html")
