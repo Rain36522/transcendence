@@ -51,8 +51,8 @@ class GameServerConsumer(AsyncWebsocketConsumer):
                 GameUser.objects.create(user=winner.user, game=nextGame)
                 if nextGame.gameuser_set.count() == nextGame.gamemode * 2:
                     launchGame(nextGame)
-        if tournamentId:
-            async_to_sync(self.sendUpdateTournamentview)(tournamentId)
+            if tournamentId:
+                async_to_sync(self.sendUpdateTournamentview)(tournamentId)
                 
     @sync_to_async
     def putGameResultDb(self, game, data): #return winner
