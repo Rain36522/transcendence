@@ -42,16 +42,6 @@ function searchUsers() {
   searchResultDiv.innerHTML = "";
   searchResultDiv.style.display = "none";
 
-  for (let user of users) {
-    var name = user.querySelector(".user-name").textContent.toLowerCase();
-    if (searchText && name.includes(searchText)) {
-      var userClone = user.cloneNode(true);
-      userClone.addEventListener("click", handleInviteButtonClick);
-      searchResultDiv.appendChild(userClone);
-      searchResultDiv.style.display = "";
-      break;
-    }
-  }
 }
 
 document.getElementById("searchInput").addEventListener("input", searchUsers);
