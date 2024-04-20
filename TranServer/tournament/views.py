@@ -16,6 +16,7 @@ from game.consumer import launchGame
 from random import choice
 from .consumer import getUpdate
 from django.http import Http404
+from asgiref.sync import async_to_sync
 
 """Tournament settings management
 
@@ -283,4 +284,4 @@ def launchTournament(tournament):
     games = tournament.game_set.filter(gameLevel=0)
     for game in games:
         launchGame(game)
-    getUpdate(tournament.id)
+    async_to_sync(getUpdate)(tournament.id)

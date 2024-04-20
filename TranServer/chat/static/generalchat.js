@@ -51,6 +51,9 @@ function linkify(inputText) {
 
   replacePattern1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
   var replacedText = inputText.replace(replacePattern1, function (url) {
+    if (url[8] == "/") {
+      url = url.slice(0, 8) + window.location.host + url.slice(8);
+    }
     return (
       '<button class="join-game-button" onclick="window.location.href=\'' +
       url +
