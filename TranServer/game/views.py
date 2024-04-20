@@ -6,6 +6,7 @@ from rest_framework.renderers import JSONRenderer
 
 from django.http import JsonResponse, HttpResponse
 from .models import Game, GameUser
+from user.models import User
 from rest_framework.views import APIView
 from .serializers import GameSettingsSerializer
 from asgiref.sync import async_to_sync
@@ -38,8 +39,16 @@ def send_message_to_chat_group(chat, message, inviter, user, hostname):
         {
             "type": "chat_message",
             "message": invite_message,
-            "user": user.username,  # Change this to the desired sender username or identifier
+            "user": user.username,
         },
+    )
+
+
+def get_personal_chat(user):
+    return (
+        Chat.objects.annotate(participant_count=Count("participants"))
+        .filter(is_personal=True, participants=user, participant_count=1)
+        .first()
     )
 
 
@@ -58,24 +67,24 @@ class newGame(APIView):
             if serializer.is_valid():
                 instance = serializer.save()
                 # Enregistre les données et récupère l'objet sauvegardé
+
                 self.addPlayer(instance, request.user)
-                for game_user in instance.gameuser_set.all():
-                    user = game_user.user
-                    personal_chat = (
-                        Chat.objects.annotate(participant_count=Count("participants"))
-                        .filter(
-                            is_personal=True, participants=user, participant_count=1
-                        )
-                        .first()
-                    )
-                    send_message_to_chat_group(
-                        personal_chat,
-                        "/game/" + str(instance.id),
-                        request.user.username,
-                        user,
-                        request.META.get("HTTP_HOST", ""),
-                    )
+
                 launchGame(instance)
+                if request.data.get("participants") and isinstance(request.data.get("participants"), list):
+                    for invite in request.data["participants"]:
+                        if (
+                            invite != request.user.username
+                            and User.objects.filter(username=invite).exists()
+                        ):
+                            invite_u = User.objects.get(username=invite)
+                            send_message_to_chat_group(
+                                get_personal_chat(invite_u),
+                                "/game/" + str(instance.id),
+                                request.user.username,
+                                invite_u,
+                                request.META.get("HTTP_HOST", ""),
+                            )
                 return JsonResponse(
                     {"gameLink": "/game/" + str(instance.id)}, status=200
                 )

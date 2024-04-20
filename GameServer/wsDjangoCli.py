@@ -38,7 +38,7 @@ class DjangoCli:
                 sleep(1)
                 i += 1
         if i > 10:
-            self.print(RED + "Client fail 10x the connection with daphne ws.", self.DjangoUrl)
+            self.print(RED + "Client fail 10x the connection with daphne ws." + self.DjangoUrl)
             self.print(RED + "Closing Django game server client")
             exit(1)
 

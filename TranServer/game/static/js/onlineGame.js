@@ -13,6 +13,12 @@ function openPopup() {
   popup.style.display = "block";
   document.body.style.overflow = "hidden";
   document.querySelector(".blur-background").style.display = "block";
+  fetchFrom("/api/friends/").then((data) => {
+    for (friend in data) {
+      const username = data[friend].username;
+      add_user(username, "user-list", "Invite", "#4CAF50");
+    }
+  });
 }
 
 function closePopup() {
@@ -35,74 +41,40 @@ function searchUsers() {
   var searchResultDiv = document.getElementById("searchResult");
   searchResultDiv.innerHTML = "";
   searchResultDiv.style.display = "none";
-
-  for (let user of users) {
-    var name = user.querySelector(".user-name").textContent.toLowerCase();
-    if (searchText && name.includes(searchText)) {
-      var userClone = user.cloneNode(true);
-      userClone.addEventListener("click", handleInviteButtonClick);
-      searchResultDiv.appendChild(userClone);
-      searchResultDiv.style.display = "";
-      break;
-    }
-  }
 }
 
 document.getElementById("searchInput").addEventListener("input", searchUsers);
 
-document.querySelector(".search-container button").addEventListener("click", searchUsers);
-
-// Function to send the list to the server.
-document.querySelector(".start-button").addEventListener("click", function() {
-  const invitedUsers = document.querySelectorAll("#invitedUsers .user-item");
-  const playerNames = Array.from(invitedUsers).map(user => user.querySelector(".user-name").textContent);
-
-  const data = {
-      players: playerNames
-  };
-
-  fetch('TODO: path-to-your-endpoint', {  
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-  })
-  .then(response => response.json())
-  .then(data => {
-      console.log('Success:', data);
-  })
-  .catch((error) => {
-      console.error('Error:', error);
-  });
-});
+document
+  .querySelector(".search-container button")
+  .addEventListener("click", searchUsers);
 
 function handleInviteButtonClick(event) {
-    const userItem = event.target.closest(".user-item");
-    const userName = userItem.querySelector(".user-name").textContent;
-    const isInvited = event.target.textContent === "Invite";
+  const userItem = event.target.closest(".user-item");
+  const userName = userItem.querySelector(".user-name").textContent;
+  const isInvited = event.target.textContent === "Invite";
 
-    event.target.textContent = isInvited ? "✖" : "Invite";
-    event.target.style.backgroundColor = isInvited ? "red" : "#4CAF50";
+  event.target.textContent = isInvited ? "✖" : "Invite";
+  event.target.style.backgroundColor = isInvited ? "red" : "#4CAF50";
 
-    const targetContainerId = isInvited ? "invitedUsers" : "user-list";
-    const targetContainer = document.getElementById(targetContainerId);
-    const sourceContainerId = isInvited ? "user-list" : "invitedUsers";
-    const sourceContainer = document.getElementById(sourceContainerId);
+  const targetContainerId = isInvited ? "invitedUsers" : "user-list";
+  const targetContainer = document.getElementById(targetContainerId);
+  const sourceContainerId = isInvited ? "user-list" : "invitedUsers";
+  const sourceContainer = document.getElementById(sourceContainerId);
 
-    const sourceUserItems = sourceContainer.querySelectorAll(".user-item");
-    sourceUserItems.forEach(function (item) {
-        const itemUserName = item.querySelector(".user-name").textContent;
-        if (itemUserName === userName) {
-            item.remove();
-        }
-    });
+  const sourceUserItems = sourceContainer.querySelectorAll(".user-item");
+  sourceUserItems.forEach(function (item) {
+    const itemUserName = item.querySelector(".user-name").textContent;
+    if (itemUserName === userName) {
+      item.remove();
+    }
+  });
 
-    targetContainer.appendChild(userItem);
+  targetContainer.appendChild(userItem);
 
-    document.getElementById("searchInput").value = "";
-    document.getElementById("searchResult").style.display = "none";
-    document.getElementById("searchResult").innerHTML = "";
+  document.getElementById("searchInput").value = "";
+  document.getElementById("searchResult").style.display = "none";
+  document.getElementById("searchResult").innerHTML = "";
 }
 
 document.querySelectorAll(".invite-button").forEach((button) => {
@@ -113,37 +85,141 @@ blurBackground.addEventListener("click", function () {
   closePopup();
 });
 
+var createChatButton = document.querySelector(".start-button");
+createChatButton.addEventListener("mousedown", function (event) {
+  event.preventDefault();
+});
 
-// To modify : user list created for testing!
-const usersData = [
-  {
-    name: "Famacito",
-    image: "https://media1.tenor.com/m/xK38NWayRnoAAAAC/dog-eyes.gif"
-  },
-  {
-    name: "Dark_Sasuke",
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb2KRrG26uJLRrL55aWnKPGezf8V5ZkiHPHg&s"
+createChatButton.addEventListener("click", function (event) {
+  var items = document.querySelectorAll("#invitedUsers .user-item");
+
+  var gameSettings = {
+    ballwidth: document.getElementById("ball-size").value,
+    planksize: document.getElementById("raquet-size").value,
+    Speed: document.getElementById("game-speed").value,
+    acceleration: document.getElementById("game-acceleration").value,
+    winpoint: document.getElementById("win-point").value,
+    gamemode: document.getElementById("game-mode").value,
+    participants: [],
+  };
+  console.log(JSON.stringify(gameSettings));
+  items.forEach(function (item) {
+    gameSettings.participants.push(
+      item.querySelector(".user-name").textContent
+    );
+  });
+  fetch("", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCookie("csrftoken"),
+    },
+    body: JSON.stringify(gameSettings),
+  })
+    .then((response) => {
+      if (!response.ok) throw new Error("Network response was not ok");
+      return response.json();
+    })
+    .then((data) => {
+      console.log("Success:", data);
+      if (data.gameLink) {
+        window.history.pushState(null, null, data.gameLink);
+        fetchPage(data.gameLink);
+      } else console.error("No game link received from server");
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+  var items = document.querySelectorAll(".user-item");
+  items.forEach(function (item) {
+    item.remove();
+  });
+});
+
+async function fetchFrom(link) {
+  try {
+    const response = await fetch(link);
+    if (!response.ok) {
+      throw new Error("Failed to fetch chats");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching messages:", error);
+    return [];
   }
-];
-
-function createUserItem(user) {
-  const userItem = document.createElement("div");
-  userItem.className = "user-item";
-  userItem.innerHTML = `
-    <img src="${user.image}" alt="${user.name}" class="user-image">
-    <span class="user-name">${user.name}</span>
-    <button class="invite-button">Invite</button>
-  `;
-  userItem.querySelector(".invite-button").addEventListener("click", handleInviteButtonClick);
-  return userItem;
 }
 
-function populateUserList() {
-  const userListContainer = document.getElementById("user-list");
-  userListContainer.innerHTML = ""; // Clear previous entries
-  usersData.forEach(user => {
-    userListContainer.appendChild(createUserItem(user));
+function add_user(username, list, text, color) {
+  removeFromInvitedList(username);
+  removeFromUserList(username);
+  fetch("/api/profile_pic/" + username + "/")
+    .then((response) => response.blob())
+    .then((blob) => {
+      // Convert the blob to a base64 encoded string
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    })
+    .then((data) => {
+      var userItem = document.createElement("div");
+      userItem.classList.add("user-item");
+      var img = document.createElement("img");
+      img.src = data;
+      img.alt = username;
+      img.classList.add("user-image");
+      userItem.appendChild(img);
+      var div_username = document.createElement("div");
+      div_username.textContent = username;
+      div_username.classList.add("user-name");
+      userItem.appendChild(div_username);
+      var invite_button = document.createElement("button");
+      invite_button.textContent = text;
+      invite_button.style.backgroundColor = color;
+      invite_button.classList.add("invite-button");
+      userItem.appendChild(invite_button);
+      invite_button.addEventListener("click", handleInviteButtonClick);
+      document.getElementById(list).appendChild(userItem);
+    });
+}
+
+var searchBox = document.getElementById("searchInput");
+
+document
+  .getElementById("searchBtn")
+  .addEventListener("click", function (event) {
+    if (!searchBox.value) return;
+    fetch("/api/exist/" + searchBox.value + "/")
+      .then((response) => response.json())
+      .then((data) => {
+        if (data) {
+          add_user(searchBox.value, "invitedUsers", "✖", "red");
+        } else {
+          throw new Error("User does not exist");
+        }
+      })
+      .catch((error) => {
+        displayError(error.message || "Error during the user invitation.");
+      });
+  });
+
+function removeFromUserList(userName) {
+  var items = document.querySelectorAll("#user-list .user-item");
+  items.forEach(function (item) {
+    if (item.querySelector(".user-name").textContent === userName) {
+      item.remove();
+    }
   });
 }
 
-document.addEventListener("DOMContentLoaded", populateUserList); // Populate users when the document is loaded
+function removeFromInvitedList(userName) {
+  var items = document.querySelectorAll("#invitedUsers .user-item");
+  items.forEach(function (item) {
+    if (item.querySelector(".user-name").textContent === userName) {
+      item.remove();
+    }
+  });
+}
