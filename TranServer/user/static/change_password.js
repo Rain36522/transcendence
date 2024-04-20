@@ -6,7 +6,7 @@ resetButton.addEventListener('click', function () {
 	const userInfo = document.getElementById('userInfo');
 	const resetMessageLink = document.getElementById('reset-message-link');
 
-    const username = userInfo.dataset.userInfo;
+    const username = userInfo.dataset.username;
     const token = userInfo.dataset.myemail;
 
 	errorMessage.style.display = 'none';
@@ -22,43 +22,42 @@ resetButton.addEventListener('click', function () {
 		console.log(JSON.stringify({
 			username: username,
 			token: token,
-			new_password: newPassword
+			new_password: newPassword,
 		}))
 		// Envoyer la requête POST
-		fetch('/api/reset_password/change/', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'X-CSRFToken': getCookie('csrftoken')
-			},
-			body: JSON.stringify({
-				username: username,
-				token: token,
-				new_password: newPassword
-			})
-		})
-			.then(response => {
-				if (response.success) {
-					window.history.pushState(null, null, '/login');
-					fetchPage('/login');
-					return;
-				}
-				else{
-					throw new Error('Something went wrong on api server!');
-			}})
-			.then(response => {
-				console.log('Success:', response);
-				resetButton.disabled = true;
-				resetButton.style.backgroundColor = '#ccc';
-				errorMessage.style.display = 'none';
-				resetMessageLink.textContent = 'Password has been reset, please login!';
-				resetMessageLink.style.display = 'block';
-			})
-			.catch(error => {
-				console.error('Error:', error);
-				errorMessage.textContent = 'Failed to reset password.';
-				errorMessage.style.display = 'block';
-			});
+        fetch('/api/reset_password/change/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                username: username,
+                token: token,
+                new_password: newPassword
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = '/login';
+                return;
+            }
+            throw new Error(data.error);
+        })
+        .then(() => {
+            console.log('Réinitialisation du mot de passe réussie');
+            resetButton.disabled = true;
+            resetButton.style.backgroundColor = '#ccc';
+            errorMessage.style.display = 'none';
+            resetMessageLink.textContent = 'Mot de passe réinitialisé, veuillez vous connecter!';
+            resetMessageLink.style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Erreur :', error);
+            errorMessage.textContent = error.message;
+            errorMessage.style.display = 'block';
+        });        
 	}
 });
 

@@ -844,7 +844,7 @@ def PasswordReset(request):
     print(request.body, file=stderr)
     username = request.data.get("username")
     token = request.data.get("token")
-    new_password = request.data.get("password")
+    new_password = request.data.get("new_password")
     if not username or not token:
         return Response({"error": "Invalide arguments"}, status=status.HTTP_400_BAD_REQUEST)
     users = User.objects.filter(username=username)
