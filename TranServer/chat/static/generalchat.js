@@ -144,7 +144,6 @@ function load_chats() {
   fetchChats().then((chats) => {
     const userList = document.getElementById("userList");
     userList.innerHTML = ""; // Effacer le contenu existant
-    console.log(chats);
     for (const chat of chats) {
       let usernames = chat.participants
         .map((participant) => participant.username)
@@ -177,7 +176,6 @@ async function renderMessagesInOrder(messages) {
 
 function open_chat(chatId) {
   fetchMessages(chatId).then((messages) => {
-    console.log(messages);
     renderMessagesInOrder(messages);
   });
   startChatSocket(chatId);
@@ -257,7 +255,6 @@ document
 document
   .getElementById("messageText")
   .addEventListener("keypress", function (event) {
-    console.log("UGHGGG");
     scrollToBottom();
     if (event.key === "Enter") {
       event.preventDefault();
