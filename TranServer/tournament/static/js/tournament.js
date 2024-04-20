@@ -122,4 +122,29 @@ function populateUserListTournament() {
   });
 }
 
+// Send the list to the server.
+document.querySelector(".start-button").addEventListener("click", function() {
+  const invitedUsers = document.querySelectorAll("#invitedUsers .user-item");
+  const playerNames = Array.from(invitedUsers).map(user => user.querySelector(".user-name").textContent);
+
+  const data = {
+      players: playerNames
+  };
+
+  fetch('TODO: path-to-your-endpoint', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+  })
+  .then(response => response.json())
+  .then(data => {
+      console.log('Success:', data);
+  })
+  .catch((error) => {
+      console.error('Error:', error);
+  });
+});
+
 document.addEventListener("DOMContentLoaded", populateUserListTournament);
