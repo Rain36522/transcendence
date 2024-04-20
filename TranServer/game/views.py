@@ -69,16 +69,6 @@ class newGame(APIView):
                 # Enregistre les données et récupère l'objet sauvegardé
 
                 self.addPlayer(instance, request.user)
-                for game_user in instance.gameuser_set.all():
-                    user = game_user.user
-
-                    send_message_to_chat_group(
-                        get_personal_chat(user),
-                        "/game/" + str(instance.id),
-                        request.user.username,
-                        user,
-                        request.META.get("HTTP_HOST", ""),
-                    )
 
                 launchGame(instance)
                 if request.data.get("participants") and isinstance(request.data.get("participants"), list):
