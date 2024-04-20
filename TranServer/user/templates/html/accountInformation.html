@@ -7,7 +7,7 @@
     href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@300;400;600&family=Poppins:wght@400;600&display=swap"
     rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/monolith.min.css" />
 <link rel="stylesheet" href="{% static 'home.css' %}">
 <link rel="stylesheet" href="{% static 'accountInformation.css' %}">
 <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
@@ -30,7 +30,7 @@
                 <form id="uploadForm" enctype="multipart/form-data">
                     {% csrf_token %}
                     <input type="file" id="profilePicture" name="profile_picture" accept="image/*"
-                        style="display: none;">
+                           style="display: none;" onchange="submitForm()">
                     <label for="profilePicture" class="file-button">Choose a File</label>
                 </form>
             </div>
@@ -114,7 +114,7 @@
                     </div>
                 </div>
                 <div class="button-container">
-                    <a href="#" class="edit-link">Edit Colors</a>
+                    <button id="color_btn" class="edit-link">Edit Colors</button>
                 </div>
             </div>
 

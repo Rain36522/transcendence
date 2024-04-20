@@ -45,6 +45,7 @@ MAIL = False
 
 MAIL = False
 
+
 @api_view(["POST"])
 @renderer_classes([JSONRenderer])
 def api_signup(request):
@@ -63,7 +64,7 @@ def api_signup(request):
                 return Response(
                     {"message": "You have been logged in"},
                     status=status.HTTP_200_OK,
-                )  
+                )
             if MAIL or sendMail(user, user.email, isMail=True):
                 chat = Chat.objects.create()
                 chat.participants.add(user)
@@ -464,8 +465,10 @@ def email_sent(request):
 def change_password(request):
     return render(request, "html/change_password.html")
 
+
 def forgot_password(request):
     return render(request, "html/forgot_password.html")
+
 
 @login_required
 def account_information(request):
@@ -489,8 +492,10 @@ def profile_user(request, username=None):
 @login_required
 def user_dashboard(request, username=None):
     user = request.user
+    path = "html/dashboard.html"
     if username:
         user = User.objects.get(username=username)
+        path = "html/profile_user.html"
     ratio_w = 0
     ratio_l = 0
     losses = user.total_games - user.wins
@@ -502,7 +507,7 @@ def user_dashboard(request, username=None):
     print("\033[32mHISTORY OF GAME:", historyGameList, "\033[0m")
     return render(
         request,
-        "html/dashboard.html",
+        path,
         {
             "user": user,
             "losses": losses,
@@ -717,7 +722,9 @@ def test_password_change_view(request):
 def MessageContentPwd(user):
     subject = "Reset password"
     GenerateUserToken(user, mail=False)
-    ResetLink = "https://127.0.0.1/api/reset_password/" + user.username + "/" + user.token
+    ResetLink = (
+        "https://127.0.0.1/api/reset_password/" + user.username + "/" + user.token
+    )
     mailContent = f"""
     <h1>Hi {user.username}!</h1>
     <p>To reset your password, simply click this link :
@@ -806,7 +813,7 @@ def EmailValidation(request, username, token):
 class sendPasswordReset(APIView):
     def get(self, request):
         return render(request, "html/forgot_password.html")
-    
+
     def post(self, request):
         mail = request.data.get("email")
         print("MAIL :", mail)

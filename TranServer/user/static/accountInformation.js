@@ -1,45 +1,19 @@
-document.querySelectorAll('input[type="color"]').forEach((input) => {
-  input.addEventListener("input", function () {
-    console.log(this.id + " changed to " + this.value);
-  });
-});
-
-function openColorPicker(colorId) {
-  let button = document.getElementById(colorId);
-
-  let colorInput = document.createElement("input");
-  colorInput.type = "color";
-  colorInput.style.position = "absolute";
-  colorInput.style.visibility = "hidden";
-  colorInput.style.height = "0";
-
-  document.body.appendChild(colorInput);
-  let rect = button.getBoundingClientRect();
-  colorInput.style.left = `${rect.left}px`;
-  colorInput.style.top = `${rect.top}px`;
-
-  colorInput.onchange = (e) => {
-    document.getElementById(colorId).style.backgroundColor = e.target.value;
-    console.log(colorId + " changed to " + e.target.value);
-    document.body.removeChild(colorInput);
-  };
-
-  colorInput.click();
-}
+var colorData = {};
 
 document.querySelectorAll(".button-8").forEach((button) => {
-  const pickr = Pickr.create({
+  const pickr = new Pickr({
+    default: "#42445a",
+
     el: button,
-    theme: "classic",
+    theme: "monolith",
     swatches: [
       "rgba(244, 67, 54, 1)",
-      "rgba(233, 30, 99, 0.95)",
-      "rgba(156, 39, 176, 0.9)",
-      "rgba(103, 58, 183, 0.85)",
+      "rgba(233, 30, 99, 1)",
+      "rgba(156, 39, 176, 1)",
+      "rgba(103, 58, 183, 1)",
     ],
     components: {
       preview: true,
-      opacity: true,
       hue: true,
       interaction: {
         hex: true,
@@ -48,7 +22,6 @@ document.querySelectorAll(".button-8").forEach((button) => {
         hsva: true,
         cmyk: true,
         input: true,
-        clear: true,
         save: true,
       },
     },
@@ -59,61 +32,120 @@ document.querySelectorAll(".button-8").forEach((button) => {
     button.style.backgroundColor = colorValue;
     console.log(button.getAttribute("id") + " changed to " + colorValue);
     pickr.hide();
+    const colorId = button.getAttribute("id");
+    colorData[colorId] = color.toHEXA().toString().substring(0, 7);
   });
 });
 
-document.getElementById('passwordChangeForm').addEventListener('submit', function (event) {
-  event.preventDefault();
-
-  var formData = new FormData(this);
-
-  fetch('/api/change_password/', {
-    method: 'POST',
-    body: formData
+fetch("/api/colors/")
+  .then((response) => {
+    if (response.ok) {
+      return response.json();
+    }
+    throw new Error();
   })
-    .then(response => response.json())
-    .then(data => {
-      if (data.error) {
-        var passwordError = document.getElementById('passwordError');
-        passwordError.textContent = data.error;
-        passwordError.style.display = 'block';
-      } else {
-        var passwordSuccess = document.getElementById('passwordSuccess');
-        passwordSuccess.textContent = 'Your password has been successfully changed.';
-        passwordSuccess.style.display = 'block';
+  .then((data) => {
+    Object.entries(data).forEach(([key, value]) => {
+      const colorPicker = document.getElementById(key);
+      if (colorPicker) {
+        colorPicker.style.backgroundColor = value;
+        colorPicker.setAttribute("data-color", value);
       }
-    })
-
-    .catch(error => {
-      console.error('Error:', error);
-      var passwordError = document.getElementById('passwordError');
-      passwordError.textContent = 'An unexpected error occurred. Please try again later.';
-      passwordError.style.display = 'block';
     });
-});
+  })
+  .catch((error) => {
+    console.error("Error:", error); // Log any errors
+  });
 
 document
-  .getElementById("uploadForm")
+  .getElementById("color_btn")
+  .addEventListener("click", function (event) {
+    console.log(JSON.stringify(colorData));
+
+    const finalColorData = {
+      ball_color: colorData["BallColor"],
+      paddle_color: colorData["MyPaddleColor"],
+      enemy_paddle_color: colorData["EnemyPaddleColor"],
+      frame_color: colorData["CadreColor"],
+      background_color: colorData["BgColor"],
+    };
+
+    fetch("/api/colors/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCookie("csrftoken"),
+      },
+      body: JSON.stringify(finalColorData),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Failed to update colors");
+        }
+      })
+      .then((data) => {
+        console.log(data.message); // Log success message
+      })
+      .catch((error) => {
+        console.error("Error:", error); // Log any errors
+      });
+  });
+
+document
+  .getElementById("passwordChangeForm")
   .addEventListener("submit", function (event) {
     event.preventDefault();
-    var formData = new FormData();
-    var fileInput = document.getElementById("profilePicture");
-    var file = fileInput.files[0];
-    formData.append("profile_picture", file);
 
-    fetch("/api/upload_profile/", {
+    var formData = new FormData(this);
+
+    fetch("/api/change_password/", {
       method: "POST",
       body: formData,
-      headers: { "X-CSRFToken": getCookie("csrftoken") },
     })
       .then((response) => response.json())
       .then((data) => {
-        refresh_image();
+        if (data.error) {
+          var passwordError = document.getElementById("passwordError");
+          passwordError.textContent = data.error;
+          passwordError.style.display = "block";
+        } else {
+          var passwordSuccess = document.getElementById("passwordSuccess");
+          passwordSuccess.textContent =
+            "Your password has been successfully changed.";
+          passwordSuccess.style.display = "block";
+        }
       })
+
       .catch((error) => {
         console.error("Error:", error);
+        var passwordError = document.getElementById("passwordError");
+        passwordError.textContent =
+          "An unexpected error occurred. Please try again later.";
+        passwordError.style.display = "block";
       });
   });
+
+function submitForm() {
+  var formData = new FormData();
+  var fileInput = document.getElementById("profilePicture");
+  var file = fileInput.files[0];
+  formData.append("profile_picture", file);
+
+  fetch("/api/upload_profile/", {
+    method: "POST",
+    body: formData,
+    headers: { "X-CSRFToken": getCookie("csrftoken") },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      refresh_image();
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
 
 function refresh_image() {
   fetch("/api/profile_pic/")
@@ -127,7 +159,6 @@ function refresh_image() {
       });
     })
     .then((data) => {
-      console.log(data);
       document.getElementById("profile-pic").src = data;
     });
 }
