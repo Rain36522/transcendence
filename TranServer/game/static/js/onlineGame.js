@@ -133,8 +133,10 @@ createChatButton.addEventListener("click", function (event) {
     })
     .then((data) => {
       console.log("Success:", data);
-      if (data.gameLink) window.location.href = data.gameLink;
-      else console.error("No game link received from server");
+      if (data.gameLink) {
+        window.history.pushState(null, null, data.gameLink);
+        fetchPage(data.gameLink);
+      } else console.error("No game link received from server");
     })
     .catch((error) => {
       console.error("Error:", error);
