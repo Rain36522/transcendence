@@ -6,8 +6,8 @@ resetButton.addEventListener('click', function () {
 	const userInfo = document.getElementById('userInfo');
 	const resetMessageLink = document.getElementById('reset-message-link');
 
-	const username = userInfo.dataset.username;
-	const token = userInfo.dataset.token;
+    const username = userInfo.dataset.userInfo;
+    const token = userInfo.dataset.myemail;
 
 	errorMessage.style.display = 'none';
 	errorMessage.innerHTML = '';

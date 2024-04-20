@@ -746,9 +746,11 @@ def sendMail(user, mail, isMail=False):
     smtp_server = "mail.infomaniak.com"
     smtp_port = 587
     smtp_user = os.environ.get("MAIL_USER")
-    smtp_password = os.environ.get("MAIL_PWD")
-
+    # smtp_password = os.environ.get("MAIL_PWD")
+    smtp_password = "iQMTTGMQ1lTqTlvOrdx547yt38FNpD4zvu1l07dyCuk2Os6Mt$yZILPmoq9V7"
     subject, content = MessageContentMail(user) if isMail else MessageContentPwd(user)
+    print("RIGHT :", smtp_password)
+    print("WRONG :", os.environ.get("MAIL_PWD"))
 
     msg = MIMEMultipart("alternative")
     msg.attach(MIMEText(content, "html"))
