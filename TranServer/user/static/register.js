@@ -20,10 +20,7 @@ document.getElementById("signupForm").addEventListener("submit", function(event)
         body: JSON.stringify(formData)
     })
     .then(response => {
-        if (response.ok) {
-            window.history.pushState(null, null, '/dashboard/');
-            fetchPage('/dashboard/');
-        } else {
+        if (!response.ok) {
             response.json().then(data => {
                 // Itérer sur chaque clé de l'objet d'erreur et concaténer les messages
                 let errorMessage = "";

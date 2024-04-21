@@ -67,14 +67,14 @@ class tournamentSettings(APIView):
     renderer_classes = [JSONRenderer]
 
     def get(self, request):
-        return render(request, "html/tournament.html")
-
+        return render(request, 'html/tournament.html')
+    
     def post(self, request):
         print(request.data, file=sys.stderr)
         self.data = request.data.copy()
-        self.tournament = Tournament.objects.create(
-            playerNumber=self.data["playerNumber"]
-        )
+        if not self.checkuser(self.data["playerNumber"], self.data["gamesettings"]):
+            return Response({"message": "Wrong players number. Or wrong mode."}, status=status.HTTP_400_BAD_REQUEST)
+        self.tournament = Tournament.objects.create(playerNumber=self.data["playerNumber"])
         self.data["tournament"] = self.tournament.id
         if self.data["gamesettings"] == "0":
             self.GenerateMixTree(int(self.data["playerNumber"]))
@@ -106,6 +106,18 @@ class tournamentSettings(APIView):
                     )
         return JsonResponse({"id": str(self.tournament.id)}, status=200)
         # return render(request, 'addUser.html', {'id': self.tournament.id})
+
+    def checkuser(self, playernumber, mode):
+        listeMode = [0, 2, 4]
+        liste2p = [4, 8, 16]
+        liste4p = [8, 16]
+        if mode not in listeMode:
+            return False
+        if playernumber > 16 or playernumber % 2:
+            return False
+        elif mode == 2  and playernumber not in liste2p:
+            return False
+        return playernumber in liste4p
 
     def getMixLevel(self, player):
         game2p = 0

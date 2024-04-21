@@ -57,7 +57,6 @@ class GameServerConsumer(AsyncWebsocketConsumer):
                     launchGame(nextGame)
             if tournamentId:
                 async_to_sync(self.sendUpdateTournamentview)(tournamentId)
-
     @sync_to_async
     def putGameResultDb(self, game, data):  # return winner
         game.gameRunning = False
