@@ -464,6 +464,8 @@ def email_sent(request):
 def change_password(request):
     return render(request, "html/change_password.html")
 
+def error404(request):
+    return render(request, "html/error404.html")
 
 def forgot_password(request):
     return render(request, "html/forgot_password.html")
