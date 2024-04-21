@@ -807,7 +807,7 @@ def EmailValidation(request, username, token):
         user.mailValidate = True
         user.token = ""
         user.save()
-        return HttpResponse("EMAIL VALIDATE")
+        return render(request, "html/TODO.html")
 
 
 class sendPasswordReset(APIView):
@@ -824,7 +824,7 @@ class sendPasswordReset(APIView):
         user = User.objects.filter(email=mail).first()
         if not sendMail(user, mail, isMail=False):
             return Response({"message": "Invalid mail"}, status=status.HTTP_400_BAD_REQUEST)
-        return Response({"success": True}, status=200)
+        return Response({"success": True}, status=status.HTTP_200_OK)
         
         
 
