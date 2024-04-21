@@ -229,7 +229,6 @@ function removeFromInvitedList(userName) {
 
 
 setupInitialPlayerAmountOptions();
-populateUserListTournament();  // Initialisation des listes d'utilisateurs pour le tournoi, si nécessaire
 disableCreateButton();  // Désactive le bouton Create au chargement initial
 
 document.getElementById("gamesettings").addEventListener("change", function() {
