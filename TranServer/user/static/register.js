@@ -35,6 +35,11 @@ document.getElementById("signupForm").addEventListener("submit", function(event)
                 document.getElementById('error-message').style.display = 'block';
             });
         }
+        else
+        {
+            window.history.pushState(null, null, '/email_sent/');
+            fetchPage('/email_sent/')
+        }
     })
     .catch(error => {
         console.error('Error:', error);
