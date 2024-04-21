@@ -809,7 +809,7 @@ def EmailValidation(request, username, token):
         user.mailValidate = True
         user.token = ""
         user.save()
-        return render(request, "html/TODO.html")
+        return render(request, "html/email_validated.html")
 
 
 class sendPasswordReset(APIView):
