@@ -76,7 +76,6 @@ if (typeof window.Player === "undefined") {
 			this.Position = 0; // from -0.5 to 0.5, represents pos on the paddle slider
 			this.keysPressed = {}; // stores keys status (pressed/released) for up and down
 			this.gameParams = gameParams; // game settings	
-			console.log("Creating player " + this.PlayerID + " with name " + this.PlayerName);
 		}
 
 		// store current keys status (pressed/released)
@@ -221,7 +220,6 @@ async function drawGame() {
 	canvas.width = settings.gameWidth;
 	canvas.height = settings.gameHeight;
 	// If playerID is 'j2', rotate the canvas for the player's perspective
-
 	players[settings.userID - 1].applyRotation(CanvasContext);
 
 	// Draw field
@@ -291,8 +289,6 @@ async function drawGame() {
 		var pageToFetch = "/dashboard/";
 		if (settings.tournamentid != undefined && settings.tournamentid != null && settings.tournamentid != 0)
 			pageToFetch = "/tournament/" + settings.tournamentid + "/";
-		console.log("tournament id is " + settings.tournamentid)
-		console.log("fetching page " + pageToFetch);
 		window.history.pushState(null, null, pageToFetch);
 		fetchPage(pageToFetch);
 }}
@@ -321,16 +317,13 @@ scoreBoard.style.textAlign = 'center'; scoreBoard.style.fontSize = '20px'; score
 ||====================[variables initialisation]====================||
 \*__________________________________________________________________*/
 // Initialize game settings and players
-settings = new Settings(window.contexteJson);
+var rawSettings = document.getElementById("gameSettings").getAttribute('data-gameSettings');
+settings = new Settings(rawSettings);
 if (settings.nbPlayers > 2)
 	nbPaddles = 4;
 players = [nbPaddles];
-console.log("nbPaddles is " + nbPaddles + " and nbPlayers is " + settings.nbPlayers);
 for (var i = 0; i < nbPaddles; i++)
-{
-	console.log("user creation iteration " + i);
 	players[i] = new Player(i + 1, settings.playersNames[i], settings);
-}
 setGameSize()
 
 
@@ -352,6 +345,8 @@ function connectWebSocket() {
 		{console.log("WebSocket connection established.");};
 	ws.onmessage = (event) => {
 		// parsing
+		if (!document.getElementById('waitingScreen'))
+			ws.close();
 		var data = JSON.parse(event.data);
 		if (data.users)
 		{
@@ -360,6 +355,8 @@ function connectWebSocket() {
 				settings.userID = 1;
 			else
 				settings.userID = settings.playersNames.indexOf(settings.userName) + 1;
+			if (settings.userID == 0)
+				settings.userID = 1;
 		}
 		settings.status = data.state;
 		// ball update
@@ -409,6 +406,8 @@ drawGame();
 
 // Adjust canvas size on window resize
 window.addEventListener('resize', () => {
+	if (!document.getElementById('waitingScreen'))
+		return ;
 	setGameSize();
 	drawGame();
 });
