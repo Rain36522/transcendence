@@ -80,17 +80,19 @@
                         <div class="parameter-name"><strong>Game Mode:</strong></div>
                         <div class="control">
                             <select id="gamesettings">
+                                <option value="" disabled selected>Select Game Mode</option>
                                 <option value="2">Two Players</option>
                                 <option value="4">Four Players</option>
-                                <option value="1">Mix</option>
+                                <option value="0">Mix</option>
                             </select>
                         </div>
-                    </div>
+                    </div>                   
                     <div class="select-text">
                         <div class="parameter-name"><strong>Player Amount:</strong></div>
                         <div class="control">
                             <select id="playerNumber">
-                                <option value="2">2</option>
+                                <option value="" disabled selected>Select Player Amount</option>
+
                                 <option value="4">4</option>
                                 <option value="6">6</option>
                                 <option value="8">8</option>
@@ -98,21 +100,13 @@
                                 <option value="12">12</option>
                                 <option value="14">14</option>
                                 <option value="16">16</option>
-                                <option value="18">18</option>
-                                <option value="20">20</option>
-                                <option value="22">22</option>
-                                <option value="24">24</option>
-                                <option value="26">26</option>
-                                <option value="28">28</option>
-                                <option value="30">30</option>
-                                <option value="32">32</option>
                             </select>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="action-buttons">
-                <a href="#" class="create-button">Create</a>
+                <button class="create-button" disabled>Create</button>
                 <a href="{% url 'home_page' %}" class="exit-link">Exit</a>
             </div>
         </div>

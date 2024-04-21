@@ -202,6 +202,13 @@ function clearLists() {
 
 function createUserElement(user) {
   var li = document.createElement("li");
+  li.addEventListener("click", function (event) {
+    if (!event.target.closest(".action-buttons")) {
+      url = "/dashboard/" + user.username + "/";
+      window.history.pushState(null, null, url);
+      fetchPage(url);
+    }
+  });
   li.className = "user-item";
   li.setAttribute("data-username", user.username);
   li.innerHTML = `

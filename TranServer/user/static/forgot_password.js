@@ -21,11 +21,13 @@ function sendRequest(email) {
 	})
 		.then(response => response.json())
 		.then(data => {
+			console.log(data);
 			if (data.success) {
 				document.getElementById('error-message').textContent = '';
-				alert('Success: ' + data.message);
+				window.history.pushState(null, null, '/login');
+				fetchPage('/login');
 			} else {
-				throw new Error(data.message);
+				throw new Error(data.error);
 			}
 		})
 		.catch(error => {

@@ -20,6 +20,7 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 
 from .models import User
+from game.models import Game, GameUser
 from chat.models import Chat
 from .serializers import (
     UserSerializer,
@@ -37,10 +38,7 @@ import smtplib
 import os
 from datetime import timedelta
 
-MAIL = False
-
-
-MAIL = False
+MAIL = True
 
 
 @api_view(["POST"])
@@ -62,19 +60,17 @@ def api_signup(request):
                     {"message": "You have been logged in"},
                     status=status.HTTP_200_OK,
                 )
-            if MAIL or sendMail(user, user.email, isMail=True):
+            elif sendMail(user, user.email, isMail=True):
                 chat = Chat.objects.create()
                 chat.participants.add(user)
                 chat.is_personal = True
                 chat.save()
-                return Response(
-                    {"message": "A verification email has been sent"},
-                    status=status.HTTP_201_CREATED,
-                )
+                print("<MAIL SIGNUP>")
+                return render(request, "html/email_sent.html")
             else:
                 user.delete()
                 return Response(
-                    {"error": "Invalid email"}, status=status.HTTP_400_BAD_REQUEST
+                    {"message": "Invalid email"}, status=status.HTTP_400_BAD_REQUEST
                 )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
@@ -500,10 +496,12 @@ def user_dashboard(request, username=None):
     ratio_w = 0
     ratio_l = 0
     losses = user.total_games - user.wins
+    historyGameList = []
     if user.total_games != 0:
         ratio_w = round(user.wins / user.total_games * 100)
         ratio_l = round(losses / user.total_games * 100)
-
+        historyGameList = gameHistory(request.user)
+    print("\033[32mHISTORY OF GAME:", historyGameList, "\033[0m")
     return render(
         request,
         path,
@@ -513,7 +511,34 @@ def user_dashboard(request, username=None):
             "ratio_w": ratio_w,
             "ratio_l": ratio_l,
         },
+        # {"historyGameList": historyGameList}
     )
+
+
+def gameHistory(user):
+    games = Game.objects.filter(gameuser__user=user, gamemode__gte=1, gamemode__lte=2)
+    if not games:
+        return []
+    historyGameList = []
+    for game in games:
+        maxPoint = 0
+        dico = {
+            "date": game.date,
+            "gamemode": game.gamemode,
+            "users": [],
+            "points": [],
+        }
+        gameusers = game.gameuser_set.all()
+        for gameuser in gameusers:
+            dico["users"].append(gameuser.user.username)
+            dico["points"].append(gameuser.points)
+            if gameuser.points > maxPoint:
+                maxPoint = gameuser.points
+        if maxPoint > 1:
+            historyGameList.append(dico)
+    return historyGameList
+
+
 
 
 def user_login(request):
@@ -540,7 +565,9 @@ def profile(request):
 
 @login_required
 def dashboard(request):
+    print("HISTORY :", historyGameList)
     return render(request, "dashboard.html", {"user": request.user})
+
 
 
 @api_view(["GET"])
@@ -728,7 +755,6 @@ def sendMail(user, mail, isMail=False):
     smtp_port = 587
     smtp_user = os.environ.get("MAIL_USER")
     smtp_password = os.environ.get("MAIL_PWD")
-
     subject, content = MessageContentMail(user) if isMail else MessageContentPwd(user)
 
     msg = MIMEMultipart("alternative")
@@ -740,13 +766,16 @@ def sendMail(user, mail, isMail=False):
     server = smtplib.SMTP(smtp_server, smtp_port)
     server.starttls()
     server.login(smtp_user, smtp_password)
-    try:
-        server.sendmail(smtp_user, mail, msg.as_string())
-        server.quit()
-        return True
-    except:
-        server.quit()
-        return False
+    server.sendmail(smtp_user, mail, msg.as_string())
+    server.quit()
+    return True
+    # try:
+    #     server.sendmail(smtp_user, mail, msg.as_string())
+    #     server.quit()
+    #     return True
+    # except:
+    #     server.quit()
+    #     return False
 
 
 def GenerateUserToken(user, mail=False):
@@ -776,7 +805,7 @@ def EmailValidation(request, username, token):
         user.mailValidate = True
         user.token = ""
         user.save()
-        return HttpResponse("EMAIL VALIDATE")
+        return render(request, "html/email_validated.html")
 
 
 class sendPasswordReset(APIView):
@@ -785,19 +814,17 @@ class sendPasswordReset(APIView):
 
     def post(self, request):
         mail = request.data.get("email")
+        print("MAIL :", mail)
         if not mail:
-            return Response({"error": "No mail"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "No mail"}, status=status.HTTP_400_BAD_REQUEST)
         elif not User.objects.filter(email=mail).exists():
-            return Response(
-                {"error": "Invalide mail"}, status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"message": "Invalide mail"}, status=status.HTTP_400_BAD_REQUEST)
         user = User.objects.filter(email=mail).first()
         if not sendMail(user, mail, isMail=False):
-            return Response(
-                {"error": "Invalid mail"}, status=status.HTTP_400_BAD_REQUEST
-            )
-        return Response({"message": "reset password email sent"}, status=200)
-
+            return Response({"message": "Invalid mail"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"success": True}, status=status.HTTP_200_OK)
+        
+        
 
 def PasswordForgot(request, username=None, token=None):
     users = User.objects.filter(username=username)
@@ -808,12 +835,17 @@ def PasswordForgot(request, username=None, token=None):
     if not token or token != user.token:
         print("INVALIDE TOKEN :", user.token)
         raise Http404("Invalide link")
-    return render(request, "html/TODO.html", {"token": token, "username": username})
+    return render(request, 'html/change_password.html', {'token': token, 'username': username})
 
-
-def PasswordReset(request, username, token):
+@api_view(["POST"])
+def PasswordReset(request):
+    print(request.body, file=stderr)
+    username = request.data.get("username")
+    token = request.data.get("token")
+    new_password = request.data.get("new_password")
+    if not username or not token:
+        return Response({"error": "Invalide arguments"}, status=status.HTTP_400_BAD_REQUEST)
     users = User.objects.filter(username=username)
-    new_password = request.data.get("password")
     if not new_password:
         return Response({"error": "No password"}, status=status.HTTP_400_BAD_REQUEST)
     if users.exists():
@@ -832,8 +864,10 @@ def PasswordReset(request, username, token):
         user.set_password(new_password)
         user.token = ""
         user.save()
-        return Response("Password reset", status=status.HTTP_200_OK)  # TODO Redirection
+
+        return Response({"success": True}, status=status.HTTP_200_OK) #TODO Redirection
 
 
 def handler404(request, exception):
     return render(request, "html/error404.html", status=404)
+
