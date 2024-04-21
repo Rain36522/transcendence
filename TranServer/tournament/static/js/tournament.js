@@ -226,3 +226,59 @@ function removeFromInvitedList(userName) {
     }
   });
 }
+
+
+setupInitialPlayerAmountOptions();
+disableCreateButton();  // Désactive le bouton Create au chargement initial
+
+document.getElementById("gamesettings").addEventListener("change", function() {
+  updatePlayerAmountOptions();  // Met à jour les options de Player Amount
+  enableCreateButtonIfNeeded();  // Active le bouton Create si les conditions sont remplies
+});
+
+function setupInitialPlayerAmountOptions() {
+  var playerNumberSelect = document.getElementById("playerNumber");
+  playerNumberSelect.innerHTML = "";  // Efface les options précédentes
+  playerNumberSelect.appendChild(new Option("Select Player Amount", "", false, true));  // Ajoute une option par défaut désactivée
+}
+
+function updatePlayerAmountOptions() {
+  var gameSettings = document.getElementById("gamesettings");
+  var playerNumberSelect = document.getElementById("playerNumber");
+  var selectedGameMode = gameSettings.value;
+
+  playerNumberSelect.innerHTML = "";
+  var options = [];
+  if (selectedGameMode === "2") {
+    options = ["4", "8", "16"];
+  } else if (selectedGameMode === "4") {
+    options = ["8", "16"];
+  } else if (selectedGameMode === "1") {
+    options = ["4", "6", "8", "10", "12", "14", "16"];
+  }
+
+  options.forEach(function(option) {
+    playerNumberSelect.appendChild(new Option(option, option));
+  });
+
+  playerNumberSelect.disabled = options.length === 0;
+}
+
+function disableCreateButton() {
+    var createButton = document.querySelector(".create-button");
+    createButton.classList.add('disabled'); // Ajoute une classe pour le style
+    createButton.onclick = function(event) { event.preventDefault(); } // Empêche la navigation
+}
+
+
+function enableCreateButtonIfNeeded() {
+  var gameSettings = document.getElementById("gamesettings");
+  var createButton = document.querySelector(".create-button");
+  if (gameSettings.value && gameSettings.value !== "") {
+    createButton.disabled = false;
+    createButton.classList.remove('disabled'); // Retire la classe pour réactiver le style visuel
+  } else {
+    createButton.disabled = true;
+    createButton.classList.add('disabled'); // Ajoute la classe si nécessaire
+  }
+}
