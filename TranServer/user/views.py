@@ -40,10 +40,7 @@ import smtplib
 import os
 from datetime import timedelta
 
-MAIL = False
-
-
-MAIL = False
+MAIL = True
 
 
 @api_view(["POST"])
@@ -65,19 +62,17 @@ def api_signup(request):
                     {"message": "You have been logged in"},
                     status=status.HTTP_200_OK,
                 )
-            if MAIL or sendMail(user, user.email, isMail=True):
+            elif sendMail(user, user.email, isMail=True):
                 chat = Chat.objects.create()
                 chat.participants.add(user)
                 chat.is_personal = True
                 chat.save()
-                return Response(
-                    {"message": "A verification email has been sent"},
-                    status=status.HTTP_201_CREATED,
-                )
+                print("<MAIL SIGNUP>")
+                return render(request, "html/email_sent.html")
             else:
                 user.delete()
                 return Response(
-                    {"error": "Invalid email"}, status=status.HTTP_400_BAD_REQUEST
+                    {"message": "Invalid email"}, status=status.HTTP_400_BAD_REQUEST
                 )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
@@ -755,11 +750,8 @@ def sendMail(user, mail, isMail=False):
     smtp_server = "mail.infomaniak.com"
     smtp_port = 587
     smtp_user = os.environ.get("MAIL_USER")
-    # smtp_password = os.environ.get("MAIL_PWD")
-    smtp_password = "iQMTTGMQ1lTqTlvOrdx547yt38FNpD4zvu1l07dyCuk2Os6Mt$yZILPmoq9V7"
+    smtp_password = os.environ.get("MAIL_PWD")
     subject, content = MessageContentMail(user) if isMail else MessageContentPwd(user)
-    print("RIGHT :", smtp_password)
-    print("WRONG :", os.environ.get("MAIL_PWD"))
 
     msg = MIMEMultipart("alternative")
     msg.attach(MIMEText(content, "html"))
