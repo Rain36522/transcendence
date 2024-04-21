@@ -1,58 +1,49 @@
-var popup = document.querySelector(".popup");
-var blurBackground = document.querySelector(".blur-background");
+setupInitialPlayerAmountOptions();
+populateUserListTournament();  // Initialisation des listes d'utilisateurs pour le tournoi, si nécessaire
+disableCreateButton();  // Désactive le bouton Create au chargement initial
 
-blurBackground.addEventListener("click", function (event) {
-  if (event.target === blurBackground) {
-    popup.style.display = "none";
-    blurBackground.style.display = "none";
-  }
+document.getElementById("gamesettings").addEventListener("change", function() {
+  updatePlayerAmountOptions();  // Met à jour les options de Player Amount
+  enableCreateButtonIfNeeded();  // Active le bouton Create si les conditions sont remplies
 });
 
-function openPopup() {
-  var popup = document.getElementById("popup");
-  popup.style.display = "block";
-  document.body.style.overflow = "hidden";
-  document.querySelector(".blur-background").style.display = "block";
+function setupInitialPlayerAmountOptions() {
+  var playerNumberSelect = document.getElementById("playerNumber");
+  playerNumberSelect.innerHTML = "";  // Efface les options précédentes
+  playerNumberSelect.appendChild(new Option("Select Player Amount", "", false, true));  // Ajoute une option par défaut désactivée
 }
 
-function closePopup() {
-  var popup = document.getElementById("popup");
-  popup.style.display = "none";
-  document.body.style.overflow = "";
-  document.querySelector(".blur-background").style.display = "none";
-}
-
-var createButton = document.querySelector(".create-button");
-
-createButton.addEventListener("click", function (event) {
-  event.preventDefault();
-  openPopup();
-});
-
-function searchUsers() {
-  var searchText = document.getElementById("searchInput").value.toLowerCase();
-  var users = document.querySelectorAll(".user-item");
-  var searchResultDiv = document.getElementById("searchResult");
-  searchResultDiv.innerHTML = "";
-  searchResultDiv.style.display = "none";
-
-  for (let user of users) {
-    var name = user.querySelector(".user-name").textContent.toLowerCase();
-    if (searchText && name.includes(searchText)) {
-      var userClone = user.cloneNode(true);
-      userClone.addEventListener("click", handleInviteButtonClick);
-      searchResultDiv.appendChild(userClone);
-      searchResultDiv.style.display = "";
-      break;
+function populateUserListTournament() {
+  const usersDataTournament = [
+    {
+      name: "Famacito",
+      image: "https://media1.tenor.com/m/xK38NWayRnoAAAAC/dog-eyes.gif"
+    },
+    {
+      name: "Dark_Sasuke",
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb2KRrG26uJLRrL55aWnKPGezf8V5ZkiHPHg&s"
     }
-  }
+  ];
+
+  const userListContainer = document.getElementById("user-list");
+  userListContainer.innerHTML = "";
+
+  usersDataTournament.forEach(user => {
+    userListContainer.appendChild(createUserItemTournament(user));
+  });
 }
 
-document.getElementById("searchInput").addEventListener("input", searchUsers);
-
-document
-  .querySelector(".search-container button")
-  .addEventListener("click", searchUsers);
+function createUserItemTournament(user) {
+  const userItem = document.createElement("div");
+  userItem.className = "user-item";
+  userItem.innerHTML = `
+    <img src="${user.image}" alt="${user.name}" class="user-image">
+    <span class="user-name">${user.name}</span>
+    <button class="invite-button">Invite</button>
+  `;
+  userItem.querySelector(".invite-button").addEventListener("click", handleInviteButtonClick);
+  return userItem;
+}
 
 function handleInviteButtonClick(event) {
   const userItem = event.target.closest(".user-item");
@@ -82,69 +73,43 @@ function handleInviteButtonClick(event) {
   document.getElementById("searchResult").innerHTML = "";
 }
 
-document.querySelectorAll(".invite-button").forEach((button) => {
-  button.addEventListener("click", handleInviteButtonClick);
-});
+function updatePlayerAmountOptions() {
+  var gameSettings = document.getElementById("gamesettings");
+  var playerNumberSelect = document.getElementById("playerNumber");
+  var selectedGameMode = gameSettings.value;
 
-blurBackground.addEventListener("click", function () {
-  closePopup();
-});
-
-// usersDataTournament: Test for the user display, need to be changed so it can communicate with the server
-const usersDataTournament = [
-  {
-    name: "Famacito",
-    image: "https://media1.tenor.com/m/xK38NWayRnoAAAAC/dog-eyes.gif"
-  },
-  {
-    name: "Dark_Sasuke",
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb2KRrG26uJLRrL55aWnKPGezf8V5ZkiHPHg&s"
+  playerNumberSelect.innerHTML = "";
+  var options = [];
+  if (selectedGameMode === "2") {
+    options = ["4", "8", "16"];
+  } else if (selectedGameMode === "4") {
+    options = ["8", "16"];
+  } else if (selectedGameMode === "1") {
+    options = ["4", "6", "8", "10", "12", "14", "16"];
   }
-];
 
-function createUserItemTournament(user) {
-  const userItem = document.createElement("div");
-  userItem.className = "user-item";
-  userItem.innerHTML = `
-    <img src="${user.image}" alt="${user.name}" class="user-image">
-    <span class="user-name">${user.name}</span>
-    <button class="invite-button">Invite</button>
-  `;
-  userItem.querySelector(".invite-button").addEventListener("click", handleInviteButtonClick);
-  return userItem;
+  options.forEach(function(option) {
+    playerNumberSelect.appendChild(new Option(option, option));
+  });
+
+  playerNumberSelect.disabled = options.length === 0;
 }
 
-function populateUserListTournament() {
-  const userListContainer = document.getElementById("user-list");
-  userListContainer.innerHTML = "";
-  usersDataTournament.forEach(user => {
-    userListContainer.appendChild(createUserItemTournament(user));
-  });
+function disableCreateButton() {
+    var createButton = document.querySelector(".create-button");
+    createButton.classList.add('disabled'); // Ajoute une classe pour le style
+    createButton.onclick = function(event) { event.preventDefault(); } // Empêche la navigation
 }
 
-// Send the list to the server.
-document.querySelector(".start-button").addEventListener("click", function() {
-  const invitedUsers = document.querySelectorAll("#invitedUsers .user-item");
-  const playerNames = Array.from(invitedUsers).map(user => user.querySelector(".user-name").textContent);
 
-  const data = {
-      players: playerNames
-  };
-
-  fetch('TODO: path-to-your-endpoint', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-  })
-  .then(response => response.json())
-  .then(data => {
-      console.log('Success:', data);
-  })
-  .catch((error) => {
-      console.error('Error:', error);
-  });
-});
-
-document.addEventListener("DOMContentLoaded", populateUserListTournament);
+function enableCreateButtonIfNeeded() {
+  var gameSettings = document.getElementById("gamesettings");
+  var createButton = document.querySelector(".create-button");
+  if (gameSettings.value && gameSettings.value !== "") {
+    createButton.disabled = false;
+    createButton.classList.remove('disabled'); // Retire la classe pour réactiver le style visuel
+  } else {
+    createButton.disabled = true;
+    createButton.classList.add('disabled'); // Ajoute la classe si nécessaire
+  }
+}
