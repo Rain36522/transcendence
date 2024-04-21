@@ -32,11 +32,13 @@ from .views import (
     change_password,
     PasswordReset,
     email_validated,
+    error404,
     sendPasswordReset,
 )
 from django.views.generic.base import RedirectView
 
 urlpatterns = [
+    path("error404/", error404, name="error404"),
     path("email_validated/", email_validated, name="email_validated"),
     path("change_password/", change_password, name="change_password"),
     path("email_sent/", email_sent, name="email_sent"),

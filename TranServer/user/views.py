@@ -5,8 +5,6 @@ from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
 from rest_framework.permissions import IsAuthenticated
-
-
 from django.http import HttpResponse, JsonResponse, Http404
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
@@ -461,6 +459,10 @@ def change_password(request):
     return render(request, "html/change_password.html")
 
 
+def error404(request):
+    return render(request, "html/error404.html")
+
+
 def forgot_password(request):
     return render(request, "html/forgot_password.html")
 
@@ -542,8 +544,10 @@ def gameHistory(user):
 def user_login(request):
     return render(request, "html/login.html")
 
+
 def email_validated(request):
     return render(request, "html/email_validated.html")
+
 
 def user_register(request):
     return render(request, "html/register.html")
@@ -860,5 +864,10 @@ def PasswordReset(request):
         user.set_password(new_password)
         user.token = ""
         user.save()
+
         return Response({"success": True}, status=status.HTTP_200_OK) #TODO Redirection
+
+
+def handler404(request, exception):
+    return render(request, "html/error404.html", status=404)
 
