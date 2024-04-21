@@ -51,6 +51,9 @@ function linkify(inputText) {
 
   replacePattern1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
   var replacedText = inputText.replace(replacePattern1, function (url) {
+    if (url[8] == "/") {
+      url = url.slice(0, 8) + window.location.host + url.slice(8);
+    }
     return (
       '<button class="join-game-button" onclick="window.location.href=\'' +
       url +
@@ -144,7 +147,6 @@ function load_chats() {
   fetchChats().then((chats) => {
     const userList = document.getElementById("userList");
     userList.innerHTML = ""; // Effacer le contenu existant
-    console.log(chats);
     for (const chat of chats) {
       let usernames = chat.participants
         .map((participant) => participant.username)
@@ -177,7 +179,6 @@ async function renderMessagesInOrder(messages) {
 
 function open_chat(chatId) {
   fetchMessages(chatId).then((messages) => {
-    console.log(messages);
     renderMessagesInOrder(messages);
   });
   startChatSocket(chatId);
@@ -257,7 +258,6 @@ document
 document
   .getElementById("messageText")
   .addEventListener("keypress", function (event) {
-    console.log("UGHGGG");
     scrollToBottom();
     if (event.key === "Enter") {
       event.preventDefault();
