@@ -69,7 +69,10 @@ class WebSocketServer:
             print(GREEN, "User autorisation added", message[14:], file=stderr)
             self.clients[1]["user" + gameid] = dumps(message[14:])
         elif message.startswith("finish"):
-            del self.clients[1]["user" + gameid]
+            try:
+                del self.clients[1]["user" + gameid]
+            except:
+                pass
             self.finishGames.append(message[6:])
         elif gameid in self.clients[2]:
             try:

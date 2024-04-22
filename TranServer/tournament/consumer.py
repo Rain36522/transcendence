@@ -40,9 +40,7 @@ def getUpdate(id):
     tournament = Tournament.objects.get(pk=id)
     data = []
     games = tournament.game_set.all()
-    gamesUser = tournament.game_set.filter(gameLevel=0).aggregate(
-        total_users=Count("gameuser")
-    )
+    gamesUser = tournament.game_set.filter(gameLevel=0).aggregate(total_users=Count("gameuser"))["total_users"]
     dico = {}
     dico["tournamentFull"] = gamesUser == tournament.playerNumber
     for game in games:

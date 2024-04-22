@@ -72,7 +72,6 @@ class tournamentSettings(APIView):
         return render(request, "html/tournament.html")
 
     def post(self, request):
-        print(request.data, file=sys.stderr)
         self.data = request.data.copy()
         if not self.checkuser(int(self.data["playerNumber"]), int(self.data["gamesettings"])):
             return Response(
