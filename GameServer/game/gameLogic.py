@@ -250,7 +250,10 @@ class Ball:
 		self.speed = speed
 		self.size_w = size_w
 		self.init_speed = speed
-		self.dir = random_vector_in_angle_range()
+		if (size != size_w):
+			self.dir = random_vector_in_angle_range(2)
+		else:
+			self.dir = random_vector_in_angle_range(4)
 		self.collision_angle = 70
 		self.last_touch = ""
 		self.temp_last_touch = ""
@@ -260,7 +263,10 @@ class Ball:
 	# reset the ball
 	def reset(self):
 		self.pos = Vec2(0.0, 0.0)
-		self.dir = random_vector_in_angle_range()
+		if (self.size != self.size_w):
+			self.dir = random_vector_in_angle_range(2)
+		else:
+			self.dir = random_vector_in_angle_range(4)
 		self.temp_last_touch = ""
 		self.last_touch = ""
 		self.speed = self.init_speed
@@ -450,14 +456,19 @@ def seg_collide(pos_seg1, len_seg1, pos_seg2, len_seg2):
 #seg_collide end
 
 # generates a random number excluding 0
-def random_vector_in_angle_range():
+def random_vector_in_angle_range(nb_players):
     # random choice of side
-    if random.choice([True, False]):
-        # (1, -1) to (1, 1)
-        angle = random.uniform(-math.pi / 4, math.pi / 4)
-    else:
-        # (-1, -1) to (-1, 1)
-        angle = random.uniform(3 * math.pi / 4, 5 * math.pi / 4)
-    return Vec2(math.cos(angle), math.sin(angle)).normalize()
+	if (nb_players == 2):
+		if random.choice([True, False]):
+			# (1, -1) to (1, 1)
+			angle = random.uniform(-math.pi / 4, math.pi / 4)
+		else:
+			# (-1, -1) to (-1, 1)
+			angle = random.uniform(3 * math.pi / 4, 5 * math.pi / 4)
+		return Vec2(math.cos(angle), math.sin(angle)).normalize()
+	else:
+		# (1, -1) to (-1, 1)
+		angle = random.uniform(0, 2 * math.pi)
+		return Vec2(math.cos(angle), math.sin(angle)).normalize()
 #non_zero_uniform end
 	
