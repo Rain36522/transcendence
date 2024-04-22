@@ -1,4 +1,23 @@
+var websockets = [];
+
+function openWebSocket(url) {
+  const ws = new WebSocket(url);
+  websockets.push(ws);
+  return ws;
+}
+
+function closeAllWebSockets() {
+  console.log("Closing all websockets");
+  websockets.forEach(ws => {
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.close();
+    }
+  });
+  websockets = [];
+}
+
 async function fetchPage(url) {
+  closeAllWebSockets();
   try {
     const response = await fetch(url);
     const html = await response.text();
@@ -57,6 +76,7 @@ async function loadScriptsFromHTML(html) {
 }
 
 window.onpopstate = function () {
+  closeAllWebSockets();
   const url = window.location.pathname;
   fetchPage(url);
 };
@@ -66,6 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const target = event.target;
     if (target.tagName === "A" && target.getAttribute("href") !== "#") {
       event.preventDefault();
+      closeAllWebSockets();
       const url = target.getAttribute("href");
       fetchPage(url);
       history.pushState(null, null, url);

@@ -38,7 +38,7 @@ import smtplib
 import os
 from datetime import timedelta
 
-MAIL = True
+MAIL = False
 
 
 @api_view(["POST"])
@@ -539,8 +539,6 @@ def gameHistory(user):
     return historyGameList
 
 
-
-
 def user_login(request):
     return render(request, "html/login.html")
 
@@ -567,7 +565,6 @@ def profile(request):
 def dashboard(request):
     print("HISTORY :", historyGameList)
     return render(request, "dashboard.html", {"user": request.user})
-
 
 
 @api_view(["GET"])
@@ -818,13 +815,16 @@ class sendPasswordReset(APIView):
         if not mail:
             return Response({"message": "No mail"}, status=status.HTTP_400_BAD_REQUEST)
         elif not User.objects.filter(email=mail).exists():
-            return Response({"message": "Invalide mail"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"message": "Invalide mail"}, status=status.HTTP_400_BAD_REQUEST
+            )
         user = User.objects.filter(email=mail).first()
         if not sendMail(user, mail, isMail=False):
-            return Response({"message": "Invalid mail"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"message": "Invalid mail"}, status=status.HTTP_400_BAD_REQUEST
+            )
         return Response({"success": True}, status=status.HTTP_200_OK)
-        
-        
+
 
 def PasswordForgot(request, username=None, token=None):
     users = User.objects.filter(username=username)
@@ -835,7 +835,10 @@ def PasswordForgot(request, username=None, token=None):
     if not token or token != user.token:
         print("INVALIDE TOKEN :", user.token)
         raise Http404("Invalide link")
-    return render(request, 'html/change_password.html', {'token': token, 'username': username})
+    return render(
+        request, "html/change_password.html", {"token": token, "username": username}
+    )
+
 
 @api_view(["POST"])
 def PasswordReset(request):
@@ -844,7 +847,9 @@ def PasswordReset(request):
     token = request.data.get("token")
     new_password = request.data.get("new_password")
     if not username or not token:
-        return Response({"error": "Invalide arguments"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {"error": "Invalide arguments"}, status=status.HTTP_400_BAD_REQUEST
+        )
     users = User.objects.filter(username=username)
     if not new_password:
         return Response({"error": "No password"}, status=status.HTTP_400_BAD_REQUEST)
@@ -865,9 +870,10 @@ def PasswordReset(request):
         user.token = ""
         user.save()
 
-        return Response({"success": True}, status=status.HTTP_200_OK) #TODO Redirection
+        return Response(
+            {"success": True}, status=status.HTTP_200_OK
+        )  # TODO Redirection
 
 
 def handler404(request, exception):
     return render(request, "html/error404.html", status=404)
-

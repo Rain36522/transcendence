@@ -1,5 +1,5 @@
 
 
-source ./cli/clienv/bin/activate
+source ./pyvenv/bin/activate
 
 python3 AutoGenerateUser.py "$@"
