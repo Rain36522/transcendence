@@ -166,7 +166,7 @@ header {
 	font-size: 28px;
 	margin-top: 0px;
 	/* Ajout pour contrôler l'espacement au-dessus du nom d'utilisateur */
-	margin-bottom: 10px;
+	margin-bottom: 7px;
 	/* Ajustez selon besoin */
 	color: #333;
 	font-weight: 800;
@@ -175,7 +175,14 @@ header {
 .statistic {
 	font-size: 20px;
 	color: #666;
-	margin: 10px 0;
+	margin: 5px 0;
+}
+
+.GameHistory {
+	font-size: 20px;
+	color: #444;
+	margin: 1px 0;
+	font-weight: 700;
 }
 
 .statistic span {
@@ -229,6 +236,7 @@ header {
 .scroll-container {
 	/* height: 200px; Hauteur de la zone avec barre de défilement */
 	overflow-y: auto; /* Active la barre de défilement verticale si nécessaire */
+	overflow-x: hidden;
 	border: 1px solid #CCCCCC; /* Bordure pour la zone */
 	width: 100%;
 }
@@ -253,6 +261,22 @@ header {
   .scroll-container::-webkit-scrollbar-thumb {
 	background-color: #888888; /* Couleur de la barre de défilement */
   }
+  .scroll-container table {
+	width:95%;
+	border-collapse: collapse;
+  }
+  
+  .scroll-container th, .scroll-container td {
+	border: 1px solid #EEEEEE;
+	padding: 8px;
+	text-align: left;
+  }
+  
+  .scroll-container th {
+	background-color: #f2f2f2;
+  }
+
+
 
 /* CSS pour les écrans de taille moyenne */
 @media (max-width: 768px) {

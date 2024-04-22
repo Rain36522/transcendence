@@ -33,6 +33,7 @@ from .views import (
     PasswordReset,
     email_validated,
     error404,
+    gameHistory_api,
     sendPasswordReset,
 )
 from django.views.generic.base import RedirectView
@@ -101,4 +102,5 @@ urlpatterns = [
     path('api/mail/<str:username>/<str:token>/', EmailValidation, name='EmailValidation'),
     path('api/reset_password/<str:username>/<str:token>/', PasswordForgot, name='password forgot page'),
     path('api/reset_password/change/', PasswordReset, name='password reset'),
+    path('api/gameHistory/<str:username>/', gameHistory_api, name="gameHistory_api")
 ]

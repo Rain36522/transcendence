@@ -495,12 +495,9 @@ def user_dashboard(request, username=None):
     ratio_w = 0
     ratio_l = 0
     losses = user.total_games - user.wins
-    historyGameList = []
     if user.total_games != 0:
         ratio_w = round(user.wins / user.total_games * 100)
         ratio_l = round(losses / user.total_games * 100)
-        historyGameList = gameHistory(request.user)
-    print("\033[32mHISTORY OF GAME:", historyGameList, "\033[0m")
     return render(
         request,
         path,
@@ -510,19 +507,19 @@ def user_dashboard(request, username=None):
             "ratio_w": ratio_w,
             "ratio_l": ratio_l,
         },
-        # {"historyGameList": historyGameList}
     )
 
 
-def gameHistory(user):
-    games = Game.objects.filter(gameuser__user=user, gamemode__gte=1, gamemode__lte=2)
+@api_view(["GET"])
+def gameHistory_api(request, username):
+    games = Game.objects.filter(gameuser__user__username=username, gamemode__gte=1, gamemode__lte=2)
     if not games:
-        return []
+        return JsonResponse({"historyGames": []}, status=status.HTTP_200_OK)
     historyGameList = []
     for game in games:
         maxPoint = 0
         dico = {
-            "date": game.date,
+            "date": game.date.strftime('%Y-%m-%d %H:%M'),
             "gamemode": game.gamemode,
             "users": [],
             "points": [],
@@ -535,7 +532,7 @@ def gameHistory(user):
                 maxPoint = gameuser.points
         if maxPoint > 1:
             historyGameList.append(dico)
-    return historyGameList
+    return JsonResponse({"historyGames": historyGameList}, status=status.HTTP_200_OK)
 
 
 
