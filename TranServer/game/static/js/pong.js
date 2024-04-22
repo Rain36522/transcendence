@@ -52,8 +52,6 @@ if (typeof window.Settings === "undefined") {
 
 			if (this.userID == 0)
 				this.userID = 1;
-			
-			console.log("Creating settings with " + this.nbPlayers + " players and user " + this.userName);
 		}
 	}
 }
@@ -117,12 +115,8 @@ if (typeof window.Player === "undefined") {
 					}
 				}
 			}
-			console.log("ws is " + ws + " and message is " + message);
 			if (ws && message != "")
-			{
-				console.log("sent message");
 				ws.send(message);
-			}
 		}
 
 		// rotate if needed to put player on the left side of the screen

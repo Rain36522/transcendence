@@ -188,8 +188,7 @@ async function updateTournament(data) {
 						await sleep(4000);
 						fetchPage(pageToFetch);
 						break;
-	}
-}}}}}
+	}}}}}}
 	console.log('Tournament updated', updatedMatches);
 }
 
