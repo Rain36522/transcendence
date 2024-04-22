@@ -81,8 +81,9 @@ class GameServerConsumer(AsyncWebsocketConsumer):
                         user.total_games += 1
                         if value[1] == maxPoint:
                             user.wins += 1
-                            winner = gameuser
                         user.save()
+                    if value[1] == maxPoint:
+                        winner = gameuser
 
             game.save()
             return winner

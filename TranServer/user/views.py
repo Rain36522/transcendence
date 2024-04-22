@@ -38,7 +38,7 @@ import smtplib
 import os
 from datetime import timedelta
 
-MAIL = False
+MAIL = True
 
 
 @api_view(["POST"])
@@ -46,6 +46,13 @@ MAIL = False
 def api_signup(request):
     try:
         serializer = UserSerializer(data=request.data)
+        password = request.data.get("password")
+        try:
+            password_validation.validate_password(password)
+        except ValidationError as e:
+            return JsonResponse(
+                {"error": e.messages}, status=status.HTTP_400_BAD_REQUEST
+            )
         if serializer.is_valid():
             user = serializer.save()
             if not MAIL:
@@ -519,7 +526,7 @@ def gameHistory_api(request, username):
     for game in games:
         maxPoint = 0
         dico = {
-            "date": game.date.strftime('%Y-%m-%d %H:%M'),
+            "date": game.date.strftime('%Y-%m-%d'),
             "gamemode": game.gamemode,
             "users": [],
             "points": [],
@@ -716,7 +723,7 @@ def MessageContentPwd(user):
     subject = "Reset password"
     GenerateUserToken(user, mail=False)
     ResetLink = (
-        "https://127.0.0.1/api/reset_password/" + user.username + "/" + user.token
+        "https://10.11.13.4/api/reset_password/" + user.username + "/" + user.token
     )
     mailContent = f"""
     <h1>Hi {user.username}!</h1>
@@ -731,7 +738,7 @@ def MessageContentPwd(user):
 def MessageContentMail(user):
     subject = "Mail Validation"
     GenerateUserToken(user, mail=True)
-    ValidateLink = "https://127.0.0.1/api/mail/" + user.username + "/" + user.token
+    ValidateLink = "https://10.11.13.4/api/mail/" + user.username + "/" + user.token
     mailContent = f"""
     <h1>Welcome to transcendance {user.username}!</h1>
     <p>To validate your email, simply click this link :
@@ -786,12 +793,14 @@ def GenerateUserToken(user, mail=False):
 
 
 def EmailValidation(request, username, token):
+    print("EMAIL VALIDATION !!!!!!!!!!!!!!!!!!!!")
     users = User.objects.filter(username=username)
     if users.exists():
         user = users.first()
     else:
         raise Http404("Invalid link")
     if not token or user.token != token:
+        print("WRONG DATA")
         raise Http404("Invalid link")
     else:
         user.mailValidate = True

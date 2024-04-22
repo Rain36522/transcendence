@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dvandenb <dvandenb@student.42.fr>          +#+  +:+       +#+         #
+#    By: pudry <pudry@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/08 12:20:28 by pudry             #+#    #+#              #
-#    Updated: 2024/04/18 19:35:10 by dvandenb         ###   ########.fr        #
+#    Updated: 2024/04/22 18:16:34 by pudry            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,6 @@ install:
 	./install_dep.zsh
 
 run:
-	python3 TranServer/manage.py collectstatic --noinput
 	docker compose -f  ${DOCKER_COMPOSE} -p ${NAME} up --build
 # --detach
 
