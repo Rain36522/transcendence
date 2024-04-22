@@ -94,6 +94,18 @@ document
   });
 
 document
+  .getElementById("updateInfoForm")
+  .addEventListener("submit", function (event) {
+    event.preventDefault();
+    var formData = new FormData(this);
+
+    fetch("/api/update_profile/", {
+      method: "POST",
+      body: formData,
+    });
+  });
+
+document
   .getElementById("passwordChangeForm")
   .addEventListener("submit", function (event) {
     event.preventDefault();

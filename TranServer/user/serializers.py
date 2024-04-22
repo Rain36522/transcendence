@@ -8,6 +8,14 @@ def validate_hex_color(value):
         raise serializers.ValidationError("Invalid hexadecimal color format")
 
 
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "username",
+            "email"
+        ]
+
 class ColorUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
