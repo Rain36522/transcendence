@@ -254,7 +254,7 @@ function updatePlayerAmountOptions() {
   } else if (selectedGameMode === "4") {
     options = ["8", "16"];
   } else if (selectedGameMode === "0") {
-    options = ["4", "6", "8", "10", "12", "14", "16"];
+    options = ["6", "8", "10", "12", "14", "16"];
   }
 
   options.forEach(function(option) {
