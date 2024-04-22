@@ -52,8 +52,6 @@ if (typeof window.Settings === "undefined") {
 
 			if (this.userID == 0)
 				this.userID = 1;
-			
-			console.log("Creating settings with " + this.nbPlayers + " players and user " + this.userName);
 		}
 	}
 }
@@ -80,7 +78,6 @@ if (typeof window.Player === "undefined") {
 
 		// store current keys status (pressed/released)
 		updateKeysPressed(event, value, ws){
-
 			if (event.key != "w" && event.key != "s" && event.key != "W" && event.key != "S" &&event.key != "ArrowUp" && event.key != "ArrowDown")
 				return;
 			var message = "";
@@ -118,7 +115,7 @@ if (typeof window.Player === "undefined") {
 					}
 				}
 			}
-			if (ws && ws.readyState === WebSocket.OPEN && message != "")
+			if (ws && message != "")
 				ws.send(message);
 		}
 
@@ -336,9 +333,22 @@ var attemptDuration = 10000;
 var attemptInterval = 500;
 var startTime = Date.now();
 
-function connectWebSocket() {
+async function connectWebSocket() {
+	document.getElementById('waitingMessage').textContent = "Game loading...";
+	await sleep(3000); 
 	var url = 'wss://' + window.location.host + '/wsGame/' + settings.gameID + '/' + settings.userName + '/';
-	ws = new WebSocket(url);
+	ws = openWebSocket(url);
+	while (ws.readyState !== ws.OPEN) {
+		ws.close();
+		closeAllWebSockets();
+		if (!document.getElementById('waitingScreen'))
+			return;
+		await sleep(3000);
+		ws = openWebSocket(url);
+		if (ws.readyState !== ws.OPEN)
+			await sleep(3000);
+	}
+	document.getElementById('waitingMessage').textContent = "Waiting for players...";
 	
 
 	ws.onopen = () =>
