@@ -32,7 +32,43 @@ var createButton = document.querySelector(".create-link");
 
 createButton.addEventListener("click", function (event) {
   event.preventDefault();
+  if (document.getElementById("game-mode").value == "1" || document.getElementById("game-mode").value == "2"){
   openPopup();
+  }
+  else{
+    var gameSettings = {
+      ballwidth: document.getElementById("ball-size").value,
+      planksize: document.getElementById("raquet-size").value,
+      Speed: document.getElementById("game-speed").value,
+      acceleration: document.getElementById("game-acceleration").value,
+      winpoint: document.getElementById("win-point").value,
+      gamemode: document.getElementById("game-mode").value,
+      participants: [],
+    };
+    console.log(JSON.stringify(gameSettings));
+    fetch("", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCookie("csrftoken"),
+      },
+      body: JSON.stringify(gameSettings),
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error("Network response was not ok");
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Success:", data);
+        if (data.gameLink) {
+          window.history.pushState(null, null, data.gameLink);
+          fetchPage(data.gameLink);
+        } else console.error("No game link received from server");
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
 });
 
 function searchUsers() {

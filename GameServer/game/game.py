@@ -76,7 +76,9 @@ async def WaitUntilPlayers(ws, data):
         msgs = ws.getMsg()
         if msgs:
             for msg in msgs:
+                print("MESSAGES :", msg, file=stderr)
                 if msg.endswith("login"):
+                    print("ADDING PLAYER!")
                     logedPlayers = await addPlayers(msg[:-5], lockedPlayers, logedPlayers, data["playeramount"])
                 elif msg.endswith("logout"):
                     logedPlayers = await removePlayer(msg[:-6], logedPlayers)
@@ -103,6 +105,7 @@ async def addPlayers(newUser, lockedPlayers, logedPlayers, playeramount):
                 logedPlayersLen += 1
         if logedPlayersLen < playeramount:
             logedPlayers.append(newUser)
+    print("ACTUAL PLAYER LISTE :", logedPlayers, file=stderr)
     return logedPlayers
 
 
@@ -183,6 +186,7 @@ async def main():
     
 
     userliste = await WaitUntilPlayers(client, DjangoData)
+    print("RECIEVED LISTE PLAYERS :", userliste)
     if userliste == None:
         print(MAGENTA, "Game end for missing players", RESET, file=stderr)
         exit(0)
