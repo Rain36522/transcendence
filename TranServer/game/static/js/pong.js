@@ -80,7 +80,6 @@ if (typeof window.Player === "undefined") {
 
 		// store current keys status (pressed/released)
 		updateKeysPressed(event, value, ws){
-			console.log("updateKeysPressed");
 			if (event.key != "w" && event.key != "s" && event.key != "W" && event.key != "S" &&event.key != "ArrowUp" && event.key != "ArrowDown")
 				return;
 			var message = "";
@@ -118,8 +117,8 @@ if (typeof window.Player === "undefined") {
 					}
 				}
 			}
-			console.log("ws is " + ws + " and message is " + message + "ws.readyState is " + (ws.readyState === WebSocket.OPEN));
-			if (ws && ws.readyState === WebSocket.OPEN && message != "")
+			console.log("ws is " + ws + " and message is " + message);
+			if (ws && message != "")
 			{
 				console.log("sent message");
 				ws.send(message);
@@ -342,9 +341,19 @@ var startTime = Date.now();
 
 async function connectWebSocket() {
 	document.getElementById('waitingMessage').textContent = "Game loading...";
-	await sleep(5000);
+	await sleep(3000); 
 	var url = 'wss://' + window.location.host + '/wsGame/' + settings.gameID + '/' + settings.userName + '/';
 	ws = openWebSocket(url);
+	while (ws.readyState !== ws.OPEN) {
+		ws.close();
+		closeAllWebSockets();
+		if (!document.getElementById('waitingScreen'))
+			return;
+		await sleep(3000);
+		ws = openWebSocket(url);
+		if (ws.readyState !== ws.OPEN)
+			await sleep(3000);
+	}
 	document.getElementById('waitingMessage').textContent = "Waiting for players...";
 	
 

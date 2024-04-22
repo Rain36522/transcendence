@@ -1,19 +1,24 @@
-var websockets = [];
+var websockets = {};
 
 function openWebSocket(url) {
+  console.log("Opening websocket");
   const ws = new WebSocket(url);
-  websockets.push(ws);
+  ws.onopen = function () {
+    console.log("Websocket opened");
+  };
+  if (websockets[url]) {
+    websockets[url].close();
+  }
+  websockets[url] = ws;
   return ws;
 }
 
 function closeAllWebSockets() {
   console.log("Closing all websockets");
-  websockets.forEach(ws => {
-    if (ws.readyState === WebSocket.OPEN) {
-      ws.close();
-    }
-  });
-  websockets = [];
+  for (const ws of Object.values(websockets)) {
+    ws.close();
+  }
+  websockets = {};
 }
 
 async function fetchPage(url) {
