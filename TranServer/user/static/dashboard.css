@@ -217,6 +217,43 @@ header {
 	background-color: #444;
 }
 
+
+.separation-hr {
+    border-color: #cccccc;
+    border-width: 1.5px;
+	width: 100%;
+  }
+
+
+
+.scroll-container {
+	/* height: 200px; Hauteur de la zone avec barre de défilement */
+	overflow-y: auto; /* Active la barre de défilement verticale si nécessaire */
+	border: 1px solid #CCCCCC; /* Bordure pour la zone */
+	width: 100%;
+}
+  
+  /* Style pour la liste */
+  .scroll-container ul {
+	list-style-type: none; /* Retire les puces de liste */
+	padding: 0;
+  }
+  
+  /* Style pour les éléments de la liste */
+  .scroll-container li {
+	padding: 10px;
+	border-bottom: 1px solid #EEEEEE; /* Bordure entre les éléments */
+  }
+  
+  /* Style pour la barre de défilement si nécessaire */
+  .scroll-container::-webkit-scrollbar {
+	width: 8px; /* Largeur de la barre de défilement */
+  }
+  
+  .scroll-container::-webkit-scrollbar-thumb {
+	background-color: #888888; /* Couleur de la barre de défilement */
+  }
+
 /* CSS pour les écrans de taille moyenne */
 @media (max-width: 768px) {
 	header div {
