@@ -38,7 +38,7 @@ import smtplib
 import os
 from datetime import timedelta
 
-MAIL = True
+MAIL = False
 
 
 @api_view(["POST"])
@@ -65,7 +65,6 @@ def api_signup(request):
                 chat.participants.add(user)
                 chat.is_personal = True
                 chat.save()
-                print("<MAIL SIGNUP>")
                 return render(request, "html/email_sent.html")
             else:
                 user.delete()
