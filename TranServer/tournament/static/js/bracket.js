@@ -155,6 +155,7 @@ function initializeTournament(tournamentSize) {
 
 
 async function updateTournament(data) {
+	var redirection = false;
 	if (data.tournamentFull == true)
 		isFull = true;
 	if (isFull == true)
@@ -180,15 +181,23 @@ async function updateTournament(data) {
 			}
 
 			if (matchData.isRunning == true) {
+				console.log("checking match level" + matchData.level + " and pos " + matchData.pos + " for redirection")
+				console.log("myUser is " + myUser)
 				for (var i = 0; i <= 3; i++) {
 					var playerIdKey = `player${i}Id`;
-					if (matchData[playerIdKey] && matchData[playerIdKey] === myUser) {
+					console.log("playerIdKey is " + playerIdKey)
+					if (matchData[playerIdKey] && matchData[playerIdKey] === myUser && redirection == false) {
+						redirection = true;
 						var pageToFetch = "/game/" + matchData.gameId + "/";
-						window.history.pushState(null, null, pageToFetch);
-						await sleep(4000);
-						fetchPage(pageToFetch);
-						break;
-	}}}}}}
+					}
+					console.log("redirection is " + redirection)
+	}}}}}
+	if (redirection == true){
+		window.history.pushState(null, null, pageToFetch);
+		await sleep(3000);
+		fetchPage(pageToFetch);
+		return ;
+	}
 	console.log('Tournament updated', updatedMatches);
 }
 

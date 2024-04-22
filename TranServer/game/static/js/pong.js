@@ -392,7 +392,7 @@ async function connectWebSocket() {
 		{console.log("WebSocket error: ", error);};
 }
 // Establish WebSocket connection
-connectWebSocket();
+await connectWebSocket();
 
 
 /*‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾*\
