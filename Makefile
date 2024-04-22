@@ -6,7 +6,7 @@
 #    By: pudry <pudry@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/08 12:20:28 by pudry             #+#    #+#              #
-#    Updated: 2024/04/22 18:16:34 by pudry            ###   ########.fr        #
+#    Updated: 2024/04/22 18:22:21 by pudry            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,3 +48,5 @@ delete:
 fclean: stop delete
 
 re: fclean all
+
+.PHONY: run install fclean stop delete re build_docker

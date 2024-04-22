@@ -1,6 +1,9 @@
 var colorData = {};
 
 document.querySelectorAll(".button-8").forEach((button) => {
+  if (typeof Pickr == 'undefined') {
+    return;
+  }
   const pickr = new Pickr({
     default: "#42445a",
 
@@ -93,17 +96,25 @@ document
       });
   });
 
-document
-  .getElementById("updateInfoForm")
-  .addEventListener("submit", function (event) {
-    event.preventDefault();
-    var formData = new FormData(this);
 
-    fetch("/api/update_profile/", {
-      method: "POST",
-      body: formData,
-    });
+
+
+
+document
+.getElementById("updateInfoForm")
+.addEventListener("submit", update_Info);
+
+function update_Info(event)
+{
+event.preventDefault();
+  var formData = new FormData(this);
+
+  fetch("/api/update_profile/", {
+    method: "POST",
+    body: formData,
   });
+}
+
 
 document
   .getElementById("passwordChangeForm")
