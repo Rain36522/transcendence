@@ -1,13 +1,6 @@
 var popup = document.querySelector(".popup");
 var blurBackground = document.querySelector(".blur-background");
 
-blurBackground.addEventListener("click", function (event) {
-  if (event.target === blurBackground) {
-    popup.style.display = "none";
-    blurBackground.style.display = "none";
-  }
-});
-
 function openPopup() {
   popup.style.display = "block";
   document.body.style.overflow = "hidden";

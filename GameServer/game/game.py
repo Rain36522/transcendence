@@ -5,7 +5,6 @@ import json
 import asyncio
 from sys import stderr
 from time import sleep, time
-from sys import stderr
 from random import choice
 
 RESET = "\033[0m"
