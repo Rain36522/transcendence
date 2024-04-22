@@ -32,10 +32,12 @@ var createButton = document.querySelector(".create-link");
 
 createButton.addEventListener("click", function (event) {
   event.preventDefault();
-  if (document.getElementById("game-mode").value == "1" || document.getElementById("game-mode").value == "2"){
-  openPopup();
-  }
-  else{
+  if (
+    document.getElementById("game-mode").value == "1" ||
+    document.getElementById("game-mode").value == "2"
+  ) {
+    openPopup();
+  } else {
     var gameSettings = {
       ballwidth: document.getElementById("ball-size").value,
       planksize: document.getElementById("raquet-size").value,
@@ -201,6 +203,13 @@ function add_user(username, list, text, color) {
       });
     })
     .then((data) => {
+      const sourceUserItems = document.querySelectorAll(".user-item");
+      sourceUserItems.forEach(function (item) {
+        const itemUserName = item.querySelector(".user-name").textContent;
+        if (itemUserName === username) {
+            item.remove();
+        }
+      });
       var userItem = document.createElement("div");
       userItem.classList.add("user-item");
       var img = document.createElement("img");

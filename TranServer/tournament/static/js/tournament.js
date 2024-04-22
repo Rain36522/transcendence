@@ -168,6 +168,13 @@ function add_user(username, list, text, color) {
       });
     })
     .then((data) => {
+      const sourceUserItems = document.querySelectorAll(".user-item");
+      sourceUserItems.forEach(function (item) {
+        const itemUserName = item.querySelector(".user-name").textContent;
+        if (itemUserName === username) {
+            item.remove();
+        }
+      });
       var userItem = document.createElement("div");
       userItem.classList.add("user-item");
       var img = document.createElement("img");
