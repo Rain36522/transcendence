@@ -2,6 +2,7 @@
 {% load static %}
 {% block content %}
 
+
 <link rel="stylesheet" href="{% static 'dashboard.css' %}" />
 <div class="image-container">
     <img src="https://e1.pxfuel.com/desktop-wallpaper/281/253/desktop-wallpaper-best-6-80s-backgrounds-on-hip-retro-80s.jpg"
@@ -22,18 +23,19 @@
         <!-- S'assurez que cet élément a un background-image par défaut ou via JS -->
         <div class="profile-name" id="username">{{ user.username }}</div>
         <div class="statistic">
-            Win rate<span class="progress-bar" style="width: {{ratio_w}}%;">
-                {{ratio_w}}%</span>
+            Win rate : <span>{{ ratio_w }}%</span>
         </div>
         <div class="statistic">
-            Games won<span class="progress-bar"
-                style="width: {{ratio_w}}%;">{{user.wins}}</span>
+            Games won : <span>{{ user.wins }}</span>
         </div>
         <div class="statistic">
-            Games lost<span class="progress-bar"
-                style="width: {{ ratio_l }}%; background-color: #f44336;">{{losses}}</span>
+            Games lost : <span>{{ losses }}</span>
+        </div>
+        <div class="GameHistory">History of games</div>
+        <div class="scroll-container">
         </div>
     </div>
+
     <script src={% static 'utils.js' %}></script>
     <script src={% static 'dashboard.js' %}></script>
 </div>
