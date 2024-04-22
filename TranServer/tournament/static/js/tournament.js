@@ -229,17 +229,17 @@ function removeFromInvitedList(userName) {
 
 
 setupInitialPlayerAmountOptions();
-disableCreateButton();  // Désactive le bouton Create au chargement initial
+disableCreateButton();  
 
 document.getElementById("gamesettings").addEventListener("change", function() {
-  updatePlayerAmountOptions();  // Met à jour les options de Player Amount
-  enableCreateButtonIfNeeded();  // Active le bouton Create si les conditions sont remplies
+  updatePlayerAmountOptions();  
+  enableCreateButtonIfNeeded();  
 });
 
 function setupInitialPlayerAmountOptions() {
   var playerNumberSelect = document.getElementById("playerNumber");
-  playerNumberSelect.innerHTML = "";  // Efface les options précédentes
-  playerNumberSelect.appendChild(new Option("Select Player Amount", "", false, true));  // Ajoute une option par défaut désactivée
+  playerNumberSelect.innerHTML = "";  
+  playerNumberSelect.appendChild(new Option("Select Player Amount", "", false, true));  
 }
 
 function updatePlayerAmountOptions() {
@@ -254,7 +254,7 @@ function updatePlayerAmountOptions() {
   } else if (selectedGameMode === "4") {
     options = ["8", "16"];
   } else if (selectedGameMode === "0") {
-    options = ["4", "6", "8", "10", "12", "14", "16"];
+    options = ["6", "8", "10", "12", "14", "16"];
   }
 
   options.forEach(function(option) {
@@ -266,8 +266,8 @@ function updatePlayerAmountOptions() {
 
 function disableCreateButton() {
     var createButton = document.querySelector(".create-button");
-    createButton.classList.add('disabled'); // Ajoute une classe pour le style
-    createButton.onclick = function(event) { event.preventDefault(); } // Empêche la navigation
+    createButton.classList.add('disabled'); 
+    createButton.onclick = function(event) { event.preventDefault(); } 
 }
 
 
@@ -276,9 +276,25 @@ function enableCreateButtonIfNeeded() {
   var createButton = document.querySelector(".create-button");
   if (gameSettings.value && gameSettings.value !== "") {
     createButton.disabled = false;
-    createButton.classList.remove('disabled'); // Retire la classe pour réactiver le style visuel
+    createButton.classList.remove('disabled'); 
   } else {
     createButton.disabled = true;
-    createButton.classList.add('disabled'); // Ajoute la classe si nécessaire
+    createButton.classList.add('disabled'); 
   }
 }
+
+const sliders = [
+  { sliderId: 'ballwidth', valueId: 'ballwidth-value' },
+  { sliderId: 'speed', valueId: 'speed-value' },
+  { sliderId: 'winpoint', valueId: 'winpoint-value' },
+  { sliderId: 'planksize', valueId: 'planksize-value' },
+  { sliderId: 'acceleration', valueId: 'acceleration-value' }
+];
+
+sliders.forEach(({ sliderId, valueId }) => {
+  const slider = document.getElementById(sliderId);
+  const valueDisplay = document.getElementById(valueId);
+  slider.addEventListener('input', function() {
+    valueDisplay.textContent = this.value;
+  });
+});
