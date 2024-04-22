@@ -72,13 +72,11 @@ async def WaitUntilPlayers(ws, data):
     lockedPlayers = listUser(data) #list user locked
     logedPlayers = []
     startTime = time()
-    while len(logedPlayers) < data["playeramount"] and time() - startTime < 45:
+    while len(logedPlayers) < data["playeramount"] and time() - startTime < 120:
         msgs = ws.getMsg()
         if msgs:
             for msg in msgs:
-                print("MESSAGES :", msg, file=stderr)
                 if msg.endswith("login"):
-                    print("ADDING PLAYER!")
                     logedPlayers = await addPlayers(msg[:-5], lockedPlayers, logedPlayers, data["playeramount"])
                 elif msg.endswith("logout"):
                     logedPlayers = await removePlayer(msg[:-6], logedPlayers)
@@ -105,7 +103,6 @@ async def addPlayers(newUser, lockedPlayers, logedPlayers, playeramount):
                 logedPlayersLen += 1
         if logedPlayersLen < playeramount:
             logedPlayers.append(newUser)
-    print("ACTUAL PLAYER LISTE :", logedPlayers, file=stderr)
     return logedPlayers
 
 
@@ -119,7 +116,6 @@ async def playerInGame(logedPlayers, wsCli, data):
     elif len(lockedPlayers):
         winner = choice(lockedPlayers)
         dico["user1"] = [winner, 1]
-    print(MAGENTA + "ENDGAME MISSING MSG :", dico, RESET, file=stderr)
     await wsCli.sendMsg(GAME)
     await wsCli.sendEndGame(dico, gameError=True)
     
@@ -174,9 +170,8 @@ async def main():
         "score4" : 0
     }
 
-    print("|[---Creating game instance...---]|")
     DjangoData = json.loads(os.environ.get("newGame"))["message"]
-    print("Django data : ", DjangoData)
+    print(RED, "|[---Creating game instance", DjangoData["gameid"], "...---]|", RESET)
     gameSettings = putDatagameSettings(DjangoData, gameSettings)
     wsServ = "ws://localhost:8001/game/" + str(gameSettings["gameid"])
 
@@ -186,7 +181,6 @@ async def main():
     
 
     userliste = await WaitUntilPlayers(client, DjangoData)
-    print("RECIEVED LISTE PLAYERS :", userliste)
     if userliste == None:
         print(MAGENTA, "Game end for missing players", RESET, file=stderr)
         exit(0)

@@ -559,7 +559,6 @@ def profile(request):
 
 @login_required
 def dashboard(request):
-    print("HISTORY :", historyGameList)
     return render(request, "dashboard.html", {"user": request.user})
 
 
@@ -807,7 +806,6 @@ class sendPasswordReset(APIView):
 
     def post(self, request):
         mail = request.data.get("email")
-        print("MAIL :", mail)
         if not mail:
             return Response({"message": "No mail"}, status=status.HTTP_400_BAD_REQUEST)
         elif not User.objects.filter(email=mail).exists():
@@ -838,7 +836,6 @@ def PasswordForgot(request, username=None, token=None):
 
 @api_view(["POST"])
 def PasswordReset(request):
-    print(request.body, file=stderr)
     username = request.data.get("username")
     token = request.data.get("token")
     new_password = request.data.get("new_password")

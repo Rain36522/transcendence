@@ -38,7 +38,7 @@ class GameServerConsumer(AsyncWebsocketConsumer):
         # Here you should handle incoming messages, but for now, let's just send a response back
         data = json.loads(text_data)
         game_id = data["gameid"]
-        game = await sync_to_async(Game.objects.get)(pk=game_id)
+        game = await sync_to_async(Game.objects.get)(id=game_id)
         winner = await self.putGameResultDb(game, data)
         await self.tournamentEndGame(game, winner)
 
@@ -53,7 +53,7 @@ class GameServerConsumer(AsyncWebsocketConsumer):
             if winner and game.nextGame:
                 nextGame = game.nextGame
                 GameUser.objects.create(user=winner.user, game=nextGame)
-                if nextGame.gameuser_set.count() == nextGame.gamemode * 2:
+                if nextGame.gameuser_set.count() > 0 and nextGame.gameuser_set.count() < 3:
                     launchGame(nextGame)
             if tournamentId:
                 async_to_sync(self.sendUpdateTournamentview)(tournamentId)
@@ -70,10 +70,11 @@ class GameServerConsumer(AsyncWebsocketConsumer):
                 if cle.startswith("user") and value[0]:
                     user = User.objects.get(username=value[0])
                     if GameUser.objects.filter(user=user).exists():
-                        gameuser = GameUser.objects.filter(user=user).first()
+                        gameuser = GameUser.objects.filter(user=user, game=game).first()
                         gameuser.points = value[1]
+                        gameuser.save()
                     else:
-                        gameuser = GameUser.objects.create(
+                        GameUser.objects.create(
                             user=user, game=game, points=value[1]
                         )
                     if maxPoint > 1:
@@ -81,8 +82,7 @@ class GameServerConsumer(AsyncWebsocketConsumer):
                         if value[1] == maxPoint:
                             user.wins += 1
                             winner = gameuser
-                    gameuser.save()
-                    user.save()
+                        user.save()
 
             game.save()
             return winner
@@ -130,9 +130,7 @@ class launchGame:
         self.id = game.id
         game.gameRunning = True
         game.save()
-        print("GAME IS LAUNCHING________", file=stderr)
         for game_user in game.gameuser_set.all():
-            print("user", game_user.user.username, file=stderr)
             self.send_message_to_chat_group(game_user.user)
 
     def generateDico(self, game):

@@ -4,6 +4,7 @@ import os
 from sys import stderr
 from wsServer import WebSocketServer
 from time import sleep
+from json import loads
 
 RESET = "\033[0m"
 RED = "\033[31m"
@@ -48,8 +49,13 @@ class DjangoCli:
         while True:
             try:
                 message = await self.websocket.recv()
-                os.environ['newGame'] = message
-                os.system("python3 game/game.py &")
+                print(message, file=stderr)
+                gameid = loads(message)["message"]["gameid"]
+                if not gameid in self.wsServer.clients[1]:
+                    os.environ['newGame'] = message
+                    os.system("python3 game/game.py &")
+                else:
+                    print(ORANGE, "GAME ALREADY EXISTING", RESET, file=stderr)
             except websockets.exceptions.ConnectionClosed:
                 i += 1
                 self.print(ORANGE + "Connection to server django closed")
