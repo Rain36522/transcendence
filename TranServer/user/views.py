@@ -644,23 +644,16 @@ def update_profile_api(request):
             and new_username != user.username
             and User.objects.filter(username=new_username).exists()
         ):
-            return Response(
-                {"error": "Username already exists."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
+            pass
+        else:
+            user.username = new_username
         if (
             new_email
             and new_email != user.email
             and User.objects.filter(email=new_email).exists()
         ):
-            return Response(
-                {"error": "Email already exists."}, status=status.HTTP_400_BAD_REQUEST
-            )
-
-        if new_username:
-            user.username = new_username
-        if new_email:
+            pass
+        else:
             user.email = new_email
 
         user.save()
