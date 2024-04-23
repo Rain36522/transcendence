@@ -38,7 +38,7 @@ import smtplib
 import os
 from datetime import timedelta
 
-MAIL = True
+MAIL = False
 
 
 @api_view(["POST"])

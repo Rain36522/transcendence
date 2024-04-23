@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer
+from rest_framework.decorators import api_view
 
 from django.http import JsonResponse, HttpResponse
 from .models import Game, GameUser
@@ -127,6 +128,13 @@ class newGame(APIView):
 def gamePage(request, id):
     if not isGameFinish(id):
         raise Http404("Game does not exist")
+    contexte = getGameData(request, id)
+    
+    contexte_json = json.dumps(contexte)
+    return render(request, "monapp/pong.html", {"contexte_json": contexte_json})
+
+
+def getGameData(request, id):
     game = Game.objects.get(pk=id)
     solo = False
     if game.gamemode == 3:
@@ -155,9 +163,7 @@ def gamePage(request, id):
         "gameid": id,
         "tournamentid": tournamentid,
     }
-    contexte_json = json.dumps(contexte)
-    return render(request, "monapp/pong.html", {"contexte_json": contexte_json})
-
+    return contexte
 
 def isGameFinish(id):
     if not Game.objects.filter(pk=id).exists():
@@ -174,3 +180,10 @@ def isGameFinish(id):
 
 def home_page(request):
     return render(request, "html/home.html")
+
+
+@api_view(["GET"])
+def apiGetGame(request, gameid):
+    print("HERE")
+    data = getGameData(request, gameid)
+    return JsonResponse({"data": data})

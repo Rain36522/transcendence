@@ -95,7 +95,7 @@ class DjangoCommunication:
             if path.startswith("https://"):
                 url = path
             elif path.isdigit():
-                url = self.url + "/game/" + path
+                url = self.url + "/api/game/" + path
             else:
                 url = self.url + path
             response = self.session.get(url, verify=False)
@@ -104,10 +104,5 @@ class DjangoCommunication:
         system("clear")
         if response.status_code >= 400:
             return response.status_code, None
-        start = response.text.find("<script>window.contexteJson = ") + 31
-        stop = response.text.find(";</script>", start) - 1
-        if start == -1 or stop == -1 or abs(start - stop) < 10:
-            return 404, None
-        else:
-            gameinfo = loads(response.text[start:stop])
-            return 200, gameinfo
+        gameinfo = loads(response.text)["data"]
+        return 200, gameinfo
